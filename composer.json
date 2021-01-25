@@ -13,6 +13,7 @@
         "backpack/crud": "4.1.*",
         "backpack/filemanager": "^1.1",
         "backpack/logmanager": "^4.0",
+        "backpack/newscrud": "^4.0",
         "backpack/pagemanager": "^3.0",
         "backpack/permissionmanager": "^6.0",
         "backpack/settings": "^3.0",
