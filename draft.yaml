@@ -1,0 +1,68 @@
+models:
+  Models\Curriculum:
+    curriculumـname: string:400
+    categoryـname: string:400
+    bookـname: string:400
+    weightـinـhours: integer unsigned default:5
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsToMany: AcademicPath
+
+  Models\AcademicPath:
+    academic_path_name: string:400
+    academic_path_type: string:400
+    semester: string:400
+    duration: string:400
+    softDeletes: true
+    timestamps: true
+    relationships:
+      hasMany: Curriculum
+      belongsToMany: Course
+
+  Models\Course:
+    start_date: string:400
+    end_date: string:400
+    hijri_year: integer unsigned default:1441
+    softDeletes: true
+    timestamps: true
+    relationships:
+      hasOne: AcademicPath
+      belongsToMany: ClassRoom
+
+  Models\ClassRoom:
+    class_room_name: string:400
+    class_room_number: string:400
+    softDeletes: true
+    timestamps: true
+    relationships:
+      hasOne: Course
+      hasMany: Student
+
+  Models\Student:
+    student_name: string:400
+    cpr: bigInteger unsigned unique
+    email: string:100 unique
+    mobile: bigInteger unsigned nullable
+    mobile2: bigInteger unsigned nullable
+    dob: date nullable
+    address: string:400 nullable
+    live_inـstate: enum:OWN,RENT
+    relationshipـstate: enum:SINGLE,MARRIED,DIVORCED
+    family_members: integer unsigned default:0
+    family_depends: integer unsigned default:0
+    degree: string:400
+    hawzaـhistory: boolean default:0
+    hawzaـhistory_details: text
+    healthـhistory: boolean default:0
+    healthـhistory_details: text
+    financialـstate: enum:POOR,AVERAGE,GOOD,EXCELLENT
+    financial_details: text
+    student_notes: text
+    registration_at: date
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsToMany: ClassRoom
+
+seeders: Student,
