@@ -30,6 +30,7 @@
         "laracasts/generators": "^2.0",
         "laravel-shift/blueprint": "^1.21",
         "laravel/sail": "^1.2",
+        "laravel/ui": "^3.2",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
         "phpunit/phpunit": "^9.3.3"

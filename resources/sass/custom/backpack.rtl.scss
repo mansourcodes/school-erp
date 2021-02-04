@@ -1,0 +1,12 @@
+div.dataTables_filter {
+    text-align: end;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    float: revert;
+}
+
+div.dataTables_wrapper div.dataTables_length select,
+select {
+    text-align-last: end;
+}

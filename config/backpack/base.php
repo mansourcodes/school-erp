@@ -17,14 +17,14 @@ return [
 
     // Direction, according to language
     // (left-to-right vs right-to-left)
-    'html_direction' => 'ltr',
+    'html_direction' => 'rtl',
 
     // ----
     // HEAD
     // ----
 
     // Project name. Shown in the window title.
-    'project_name' => 'Hawza Admin Panel',
+    'project_name' => 'حوزة',
 
     // When clicking on the admin panel's top-left logo/name,
     // where should the user be redirected?
@@ -63,7 +63,7 @@ return [
 
     // CSS files that are loaded in all pages, using Laravel's mix() helper
     'mix_styles' => [ // file_path => manifest_directory_path
-        // 'css/app.css' => '',
+        'css/app.css' => '',
     ],
 
     // ------
@@ -71,7 +71,7 @@ return [
     // ------
 
     // Menu logo. You can replace this with an <img> tag if you have a logo.
-    'project_logo'   => '<b>Hawza</b>',
+    'project_logo'   => '<b>حوزة</b>',
 
     // Show / hide breadcrumbs on admin panel pages.
     'breadcrumbs' => true,
