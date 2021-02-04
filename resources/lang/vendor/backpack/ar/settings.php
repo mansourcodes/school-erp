@@ -9,10 +9,10 @@ return [
     | The following language lines are used for Laravel Backpack - Settings
     |
     */
-    'name'             => 'Name',
-    'value'            => 'Value',
-    'description'      => 'Description',
-    'setting_singular' => 'setting',
-    'setting_plural'   => 'settings',
+    'name'             => 'الاسم',
+    'value'            => 'القيمة',
+    'description'      => 'الوصف',
+    'setting_singular' => 'الإعداد',
+    'setting_plural'   => 'الإعدادات',
 
 ];
