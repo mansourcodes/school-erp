@@ -1,19 +1,24 @@
 models:
   Models\Curriculum:
-    curriculumـname: string:400 nullable
-    categoryـname: string:400 nullable
-    bookـname: string:400 nullable
+    curriculumـname: string:200 nullable
+    bookـname: string:200 nullable
     weightـinـhours: integer unsigned default:5 nullable
     softDeletes: true
     timestamps: true
     relationships:
+      hasOne: CurriculumCategory
       belongsToMany: AcademicPath
 
+  Models\CurriculumCategory:
+    categoryـname: string:200
+    softDeletes: true
+    timestamps: true
+    relationships:
+      belongsToMany: Curriculum
+
   Models\AcademicPath:
-    academic_path_name: string:400 nullable
-    academic_path_type: string:400 nullable
-    semester: string:400 nullable
-    duration: string:400 nullable
+    academic_path_name: string:200
+    academic_path_type: string:200 nullable
     softDeletes: true
     timestamps: true
     relationships:
@@ -21,8 +26,10 @@ models:
       belongsToMany: Course
 
   Models\Course:
-    course_year: string:400 nullable default:'2021/2022'
-    hijri_year: string:400 nullable default:'1441'
+    course_year: string:200  default:'2021/2022'
+    hijri_year: string:200 nullable default:'1441'
+    semester: string:200 nullable
+    duration: string:200 nullable
     softDeletes: true
     timestamps: true
     relationships:
@@ -30,8 +37,8 @@ models:
       belongsToMany: ClassRoom
 
   Models\ClassRoom:
-    class_room_name: string:400 nullable
-    class_room_number: string:400 nullable
+    class_room_name: string:200 nullable
+    class_room_number: string:200 nullable
     softDeletes: true
     timestamps: true
     relationships:
@@ -39,18 +46,18 @@ models:
       hasMany: Student
 
   Models\Student:
-    student_name: string:400 nullable
+    student_name: string:200 nullable
     cpr: bigInteger unsigned unique nullable
     email: string:100 unique nullable
     mobile: bigInteger unsigned nullable
     mobile2: bigInteger unsigned nullable
     dob: date nullable
-    address: string:400 nullable
+    address: string:200 nullable
     live_inـstate: enum:UNKNOWN,OWN,RENT
     relationshipـstate: enum:UNKNOWN,SINGLE,MARRIED,DIVORCED
     family_members: integer unsigned default:0 nullable
     family_depends: integer unsigned default:0 nullable
-    degree: string:400 nullable
+    degree: string:200 nullable
     hawzaـhistory: boolean default:0 nullable
     hawzaـhistory_details: text nullable
     healthـhistory: boolean default:0 nullable
@@ -64,4 +71,9 @@ models:
     relationships:
       belongsToMany: ClassRoom
 
-seeders: Student,ClassRoom,Course,AcademicPath,Curriculum
+  Models\StudentMarks:
+    student_id: string:200
+    course_id: string:200
+    marks: longText nullable
+
+seeders: CurriculumCategory,Student,Curriculum,ClassRoom,Course,AcademicPath,StudentMarks

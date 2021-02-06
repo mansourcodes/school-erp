@@ -1,0 +1,43 @@
+created:
+    - database/factories/Models/CurriculumFactory.php
+    - database/factories/Models/CurriculumCategoryFactory.php
+    - database/factories/Models/AcademicPathFactory.php
+    - database/factories/Models/CourseFactory.php
+    - database/factories/Models/ClassRoomFactory.php
+    - database/factories/Models/StudentFactory.php
+    - database/factories/Models/StudentMarksFactory.php
+    - database/migrations/2021_02_06_110422_create_curricula_table.php
+    - database/migrations/2021_02_06_110423_create_curriculum_categories_table.php
+    - database/migrations/2021_02_06_110424_create_academic_paths_table.php
+    - database/migrations/2021_02_06_110425_create_courses_table.php
+    - database/migrations/2021_02_06_110426_create_class_rooms_table.php
+    - database/migrations/2021_02_06_110427_create_students_table.php
+    - database/migrations/2021_02_06_110428_create_student_marks_table.php
+    - database/migrations/2021_02_06_110429_create_academic_path_curriculum_table.php
+    - database/migrations/2021_02_06_110430_create_curriculum_curriculum_category_table.php
+    - database/migrations/2021_02_06_110431_create_academic_path_course_table.php
+    - database/migrations/2021_02_06_110432_create_class_room_course_table.php
+    - database/migrations/2021_02_06_110433_create_class_room_student_table.php
+    - app/Models/Curriculum.php
+    - app/Models/CurriculumCategory.php
+    - app/Models/AcademicPath.php
+    - app/Models/Course.php
+    - app/Models/ClassRoom.php
+    - app/Models/Student.php
+    - app/Models/StudentMarks.php
+    - database/seeders/CurriculumCategorySeeder.php
+    - database/seeders/StudentSeeder.php
+    - database/seeders/CurriculumSeeder.php
+    - database/seeders/ClassRoomSeeder.php
+    - database/seeders/CourseSeeder.php
+    - database/seeders/AcademicPathSeeder.php
+    - database/seeders/StudentMarksSeeder.php
+models:
+    Models\User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
+    Models\Curriculum: { curriculumـname: 'string:200 nullable', bookـname: 'string:200 nullable', weightـinـhours: 'integer unsigned default:5 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: CurriculumCategory, belongsToMany: AcademicPath } }
+    Models\CurriculumCategory: { categoryـname: 'string:200', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsToMany: Curriculum } }
+    Models\AcademicPath: { academic_path_name: 'string:200', academic_path_type: 'string:200 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasMany: Curriculum, belongsToMany: Course } }
+    Models\Course: { course_year: 'string:200  default:''2021/2022''', hijri_year: 'string:200 nullable default:''1441''', semester: 'string:200 nullable', duration: 'string:200 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: AcademicPath, belongsToMany: ClassRoom } }
+    Models\ClassRoom: { class_room_name: 'string:200 nullable', class_room_number: 'string:200 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: Course, hasMany: Student } }
+    Models\Student: { student_name: 'string:200 nullable', cpr: 'bigInteger unsigned unique nullable', email: 'string:100 unique nullable', mobile: 'bigInteger unsigned nullable', mobile2: 'bigInteger unsigned nullable', dob: 'date nullable', address: 'string:200 nullable', live_inـstate: 'enum:UNKNOWN,OWN,RENT', relationshipـstate: 'enum:UNKNOWN,SINGLE,MARRIED,DIVORCED', family_members: 'integer unsigned default:0 nullable', family_depends: 'integer unsigned default:0 nullable', degree: 'string:200 nullable', hawzaـhistory: 'boolean default:0 nullable', hawzaـhistory_details: 'text nullable', healthـhistory: 'boolean default:0 nullable', healthـhistory_details: 'text nullable', financialـstate: 'enum:UNKNOWN,POOR,AVERAGE,GOOD,EXCELLENT', financial_details: 'text nullable', student_notes: 'text nullable', registration_at: 'date nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsToMany: ClassRoom } }
+    Models\StudentMarks: { student_id: 'string:200', course_id: 'string:200', marks: 'longText nullable' }

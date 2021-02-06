@@ -40,3 +40,11 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('log') }}'><i class='nav-icon la la-terminal'></i> Logs</a></li>
     </ul>
 </li>
+
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('academicpath') }}'><i class='nav-icon la la-question'></i> {{__('academicpath.academicpaths')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('classroom') }}'><i class='nav-icon la la-question'></i> {{ __('classroom.classrooms')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('course') }}'><i class='nav-icon la la-question'></i> {{__('course.courses')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('curriculum') }}'><i class='nav-icon la la-question'></i> {{__('curriculum.curricula')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('curriculumcategory') }}'><i class='nav-icon la la-question'></i> {{__('curriculumcategory.curriculumcategories')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('student') }}'><i class='nav-icon la la-question'></i> {{__('student.students')}}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('studentmarks') }}'><i class='nav-icon la la-question'></i> {{__('studentmark.studentsmarks')}}</a></li>
