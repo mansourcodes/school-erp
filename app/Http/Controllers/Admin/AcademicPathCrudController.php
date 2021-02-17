@@ -107,7 +107,7 @@ class AcademicPathCrudController extends CrudController
         ]);
         CRUD::addField(
             [    // Select2Multiple = n-n relationship (with pivot table)
-                'label'     => "curriculum",
+                'label'     => trans('curriculum.curricula'),
                 'type'      => 'select2_multiple',
                 'name'      => trans('curriculum.curricula'), // the method that defines the relationship in your Model
 

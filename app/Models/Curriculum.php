@@ -20,6 +20,7 @@ class Curriculum extends Model
         'curriculumـname',
         'bookـname',
         'weightـinـhours',
+        'curriculum_category_id',
     ];
 
     /**

@@ -21,6 +21,7 @@ class Course extends Model
         'hijri_year',
         'semester',
         'duration',
+        'academic_path_id',
     ];
 
     /**

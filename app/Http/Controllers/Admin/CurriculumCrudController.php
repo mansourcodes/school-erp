@@ -18,6 +18,7 @@ class CurriculumCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -56,10 +57,23 @@ class CurriculumCrudController extends CrudController
             'label' => trans('curriculum.weightـinـhours'),
         ]);
 
+
         CRUD::addColumn([
-            'name' => 'created_at',
-            'label' => trans('base.created_at'),
-        ]);
+            // any type of relationship
+            'name'         => 'curriculumCategory', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => trans('curriculumcategory.curriculumcategory'), // Table column heading
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            // 'attribute' => 'name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+        ],);
+
+
+        // CRUD::addColumn([
+        //     'name' => 'created_at',
+        //     'label' => trans('base.created_at'),
+        // ]);
 
         // CRUD::addColumn([
         //     'name' => 'deleted_at',
@@ -103,6 +117,33 @@ class CurriculumCrudController extends CrudController
             'name' => 'weightـinـhours',
             'label' => trans('curriculum.weightـinـhours'),
         ]);
+
+        CRUD::addField([
+            'name' => 'weightـinـhours',
+            'label' => trans('curriculum.weightـinـhours'),
+        ]);
+
+        CRUD::addField(
+            [
+                // relationship
+                'type' => "relationship",
+                'name' => 'curriculum_category_id', // the method on your model that defines the relationship
+                'ajax' => true,
+
+                // OPTIONALS:
+                'label' => trans('curriculumcategory.curriculumcategory'),
+                'attribute' => "categoryـname", // foreign key attribute that is shown to user (identifiable attribute)
+                'entity' => 'curriculumCategory', // the method that defines the relationship in your Model
+                // 'model' => "App\Models\Category", // foreign key Eloquent model
+                'placeholder' => "Select a Category", // placeholder for the select2 input
+
+                // AJAX OPTIONALS:
+                'data_source' => backpack_url("curriculum/fetch/curriculumcategory"), // url to controller search function (with /{id} should return model)
+                // 'minimum_input_length' => 2, // minimum characters to type before querying results
+                // 'dependencies'         => ['curriculumcategory'], // when a dependency changes, this select2 is reset to null
+                // 'include_all_form_fields'  => true, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+            ]
+        );
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
@@ -119,5 +160,20 @@ class CurriculumCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+
+    public function fetchCurriculumcategory()
+    {
+        // return $this->fetch(\App\Models\curriculumcategory::class);
+
+        return $this->fetch([
+            'model' => \App\Models\CurriculumCategory::class, // required
+            'searchable_attributes' => ['categoryـname'],
+            'paginate' => 10, // items to show per page
+            // 'query' => function ($model) {
+            //     return $model->active();
+            // } // to filter the results that are returned
+        ]);
     }
 }
