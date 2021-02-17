@@ -27,6 +27,27 @@ class StudentRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'student_name',
+            'cpr' => 'required',
+            'email'  => 'required',
+            'mobile',
+            'mobile2',
+            'dob',
+            'address',
+            'live_inـstate'  => 'required',
+            'relationshipـstate'  => 'required',
+            'family_members',
+            'family_depends',
+            'degree',
+            'hawzaـhistory',
+            'hawzaـhistory_details',
+            'healthـhistory',
+            'healthـhistory_details',
+            'financialـstate' => 'required',
+            'financial_details',
+            'student_notes',
+            'registration_at',
         ];
     }
 

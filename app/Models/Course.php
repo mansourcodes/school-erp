@@ -35,11 +35,13 @@ class Course extends Model
 
     public function academicPath()
     {
-        return $this->hasOne(\App\Models\AcademicPath::class);
+        return $this->belongsTo(\App\Models\AcademicPath::class);
+        // return $this->hasOne(\App\Models\AcademicPath::class);
     }
 
     public function classRooms()
     {
-        return $this->belongsToMany(\App\Models\ClassRoom::class);
+        return $this->hasMany(\App\Models\ClassRoom::class);
+        // return $this->belongsToMany(\App\Models\ClassRoom::class);
     }
 }

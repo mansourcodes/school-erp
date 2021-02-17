@@ -27,6 +27,11 @@ class CourseRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'course_year' => 'required',
+            'hijri_year' => 'required',
+            'semester' => 'required',
+            'duration' => 'required',
         ];
     }
 

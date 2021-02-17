@@ -27,6 +27,9 @@ class ClassRoomRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'class_room_name' => 'required',
+            'class_room_number' => 'required',
         ];
     }
 

@@ -33,11 +33,13 @@ class ClassRoom extends Model
 
     public function course()
     {
-        return $this->hasOne(\App\Models\Course::class);
+        return $this->belongsTo(\App\Models\Course::class);
+        // return $this->hasOne(\App\Models\Course::class);
     }
 
     public function students()
     {
-        return $this->hasMany(\App\Models\Student::class);
+        return $this->belongsToMany(\App\Models\Student::class);
+        // return $this->hasMany(\App\Models\Student::class);
     }
 }

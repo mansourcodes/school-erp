@@ -58,6 +58,7 @@ class Student extends Model
 
     public function classRooms()
     {
-        return $this->belongsToMany(\App\Models\ClassRoom::class);
+        return $this->hasMany(\App\Models\ClassRoom::class);
+        // return $this->belongsToMany(\App\Models\ClassRoom::class);
     }
 }

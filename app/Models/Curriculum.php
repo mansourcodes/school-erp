@@ -34,11 +34,13 @@ class Curriculum extends Model
 
     public function curriculumCategory()
     {
-        return $this->hasOne(\App\Models\CurriculumCategory::class);
+        // return $this->hasOne(\App\Models\CurriculumCategory::class);
+        return $this->belongsTo(\App\Models\CurriculumCategory::class);
     }
 
     public function academicPaths()
     {
-        return $this->belongsToMany(\App\Models\AcademicPath::class);
+        return $this->hasMany(\App\Models\AcademicPath::class);
+        // return $this->belongsToMany(\App\Models\AcademicPath::class);
     }
 }

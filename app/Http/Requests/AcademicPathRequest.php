@@ -27,6 +27,9 @@ class AcademicPathRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'academic_path_name' => 'required',
+            'academic_path_type' => 'required',
         ];
     }
 

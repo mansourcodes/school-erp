@@ -141,6 +141,7 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'relationshipـstate',
             'label' => trans('student.relationshipـstate'),
+            'type' => 'enum'
         ]);
         CRUD::addField([
             'name' => 'family_depends',
@@ -158,11 +159,13 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'live_inـstate',
             'label' => trans('student.live_inـstate'),
+            'type' => 'enum'
         ]);
 
         CRUD::addField([
             'name' => 'financialـstate',
             'label' => trans('student.financialـstate'),
+            'type' => 'enum'
         ]);
         CRUD::addField([
             'name' => 'financial_details',

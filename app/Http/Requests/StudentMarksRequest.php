@@ -27,6 +27,10 @@ class StudentMarksRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'student_id'  => 'required',
+            'course_id'  => 'required',
+            'marks'  => 'required',
         ];
     }
 

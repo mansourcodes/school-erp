@@ -51,9 +51,20 @@ class AcademicPathCrudController extends CrudController
 
 
         CRUD::addColumn([
-            'name' => 'created_at',
-            'label' => trans('base.created_at'),
-        ]);
+            // any type of relationship
+            'name'         => 'curricula', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => trans('curriculum.curricula'), // Table column heading
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            // 'attribute' => 'name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+        ],);
+
+        // CRUD::addColumn([
+        //     'name' => 'created_at',
+        //     'label' => trans('base.created_at'),
+        // ]);
 
         // CRUD::addColumn([
         //     'name' => 'deleted_at',
@@ -94,6 +105,27 @@ class AcademicPathCrudController extends CrudController
             'name' => 'academic_path_type',
             'label' => trans('academicpath.academic_path_type'),
         ]);
+        CRUD::addField(
+            [    // Select2Multiple = n-n relationship (with pivot table)
+                'label'     => "curriculum",
+                'type'      => 'select2_multiple',
+                'name'      => trans('curriculum.curricula'), // the method that defines the relationship in your Model
+
+                // optional
+                'entity'    => 'curricula', // the method that defines the relationship in your Model
+                'model'     => "App\Models\Curriculum", // foreign key model
+                'attribute' => 'curriculumـname', // foreign key attribute that is shown to user
+                'pivot'     => true, // on create&update, do you need to add/delete pivot table entries?
+                'select_all' => true, // show Select All and Clear buttons?
+
+                // optional
+                // 'options'   => (function ($query) {
+                //     return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
+                // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+            ],
+
+
+        );
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

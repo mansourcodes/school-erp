@@ -33,11 +33,13 @@ class StudentMarks extends Model
 
     public function Student()
     {
-        return $this->hasOne(\App\Models\Student::class);
+        return $this->belongsTo(\App\Models\Student::class);
+        // return $this->hasOne(\App\Models\Student::class);
     }
 
     public function Course()
     {
-        return $this->hasOne(\App\Models\Course::class);
+        return $this->belongsTo(\App\Models\Course::class);
+        // return $this->hasOne(\App\Models\Course::class);
     }
 }

@@ -19,6 +19,9 @@ return [
 
     'Backups'         => 'نسخة احتياطية',
 
+    'academicManagment'   => 'إدارة المناهج',
+    'systemManagment'   => 'إدارة النظام',
+
 
 
     // actions

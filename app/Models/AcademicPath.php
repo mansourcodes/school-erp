@@ -33,11 +33,13 @@ class AcademicPath extends Model
 
     public function curricula()
     {
-        return $this->hasMany(\App\Models\Curriculum::class);
+        return $this->belongsToMany(\App\Models\Curriculum::class);
+        // return $this->hasMany(\App\Models\Curriculum::class);
     }
 
     public function courses()
     {
-        return $this->belongsToMany(\App\Models\Course::class);
+        return $this->hasMany(\App\Models\Course::class);
+        // return $this->belongsToMany(\App\Models\Course::class);
     }
 }

@@ -27,6 +27,10 @@ class CurriculumRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+
+            'curriculumـname' => 'required',
+            'bookـname' => 'required',
+            'weightـinـhours' => 'required',
         ];
     }
 

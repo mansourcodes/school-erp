@@ -32,6 +32,7 @@ class CurriculumCategory extends Model
 
     public function curricula()
     {
-        return $this->belongsToMany(\App\Models\Curriculum::class);
+        return $this->hasOne(\App\Models\Curriculum::class);
+        // return $this->belongsToMany(\App\Models\Curriculum::class);
     }
 }
