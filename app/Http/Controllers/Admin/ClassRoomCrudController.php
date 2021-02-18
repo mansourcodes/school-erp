@@ -108,7 +108,7 @@ class ClassRoomCrudController extends CrudController
             'name'        => 'students', // a unique identifier (usually the method that defines the relationship in your Model)
             'entity'      => 'students', // the method that defines the relationship in your Model
             'attribute'   => "long_name", // foreign key attribute that is shown to user
-            'data_source' => backpack_url("classroom/fetch/student"), // url to controller search function (with /{id} should return model)
+            'data_source' => url("api/student"), // url to controller search function (with /{id} should return model)
             'pivot'       => true, // on create&update, do you need to add/delete pivot table entries?
 
             // OPTIONAL

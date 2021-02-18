@@ -68,6 +68,8 @@ class Student extends Model
 
     public function getLongNameAttribute()
     {
-        return "[" . $this->cpr . "] " . $this->student_name . " [" . $this->mobile . "]";
+        $mobile2 = ($this->mobile2) ? '-' . $this->mobile2 : '';
+
+        return "[" . $this->cpr . "] " . $this->student_name . " [" . $this->mobile . $mobile2 . "]";
     }
 }
