@@ -32,6 +32,10 @@ class Curriculum extends Model
         'id' => 'integer',
     ];
 
+    protected $appends = [
+        'long_name'
+    ];
+
 
     public function curriculumCategory()
     {
@@ -43,5 +47,11 @@ class Curriculum extends Model
     {
         return $this->hasMany(\App\Models\AcademicPath::class);
         // return $this->belongsToMany(\App\Models\AcademicPath::class);
+    }
+
+
+    public function getLongNameAttribute()
+    {
+        return "[" . $this->curriculumـname . "] " . $this->bookـname;
     }
 }

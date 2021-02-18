@@ -56,9 +56,18 @@ class Student extends Model
     ];
 
 
+    protected $appends = [
+        'long_name'
+    ];
+
     public function classRooms()
     {
         return $this->hasMany(\App\Models\ClassRoom::class);
         // return $this->belongsToMany(\App\Models\ClassRoom::class);
+    }
+
+    public function getLongNameAttribute()
+    {
+        return "[" . $this->cpr . "] " . $this->student_name . " [" . $this->mobile . "]";
     }
 }

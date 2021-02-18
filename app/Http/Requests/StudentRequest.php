@@ -28,10 +28,10 @@ class StudentRequest extends FormRequest
         return [
             // 'name' => 'required|min:5|max:255'
 
-            'student_name',
+            'student_name' => 'required',
             'cpr' => 'required',
-            'email'  => 'required',
-            'mobile',
+            'email',
+            'mobile' => 'required',
             'mobile2',
             'dob',
             'address',

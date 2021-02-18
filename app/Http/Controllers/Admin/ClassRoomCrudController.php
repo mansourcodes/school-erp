@@ -49,11 +49,21 @@ class ClassRoomCrudController extends CrudController
             'label' => trans('classroom.class_room_number'),
         ]);
 
-
         CRUD::addColumn([
-            'name' => 'created_at',
-            'label' => trans('base.created_at'),
-        ]);
+            // any type of relationship
+            'name'         => 'students', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => trans('student.students'), // Table column heading
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            // 'attribute' => 'name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+        ],);
+
+        // CRUD::addColumn([
+        //     'name' => 'created_at',
+        //     'label' => trans('base.created_at'),
+        // ]);
 
         // CRUD::addColumn([
         //     'name' => 'deleted_at',
@@ -91,6 +101,44 @@ class ClassRoomCrudController extends CrudController
             'name' => 'class_room_number',
             'label' => trans('classroom.class_room_number'),
         ]);
+        CRUD::addField([
+            // n-n relationship
+            'label'       =>  trans('student.students'), // Table column heading
+            'type'        => "select2_from_ajax_multiple",
+            'name'        => 'students', // a unique identifier (usually the method that defines the relationship in your Model)
+            'entity'      => 'students', // the method that defines the relationship in your Model
+            'attribute'   => "long_name", // foreign key attribute that is shown to user
+            'data_source' => backpack_url("classroom/fetch/student"), // url to controller search function (with /{id} should return model)
+            'pivot'       => true, // on create&update, do you need to add/delete pivot table entries?
+
+            // OPTIONAL
+            'model'                => "App\Models\Student", // foreign key model
+            'placeholder'          => "Select a Students", // placeholder for the select
+            'minimum_input_length' => 1, // minimum characters to type before querying results
+            // 'include_all_form_fields'  => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+
+        ]);
+
+        // CRUD::addField(
+        //     [    // Select2Multiple = n-n relationship (with pivot table)
+        //         'label'     => trans('student.students'),
+        //         'type'      => 'select2_multiple',
+        //         'name'      => 'students', // the method that defines the relationship in your Model
+
+        //         // optional
+        //         'entity'    => 'students', // the method that defines the relationship in your Model
+        //         'model'     => "App\Models\Student", // foreign key model
+        //         'attribute' => 'long_name', // foreign key attribute that is shown to user
+        //         'pivot'     => true, // on create&update, do you need to add/delete pivot table entries?
+        //         'select_all' => true, // show Select All and Clear buttons?
+
+        //         // optional
+        //         // 'options'   => (function ($query) {
+        //         //     return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
+        //         // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
+        //     ],
+        // );
+
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

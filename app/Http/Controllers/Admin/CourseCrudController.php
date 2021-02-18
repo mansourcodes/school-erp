@@ -122,7 +122,7 @@ class CourseCrudController extends CrudController
                 // relationship
                 'type' => "relationship",
                 'name' => 'academic_path_id', // the method on your model that defines the relationship
-                'ajax' => true,
+                'ajax' => false,
 
                 // OPTIONALS:
                 'label' => trans('academicpath.academicpath'),

@@ -109,12 +109,12 @@ class AcademicPathCrudController extends CrudController
             [    // Select2Multiple = n-n relationship (with pivot table)
                 'label'     => trans('curriculum.curricula'),
                 'type'      => 'select2_multiple',
-                'name'      => trans('curriculum.curricula'), // the method that defines the relationship in your Model
+                'name'      => 'curricula', // the method that defines the relationship in your Model
 
                 // optional
                 'entity'    => 'curricula', // the method that defines the relationship in your Model
                 'model'     => "App\Models\Curriculum", // foreign key model
-                'attribute' => 'curriculumـname', // foreign key attribute that is shown to user
+                'attribute' => 'long_name', // foreign key attribute that is shown to user
                 'pivot'     => true, // on create&update, do you need to add/delete pivot table entries?
                 'select_all' => true, // show Select All and Clear buttons?
 
@@ -123,8 +123,6 @@ class AcademicPathCrudController extends CrudController
                 //     return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
                 // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
             ],
-
-
         );
 
         /**
