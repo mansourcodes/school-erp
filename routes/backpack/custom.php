@@ -22,8 +22,3 @@ Route::group([
     Route::crud('student', 'StudentCrudController');
     Route::crud('studentmarks', 'StudentMarksCrudController');
 }); // this should be the absolute last line of this file
-
-
-
-Route::get('/api/student', 'App\Http\Controllers\Api\StudentController@index');
-Route::get('/api/student/{id}', 'App\Http\Controllers\Api\StudentController@show');

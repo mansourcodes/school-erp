@@ -16,3 +16,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
+
+Route::group([
+    'prefix'     => 'api',
+    'middleware' => array_merge(
+        (array) config('backpack.base.web_middleware', 'web'),
+        (array) config('backpack.base.middleware_key', 'admin')
+    ),
+    'namespace'  => 'App\Http\Controllers\Api',
+], function () { // custom admin routes
+
+    Route::get('student', 'StudentController@index');
+    Route::get('student/{id}', 'StudentController@show');
+});
