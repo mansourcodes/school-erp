@@ -92,6 +92,24 @@ class ClassRoomCrudController extends CrudController
     {
         CRUD::setValidation(ClassRoomRequest::class);
 
+        CRUD::addField(
+            [   // 1-n relationship
+                'label'       => trans('course.course'), // Table column heading
+                'type'        => "select2_from_ajax",
+                'name'        => 'course_id', // the column that contains the ID of that connected entity
+                'entity'      => 'course', // the method that defines the relationship in your Model
+                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'data_source' => url("api/course"), // url to controller search function (with /{id} should return model)
+
+                // OPTIONAL
+                'placeholder'             => "Select a course", // placeholder for the select
+                'minimum_input_length'    => 1, // minimum characters to type before querying results
+                // 'model'                   => "App\Models\Category", // foreign key model
+                // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
+                // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+            ],
+        );
 
         CRUD::addField([
             'name' => 'class_room_name',
@@ -119,25 +137,6 @@ class ClassRoomCrudController extends CrudController
 
         ]);
 
-        // CRUD::addField(
-        //     [    // Select2Multiple = n-n relationship (with pivot table)
-        //         'label'     => trans('student.students'),
-        //         'type'      => 'select2_multiple',
-        //         'name'      => 'students', // the method that defines the relationship in your Model
-
-        //         // optional
-        //         'entity'    => 'students', // the method that defines the relationship in your Model
-        //         'model'     => "App\Models\Student", // foreign key model
-        //         'attribute' => 'long_name', // foreign key attribute that is shown to user
-        //         'pivot'     => true, // on create&update, do you need to add/delete pivot table entries?
-        //         'select_all' => true, // show Select All and Clear buttons?
-
-        //         // optional
-        //         // 'options'   => (function ($query) {
-        //         //     return $query->orderBy('name', 'ASC')->where('depth', 1)->get();
-        //         // }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
-        //     ],
-        // );
 
 
         /**

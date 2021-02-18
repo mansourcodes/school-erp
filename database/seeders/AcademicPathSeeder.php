@@ -14,6 +14,6 @@ class AcademicPathSeeder extends Seeder
      */
     public function run()
     {
-        AcademicPath::factory()->count(5)->create();
+        AcademicPath::factory()->count(50)->create();
     }
 }

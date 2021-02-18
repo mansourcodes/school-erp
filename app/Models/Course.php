@@ -34,6 +34,10 @@ class Course extends Model
     ];
 
 
+    protected $appends = [
+        'long_name'
+    ];
+
     public function academicPath()
     {
         return $this->belongsTo(\App\Models\AcademicPath::class);
@@ -44,5 +48,15 @@ class Course extends Model
     {
         return $this->hasMany(\App\Models\ClassRoom::class);
         // return $this->belongsToMany(\App\Models\ClassRoom::class);
+    }
+
+    public function getLongNameAttribute()
+    {
+
+        if (is_null($this->academicPath)) {
+            return  "... [" . $this->course_year . "] " . $this->hijri_year . " [" . $this->semester  . "]";
+        } else {
+            return $this->academicPath->academic_path_name . " [" . $this->course_year . "] " . $this->hijri_year . " [" . $this->semester  . "]";
+        }
     }
 }

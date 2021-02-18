@@ -40,6 +40,20 @@ class CourseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+
+        CRUD::addColumn([
+            // any type of relationship
+            'name'         => 'AcademicPath', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => trans('academicpath.academicpath'), // Table column heading
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            // 'attribute' => 'name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+        ],);
+
+
+
         CRUD::addColumn([
             'name' => 'course_year',
             'label' => trans('course.course_year'),
@@ -58,16 +72,7 @@ class CourseCrudController extends CrudController
         ]);
 
 
-        CRUD::addColumn([
-            // any type of relationship
-            'name'         => 'AcademicPath', // name of relationship method in the model
-            'type'         => 'relationship',
-            'label'        => trans('academicpath.academicpath'), // Table column heading
-            // OPTIONAL
-            // 'entity'    => 'tags', // the method that defines the relationship in your Model
-            // 'attribute' => 'name', // foreign key attribute that is shown to user
-            // 'model'     => App\Models\Category::class, // foreign key model
-        ],);
+
 
         // CRUD::addColumn([
         //     'name' => 'created_at',
@@ -122,7 +127,7 @@ class CourseCrudController extends CrudController
                 // relationship
                 'type' => "relationship",
                 'name' => 'academic_path_id', // the method on your model that defines the relationship
-                'ajax' => false,
+                'ajax' => true,
 
                 // OPTIONALS:
                 'label' => trans('academicpath.academicpath'),

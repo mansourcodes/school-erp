@@ -19,6 +19,7 @@ class StudentMarksCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
+
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
      *
@@ -41,23 +42,25 @@ class StudentMarksCrudController extends CrudController
     {
 
         CRUD::addColumn([
-            'name' => 'course_id',
-            'label' => trans('course.course'),
-        ]);
-
-        CRUD::addColumn([
             'name' => 'student_id',
             'label' => trans('student.student_name'),
         ]);
 
+
         CRUD::addColumn([
-            'name' => 'marks',
-            'label' => trans('studentmark.marks'),
+            'name' => 'course_id',
+            'label' => trans('course.course'),
         ]);
+
+        // CRUD::addColumn([
+        //     'name' => 'marks',
+        //     'label' => trans('studentmark.marks'),
+        // ]);
 
         CRUD::addColumn([
             'name' => 'created_at',
             'label' => trans('base.created_at'),
+            'type' => 'date'
         ]);
 
         // CRUD::addColumn([
@@ -87,15 +90,48 @@ class StudentMarksCrudController extends CrudController
     {
         CRUD::setValidation(StudentMarksRequest::class);
 
-        CRUD::addField([
-            'name' => 'course_id',
-            'label' => trans('course.course'),
-        ]);
 
-        CRUD::addField([
-            'name' => 'student_id',
-            'label' => trans('student.student_name'),
-        ]);
+
+        CRUD::addField(
+            [   // 1-n relationship
+                'label'       => trans('student.student'), // Table column heading
+                'type'        => "select2_from_ajax",
+                'name'        => 'student_id', // the column that contains the ID of that connected entity
+                'entity'      => 'student', // the method that defines the relationship in your Model
+                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'data_source' => url("api/student"), // url to controller search function (with /{id} should return model)
+
+                // OPTIONAL
+                'placeholder'             => "Select a student", // placeholder for the select
+                'minimum_input_length'    => 1, // minimum characters to type before querying results
+                // 'model'                   => "App\Models\Category", // foreign key model
+                // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
+                // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+            ],
+        );
+
+        CRUD::addField(
+            [   // 1-n relationship
+                'label'       => trans('course.course'), // Table column heading
+                'type'        => "select2_from_ajax",
+                'name'        => 'course_id', // the column that contains the ID of that connected entity
+                'entity'      => 'course', // the method that defines the relationship in your Model
+                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'data_source' => url("api/course"), // url to controller search function (with /{id} should return model)
+
+                // OPTIONAL
+                'placeholder'             => "Select a course", // placeholder for the select
+                'minimum_input_length'    => 1, // minimum characters to type before querying results
+                // 'model'                   => "App\Models\Category", // foreign key model
+                // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
+                // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+            ],
+        );
+
+
+
 
         CRUD::addField([
             'name' => 'marks',

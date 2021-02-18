@@ -31,4 +31,7 @@ Route::group([
 
     Route::get('student', 'StudentController@index');
     Route::get('student/{id}', 'StudentController@show');
+
+    Route::get('course', 'CourseController@index');
+    Route::get('course/{id}', 'CourseController@show');
 });
