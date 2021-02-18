@@ -40,6 +40,10 @@ class CurriculumCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
+
+
 
 
         CRUD::addColumn([

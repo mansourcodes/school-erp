@@ -29,4 +29,9 @@ return [
     'created_at' => 'تاريخ الإنشاء',
     'deleted_at' => 'تاريخ المسح',
     'updated_at' => 'تاريخ التعديل',
+
+
+    // actions
+
+    'more' => 'المزيد',
 ];

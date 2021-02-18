@@ -28,6 +28,7 @@ class CourseRequest extends FormRequest
         return [
             // 'name' => 'required|min:5|max:255'
 
+            'academic_path_id' => 'required',
             'course_year' => 'required',
             'hijri_year' => 'required',
             'semester' => 'required',

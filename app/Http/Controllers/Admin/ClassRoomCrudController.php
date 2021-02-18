@@ -39,6 +39,21 @@ class ClassRoomCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
+
+
+
+        CRUD::addColumn([
+            // any type of relationship
+            'name'         => 'course', // name of relationship method in the model
+            'type'         => 'relationship',
+            'label'        => trans('course.course'), // Table column heading
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            'attribute' => 'long_name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+        ],);
 
         CRUD::addColumn([
             'name' => 'class_room_name',

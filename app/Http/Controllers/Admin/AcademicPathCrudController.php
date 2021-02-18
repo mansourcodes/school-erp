@@ -39,6 +39,10 @@ class AcademicPathCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
+
+
         CRUD::addColumn([
             'name' => 'academic_path_name',
             'label' => trans('academicpath.academic_path_name'),

@@ -39,6 +39,10 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
+
+
 
 
         CRUD::addColumn([
@@ -102,54 +106,89 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'cpr',
             'label' => trans('student.cpr'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
         CRUD::addField([
             'name' => 'email',
             'label' => trans('student.email'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
-
-
-
 
 
         CRUD::addField([
             'name' => 'mobile',
             'label' => trans('student.mobile'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
         CRUD::addField([
             'name' => 'mobile2',
             'label' => trans('student.mobile2'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
-
-
-
 
 
         CRUD::addField([
             'name' => 'dob',
             'label' => trans('student.dob'),
+            'type' => 'date_picker',
+            'date_picker_options' => [
+                'todayBtn' => 'linked',
+                // 'format'   => 'dd-mm-yyyy',
+                'language' => 'ar'
+            ],
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
+
         CRUD::addField([
-            'name' => 'address',
-            'label' => trans('student.address'),
+            'name' => 'registration_at',
+            'label' => trans('student.registration_at'),
+            'type' => 'date_picker',
+            'date_picker_options' => [
+                'todayBtn' => 'linked',
+                // 'format'   => 'dd-mm-yyyy',
+                'language' => 'ar',
+            ],
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
-
-
 
 
 
         CRUD::addField([
             'name' => 'relationshipـstate',
             'label' => trans('student.relationshipـstate'),
-            'type' => 'enum'
+            'type' => 'enum',
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+            'tab'   => trans('student.relationshipـstate'),
         ]);
         CRUD::addField([
             'name' => 'family_depends',
             'label' => trans('student.family_depends'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+            'tab'   => trans('student.relationshipـstate'),
         ]);
         CRUD::addField([
             'name' => 'family_members',
             'label' => trans('student.family_members'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+            'tab'   => trans('student.relationshipـstate'),
         ]);
 
 
@@ -159,34 +198,61 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'live_inـstate',
             'label' => trans('student.live_inـstate'),
-            'type' => 'enum'
+            'type' => 'enum',
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+            'tab'   => trans('student.financialـstate'),
         ]);
+
+
 
         CRUD::addField([
             'name' => 'financialـstate',
             'label' => trans('student.financialـstate'),
-            'type' => 'enum'
+            'type' => 'enum',
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+            'tab'   => trans('student.financialـstate'),
+        ]);
+
+
+        CRUD::addField([
+            'name' => 'address',
+            'label' => trans('student.address'),
+            'tab'   => trans('student.financialـstate'),
         ]);
         CRUD::addField([
             'name' => 'financial_details',
             'label' => trans('student.financial_details'),
+            'tab'   => trans('student.financialـstate'),
         ]);
 
 
 
 
 
-        CRUD::addField([
-            'name' => 'degree',
-            'label' => trans('student.degree'),
-        ]);
         CRUD::addField([
             'name' => 'hawzaـhistory',
             'label' => trans('student.hawzaـhistory'),
+            'tab'   => trans('student.hawzaـhistory'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
+        ]);
+        CRUD::addField([
+            'name' => 'degree',
+            'label' => trans('student.degree'),
+            'tab'   => trans('student.hawzaـhistory'),
+            'wrapper'   => [
+                'class'      => 'col-6'
+            ],
         ]);
         CRUD::addField([
             'name' => 'hawzaـhistory_details',
             'label' => trans('student.hawzaـhistory_details'),
+            'tab'   => trans('student.hawzaـhistory'),
         ]);
 
 
@@ -195,20 +261,20 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'healthـhistory',
             'label' => trans('student.healthـhistory'),
+            'tab'             => trans('student.healthـhistory'),
         ]);
         CRUD::addField([
             'name' => 'healthـhistory_details',
             'label' => trans('student.healthـhistory_details'),
+            'tab'             => trans('student.healthـhistory'),
         ]);
 
 
-        CRUD::addField([
-            'name' => 'registration_at',
-            'label' => trans('student.registration_at'),
-        ]);
+
         CRUD::addField([
             'name' => 'student_notes',
             'label' => trans('student.student_notes'),
+            'tab'   => trans('base.more'),
         ]);
 
 

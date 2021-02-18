@@ -39,6 +39,8 @@ class CurriculumCategoryCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
 
 
         CRUD::addColumn([
@@ -47,10 +49,10 @@ class CurriculumCategoryCrudController extends CrudController
         ]);
 
 
-        CRUD::addColumn([
-            'name' => 'created_at',
-            'label' => trans('base.created_at'),
-        ]);
+        // CRUD::addColumn([
+        //     'name' => 'created_at',
+        //     'label' => trans('base.created_at'),
+        // ]);
 
         // CRUD::addColumn([
         //     'name' => 'deleted_at',

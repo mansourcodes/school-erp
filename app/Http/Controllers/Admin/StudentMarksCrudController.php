@@ -40,6 +40,10 @@ class StudentMarksCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
+
+
 
         CRUD::addColumn([
             'name' => 'student_id',
