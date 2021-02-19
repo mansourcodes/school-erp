@@ -133,6 +133,16 @@ class CurriculumCrudController extends CrudController
                 'type' => "relationship",
                 'name' => 'curriculum_category_id', // the method on your model that defines the relationship
                 'ajax' => true,
+                'inline_create' => true,
+                'inline_create' => [
+                    'entity' => 'curriculumcategory',
+                    // 'force_select' => true, // should the inline-created entry be immediately selected?
+                    // 'modal_class' => 'modal-dialog modal-xl', // use modal-sm, modal-lg to change width
+                    // 'modal_route' => route('curriculumCategory-inline-create'), // InlineCreate::getInlineCreateModal()
+                    // 'create_route' =>  route('curriculumCategory-inline-create-save'), // InlineCreate::storeInlineCreate()
+                    // 'include_main_form_fields' => ['field1', 'field2'], // pass certain fields from the main form to the modal
+
+                ],
 
                 // OPTIONALS:
                 'label' => trans('curriculumcategory.curriculumcategory'),

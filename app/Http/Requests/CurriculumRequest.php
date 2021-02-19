@@ -31,7 +31,7 @@ class CurriculumRequest extends FormRequest
             'curriculumـname' => 'required',
             'bookـname' => 'required',
             'weightـinـhours' => 'required',
-            'curriculum_category_id' => 'required',
+            // 'curriculum_category_id' => 'required',
         ];
     }
 
