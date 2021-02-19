@@ -164,16 +164,32 @@ class StudentCrudController extends CrudController
         ]);
 
 
-
         CRUD::addField([
             'name' => 'relationshipـstate',
             'label' => trans('student.relationshipـstate'),
-            'type' => 'enum',
+            'type' => 'select_from_array',
             'wrapper'   => [
                 'class'      => 'col-6'
             ],
+            'options' => [
+                "UNKNOWN" => trans('student.relationshipـstate_options.UNKNOWN'),
+                "SINGLE" => trans('student.relationshipـstate_options.SINGLE'),
+                "MARRIED" => trans('student.relationshipـstate_options.MARRIED')
+            ],
+            'allows_null' => false,
             'tab'   => trans('student.relationshipـstate'),
+            // 'default' => 'one',
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
         ]);
+        // CRUD::addField([
+        //     'name' => 'relationshipـstate',
+        //     'label' => trans('student.relationshipـstate'),
+        //     'type' => 'enum',
+        //     'wrapper'   => [
+        //         'class'      => 'col-6'
+        //     ],
+        //     'tab'   => trans('student.relationshipـstate'),
+        // ]);
         CRUD::addField([
             'name' => 'family_depends',
             'label' => trans('student.family_depends'),
@@ -192,30 +208,66 @@ class StudentCrudController extends CrudController
         ]);
 
 
-
-
-
         CRUD::addField([
             'name' => 'live_inـstate',
             'label' => trans('student.live_inـstate'),
-            'type' => 'enum',
+            'type' => 'select_from_array',
             'wrapper'   => [
                 'class'      => 'col-6'
             ],
+            'options' => [
+                "UNKNOWN" => trans('student.live_inـstate_options.UNKNOWN'),
+                "OWN" => trans('student.live_inـstate_options.OWN'),
+                "RENT" => trans('student.live_inـstate_options.RENT')
+            ],
+            'allows_null' => false,
             'tab'   => trans('student.financialـstate'),
+            // 'default' => 'one',
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
         ]);
+
+
+        // CRUD::addField([
+        //     'name' => 'live_inـstate',
+        //     'label' => trans('student.live_inـstate'),
+        //     'type' => 'enum',
+        //     'wrapper'   => [
+        //         'class'      => 'col-6'
+        //     ],
+        //     'tab'   => trans('student.financialـstate'),
+        // ]);
 
 
 
         CRUD::addField([
             'name' => 'financialـstate',
             'label' => trans('student.financialـstate'),
-            'type' => 'enum',
+            'type' => 'select_from_array',
             'wrapper'   => [
                 'class'      => 'col-6'
             ],
+            'options' => [
+                "UNKNOWN" => trans('student.financialـstate_options.UNKNOWN'),
+                "POOR" => trans('student.financialـstate_options.POOR'),
+                "AVERAGE" => trans('student.financialـstate_options.AVERAGE'),
+                "GOOD" => trans('student.financialـstate_options.GOOD'),
+                "EXCELLENT" => trans('student.financialـstate_options.EXCELLENT')
+            ],
+            'allows_null' => false,
             'tab'   => trans('student.financialـstate'),
+            // 'default' => 'one',
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
         ]);
+
+        // CRUD::addField([
+        //     'name' => 'financialـstate',
+        //     'label' => trans('student.financialـstate'),
+        //     'type' => 'enum',
+        //     'wrapper'   => [
+        //         'class'      => 'col-6'
+        //     ],
+        //     'tab'   => trans('student.financialـstate'),
+        // ]);
 
 
         CRUD::addField([
@@ -261,12 +313,12 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'healthـhistory',
             'label' => trans('student.healthـhistory'),
-            'tab'             => trans('student.healthـhistory'),
+            'tab'   => trans('student.healthـhistory'),
         ]);
         CRUD::addField([
             'name' => 'healthـhistory_details',
             'label' => trans('student.healthـhistory_details'),
-            'tab'             => trans('student.healthـhistory'),
+            'tab'   => trans('student.healthـhistory'),
         ]);
 
 

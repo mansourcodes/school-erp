@@ -33,6 +33,11 @@ return [
 
 
     'relationshipـstate'         => 'الحالة الإجتماعية',
+    'relationshipـstate_options'         => [
+        "UNKNOWN" => 'لم يحدد',
+        "SINGLE" => 'أعزب',
+        "MARRIED" => 'متزوج'
+    ],
 
     'family_depends'         => 'عدد أفراد العائلة',
 
@@ -42,10 +47,22 @@ return [
 
 
     'live_inـstate'         => 'نوع السكن',
+    'live_inـstate_options' => [
+        "UNKNOWN" => 'لم يحدد',
+        "OWN" => 'ملك خاص',
+        "RENT" => 'إيجار'
+    ],
 
     'financial_details'         => 'تفاصيل الحالة المالية',
 
     'financialـstate'         => 'الحالة المالية',
+    'financialـstate_options'         => [
+        "UNKNOWN" => 'لم يحدد',
+        "POOR" => 'ضعيف',
+        "AVERAGE" => 'متوسط',
+        "GOOD" => 'جيد',
+        "EXCELLENT" => 'متمكن',
+    ],
 
 
 
