@@ -23,9 +23,10 @@ class CurriculumFactory extends Factory
     public function definition()
     {
         return [
-            'curriculumـname' => $this->faker->word,
-            'bookـname' => $this->faker->word,
-            'weightـinـhours' => $this->faker->randomNumber(),
+            'curriculumـname' => $this->faker->city,
+            'bookـname' => $this->faker->address,
+            'weightـinـhours' => $this->faker->numberBetween(2, 6),
+            'curriculum_category_id' => $this->faker->numberBetween(1, 10)
         ];
     }
 }

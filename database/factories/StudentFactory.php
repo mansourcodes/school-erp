@@ -22,26 +22,28 @@ class StudentFactory extends Factory
      */
     public function definition()
     {
+
+
         return [
-            'student_name' => $this->faker->word,
-            'cpr' => $this->faker->randomNumber(),
+            'student_name' => $this->faker->name('male'),
+            'cpr' => $this->faker->numerify('##########'),
             'email' => $this->faker->safeEmail,
-            'mobile' => $this->faker->randomNumber(),
-            'mobile2' => $this->faker->randomNumber(),
+            'mobile' => $this->faker->numerify('973########'),
+            'mobile2' => $this->faker->numerify('973########'),
             'dob' => $this->faker->date(),
-            'address' => $this->faker->word,
-            'live_inـstate' => $this->faker->randomElement(["UNKNOWN","OWN","RENT"]),
-            'relationshipـstate' => $this->faker->randomElement(["UNKNOWN","SINGLE","MARRIED","DIVORCED"]),
+            'address' => $this->faker->address,
+            'live_inـstate' => $this->faker->randomElement(["UNKNOWN", "OWN", "RENT"]),
+            'relationshipـstate' => $this->faker->randomElement(["UNKNOWN", "SINGLE", "MARRIED", "DIVORCED"]),
             'family_members' => $this->faker->randomNumber(),
             'family_depends' => $this->faker->randomNumber(),
-            'degree' => $this->faker->word,
+            'degree' => $this->faker->randomElement(["جامعي", "ثانوي", "ماستر", "حوزوي"]),
             'hawzaـhistory' => $this->faker->boolean,
             'hawzaـhistory_details' => $this->faker->text,
             'healthـhistory' => $this->faker->boolean,
-            'healthـhistory_details' => $this->faker->text,
-            'financialـstate' => $this->faker->randomElement(["UNKNOWN","POOR","AVERAGE","GOOD","EXCELLENT"]),
-            'financial_details' => $this->faker->text,
-            'student_notes' => $this->faker->text,
+            'healthـhistory_details' => $this->faker->paragraph(rand(1, 3)),
+            'financialـstate' => $this->faker->randomElement(["UNKNOWN", "POOR", "AVERAGE", "GOOD", "EXCELLENT"]),
+            'financial_details' => $this->faker->paragraph(rand(1, 3)),
+            'student_notes' => $this->faker->paragraph(rand(1, 3)),
             'registration_at' => $this->faker->date(),
         ];
     }

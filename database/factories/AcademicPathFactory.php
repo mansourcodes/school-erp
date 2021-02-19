@@ -23,8 +23,9 @@ class AcademicPathFactory extends Factory
     public function definition()
     {
         return [
-            'academic_path_name' => $this->faker->word,
-            'academic_path_type' => $this->faker->word,
+            'academic_path_name' => $this->faker->company,
+            'academic_path_type' => $this->faker->randomElement(["منتظم", "عن بعد", "دورة", "متقدم"]),
+
         ];
     }
 }

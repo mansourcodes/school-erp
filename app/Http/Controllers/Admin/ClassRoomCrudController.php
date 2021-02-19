@@ -64,6 +64,16 @@ class ClassRoomCrudController extends CrudController
             'label' => trans('classroom.class_room_number'),
         ]);
 
+
+        CRUD::addColumn([
+            // any type of relationship
+            'name'         => 'studentsCount', // name of relationship method in the model
+            'type'         => 'relationship_count',
+            'label'        => trans('student.students'), // Table column heading
+            'suffix' =>  '  ' . trans('student.students_short'), // to show "123 tags" instead of "123 items"
+
+        ],);
+
         CRUD::addColumn([
             // any type of relationship
             'name'         => 'students', // name of relationship method in the model

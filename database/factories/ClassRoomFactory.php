@@ -23,8 +23,9 @@ class ClassRoomFactory extends Factory
     public function definition()
     {
         return [
-            'class_room_name' => $this->faker->word,
-            'class_room_number' => $this->faker->word,
+            'class_room_name' => 'فصل المعلم ' . $this->faker->firstNameMale,
+            'class_room_number' => 'غرفة رقم ' . $this->faker->numberBetween(1, 10),
+            'course_id' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

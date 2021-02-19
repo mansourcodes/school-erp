@@ -37,6 +37,12 @@ class AcademicPath extends Model
         // return $this->hasMany(\App\Models\Curriculum::class);
     }
 
+    public function curriculaCount()
+    {
+        return $this->belongsToMany(\App\Models\Curriculum::class);
+        // return $this->hasMany(\App\Models\Curriculum::class);
+    }
+
     public function courses()
     {
         return $this->hasMany(\App\Models\Course::class);

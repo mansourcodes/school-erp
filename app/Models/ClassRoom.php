@@ -43,4 +43,10 @@ class ClassRoom extends Model
         return $this->belongsToMany(\App\Models\Student::class);
         // return $this->hasMany(\App\Models\Student::class);
     }
+
+    public function studentsCount()
+    {
+        return $this->belongsToMany(\App\Models\Student::class);
+        // return $this->hasMany(\App\Models\Student::class);
+    }
 }

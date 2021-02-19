@@ -46,14 +46,24 @@ class StudentMarksCrudController extends CrudController
 
 
         CRUD::addColumn([
-            'name' => 'student_id',
+            'name' => 'student',
             'label' => trans('student.student_name'),
+            'type'         => 'relationship',
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            'attribute' => 'long_name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
         ]);
 
 
         CRUD::addColumn([
-            'name' => 'course_id',
+            'name' => 'course',
             'label' => trans('course.course'),
+            'type'         => 'relationship',
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            'attribute' => 'long_name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
         ]);
 
         // CRUD::addColumn([
@@ -140,6 +150,7 @@ class StudentMarksCrudController extends CrudController
         CRUD::addField([
             'name' => 'marks',
             'label' => trans('studentmark.marks'),
+
         ]);
 
         /**

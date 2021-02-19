@@ -53,6 +53,15 @@ class AcademicPathCrudController extends CrudController
         ]);
 
 
+        CRUD::addColumn([
+            // any type of relationship
+            'name'         => 'curriculaCount', // name of relationship method in the model
+            'type'         => 'relationship_count',
+            'label'        => trans('curriculum.curricula'), // Table column heading
+            'suffix' =>  '  ' . trans('curriculum.curricula_short'), // to show "123 tags" instead of "123 items"
+
+        ],);
+
 
         CRUD::addColumn([
             // any type of relationship
@@ -64,6 +73,9 @@ class AcademicPathCrudController extends CrudController
             // 'attribute' => 'name', // foreign key attribute that is shown to user
             // 'model'     => App\Models\Category::class, // foreign key model
         ],);
+
+
+
 
         // CRUD::addColumn([
         //     'name' => 'created_at',

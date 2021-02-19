@@ -5,6 +5,7 @@ return [
 
     'student'         => 'الطلاب',
     'students'         => 'الطلاب',
+    'students_short'         => 'طلاب',
 
 
 
