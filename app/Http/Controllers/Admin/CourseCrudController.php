@@ -54,6 +54,11 @@ class CourseCrudController extends CrudController
             // 'entity'    => 'tags', // the method that defines the relationship in your Model
             // 'attribute' => 'name', // foreign key attribute that is shown to user
             // 'model'     => App\Models\Category::class, // foreign key model
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhereHas('academicPath', function ($query) use ($column, $searchTerm) {
+                    $query->where('academic_path_name', 'like', '%' . $searchTerm . '%');
+                });
+            }
         ],);
 
 

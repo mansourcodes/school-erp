@@ -71,6 +71,11 @@ class CurriculumCrudController extends CrudController
             // 'entity'    => 'tags', // the method that defines the relationship in your Model
             // 'attribute' => 'name', // foreign key attribute that is shown to user
             // 'model'     => App\Models\Category::class, // foreign key model
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhereHas('curriculumCategory', function ($query) use ($column, $searchTerm) {
+                    $query->where('categoryـname', 'like', '%' . $searchTerm . '%');
+                });
+            }
         ],);
 
 
