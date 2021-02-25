@@ -19,9 +19,11 @@ Route::get('/', function () {
 
 
 Route::get('/pdf/test2', function () {
-
-    $pdf = PDF::loadView('reports.welcome');
-    return $pdf->stream();
+    $data = [
+        'foo' => 'bar'
+    ];
+    $pdf = PDF::loadView('reports.welcome', $data);
+    return $pdf->stream('document.pdf');
 });
 
 
