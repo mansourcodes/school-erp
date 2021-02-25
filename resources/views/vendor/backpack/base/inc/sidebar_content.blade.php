@@ -33,6 +33,12 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('curriculumcategory') }}'><i class='nav-icon la la-project-diagram'></i> {{__('curriculumcategory.curriculumcategories')}}</a></li>
 
 
+        <li class="nav-title">
+            <hr>
+        </li>
+
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-question'></i> {{__('reportssettings.reportssettings')}}</a></li>
+
 
     </ul>
 </li>

@@ -1,0 +1,5 @@
+models:
+  Models\ReportsSettings:
+    key: string unique
+    type: string
+    value: text nullable
