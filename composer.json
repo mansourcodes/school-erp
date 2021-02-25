@@ -17,7 +17,7 @@
         "backpack/pagemanager": "^3.0",
         "backpack/permissionmanager": "^6.0",
         "backpack/settings": "^3.0",
-        "barryvdh/laravel-dompdf": "^0.9.0",
+        "carlos-meneses/laravel-mpdf": "^2.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -71,5 +71,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/anasbakro/dompdf"
+        }
+    ]
 }
