@@ -14,7 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
+});
+
+
+Route::get('/pdf/test2', function () {
+
+    $pdf = PDF::loadView('reports.welcome');
+    return $pdf->stream();
 });
 
 
@@ -34,4 +41,7 @@ Route::group([
 
     Route::get('course', 'CourseController@index');
     Route::get('course/{id}', 'CourseController@show');
+
+    Route::get('curriculum', 'CurriculumController@index');
+    Route::get('curriculum/{id}', 'CurriculumController@show');
 });

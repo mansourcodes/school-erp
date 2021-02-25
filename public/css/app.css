@@ -10018,3 +10018,9 @@ select {
   -moz-text-align-last: end;
        text-align-last: end;
 }
+
+.container-repeatable-elements button.delete-element {
+  margin-top: -25px;
+  font-family: initial;
+  left: 30px;
+}

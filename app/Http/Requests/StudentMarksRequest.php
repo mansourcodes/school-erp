@@ -30,7 +30,7 @@ class StudentMarksRequest extends FormRequest
 
             'student_id'  => 'required',
             'course_id'  => 'required',
-            'marks'  => 'required',
+            // 'marks'  => 'required',
         ];
     }
 

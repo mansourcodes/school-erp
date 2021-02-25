@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StudentMarksRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use App\Models\StudentMarks;
+use App\Models\Course;
+use App\Models\Curriculum;
 
 /**
  * Class StudentMarksCrudController
@@ -123,6 +127,18 @@ class StudentMarksCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(StudentMarksRequest::class);
+        $curricula_list = [];
+        if ($this->crud->getCurrentEntryId()) {
+
+            $currentStudentMarks = \App\Models\StudentMarks::find($this->crud->getCurrentEntryId());
+
+
+            foreach ($currentStudentMarks->course->academicPath->curricula as $curriculum) {
+                $curricula_list[$curriculum->id] = $curriculum->curriculumـname;
+            }
+
+            // dd($currentStudentMarks->course->academicPath->curricula);
+        }
 
 
 
@@ -165,11 +181,60 @@ class StudentMarksCrudController extends CrudController
         );
 
 
-
         // TODO: create this repeatable field
-        CRUD::addField([
-            'name' => 'marks',
+        CRUD::addField([   // repeatable
+            'name'  => 'marks',
             'label' => trans('studentmark.marks'),
+            'type'  => 'repeatable',
+
+            // optional
+            'new_item_label'  => trans('curriculum.add_a_curriculum'), // customize the text of the button
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
+            'min_rows' => 0, // minimum rows allowed, when reached the "delete" buttons will be hidden
+            'max_rows' => 50, // maximum rows allowed, when reached the "new item" button will be hidden
+
+            'fields' => [
+                [
+
+                    'name'        => 'curriculumـid',
+                    'label'       => trans('curriculum.curriculumـname'),
+                    'type'        => 'select_from_array',
+                    'options'     => $curricula_list,
+                    'allows_null' => false,
+                    // 'default'     => '',
+                    'wrapper' => ['class' => 'form-group col-md-4'],
+                    'hint' => trans('studentmark.curriculum_hint'),
+
+                ],
+
+                [
+                    'name'    => 'total_mark',
+                    'type'    => 'number',
+                    'label'   => trans('studentmark.total_mark'),
+                    'wrapper' => ['class' => 'form-group col-md-4'],
+                    'hint' => trans('studentmark.total_mark_hint'),
+
+                ],
+                [
+                    'name'    => 'final_grade',
+                    'type'    => 'text',
+                    'label'   => trans('studentmark.final_grade'),
+                    'wrapper' => ['class' => 'form-group col-md-4'],
+                    'hint' => trans('studentmark.final_grade_hint'),
+                ],
+                [   // Table
+                    'name'            => 'marks_details',
+                    'label'           => trans('studentmark.marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+            ],
 
         ]);
 
@@ -192,54 +257,11 @@ class StudentMarksCrudController extends CrudController
     }
 
 
-    // /**
-    //  * The search function that is called by the data table.
-    //  *
-    //  * @return array JSON Array of cells in HTML form.
-    //  */
-    // public function search()
-    // {
 
-    //     $this->crud->hasAccessOrFail('list');
+    use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
 
-    //     // add the primary key, even though you don't show it,
-    //     // otherwise the buttons won't work
-    //     $columns = collect($this->crud->columns)->pluck('name')->merge($this->crud->model->getKeyName())->toArray();
-
-    //     // HERE'S WHAT I'VE JUST ADDED
-    //     $this->crud->addClause('with', 'user');
-    //     $this->crud->addClause('with', 'product');
-    //     $this->crud->orderBy('username');
-    //     $columns = $columns->merge(['username', 'products.name']);
-    //     // END OF WHAT I'VE JUST ADDED
-
-    //     // structure the response in a DataTable-friendly way
-    //     $dataTable = new DataTable($this->crud->query, $columns);
-
-    //     // make the datatable use the column types instead of just echoing the text
-    //     $dataTable->setFormatRowFunction(function ($entry) {
-    //         // get the actual HTML for each row's cell
-    //         $row_items = $this->crud->getRowViews($entry, $this->crud);
-
-    //         // add the buttons as the last column
-    //         if ($this->crud->buttons->where('stack', 'line')->count()) {
-    //             $row_items[] = \View::make('crud::inc.button_stack', ['stack' => 'line'])
-    //                 ->with('crud', $this->crud)
-    //                 ->with('entry', $entry)
-    //                 ->render();
-    //         }
-
-    //         // add the details_row buttons as the first column
-    //         if ($this->crud->details_row) {
-    //             array_unshift($row_items, \View::make('crud::columns.details_row_button')
-    //                 ->with('crud', $this->crud)
-    //                 ->with('entry', $entry)
-    //                 ->render());
-    //         }
-
-    //         return $row_items;
-    //     });
-
-    //     return $dataTable->make();
-    // }
+    public function fetchCurriculum()
+    {
+        return $this->fetch(\App\Models\Curriculum::class);
+    }
 }
