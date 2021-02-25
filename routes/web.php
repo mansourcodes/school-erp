@@ -18,16 +18,40 @@ Route::get('/', function () {
 });
 
 
-Route::get('/pdf/test2', function () {
-    $data = [
-        'foo' => 'bar'
-    ];
-    $pdf = PDF::loadView('reports.welcome', $data);
-    return $pdf->stream('document.pdf');
+/*
+|--------------------------------------------------------------------------
+| admin Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group([
+    'prefix'     => config('backpack.base.route_prefix', 'admin'),
+    'middleware' => array_merge(
+        (array) config('backpack.base.web_middleware', 'web'),
+        (array) config('backpack.base.middleware_key', 'admin')
+    ),
+    'namespace'  => 'App\Http\Controllers\Admin',
+], function () { // custom admin routes
+
+
+    Route::get('reports', 'AcademiaReportsController@index');
+
+
+    Route::get('/pdf/test2', function () {
+        $data = [
+            'foo' => 'bar'
+        ];
+        $pdf = PDF::loadView('reports.welcome', $data);
+        return $pdf->stream('document.pdf');
+    });
 });
 
 
-
+/*
+|--------------------------------------------------------------------------
+| Api Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::group([
     'prefix'     => 'api',
@@ -36,7 +60,7 @@ Route::group([
         (array) config('backpack.base.middleware_key', 'admin')
     ),
     'namespace'  => 'App\Http\Controllers\Api',
-], function () { // custom admin routes
+], function () { // api routes
 
     Route::get('student', 'StudentController@index');
     Route::get('student/{id}', 'StudentController@show');

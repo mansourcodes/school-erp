@@ -12,6 +12,15 @@
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-school"></i> {{__('academicpath.academicpaths')}}</a>
     <ul class="nav-dropdown-items">
 
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('reports') }}"><i class="la la-print nav-icon"></i> {{__('reportssettings.reports')}}</a></li>
+
+
+        <li class="nav-title">
+            <hr>
+        </li>
+
+
+
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('classroom') }}'><i class='nav-icon la la-chalkboard-teacher'></i> {{ __('classroom.classrooms')}}</a></li>
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('studentmarks') }}'><i class='nav-icon la la-certificate'></i> {{__('studentmark.studentsmarks')}}</a></li>
@@ -37,7 +46,7 @@
             <hr>
         </li>
 
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-question'></i> {{__('reportssettings.reportssettings')}}</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-cog'></i> {{__('reportssettings.reportssettings')}}</a></li>
 
 
     </ul>
