@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Helpers\FormBuilderHelper;
 use Illuminate\Http\Request;
+use PDF;
 
 class AcademiaReportsController extends Controller
 {
@@ -16,14 +17,22 @@ class AcademiaReportsController extends Controller
     {
         $data = [
             [
+                'id' => 'transcript',
                 'title' => 'our title',
-                'action' => 'trap',
+                'open' => [
+                    'route' => 'reports/transcript',
+                    'method' => 'get',
+                ],
                 'fields' => [
                     [
                         'name' => 'course',
                         'type' => 'list',
                         'options' =>  [1 => 'a', 2 => 'b'],
-                    ]
+                    ],
+                    [
+                        'name' => 'note',
+                        'type' => 'text',
+                    ],
                 ],
             ],
         ];
@@ -35,5 +44,16 @@ class AcademiaReportsController extends Controller
         return view('reports.index', [
             'formList' => $formList
         ]);
+    }
+
+
+    public function transcript()
+    {
+
+        $data = [
+            'foo' => 'bar'
+        ];
+        $pdf = PDF::loadView('reports.transcript', $data);
+        return $pdf->stream();
     }
 }

@@ -36,6 +36,8 @@ Route::group([
 
     Route::get('reports', 'AcademiaReportsController@index');
 
+    Route::get('reports/transcript', 'AcademiaReportsController@transcript')->name('reports/transcript');
+
 
     Route::get('/pdf/test2', function () {
         $data = [

@@ -175,7 +175,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class
+        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+
 
 
     ],
@@ -230,8 +232,10 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class
+        'PDF' => Meneses\LaravelMpdf\Facades\LaravelMpdf::class,
 
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
     ],
 
 ];
