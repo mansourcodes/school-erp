@@ -42,4 +42,38 @@ class StudentMarks extends Model
         return $this->belongsTo(\App\Models\Course::class);
         // return $this->hasOne(\App\Models\Course::class);
     }
+
+
+
+    public function getPrintDropdown()
+    {
+
+        // TODO: list the print
+        $list = [
+            [
+                'label' => 'reports/transcript',
+                'url' => backpack_url('reports/transcript/' . $this->id),
+            ],
+        ];
+
+        $links = [];
+        foreach ($list as $key => $value) {
+            $links[] = '<a class="dropdown-item" href="' . $value['url']   . '">' . $value['label'] . '</a>';
+        }
+
+        $html = '<div class="btn-group">
+        <div class="dropdown">
+          <button class="btn btn-primary btn-sm dropdown-toggle" id="dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="la la-print"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+
+                    ' . implode('', $links) . '
+
+          </div>
+        </div>
+      </div>';
+
+        return $html;
+    }
 }

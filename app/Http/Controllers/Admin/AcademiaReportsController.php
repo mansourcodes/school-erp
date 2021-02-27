@@ -9,42 +9,42 @@ use PDF;
 
 class AcademiaReportsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     */
-    public function index()
-    {
-        $data = [
-            [
-                'id' => 'transcript',
-                'title' => 'our title',
-                'open' => [
-                    'route' => 'reports/transcript',
-                    'method' => 'get',
-                ],
-                'fields' => [
-                    [
-                        'name' => 'course',
-                        'type' => 'list',
-                        'options' =>  [1 => 'a', 2 => 'b'],
-                    ],
-                    [
-                        'name' => 'note',
-                        'type' => 'text',
-                    ],
-                ],
-            ],
-        ];
-        $formList = [];
-        foreach ($data as $form) {
-            $formList[] = new FormBuilderHelper($form);
-        }
+    // /**
+    //  * Display a listing of the resource.
+    //  *
+    //  */
+    // public function index()
+    // {
+    //     $data = [
+    //         [
+    //             'id' => 'transcript',
+    //             'title' => 'our title',
+    //             'open' => [
+    //                 'route' => 'reports/transcript',
+    //                 'method' => 'get',
+    //             ],
+    //             'fields' => [
+    //                 [
+    //                     'name' => 'course',
+    //                     'type' => 'list',
+    //                     'options' =>  [1 => 'a', 2 => 'b'],
+    //                 ],
+    //                 [
+    //                     'name' => 'note',
+    //                     'type' => 'text',
+    //                 ],
+    //             ],
+    //         ],
+    //     ];
+    //     $formList = [];
+    //     foreach ($data as $form) {
+    //         $formList[] = new FormBuilderHelper($form);
+    //     }
 
-        return view('reports.index', [
-            'formList' => $formList
-        ]);
-    }
+    //     return view('reports.index', [
+    //         'formList' => $formList
+    //     ]);
+    // }
 
 
     public function transcript()
@@ -53,6 +53,9 @@ class AcademiaReportsController extends Controller
         $data = [
             'foo' => 'bar'
         ];
+
+        return view('reports.transcript', $data);
+
         $pdf = PDF::loadView('reports.transcript', $data);
         return $pdf->stream();
     }

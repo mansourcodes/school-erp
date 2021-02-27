@@ -23,7 +23,7 @@ class StudentMarksCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
 
     /**
@@ -95,11 +95,11 @@ class StudentMarksCrudController extends CrudController
         //     'label' => trans('studentmark.marks'),
         // ]);
 
-        CRUD::addColumn([
-            'name' => 'created_at',
-            'label' => trans('base.created_at'),
-            'type' => 'date'
-        ]);
+        // CRUD::addColumn([
+        //     'name' => 'created_at',
+        //     'label' => trans('base.created_at'),
+        //     'type' => 'date'
+        // ]);
 
         // CRUD::addColumn([
         //     'name' => 'deleted_at',
@@ -116,6 +116,10 @@ class StudentMarksCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
+        $this->crud->setActionsColumnPriority(0);
+
+        // $this->crud->addButtonFromModelFunction('line', 'print', StudentMarks::getPrintDropdown(1));
+        $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
     }
 
     /**

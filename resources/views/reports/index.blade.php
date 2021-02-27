@@ -16,7 +16,6 @@ $widgets['after_content'][] = [
 
 
 <?php
-// TODO: build forms
 foreach ($formList as $singleForm) :
 ?>
 
