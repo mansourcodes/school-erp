@@ -254,6 +254,51 @@ class StudentMarksCrudController extends CrudController
                     'hint' => trans('studentmark.final_grade_hint'),
                 ],
 
+                [   // CustomHTML
+                    'name'  => 'separator',
+                    'type'  => 'custom_html',
+                    'value' => trans('studentmark.marks_table_hint')
+                ],
+
+                [   // Table
+                    'name'            => 'finalexam_mark_details',
+                    'label'           => trans('studentmark.finalexam_mark_details'),
+                    'type'            => 'table',
+
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 1, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'midexam_marks_details',
+                    'label'           => trans('studentmark.midexam_marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 5, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'class_mark_details',
+                    'label'           => trans('studentmark.class_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 1, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
 
                 [   // Table
                     'name'            => 'marks_details',
@@ -267,6 +312,34 @@ class StudentMarksCrudController extends CrudController
                     'max' => 20, // maximum rows allowed in the table
                     'min' => 0, // minimum rows allowed in the table
                 ],
+
+                [   // Table
+                    'name'            => 'project_marks_details',
+                    'label'           => trans('studentmark.project_marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'practice_mark_details',
+                    'label'           => trans('studentmark.practice_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('studentmark.marks_details_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+
             ],
 
         ]);
