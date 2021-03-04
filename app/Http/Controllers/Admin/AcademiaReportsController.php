@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\ReportsSettings;
 use App\Models\Curriculum;
 use App\Models\StudentMarks;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -80,22 +81,22 @@ class AcademiaReportsController extends Controller
     private function reportTranscript(Request $request)
     {
 
-        $studentmarks = $request->input('studentmarks');
-        $classroom = $request->input('classroom');
-        $course = $request->input('course');
+        $studentmarks_id = $request->input('studentmarks');
+        $classroom_id = $request->input('classroom');
+        $course_id = $request->input('course');
         $counter = 0;
-        if ($studentmarks) {
+        if ($studentmarks_id) {
 
-            $data['studentmarks'][$counter] = StudentMarks::find($studentmarks);
+            $data['studentmarks'][$counter] = StudentMarks::find($studentmarks_id);
             foreach ($data['studentmarks'][$counter]->marks as $mark_key => $mark) {
                 if (!isset($data['curriculums'][(int)$mark['curriculumـid']])) {
                     $data['curriculums'][(int)$mark['curriculumـid']]  = Curriculum::find((int)$mark['curriculumـid']);
                 }
             }
-        } elseif ($classroom) {
+        } elseif ($classroom_id) {
 
 
-            $classroom = ClassRoom::find($classroom);
+            $classroom = ClassRoom::find($classroom_id);
 
             $student_ids_array = $classroom->students->pluck('id')->toArray();
             $data['studentmarks'] = StudentMarks::whereIn('student_id', $student_ids_array)->where('course_id', $classroom->course->id)->get();
@@ -113,9 +114,9 @@ class AcademiaReportsController extends Controller
                     }
                 }
             }
-        } elseif ($course) {
+        } elseif ($course_id) {
 
-            $course = Course::find($course);
+            $course = Course::find($course_id);
 
 
             $classroom_ids_array = $course->classRooms->pluck('id')->toArray();
@@ -156,6 +157,70 @@ class AcademiaReportsController extends Controller
 
     function reportStudentEduStatement(Request $request)
     {
-        return $this->reportTranscript($request);
+
+        $studentmarks_id = $request->input('studentmarks');
+        $classroom_id = $request->input('classroom');
+        // $course_id = $request->input('course');
+        $counter = 0;
+        if ($studentmarks_id) {
+
+            $data['studentmarks'][0] = StudentMarks::find($studentmarks_id);
+            foreach ($data['studentmarks'][0]->marks as $mark_key => $mark) {
+                if (!isset($data['curriculums'][(int)$mark['curriculumـid']])) {
+                    $data['curriculums'][(int)$mark['curriculumـid']]  = Curriculum::find((int)$mark['curriculumـid']);
+                }
+            }
+
+            $classroom = ClassRoom::whereHas('students', function (Builder $query) use ($data) {
+                $query->where('id', $data['studentmarks'][0]->student->id);
+            })
+                ->where('course_id', $data['studentmarks'][0]->course->id)->first();
+
+            foreach ($classroom->teachers as $teacher) {
+                # code...
+                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+            }
+        } elseif ($classroom_id) {
+
+
+            $classroom = ClassRoom::find($classroom_id);
+
+            $student_ids_array = $classroom->students->pluck('id')->toArray();
+            $data['studentmarks'] = StudentMarks::whereIn('student_id', $student_ids_array)->where('course_id', $classroom->course->id)->get();
+
+            $data['curriculums'] = [];
+
+            foreach ($data['studentmarks'] as $studentmark) {
+                if ($studentmark->marks === null) {
+                    $studentmark->marks = [];
+                }
+
+                foreach ($studentmark->marks as $mark_key => $mark) {
+                    if (!isset($data['curriculums'][(int)$mark['curriculumـid']])) {
+                        $data['curriculums'][(int)$mark['curriculumـid']]  = Curriculum::find((int)$mark['curriculumـid']);
+                    }
+                }
+            }
+
+            foreach ($classroom->teachers as $teacher) {
+                # code...
+                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+            }
+        }
+
+
+        foreach ($data['studentmarks'] as $studentmarks) {
+            # code...
+
+
+            foreach ($classroom->teachers as $teacher) {
+                # code...
+                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+            }
+        }
+
+        // dd($data['curriculums']);
+
+        return $data;
     }
 }

@@ -20,6 +20,7 @@ class ClassRoom extends Model
         'class_room_name',
         'class_room_number',
         'course_id',
+        'teachers',
     ];
 
     /**
@@ -29,6 +30,7 @@ class ClassRoom extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'teachers' => 'array',
     ];
 
 
@@ -58,6 +60,10 @@ class ClassRoom extends Model
             [
                 'label' => trans('reports.transcript'),
                 'url' => backpack_url('reports?view=transcript&classroom=' . $this->id),
+            ],
+            [
+                'label' => trans('reports.student_edu_statement'),
+                'url' => backpack_url('reports?view=student_edu_statement&classroom=' . $this->id),
             ],
         ];
 

@@ -100,6 +100,20 @@ class ClassRoomCrudController extends CrudController
         //     'label' => trans('base.updated_at'),
         // ]);
 
+        // select2_ajax filter
+        $this->crud->addFilter(
+            [
+                'name'        => 'course_filter',
+                'type'        => 'select2_ajax',
+                'label'       => trans('course.course'),
+                'placeholder' => trans('course.course')
+            ],
+            url('api/course'), // the ajax route
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'course_id', $value);
+            }
+        );
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -182,5 +196,47 @@ class ClassRoomCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+
+        $curricula_list = [];
+        $currentClassRoom = \App\Models\ClassRoom::find($this->crud->getCurrentEntryId());
+        foreach ($currentClassRoom->course->academicPath->curricula as $curriculum) {
+            $curricula_list[$curriculum->id] = $curriculum->curriculumـname;
+        }
+
+
+        CRUD::addField([   // repeatable
+            'name'  => 'teachers',
+            'label' => trans('classroom.teachers'),
+            'type'  => 'repeatable',
+
+            // optional
+            'new_item_label'  => trans('classroom.teacher'), // customize the text of the button
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
+            'min_rows' => 0, // minimum rows allowed, when reached the "delete" buttons will be hidden
+            'max_rows' => 50, // maximum rows allowed, when reached the "new item" button will be hidden
+
+            'fields' => [
+                [
+
+                    'name'        => 'curriculumـid',
+                    'label'       => trans('curriculum.curriculumـname'),
+                    'type'        => 'select_from_array',
+                    'options'     => $curricula_list,
+                    'allows_null' => false,
+                    // 'default'     => '',
+                    'wrapper' => ['class' => 'form-group col-md-6'],
+                    'hint' => trans('studentmark.curriculum_hint'),
+
+                ],
+                [
+                    'name'    => 'teacher_name',
+                    'type'    => 'text',
+                    'label'   => trans('classroom.teacher_name'),
+                    'wrapper' => ['class' => 'form-group col-md-6'],
+                ],
+
+            ],
+
+        ]);
     }
 }

@@ -70,10 +70,6 @@ class Course extends Model
                 'label' => trans('reports.transcript'),
                 'url' => backpack_url('reports?view=transcript&course=' . $this->id),
             ],
-            [
-                'label' => trans('reports.student_edu_statement'),
-                'url' => backpack_url('reports?view=student_edu_statement&course=' . $this->id),
-            ],
         ];
 
         $links = [];

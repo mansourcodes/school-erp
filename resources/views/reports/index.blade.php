@@ -46,7 +46,7 @@ foreach ($formList as $singleForm) :
                 <div class="btn-group pull-end">
                     <button class="btn btn-success" type="button"><i class="la la-print "></i></button>
                     <button class="btn btn-success dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">Toggle Dropdown</span></button>
-                    <div class="dropdown-menu" style=""><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-menu"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a>
                         <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Separated link</a>
                     </div>
                 </div>

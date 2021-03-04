@@ -88,6 +88,8 @@
             </td>
 
             <td>
+                {{$curriculums[$subject_mark['curriculumـid']]->teacher_name}}
+
             </td>
             <td>
                 {{$curriculums[$subject_mark['curriculumـid']]->weightـinـhours}}

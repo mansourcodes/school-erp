@@ -122,9 +122,6 @@ class StudentMarksCrudController extends CrudController
             ],
             url('api/course'), // the ajax route
             function ($value) { // if the filter is active
-
-
-
                 $this->crud->addClause('where', 'course_id', $value);
             }
         );
@@ -149,18 +146,7 @@ class StudentMarksCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(StudentMarksRequest::class);
-        $curricula_list = [];
-        if ($this->crud->getCurrentEntryId()) {
 
-            $currentStudentMarks = \App\Models\StudentMarks::find($this->crud->getCurrentEntryId());
-
-
-            foreach ($currentStudentMarks->course->academicPath->curricula as $curriculum) {
-                $curricula_list[$curriculum->id] = $curriculum->curriculumـname;
-            }
-
-            // dd($currentStudentMarks->course->academicPath->curricula);
-        }
 
 
 
@@ -202,6 +188,31 @@ class StudentMarksCrudController extends CrudController
             ],
         );
 
+
+
+
+        /**
+         * Fields can be defined using the fluent syntax or array syntax:
+         * - CRUD::field('price')->type('number');
+         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
+         */
+    }
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     *
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
+
+        $curricula_list = [];
+        $currentStudentMarks = \App\Models\StudentMarks::find($this->crud->getCurrentEntryId());
+        foreach ($currentStudentMarks->course->academicPath->curricula as $curriculum) {
+            $curricula_list[$curriculum->id] = $curriculum->curriculumـname;
+        }
 
         CRUD::addField([   // repeatable
             'name'  => 'marks',
@@ -259,23 +270,6 @@ class StudentMarksCrudController extends CrudController
             ],
 
         ]);
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
-    }
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    protected function setupUpdateOperation()
-    {
-        $this->setupCreateOperation();
     }
 
 
