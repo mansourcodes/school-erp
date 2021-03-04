@@ -6,10 +6,10 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['transcript.title']['value']}}</h2>
+    <h2 class="text-center">{{$settings['transcript.title']['value'] ?? __('reports.transcript')}}</h2>
 
 
-    {!! $settings['transcript.pre']['value'] !!}
+    {!! $settings['transcript.pre']['value'] ?? '' !!}
 
 
     <table class="table">
@@ -79,7 +79,7 @@
 
     </table>
 
-    {!! $settings['transcript.pro']['value'] !!}
+    {!! $settings['transcript.pro']['value'] ?? '' !!}
 
 </div>
 <div class="new-page"></div>

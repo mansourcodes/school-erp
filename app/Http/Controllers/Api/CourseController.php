@@ -15,12 +15,20 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
+
+
         $search_term = $request->input('q');
-
-
-        // 'academic_path_id',
-
-        if ($search_term) {
+        $term = $request->input('term');
+        if ($term) {
+            $results = Course::where('course_year', 'LIKE', '%' . $search_term . '%')
+                ->orWhere('hijri_year', 'LIKE', '%' . $search_term . '%')
+                ->orWhere('semester', 'LIKE', '%' . $search_term . '%')
+                ->orWhere('duration', 'LIKE', '%' . $search_term . '%')
+                // ->orWhere('address', 'LIKE', '%' . $search_term . '%')
+                ->orWhereHas('academicPath', function ($query) use ($search_term) {
+                    $query->where('academic_paths.academic_path_name', 'like', '%' . $search_term . '%');
+                })->get()->pluck('long_name', 'id');;
+        } elseif ($search_term) {
             $results = Course::where('course_year', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('hijri_year', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('semester', 'LIKE', '%' . $search_term . '%')
@@ -36,6 +44,9 @@ class CourseController extends Controller
 
         return $results;
     }
+
+
+
 
     /**
      * Store a newly created resource in storage.

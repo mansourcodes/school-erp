@@ -148,7 +148,6 @@ class CurriculumCrudController extends CrudController
                     // 'include_main_form_fields' => ['field1', 'field2'], // pass certain fields from the main form to the modal
 
                 ],
-
                 // OPTIONALS:
                 'label' => trans('curriculumcategory.curriculumcategory'),
                 'attribute' => "categoryـname", // foreign key attribute that is shown to user (identifiable attribute)

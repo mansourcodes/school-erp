@@ -111,6 +111,24 @@ class StudentMarksCrudController extends CrudController
         //     'label' => trans('base.updated_at'),
         // ]);
 
+
+        // select2_ajax filter
+        $this->crud->addFilter(
+            [
+                'name'        => 'course_filter',
+                'type'        => 'select2_ajax',
+                'label'       => trans('course.course'),
+                'placeholder' => trans('course.course')
+            ],
+            url('api/course'), // the ajax route
+            function ($value) { // if the filter is active
+
+
+
+                $this->crud->addClause('where', 'course_id', $value);
+            }
+        );
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -209,7 +227,6 @@ class StudentMarksCrudController extends CrudController
                     'hint' => trans('studentmark.curriculum_hint'),
 
                 ],
-
                 [
                     'name'    => 'total_mark',
                     'type'    => 'number',
@@ -225,6 +242,8 @@ class StudentMarksCrudController extends CrudController
                     'wrapper' => ['class' => 'form-group col-md-4'],
                     'hint' => trans('studentmark.final_grade_hint'),
                 ],
+
+
                 [   // Table
                     'name'            => 'marks_details',
                     'label'           => trans('studentmark.marks_details'),

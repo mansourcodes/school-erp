@@ -52,10 +52,15 @@
             table.table th {
                 border: 1px solid black !important;
             }
+
+            table.table.table-no-border td,
+            table.table.table-no-border th {
+                border: 0 solid black !important;
+            }
         </style>
 
         <script>
-            window.print();
+            // window.print();
 
             function printPage() {
                 window.print();

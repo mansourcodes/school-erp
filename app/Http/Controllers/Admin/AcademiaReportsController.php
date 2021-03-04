@@ -10,6 +10,8 @@ use App\Models\ReportsSettings;
 use App\Models\Curriculum;
 use App\Models\StudentMarks;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 use PDF;
 
 class AcademiaReportsController extends Controller
@@ -58,7 +60,7 @@ class AcademiaReportsController extends Controller
     {
 
         $view = $request->input('view');
-        $function = 'report' . ucfirst($view);
+        $function =  Str::camel('report_' . $view);
         $data = $this->{$function}($request);
 
         $data['settings'] = ReportsSettings::where('key', 'like', $view . '.%')->get()->keyBy('key');
@@ -146,6 +148,14 @@ class AcademiaReportsController extends Controller
             }
         }
 
+
         return $data;
+    }
+
+
+
+    function reportStudentEduStatement(Request $request)
+    {
+        return $this->reportTranscript($request);
     }
 }

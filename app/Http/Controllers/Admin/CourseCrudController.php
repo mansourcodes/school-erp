@@ -98,6 +98,43 @@ class CourseCrudController extends CrudController
         //     'label' => trans('base.updated_at'),
         // ]);
 
+        $this->crud->addFilter(
+            [
+                'type'  => 'text',
+                'name'  => 'course_year_filter',
+                'label' => trans('course.course_year')
+            ],
+            false,
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'course_year', 'LIKE', "%$value%");
+            }
+        );
+
+        $this->crud->addFilter(
+            [
+                'type'  => 'text',
+                'name'  => 'hijri_year_filter',
+                'label' => trans('course.hijri_year')
+            ],
+            false,
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'hijri_year', 'LIKE', "%$value%");
+            }
+        );
+
+        $this->crud->addFilter(
+            [
+                'type'  => 'text',
+                'name'  => 'semester_filter',
+                'label' => trans('course.semester')
+            ],
+            false,
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'semester', 'LIKE', "%$value%");
+            }
+        );
+
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
