@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HtmlHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -64,7 +65,6 @@ class Course extends Model
     public function getPrintDropdown()
     {
 
-        // TODO: list the print
         $list = [
             [
                 'label' => trans('reports.transcript'),
@@ -72,23 +72,9 @@ class Course extends Model
             ],
         ];
 
-        $links = [];
-        foreach ($list as $key => $value) {
-            $links[] = '<a class="dropdown-item" href="' . $value['url']   . '">' . $value['label'] . '</a>';
-        }
 
-        $html = '<div class="btn-group">
-        <div class="dropdown">
-          <button class="btn btn-primary btn-sm dropdown-toggle" id="dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="la la-print"></i>
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+        $html = HtmlHelper::dropdownMenuButton($list);
 
-                    ' . implode('', $links) . '
-
-          </div>
-        </div>
-      </div>';
 
         return $html;
     }
