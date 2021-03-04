@@ -59,4 +59,37 @@ class Course extends Model
             return $this->academicPath->academic_path_name . " [" . $this->course_year . "] " . $this->hijri_year . " [" . $this->semester  . "]";
         }
     }
+
+
+    public function getPrintDropdown()
+    {
+
+        // TODO: list the print
+        $list = [
+            [
+                'label' => trans('reports.transcript'),
+                'url' => backpack_url('reports?view=transcript&course=' . $this->id),
+            ],
+        ];
+
+        $links = [];
+        foreach ($list as $key => $value) {
+            $links[] = '<a class="dropdown-item" href="' . $value['url']   . '">' . $value['label'] . '</a>';
+        }
+
+        $html = '<div class="btn-group">
+        <div class="dropdown">
+          <button class="btn btn-primary btn-sm dropdown-toggle" id="dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="la la-print"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+
+                    ' . implode('', $links) . '
+
+          </div>
+        </div>
+      </div>';
+
+        return $html;
+    }
 }

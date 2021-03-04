@@ -33,19 +33,7 @@ Route::group([
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
 
-
-    Route::get('reports', 'AcademiaReportsController@index');
-
-    Route::get('reports/transcript', 'AcademiaReportsController@transcript')->name('reports/transcript');
-
-
-    Route::get('/pdf/test2', function () {
-        $data = [
-            'foo' => 'bar'
-        ];
-        $pdf = PDF::loadView('reports.welcome', $data);
-        return $pdf->stream('document.pdf');
-    });
+    Route::get('reports', 'AcademiaReportsController@print');
 });
 
 

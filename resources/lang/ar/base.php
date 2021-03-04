@@ -20,6 +20,7 @@ return [
     'Backups'         => 'نسخة احتياطية',
 
     'academicManagment'   => 'إدارة المناهج',
+    'academicRegistration'   => 'إدارة التسجيل',
     'systemManagment'   => 'إدارة النظام',
 
 

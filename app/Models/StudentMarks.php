@@ -28,6 +28,7 @@ class StudentMarks extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'marks' => 'array',
     ];
 
 
@@ -51,8 +52,8 @@ class StudentMarks extends Model
         // TODO: list the print
         $list = [
             [
-                'label' => 'reports/transcript',
-                'url' => backpack_url('reports/transcript/' . $this->id),
+                'label' => trans('reports.transcript'),
+                'url' => backpack_url('reports?view=transcript&studentmarks=' . $this->id),
             ],
         ];
 
