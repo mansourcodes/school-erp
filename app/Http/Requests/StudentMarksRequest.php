@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StudentMarksRequest extends FormRequest
 {
@@ -28,7 +29,11 @@ class StudentMarksRequest extends FormRequest
         return [
             // 'name' => 'required|min:5|max:255'
 
-            'student_id'  => 'required',
+            'student_id'  => [
+                'required',
+                Rule::unique('student_marks')
+                    ->where('course_id', $this->course_id)
+            ],
             'course_id'  => 'required',
             // 'marks'  => 'required',
         ];
@@ -43,6 +48,9 @@ class StudentMarksRequest extends FormRequest
     {
         return [
             //
+            'student_id'                  => 'الطالب',
+            'course_id'                  => ' الدورة',
+
         ];
     }
 
@@ -55,6 +63,7 @@ class StudentMarksRequest extends FormRequest
     {
         return [
             //
+            'unique' => trans('studentmark.unique'),
         ];
     }
 }

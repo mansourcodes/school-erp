@@ -106,6 +106,7 @@ class StudentMarksCrudController extends CrudController
             ],
         );
 
+
         // CRUD::addColumn([
         //     'name' => 'marks',
         //     'label' => trans('studentmark.marks'),
@@ -139,6 +140,28 @@ class StudentMarksCrudController extends CrudController
             url('api/course'), // the ajax route
             function ($value) { // if the filter is active
                 $this->crud->addClause('where', 'course_id', $value);
+            }
+        );
+
+
+
+        $this->crud->addFilter(
+            [
+                'name'       => 'total_mark_range',
+                'type'       => 'range',
+                'label'      => trans('studentmark.total_mark'),
+                'label_from' => '',
+                'label_to'   => ''
+            ],
+            false,
+            function ($value) { // if the filter is active
+                $range = json_decode($value);
+                if ($range->from) {
+                    $this->crud->addClause('where', 'total_mark', '>=', (float) $range->from);
+                }
+                if ($range->to) {
+                    $this->crud->addClause('where', 'total_mark', '<=', (float) $range->to);
+                }
             }
         );
 
