@@ -223,4 +223,10 @@ class AcademiaReportsController extends Controller
 
         return $data;
     }
+
+
+    function reportStudentCoursesTranscript(Request $request)
+    {
+        return $this->reportStudentEduStatement($request);
+    }
 }

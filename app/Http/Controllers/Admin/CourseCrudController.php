@@ -83,6 +83,7 @@ class CourseCrudController extends CrudController
 
 
 
+
         // CRUD::addColumn([
         //     'name' => 'created_at',
         //     'label' => trans('base.created_at'),
@@ -153,22 +154,6 @@ class CourseCrudController extends CrudController
     {
         CRUD::setValidation(CourseRequest::class);
 
-        CRUD::addField([
-            'name' => 'course_year',
-            'label' => trans('course.course_year'),
-        ]);
-        CRUD::addField([
-            'name' => 'hijri_year',
-            'label' => trans('course.hijri_year'),
-        ]);
-        CRUD::addField([
-            'name' => 'semester',
-            'label' => trans('course.semester'),
-        ]);
-        CRUD::addField([
-            'name' => 'duration',
-            'label' => trans('course.duration'),
-        ]);
         CRUD::addField(
             [
                 // relationship
@@ -189,6 +174,51 @@ class CourseCrudController extends CrudController
                 // 'dependencies'         => ['academicpath'], // when a dependency changes, this select2 is reset to null
                 // 'include_all_form_fields'  => true, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
             ]
+        );
+
+
+        CRUD::addField([
+            'name' => 'course_year',
+            'label' => trans('course.course_year'),
+            'wrapper' => ['class' => 'form-group col-md-4'],
+        ]);
+        CRUD::addField([
+            'name' => 'hijri_year',
+            'label' => trans('course.hijri_year'),
+            'wrapper' => ['class' => 'form-group col-md-4'],
+        ]);
+        CRUD::addField([
+            'name' => 'semester',
+            'label' => trans('course.semester'),
+            'wrapper' => ['class' => 'form-group col-md-4'],
+        ]);
+        CRUD::addField([
+            'name' => 'duration',
+            'label' => trans('course.duration'),
+        ]);
+
+
+
+
+        CRUD::addField(
+            [   // 1-n relationship
+                'label'       => trans('course.course_root_id'), // Table column heading
+                'type'        => "select2_from_ajax",
+                'name'        => 'course_root_id', // the column that contains the ID of that connected entity
+                'entity'      => 'courseRootId', // the method that defines the relationship in your Model
+                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'data_source' => url("api/course"), // url to controller search function (with /{id} should return model)
+
+                // OPTIONAL
+                'placeholder'             => "Select a course", // placeholder for the select
+                'minimum_input_length'    => 1, // minimum characters to type before querying results
+                // 'model'                   => "App\Models\Category", // foreign key model
+                // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
+                // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                'tab'   => trans('course.course_root_id'),
+
+            ],
         );
 
         /**

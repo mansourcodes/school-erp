@@ -23,6 +23,7 @@ class Course extends Model
         'semester',
         'duration',
         'academic_path_id',
+        'course_root_id',
     ];
 
     /**
@@ -45,10 +46,17 @@ class Course extends Model
         // return $this->hasOne(\App\Models\AcademicPath::class);
     }
 
+
     public function classRooms()
     {
         return $this->hasMany(\App\Models\ClassRoom::class);
         // return $this->belongsToMany(\App\Models\ClassRoom::class);
+    }
+
+
+    public function courseRootId()
+    {
+        return $this->belongsTo(\App\Models\Course::class, 'course_root_id');
     }
 
     public function getLongNameAttribute()

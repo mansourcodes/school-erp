@@ -59,6 +59,10 @@ class StudentMarks extends Model
                 'label' => trans('reports.student_edu_statement'),
                 'url' => backpack_url('reports?view=student_edu_statement&studentmarks=' . $this->id),
             ],
+            [
+                'label' => trans('reports.student_courses_transcript'),
+                'url' => backpack_url('reports?view=student_courses_transcript&studentmarks=' . $this->id),
+            ],
         ];
 
 
