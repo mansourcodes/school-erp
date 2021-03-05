@@ -90,6 +90,22 @@ class StudentMarksCrudController extends CrudController
             }
         ]);
 
+        CRUD::addColumn(
+            [
+                'name'    => 'total_mark',
+                'type'    => 'number',
+                'label'   => trans('studentmark.total_mark'),
+
+            ]
+        );
+        CRUD::addColumn(
+            [
+                'name'    => 'final_grade',
+                'type'    => 'text',
+                'label'   => trans('studentmark.final_grade'),
+            ],
+        );
+
         // CRUD::addColumn([
         //     'name' => 'marks',
         //     'label' => trans('studentmark.marks'),
@@ -185,6 +201,25 @@ class StudentMarksCrudController extends CrudController
                 // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
                 // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
                 // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+            ],
+        );
+        CRUD::addField(
+            [
+                'name'    => 'total_mark',
+                'type'    => 'number',
+                'label'   => trans('studentmark.total_mark'),
+                'wrapper' => ['class' => 'form-group col-md-6'],
+                'hint' => trans('studentmark.total_mark_hint'),
+
+            ]
+        );
+        CRUD::addField(
+            [
+                'name'    => 'final_grade',
+                'type'    => 'text',
+                'label'   => trans('studentmark.final_grade'),
+                'wrapper' => ['class' => 'form-group col-md-6'],
+                'hint' => trans('studentmark.final_grade_hint'),
             ],
         );
 

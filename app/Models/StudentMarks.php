@@ -19,6 +19,8 @@ class StudentMarks extends Model
     protected $fillable = [
         'student_id',
         'course_id',
+        'total_mark',
+        'final_grade',
         'marks',
     ];
 
@@ -30,6 +32,7 @@ class StudentMarks extends Model
     protected $casts = [
         'id' => 'integer',
         'marks' => 'array',
+        'total_mark' => 'float',
     ];
 
 
