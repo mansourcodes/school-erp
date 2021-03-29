@@ -64,7 +64,7 @@
                 المقرر
             </th>
             <th>
-                الفرع
+                {{__('curriculumcategory.curriculumcategory')}}
             </th>
             <th>
                 المدرس
@@ -73,7 +73,16 @@
                 الساعات
             </th>
             <th>
-                ...
+                مجموع الاعمال
+            </th>
+            <th>
+                إختبار المنتصف
+            </th>
+            <th>
+                الاختبار النهائي
+            </th>
+            <th>
+                الحضور والانضباط
             </th>
             <th>
                 الدرجة الكلية / 100
@@ -88,32 +97,44 @@
             <th scope="row">{{ ++$counter }}</th>
 
             <td>
-                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->curriculumـname}}
+                {{$student_data['curriculums'][$subject_mark->curriculumـid]->curriculumـname}}
                 -
-                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->bookـname}}
+                {{$student_data['curriculums'][$subject_mark->curriculumـid]->bookـname}}
             </td>
             <td>
-                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->curriculumCategory->categoryـname ?? '-'}}
-            </td>
-
-            <td>
-                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->teacher_name}}
-
-            </td>
-            <td>
-                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->weightـinـhours}}
-            </td>
-
-
-            <td>
-                {{$subject_mark['finalexam_mark_details'][0]['mark']}}
+                {{$student_data['curriculums'][$subject_mark->curriculumـid]->curriculumCategory->categoryـname ?? '-'}}
             </td>
 
             <td>
-                {{$subject_mark['total_mark']}}
+                {{$student_data['curriculums'][$subject_mark->curriculumـid]->teacher_name}}
+
             </td>
             <td>
-                {{$subject_mark['final_grade']}}
+                {{$student_data['curriculums'][$subject_mark->curriculumـid]->weightـinـhours}}
+            </td>
+
+
+            <td>
+                {{$subject_mark->class_mark_details[0]->mark ?? ''}}
+            </td>
+
+            <td>
+                {{$subject_mark->midexam_marks_details[0]->mark ?? ''}}
+            </td>
+
+            <td>
+                {{$subject_mark->finalexam_mark_details[0]->mark ?? ''}}
+            </td>
+
+            <td>
+                {{$subject_mark->attend_mark_details[0]->mark ?? ''}}
+            </td>
+
+            <td>
+                {{$subject_mark->total_mark}}
+            </td>
+            <td>
+                {{$subject_mark->final_grade}}
             </td>
         </tr>
         @endforeach

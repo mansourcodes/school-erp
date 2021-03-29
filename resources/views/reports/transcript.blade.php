@@ -66,13 +66,13 @@
         @foreach ($studentmark->marks as $subject_mark)
         <tr>
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->curriculumـname}}
+                {{$curriculums[$subject_mark->curriculumـid]->curriculumـname}}
             </td>
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->bookـname}}
+                {{$curriculums[$subject_mark->curriculumـid]->bookـname}}
             </td>
             <td>
-                {{$subject_mark['total_mark']}}
+                {{$subject_mark->total_mark}}
             </td>
         </tr>
         @endforeach

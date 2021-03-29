@@ -2,6 +2,7 @@
 
 namespace App\Casts;
 
+use Route;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class MarksDetailsCast implements CastsAttributes
@@ -17,9 +18,27 @@ class MarksDetailsCast implements CastsAttributes
      */
     public function get($model, $key, $value, $attributes)
     {
+        // dd(Route::getCurrentRoute()->getName());
+        if (Route::getCurrentRoute()->getName() == 'studentmarks.edit') {
+            return $value;
+        }
+
         $value = json_decode($value);
 
-        // dd($value);
+        if (!$value) {
+            $value = [];
+        } else {
+
+            foreach ($value as $key => $obj) :
+                $obj->finalexam_mark_details = json_decode($obj->finalexam_mark_details);
+                $obj->midexam_marks_details = json_decode($obj->midexam_marks_details);
+                $obj->class_mark_details = json_decode($obj->class_mark_details);
+                $obj->marks_details = json_decode($obj->marks_details);
+                $obj->project_marks_details = json_decode($obj->project_marks_details);
+                $obj->practice_mark_details = json_decode($obj->practice_mark_details);
+                $obj->attend_mark_details = json_decode($obj->attend_mark_details);
+            endforeach;
+        }
 
         return $value;
     }
@@ -35,7 +54,7 @@ class MarksDetailsCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        dd($value);
+
         return $value;
     }
 }

@@ -24,6 +24,7 @@ return [
     'midexam_marks_details'         => 'درجات المنتصف',
     'practice_mark_details'         => 'درجة العملي/الشفوي',
     'class_mark_details'         => 'درجة الاعمال',
+    'attend_mark_details'         => 'الحضور والانضباط',
     'marks_details'         => 'تفاصل درجة الاعمال في الصف',
 
 

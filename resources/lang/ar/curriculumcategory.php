@@ -3,8 +3,8 @@
 return [
 
 
-    'curriculumcategory'         => 'فرع',
-    'curriculumcategories'         => 'فروع المنهاج',
+    'curriculumcategory'         => 'المادة',
+    'curriculumcategories'         => 'مادة المنهاج',
 
-    'categoryـname'         => 'اسم الفرع',
+    'categoryـname'         => 'اسم المادة',
 ];

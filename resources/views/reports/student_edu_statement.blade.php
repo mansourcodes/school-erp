@@ -64,7 +64,8 @@
                 المقرر
             </th>
             <th>
-                الفرع
+                {{__('curriculumcategory.curriculumcategory')}}
+
             </th>
             <th>
                 المدرس
@@ -85,28 +86,28 @@
             <th scope="row">{{ ++$counter }}</th>
 
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->curriculumـname}}
+                {{$curriculums[$subject_mark->curriculumـid]->curriculumـname}}
                 -
-                {{$curriculums[$subject_mark['curriculumـid']]->bookـname}}
+                {{$curriculums[$subject_mark->curriculumـid]->bookـname}}
             </td>
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->curriculumCategory->categoryـname ?? '-'}}
-            </td>
-
-            <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->teacher_name}}
-
-            </td>
-            <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->weightـinـhours}}
+                {{$curriculums[$subject_mark->curriculumـid]->curriculumCategory->categoryـname ?? '-'}}
             </td>
 
-
             <td>
-                {{$subject_mark['total_mark']}}
+                {{$curriculums[$subject_mark->curriculumـid]->teacher_name}}
+
             </td>
             <td>
-                {{$subject_mark['final_grade']}}
+                {{$curriculums[$subject_mark->curriculumـid]->weightـinـhours}}
+            </td>
+
+
+            <td>
+                {{$subject_mark->total_mark}}
+            </td>
+            <td>
+                {{$subject_mark->final_grade}}
             </td>
         </tr>
         @endforeach
