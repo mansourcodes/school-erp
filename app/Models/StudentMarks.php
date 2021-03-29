@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Helpers\HtmlHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\MarksDetailsCast;
+
 
 class StudentMarks extends Model
 {
@@ -31,7 +33,7 @@ class StudentMarks extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'marks' => 'array',
+        'marks' => MarksDetailsCast::class,
         'total_mark' => 'float',
     ];
 

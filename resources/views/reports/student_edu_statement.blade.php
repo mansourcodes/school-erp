@@ -28,27 +28,28 @@
                 {{$studentmark->student->cpr}}
             </td>
         </tr>
-        <td>
-            <b>  
-                الفصل الدراسي /
-            </b>
+        <tr>
+            <td>
+                <b>  
+                    الفصل الدراسي /
+                </b>
 
-            {{$studentmark->course->academicPath->academic_path_name}}
+                {{$studentmark->course->academicPath->academic_path_name}}
 
-            {{$studentmark->course->hijri_year}} هـ
+                {{$studentmark->course->hijri_year}} هـ
 
-            ({{$studentmark->course->course_year}} م)
+                ({{$studentmark->course->course_year}} م)
 
-            {{$studentmark->course->semester}}
-            -
-            {{$studentmark->course->academicPath->academic_path_type}}
+                {{$studentmark->course->semester}}
+                -
+                {{$studentmark->course->academicPath->academic_path_type}}
 
 
 
-        </td>
-        <td>
+            </td>
+            <td>
 
-        </td>
+            </td>
         </tr>
     </table>
 

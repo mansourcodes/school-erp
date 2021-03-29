@@ -2,11 +2,11 @@
 
 
 @section('content')
-@foreach ($studentmarks as $studentmark)
+@foreach ($course_id as $id => $student_data)
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_edu_statement.title']['value'] ?? __('reports.student_edu_statement')}}</h2>
+    <h2 class="text-center">{{$settings['student_courses_transcript.title']['value'] ?? __('reports.student_courses_transcript')}}</h2>
 
 
 
@@ -18,41 +18,42 @@
                     نفيدكم علماً أنّ الطالب /
                 </b>
 
-                {{$studentmark->student->student_name}}
+                {{$student_data['studentmarks']->student->student_name}}
             </td>
             <td>
                 <b>
                     الرقم الشخصي
                 </b>
 
-                {{$studentmark->student->cpr}}
+                {{$student_data['studentmarks']->student->cpr}}
             </td>
         </tr>
-        <td>
-            <b>  
-                الفصل الدراسي /
-            </b>
+        <tr>
+            <td>
+                <b>  
+                    الفصل الدراسي /
+                </b>
 
-            {{$studentmark->course->academicPath->academic_path_name}}
+                {{$student_data['studentmarks']->course->academicPath->academic_path_name}}
 
-            {{$studentmark->course->hijri_year}} هـ
+                {{$student_data['studentmarks']->course->hijri_year}} هـ
 
-            ({{$studentmark->course->course_year}} م)
+                ({{$student_data['studentmarks']->course->course_year}} م)
 
-            {{$studentmark->course->semester}}
-            -
-            {{$studentmark->course->academicPath->academic_path_type}}
+                {{$student_data['studentmarks']->course->semester}}
+                -
+                {{$student_data['studentmarks']->course->academicPath->academic_path_type}}
 
 
 
-        </td>
-        <td>
+            </td>
+            <td>
 
-        </td>
+            </td>
         </tr>
     </table>
 
-    {!! $settings['student_edu_statement.pre']['value'] ?? '' !!}
+    {!! $settings['student_courses_transcript.pre']['value'] ?? '' !!}
 
 
     <table class="table">
@@ -72,6 +73,9 @@
                 الساعات
             </th>
             <th>
+                ...
+            </th>
+            <th>
                 الدرجة الكلية / 100
             </th>
             <th>
@@ -79,27 +83,31 @@
             </th>
         </tr>
         <?php $counter = 0; ?>
-        @foreach ($studentmark->marks as $subject_mark)
+        @foreach ($student_data['studentmarks']->marks as $subject_mark)
         <tr>
             <th scope="row">{{ ++$counter }}</th>
 
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->curriculumـname}}
+                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->curriculumـname}}
                 -
-                {{$curriculums[$subject_mark['curriculumـid']]->bookـname}}
+                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->bookـname}}
             </td>
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->curriculumCategory->categoryـname ?? '-'}}
+                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->curriculumCategory->categoryـname ?? '-'}}
             </td>
 
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->teacher_name}}
+                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->teacher_name}}
 
             </td>
             <td>
-                {{$curriculums[$subject_mark['curriculumـid']]->weightـinـhours}}
+                {{$student_data['curriculums'][$subject_mark['curriculumـid']]->weightـinـhours}}
             </td>
 
+
+            <td>
+                {{$subject_mark['finalexam_mark_details'][0]['mark']}}
+            </td>
 
             <td>
                 {{$subject_mark['total_mark']}}
@@ -112,10 +120,11 @@
 
     </table>
 
-    {!! $settings['student_edu_statement.pro']['value'] ?? '' !!}
+    {!! $settings['student_courses_transcript.pro']['value'] ?? '' !!}
 
 </div>
 <div class="new-page"></div>
+
 
 
 @endforeach
