@@ -15,7 +15,7 @@ class AddParentToCoursesTable extends Migration
     {
         Schema::table('courses', function (Blueprint $table) {
             //
-            $table->foreignId('course_root_id');
+            $table->foreignId('course_root_id')->nullable();
         });
     }
 

@@ -15,7 +15,7 @@ class AddTotalMarkToStudentMarksTable extends Migration
     {
         Schema::table('student_marks', function (Blueprint $table) {
             //
-            $table->float('total_mark', 3, 2)->nullable();
+            $table->float('total_mark', 5, 2)->nullable();
             $table->string('final_grade', 200)->nullable();
         });
     }

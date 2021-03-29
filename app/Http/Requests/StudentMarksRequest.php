@@ -26,13 +26,20 @@ class StudentMarksRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->id;
+        $student_id = $this->student_id;
+        $course_id = $this->course_id;
         return [
             // 'name' => 'required|min:5|max:255'
 
             'student_id'  => [
                 'required',
-                Rule::unique('student_marks')
-                    ->where('course_id', $this->course_id)
+                Rule::unique('student_marks')->where(function ($query) use ($id, $student_id, $course_id) {
+                    return $query
+                        ->where('id', '!=', $id)
+                        ->where('student_id', $student_id)
+                        ->where('course_id', $course_id);
+                }),
             ],
             'course_id'  => 'required',
             // 'marks'  => 'required',

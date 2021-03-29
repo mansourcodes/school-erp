@@ -29,6 +29,7 @@ class CourseFactory extends Factory
             'semester' => $this->faker->randomElement(["الاول", "صيفي", "الثاني", "مسائي رجال"]),
             'duration' => $this->faker->numberBetween(3, 3) . ' شهور',
             'academic_path_id' => $this->faker->numberBetween(1, 10),
+            'course_root_id' => null,
         ];
     }
 }

@@ -22,18 +22,18 @@ class DatabaseSeeder extends Seeder
         \App\Models\AcademicPath::factory()->count(100)->create();
         \App\Models\Course::factory()->count(100)->create();
         \App\Models\ClassRoom::factory()->count(100)->create();
-        \App\Models\StudentMarks::factory()->count(100)->create();
+        \App\Models\StudentMarks::factory()->count(10)->create();
 
 
         \App\Models\AcademicPath::All()->each(function ($academic_path) use ($curricula) {
             $academic_path->curricula()->attach(
-                $curricula->random(rand(1, 6))->pluck('id')->toArray()
+                $curricula->random(rand(1, 50))->pluck('id')->toArray()
             );
         });
 
         \App\Models\ClassRoom::All()->each(function ($class_room) use ($students) {
             $class_room->students()->attach(
-                $students->random(rand(1, 6))->pluck('id')->toArray()
+                $students->random(rand(1, 50))->pluck('id')->toArray()
             );
         });
     }
