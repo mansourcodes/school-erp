@@ -3,8 +3,12 @@
 return [
 
 
-    'attend'         => 'رصد الحضور',
-    'attends'         => 'رصد الحضور',
+    'attend_and_d'         => 'الحضور والإنضباط',
+
+    'add_attend_w_date'         => 'تسجيل الحضور بالتاريخ',
+
+    'attend'         => 'سجل الحضور',
+    'attends'         => 'سجلات الحضور',
 
 
     'attend_students'         => 'الحضور',

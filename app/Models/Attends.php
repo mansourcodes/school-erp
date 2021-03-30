@@ -20,6 +20,7 @@ class Attends extends Model
         'start_time',
         'class_room_id',
         'course_id',
+        'curriculum_id',
     ];
 
     /**
@@ -66,5 +67,10 @@ class Attends extends Model
     public function course()
     {
         return $this->belongsTo(\App\Models\Course::class);
+    }
+
+    public function curriculum()
+    {
+        return $this->belongsTo(\App\Models\Curriculum::class);
     }
 }

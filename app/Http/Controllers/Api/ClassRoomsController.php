@@ -20,7 +20,8 @@ class ClassRoomsController extends Controller
         $term = $request->input('term');
         if ($term) {
             $results = ClassRoom::where('class_room_name', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('class_room_number', 'LIKE', '%' . $search_term . '%');
+                ->orWhere('class_room_number', 'LIKE', '%' . $search_term . '%')
+                ->get()->pluck('long_name', 'id');
         } elseif ($search_term) {
             $results = ClassRoom::where('class_room_name', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('class_room_number', 'LIKE', '%' . $search_term . '%')

@@ -31,6 +31,7 @@ class AttendsRequest extends FormRequest
             'start_time' => 'required',
             'class_room_id' => 'required',
             'course_id' => 'required',
+            'curriculum_id' => 'required',
         ];
     }
 

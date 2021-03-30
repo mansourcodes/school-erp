@@ -1,7 +1,21 @@
 <!-- This file is used to store sidebar items, starting with Backpack\Base 0.9.0 -->
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
+<li class="nav-title">{{__('attend.attend_and_d')}}</li>
 
+
+<!-- academicManagment -->
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-school"></i> {{__('attend.attend_and_d')}}</a>
+    <ul class="nav-dropdown-items">
+
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.add_attend_w_date')}}</a></li>
+
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.attends')}}</a></li>
+
+
+    </ul>
+</li>
 
 
 <li class="nav-title">{{__('base.academicRegistration')}}</li>
@@ -12,7 +26,6 @@
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-school"></i> {{__('base.academicRegistration')}}</a>
     <ul class="nav-dropdown-items">
 
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.attends')}}</a></li>
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('studentmarks') }}'><i class='nav-icon la la-certificate'></i> {{__('studentmark.studentsmarks')}}</a></li>
 

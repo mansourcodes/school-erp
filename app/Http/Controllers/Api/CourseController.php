@@ -16,7 +16,6 @@ class CourseController extends Controller
     public function index(Request $request)
     {
 
-
         $search_term = $request->input('q');
         $term = $request->input('term');
         if ($term) {
