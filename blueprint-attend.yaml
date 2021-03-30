@@ -1,0 +1,15 @@
+models:
+  Models\Attends:
+    date: date
+    start_time: time
+    class_room_id: string
+    course_id: string:200
+    timestamps: true
+    relationships:
+      belongsToMany: attendStudents
+      belongsToMany: attendStudents
+      belongsToMany: attendStudents
+      belongsToMany: attendStudents
+      belongsToMany: attendStudents
+      belongsTo: ClassRoom
+      belongsTo: course
