@@ -12,7 +12,7 @@
     {!! $settings['transcript.pre']['value'] ?? '' !!}
 
 
-    <table class="table">
+    <table class="table table-no-border">
         <tr>
             <th>
                 الاسم:
@@ -49,7 +49,6 @@
         </tr>
     </table>
 
-    <br>
 
     <table class="table">
         <tr>

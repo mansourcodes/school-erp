@@ -14,4 +14,8 @@ return [
     'select_a_curriculum'         => 'إختر منهج',
     'add_a_curriculum'         => 'أضف درجات لمنهج',
 
+
+    'curriculum_marks_sheet'         => 'توزيع درجات  المنهج',
+    'full_mark'         => 'الدرجة الكاملة',
+
 ];

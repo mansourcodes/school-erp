@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Casts\CurriculumMarksDetails;
+
 
 class Curriculum extends Model
 {
@@ -21,6 +23,7 @@ class Curriculum extends Model
         'bookـname',
         'weightـinـhours',
         'curriculum_category_id',
+        'marks_labels',
     ];
 
     /**
@@ -30,6 +33,7 @@ class Curriculum extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'marks_labels' => CurriculumMarksDetails::class,
     ];
 
     protected $appends = [

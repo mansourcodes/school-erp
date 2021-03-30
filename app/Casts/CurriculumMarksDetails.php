@@ -5,7 +5,7 @@ namespace App\Casts;
 use Route;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
-class MarksDetailsCast implements CastsAttributes
+class CurriculumMarksDetails implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -19,7 +19,7 @@ class MarksDetailsCast implements CastsAttributes
     public function get($model, $key, $value, $attributes)
     {
         // dd(Route::getCurrentRoute()->getName());
-        if (Route::getCurrentRoute()->getName() == 'studentmarks.edit') {
+        if (Route::getCurrentRoute()->getName() == 'curriculum.edit') {
             return $value;
         }
 
@@ -40,7 +40,11 @@ class MarksDetailsCast implements CastsAttributes
             endforeach;
         }
 
-        return $value;
+        if (isset($value[0])) {
+            return  (array)$value[0];
+        } else {
+            return  (array)$value;
+        }
     }
 
     /**

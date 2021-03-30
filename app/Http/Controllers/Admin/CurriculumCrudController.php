@@ -162,6 +162,118 @@ class CurriculumCrudController extends CrudController
                 // 'include_all_form_fields'  => true, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
             ]
         );
+
+        CRUD::addField([   // repeatable
+            'name'  => 'marks_labels',
+            'label' => trans('studentmark.marks'),
+            'type'  => 'repeatable',
+
+            // optional
+            'new_item_label'  => trans('curriculum.curriculum_marks_sheet'), // customize the text of the button
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
+            'min_rows' => 0, // minimum rows allowed, when reached the "delete" buttons will be hidden
+            'max_rows' => 1, // maximum rows allowed, when reached the "new item" button will be hidden
+
+            'default' => '[{"finalexam_mark_details":"[{\"label\":\"درجة النهائي\",\"mark\":\"30\"}]","midexam_marks_details":"[{\"label\":\"المنتصف\",\"mark\":\"30\"}]","class_mark_details":"[{\"label\":\"درجة الاعمال\",\"mark\":\"30\"}]","attend_mark_details":"[{\"label\":\"الحضور والانضباط\",\"mark\":\"10\"}]","marks_details":"[{\"label\":\"الأداء العملي\",\"mark\":\"10\"},{\"label\":\"اختبار قصير1\",\"mark\":\"5\"},{\"label\":\"نشاط غير صفي\",\"mark\":\"10\"},{\"label\":\"اختبار قصير2\",\"mark\":\"5\"}]","project_marks_details":"","practice_mark_details":""}]',
+
+            'fields' => [
+
+                [   // Table
+                    'name'            => 'finalexam_mark_details',
+                    'label'           => trans('studentmark.finalexam_mark_details'),
+                    'type'            => 'table',
+
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 1, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'midexam_marks_details',
+                    'label'           => trans('studentmark.midexam_marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 5, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'class_mark_details',
+                    'label'           => trans('studentmark.class_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 1, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'attend_mark_details',
+                    'label'           => trans('studentmark.attend_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 1, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'marks_details',
+                    'label'           => trans('studentmark.marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'project_marks_details',
+                    'label'           => trans('studentmark.project_marks_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+                [   // Table
+                    'name'            => 'practice_mark_details',
+                    'label'           => trans('studentmark.practice_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
+
+
+            ],
+
+        ]);
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');

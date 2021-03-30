@@ -36,6 +36,7 @@
 
             body {
                 background-color: #fff !important;
+                -webkit-print-color-adjust: exact !important;
             }
 
             .app {
@@ -53,9 +54,22 @@
                 border: 1px solid black !important;
             }
 
+            table.table th {
+                background-color: #ccc !important;
+            }
+
             table.table.table-no-border td,
             table.table.table-no-border th {
                 border: 0 solid black !important;
+                background-color: transparent !important;
+
+            }
+
+
+            table.table.table-ziped td,
+            table.table.table-ziped th {
+                padding: 2px;
+                font-size: 12px;
             }
         </style>
 

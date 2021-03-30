@@ -258,4 +258,35 @@ class AcademiaReportsController extends Controller
 
         return $data;
     }
+
+
+    function reportScoringSheet(Request $request)
+    {
+
+        $classroom_id = $request->input('classroom');
+        $classroom = ClassRoom::find($classroom_id);
+
+
+
+        $student_ids_array = $classroom->students->pluck('id')->toArray();
+        $studentmarks = StudentMarks::whereIn('student_id', $student_ids_array)->where('course_id', $classroom->course->id)->get();
+
+        $marks = [];
+        foreach ($studentmarks as $studentmark) {
+            if ($studentmark->marks === null) {
+                $studentmark->marks = [];
+            }
+
+            foreach ($studentmark->marks as $mark_key => $mark) {
+                $marks[(int)$mark->curriculumـid][(int)$studentmark->student_id] = $mark;
+            }
+        }
+
+        // dd($marks);
+
+
+        $data['classroom'] = $classroom;
+        $data['marks'] = $marks;
+        return $data;
+    }
 }
