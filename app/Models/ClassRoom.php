@@ -37,6 +37,10 @@ class ClassRoom extends Model
     ];
 
 
+    protected $appends = [
+        'long_name'
+    ];
+
     public function course()
     {
         return $this->belongsTo(\App\Models\Course::class);
@@ -53,6 +57,11 @@ class ClassRoom extends Model
     {
         return $this->belongsToMany(\App\Models\Student::class);
         // return $this->hasMany(\App\Models\Student::class);
+    }
+
+    public function getLongNameAttribute()
+    {
+        return $this->class_room_name . " [" . $this->class_room_number . "]";
     }
 
     public function getPrintDropdown()

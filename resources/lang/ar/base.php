@@ -35,6 +35,7 @@ return [
     // actions
 
     'more' => 'المزيد',
+    'date' => 'التاريخ',
 
 
     // days

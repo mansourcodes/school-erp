@@ -1,7 +1,12 @@
 created:
-    - database/factories/Models/ReportsSettingsFactory.php
-    - database/migrations/2021_02_25_172547_create_reports_settings_table.php
-    - app/Models/ReportsSettings.php
+    - database/factories/Models/AttendsFactory.php
+    - database/migrations/2021_03_30_115308_create_attends_table.php
+    - database/migrations/2021_03_30_115309_create_attends_student_table.php
+    - database/migrations/2021_03_30_115310_create_attends_student2_table.php
+    - database/migrations/2021_03_30_115311_create_attends_student3_table.php
+    - database/migrations/2021_03_30_115312_create_attends_student4_table.php
+    - database/migrations/2021_03_30_115313_create_attends_student5_table.php
+    - app/Models/Attends.php
 models:
     Models\User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
     Models\Curriculum: { curriculumـname: 'string:200 nullable', bookـname: 'string:200 nullable', weightـinـhours: 'integer unsigned default:5 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: CurriculumCategory, belongsToMany: AcademicPath } }
@@ -12,3 +17,4 @@ models:
     Models\Student: { student_name: 'string:200 nullable', cpr: 'bigInteger unsigned unique nullable', email: 'string:100 unique nullable', mobile: 'bigInteger unsigned nullable', mobile2: 'bigInteger unsigned nullable', dob: 'date nullable', address: 'string:200 nullable', live_inـstate: 'enum:UNKNOWN,OWN,RENT', relationshipـstate: 'enum:UNKNOWN,SINGLE,MARRIED,DIVORCED', family_members: 'integer unsigned default:0 nullable', family_depends: 'integer unsigned default:0 nullable', degree: 'string:200 nullable', hawzaـhistory: 'boolean default:0 nullable', hawzaـhistory_details: 'text nullable', healthـhistory: 'boolean default:0 nullable', healthـhistory_details: 'text nullable', financialـstate: 'enum:UNKNOWN,POOR,AVERAGE,GOOD,EXCELLENT', financial_details: 'text nullable', student_notes: 'text nullable', registration_at: 'date nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { belongsToMany: ClassRoom } }
     Models\StudentMarks: { student_id: 'string:200', course_id: 'string:200', marks: 'longText nullable' }
     Models\ReportsSettings: { key: 'string unique', type: string, value: 'text nullable' }
+    Models\Attends: { date: date, start_time: time, class_room_id: string, course_id: string, timestamps: timestamps, relationships: { belongsToMany: 'Student,Student2,Student3,Student4,Student5', belongsTo: 'ClassRoom,Course' } }

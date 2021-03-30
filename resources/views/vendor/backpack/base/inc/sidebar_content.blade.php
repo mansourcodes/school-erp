@@ -12,6 +12,8 @@
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-school"></i> {{__('base.academicRegistration')}}</a>
     <ul class="nav-dropdown-items">
 
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.attends')}}</a></li>
+
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('studentmarks') }}'><i class='nav-icon la la-certificate'></i> {{__('studentmark.studentsmarks')}}</a></li>
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('classroom') }}'><i class='nav-icon la la-chalkboard-teacher'></i> {{ __('classroom.classrooms')}}</a></li>

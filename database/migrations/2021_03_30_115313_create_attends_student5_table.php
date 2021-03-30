@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClassRoomCourseTable extends Migration
+class CreateAttendsStudent5Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateClassRoomCourseTable extends Migration
      */
     public function up()
     {
-        Schema::create('class_room_course', function (Blueprint $table) {
-            $table->foreignId('class_room_id');
-            $table->foreignId('course_id');
+        Schema::create('attends_student_late_w_excuse', function (Blueprint $table) {
+            $table->foreignId('attends_id');
+            $table->foreignId('student_id');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateClassRoomCourseTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class_room_course');
+        Schema::dropIfExists('attends_student_late_w_excuse');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAcademicPathCourseTable extends Migration
+class CreateAttendsStudent3Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateAcademicPathCourseTable extends Migration
      */
     public function up()
     {
-        Schema::create('academic_path_course', function (Blueprint $table) {
-            $table->foreignId('academic_path_id');
-            $table->foreignId('course_id');
+        Schema::create('attends_student_late', function (Blueprint $table) {
+            $table->foreignId('attends_id');
+            $table->foreignId('student_id');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateAcademicPathCourseTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('academic_path_course');
+        Schema::dropIfExists('attends_student_late');
     }
 }

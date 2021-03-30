@@ -60,4 +60,8 @@ Route::group([
 
     Route::get('curriculum', 'CurriculumController@index');
     Route::get('curriculum/{id}', 'CurriculumController@show');
+    Route::get('course/{id}', 'CourseController@show');
+
+    Route::get('classroom', 'ClassRoomsController@index');
+    Route::get('classroom/{id}', 'ClassRoomsController@show');
 });
