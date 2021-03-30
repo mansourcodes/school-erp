@@ -208,6 +208,8 @@ class ClassRoomCrudController extends CrudController
             'name'  => 'teachers',
             'label' => trans('classroom.teachers'),
             'type'  => 'repeatable',
+            'tab'   => trans('classroom.teachers'),
+
 
             // optional
             'new_item_label'  => trans('classroom.teacher'), // customize the text of the button
@@ -217,7 +219,6 @@ class ClassRoomCrudController extends CrudController
 
             'fields' => [
                 [
-
                     'name'        => 'curriculumـid',
                     'label'       => trans('curriculum.curriculumـname'),
                     'type'        => 'select_from_array',
@@ -234,9 +235,68 @@ class ClassRoomCrudController extends CrudController
                     'label'   => trans('classroom.teacher_name'),
                     'wrapper' => ['class' => 'form-group col-md-6'],
                 ],
-
             ],
+        ]);
 
+
+        $week_days = [
+            7 =>  trans('base.Sunday'),
+            1 => trans('base.Monday'),
+            2 => trans('base.Tuesday'),
+            3 => trans('base.Wednesday'),
+            4 => trans('base.Thursday'),
+            5 => trans('base.Friday'),
+            6 => trans('base.Saturday'),
+        ];
+
+        // Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday,
+        // dd($curricula_list, $day_of_week = date('N', strtotime('Monday')));
+
+
+        CRUD::addField([   // repeatable
+            'name'  => 'attend_table',
+            'label' => trans('classroom.attend_table'),
+            'type'  => 'repeatable',
+            'tab'   => trans('classroom.attend_table'),
+
+
+            // optional
+            'new_item_label'  => trans('classroom.attend_table_single'), // customize the text of the button
+            'init_rows' => 0, // number of empty rows to be initialized, by default 1
+            'min_rows' => 0, // minimum rows allowed, when reached the "delete" buttons will be hidden
+            'max_rows' => 50, // maximum rows allowed, when reached the "new item" button will be hidden
+
+            'fields' => [
+                [
+                    'name'        => 'curriculumـid',
+                    'label'       => trans('curriculum.curriculumـname'),
+                    'type'        => 'select_from_array',
+                    'options'     => $curricula_list,
+                    'allows_null' => false,
+                    // 'default'     => '',
+                    'wrapper' => ['class' => 'form-group col-md-5'],
+                    'hint' => trans('studentmark.curriculum_hint'),
+
+                ],
+                [
+                    'name'        => 'day',
+                    'label'       => trans('classroom.day'),
+                    'type'        => 'select_from_array',
+                    'options'     => $week_days,
+                    'allows_null' => false,
+                    'default'     => 7,
+                    'wrapper' => ['class' => 'form-group col-md-3'],
+
+                ],
+                [
+                    'name'        => 'start_time',
+                    'label'       => trans('classroom.start_time'),
+                    'type'        => 'time',
+
+                    'wrapper' => ['class' => 'form-group col-md-3'],
+
+                ],
+            ],
         ]);
     }
 }

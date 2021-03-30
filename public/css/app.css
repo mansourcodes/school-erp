@@ -10009,6 +10009,12 @@ div.dataTables_filter {
   text-align: end;
 }
 
+.form-control {
+  -moz-text-align-last: start;
+       text-align-last: start;
+  text-align: start;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   float: revert;
 }

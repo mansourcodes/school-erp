@@ -22,6 +22,7 @@ class ClassRoom extends Model
         'class_room_number',
         'course_id',
         'teachers',
+        'attend_table',
     ];
 
     /**
@@ -32,6 +33,7 @@ class ClassRoom extends Model
     protected $casts = [
         'id' => 'integer',
         'teachers' => 'array',
+        'attend_table' => 'array',
     ];
 
 
