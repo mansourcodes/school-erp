@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Helpers\HtmlHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,8 @@ class ClassRoom extends Model
 
 
     protected $appends = [
-        'long_name'
+        'long_name',
+        'code',
     ];
 
     public function course()
@@ -82,11 +84,62 @@ class ClassRoom extends Model
             ],
         ];
 
-
-
         $html = HtmlHelper::dropdownMenuButton($list);
 
-
         return $html;
+    }
+
+
+
+
+    public function getCodeAttribute()
+    {
+        return  $this->course_id . "#" . $this->id;
+    }
+
+    public static function getByDate($date, $activeCourse = true)
+    {
+        $day_number = $date->format('N');
+        $classrooms =  ClassRoom::where('attend_table', 'like', '%"day":"' . $day_number . '"%')->get();
+        $attends =  Attends::where('date', $date->format('Y-m-d'))->get()->pluck('code')->toArray();
+
+
+        // dd($attends, $classrooms);
+
+        foreach ($classrooms as $key => $classroom) {
+            $classroom->attributes['active_attend_table'] = [];
+
+
+            if ($classroom->attend_table) {
+                foreach ($classroom->attend_table as $attend_table) {
+
+                    if ($attend_table['day'] == $day_number) {
+
+                        $attend_table['curriculum'] = Curriculum::find($attend_table['curriculumـid']);
+                        $chosen_date = Carbon::parse($attend_table['start_time']);
+                        $attend_table['start_time'] = $chosen_date;
+
+
+                        $date_string = (new Carbon($date))->format('Y-m-d');
+                        $start_time = (new Carbon($attend_table['start_time']))->format('H:m');
+                        $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculumـid'];
+
+                        if (in_array($attend_table_code, $attends)) {
+                            $attend_table['is_recorded'] = true;
+                        } else {
+                            $attend_table['is_recorded'] = false;
+                        }
+
+
+                        $classroom->attributes['active_attend_table'][] =  $attend_table;
+                    }
+                }
+            }
+
+
+            // if()
+        }
+
+        return $classrooms;
     }
 }

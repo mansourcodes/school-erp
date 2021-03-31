@@ -11,6 +11,10 @@ return [
     'attends'         => 'سجلات الحضور',
 
 
+    'add_attends'         => 'رصد الحضور',
+    'added_attends'         => 'تم رصد الحضور',
+
+
     'attend_students'         => 'الحضور',
 
     'absent_students'         => 'الغياب',

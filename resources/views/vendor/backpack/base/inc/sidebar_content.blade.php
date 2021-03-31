@@ -9,7 +9,7 @@
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-school"></i> {{__('attend.attend_and_d')}}</a>
     <ul class="nav-dropdown-items">
 
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.add_attend_w_date')}}</a></li>
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('add_attend_by_date') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.add_attend_w_date')}}</a></li>
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attends') }}'><i class='nav-icon la la-check-square'></i> {{__('attend.attends')}}</a></li>
 

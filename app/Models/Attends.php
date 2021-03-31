@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,6 +34,9 @@ class Attends extends Model
         'date' => 'date',
     ];
 
+    protected $appends = [
+        'code',
+    ];
 
     public function attendStudents()
     {
@@ -72,5 +76,13 @@ class Attends extends Model
     public function curriculum()
     {
         return $this->belongsTo(\App\Models\Curriculum::class);
+    }
+
+    public function getCodeAttribute()
+    {
+        $date = (new Carbon($this->date))->format('Y-m-d');
+        $start_time = (new Carbon($this->start_time))->format('H:m');
+
+        return $date . "#" . $start_time . "#" . $this->course_id . "#" . $this->class_room_id . "#" . $this->curriculum_id;
     }
 }

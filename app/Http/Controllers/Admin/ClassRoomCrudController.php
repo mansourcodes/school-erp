@@ -280,7 +280,7 @@ class ClassRoomCrudController extends CrudController
                 ],
                 [
                     'name'        => 'day',
-                    'label'       => trans('classroom.day'),
+                    'label'       => trans('base.day'),
                     'type'        => 'select_from_array',
                     'options'     => $week_days,
                     'allows_null' => false,

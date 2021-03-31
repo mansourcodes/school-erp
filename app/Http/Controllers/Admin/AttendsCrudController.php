@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Http\Requests\AttendsRequest;
+use App\Models\Attends;
+use App\Models\ClassRoom;
+use App\Models\Course;
+use App\Models\Curriculum;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Http\Request;
+use stdClass;
 
 /**
  * Class AttendsCrudController
@@ -426,5 +433,64 @@ class AttendsCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+
+
+
+    public function addAttendByDate(Request $request)
+    {
+        $chosen_date = Carbon::parse($request->get('chosen_date'));
+        $data['chosen_date'] = $chosen_date->format('Y-m-d');
+        $data['chosen_date_long'] = $chosen_date->locale('ar')->dayName . $chosen_date->format(' d ') . $chosen_date->locale('ar')->monthName . $chosen_date->format(' Y');
+        $data['breadcrumbs'] = [
+            trans('backpack::crud.admin') => backpack_url('dashboard'),
+            trans('attend.add_attend_w_date') => false,
+        ];
+
+
+        $data['classrooms'] = ClassRoom::getByDate($chosen_date);
+
+        return view('attend.attend_list', $data);
+    }
+
+
+    public function addAttendEasyForm(Request $request)
+    {
+
+        $date = $request->get('date');
+        $start_time = $request->get('start_time');
+        $class_room_id = $request->get('class_room_id');
+        // $course_id = $request->get('course_id');
+        $curriculum_id = $request->get('curriculum_id');
+
+        $data = [
+            'date' => Carbon::parse($date),
+            'start_time' => Carbon::parse($start_time),
+            'classroom' => ClassRoom::find($class_room_id),
+            // 'course' => Course::find($course_id),
+            'curriculum' => Curriculum::find($curriculum_id),
+        ];
+
+        return view('attend.add_attend_easy_form', $data);
+    }
+
+
+    public function save(Request $request)
+    {
+        $attend = new Attends();
+
+        $attend->date = $request->get('date');
+        $attend->start_time = $request->get('start_time');
+        $attend->class_room_id = $request->get('class_room_id');
+        $attend->course_id = $request->get('course_id');
+        $attend->curriculum_id = $request->get('curriculum_id');
+
+
+        $attend->save();
+
+
+        dd($attend);
+        return view('attend.add_attend_easy_form');
     }
 }

@@ -3,7 +3,7 @@
 return [
 
 
-    'curriculum'         => 'المنهح الدراسي',
+    'curriculum'         => 'المنهج الدراسي',
     'curricula'         => 'المناهج الدراسية',
     'curricula_short'         => 'مناهج',
 
