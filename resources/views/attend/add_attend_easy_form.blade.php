@@ -5,10 +5,10 @@
 
 
 @section('content')
-<form>
+<form action="{{ backpack_url('save_attend_easy_form') }}">
 
 
-    <div class="container-fluid">
+    <div class="__container-fluid">
         <h2>
             <span class="text-capitalize">
                 {{__('attend.add_attend_w_date')}}
@@ -16,40 +16,33 @@
         </h2>
 
 
-        <div class=" col-10">
+        <div class="col">
             <div class="card ">
                 <div class="card-header"><strong>{{__('attend.add_attend_w_date')}}</strong></div>
                 <div class="card-body">
                     <!-- /.row-->
                     <div class="row">
-                        <div class="form-group col-4">
+                        <div class="form-group col-12 col-md-4">
                             <label>{{__('curriculum.curriculum')}} </label>
-                            <input type="hidden" name="date" value="{{$curriculum->id}}" />
-                            <div class="form-control">{{$curriculum->long_name}} </div>
+                            <div class="form-control h-auto">{{$curriculum->long_name}} </div>
                         </div>
-                        <div class="form-group col-4">
+                        <div class="form-group col-6 col-md-4">
                             <label>{{__('base.date')}} </label>
-                            <input type="hidden" name="date" value="{{$date->format('Y-m-d')}}" />
-                            <div class="form-control">{{$date->locale('ar')->dayName . $date->format(' d ') . $date->locale('ar')->monthName . $date->format(' Y')}}</div>
+                            <div class="form-control h-auto">{{$date->locale('ar')->dayName . $date->format(' d ') . $date->locale('ar')->monthName . $date->format(' Y')}}</div>
                         </div>
-                        <div class="form-group col-4">
+                        <div class="form-group col-6 col-md-4">
                             <label>{{__('classroom.start_time')}} </label>
-                            <input type="hidden" name="start_time" value="{{$start_time->format('H:m')}}" />
-                            <div class="form-control">{{$start_time->format('H:m')}}</div>
+                            <div class="form-control h-auto">{{$start_time->format('H:m')}} {{__('base.'.$start_time->format('a'))}}
+                            </div>
                         </div>
-                    </div>
-                    <!-- /.row-->
-                    <!-- /.row-->
-                    <div class="row">
-                        <div class="form-group col-6">
+
+                        <div class="form-group col-6 col-md-6">
                             <label>{{__('classroom.classroom')}} </label>
-                            <input type="hidden" name="date" value="{{$classroom->id}}" />
-                            <div class="form-control">{{$classroom->long_name}}</div>
+                            <div class="form-control h-auto">{{$classroom->long_name}}</div>
                         </div>
-                        <div class="form-group col-6">
+                        <div class="form-group col-6 col-md-6">
                             <label>{{__('course.course')}} </label>
-                            <input type="hidden" name="date" value="{{$classroom->course->id}}" />
-                            <div class="form-control">{{$classroom->course->long_name}}</div>
+                            <div class="form-control h-auto">{{$classroom->course->long_name}}</div>
                         </div>
                     </div>
                     <!-- /.row-->
@@ -57,12 +50,15 @@
             </div>
 
 
-
             <table class="table table-responsive-sm table-bordered">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>{{__('student.student_name')}}</th>
+                        <th>{{__('attend.attend_students')}}</th>
+                        <th>{{__('attend.late_students')}}</th>
+                        <th>{{__('attend.absent_students')}}</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -75,15 +71,57 @@
                         <td>
                             {{$student->student_name}}
                         </td>
+                        <td>
+
+
+                            <label class="switch attend-switch switch-pill switch-success">
+                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]" checked><span class="switch-slider">{{__('attend.student_attended')}}</span>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="switch attend-switch switch-pill switch-late">
+                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late')}}</span>
+                            </label>
+                            <label class="switch attend-switch switch-pill switch-late_w_excuse">
+                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late_w_excuse')}}</span>
+                            </label>
+
+                        </td>
+
+
+                        <td>
+                            <label class="switch attend-switch switch-pill switch-absent">
+                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent')}}</span>
+                            </label>
+                            <label class="switch attend-switch switch-pill switch-absent_w_excuse">
+                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent_w_excuse')}}</span>
+                            </label>
+                        </td>
                     </tr>
                     @endforeach
 
 
                 </tbody>
             </table>
+
+            <button class="btn btn-lg  btn-block btn-primary" type="submit">
+                {{__('attend.add_attends')}}
+            </button>
+
+
+
         </div>
 
     </div>
+
+
+
+
+    <input type="hidden" name="date" value="{{$date->format('Y-m-d')}}" />
+    <input type="hidden" name="start_time" value="{{$start_time->format('H:m')}}" />
+    <input type="hidden" name="curriculum_id" value="{{$curriculum->id}}" />
+    <input type="hidden" name="class_room_id" value="{{$classroom->id}}" />
+    <input type="hidden" name="course_id" value="{{$classroom->course->id}}" />
 
 </form>
 
@@ -93,7 +131,11 @@
 @section('after_scripts')
 
 <script>
+    $(document).ready(function() {
 
+        $('[data-toggle="switch"]').bootstrapSwitch();
+
+    });
 </script>
 
 @endsection

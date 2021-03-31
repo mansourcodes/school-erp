@@ -34,8 +34,11 @@ Route::group([
 ], function () { // custom admin routes
 
     Route::get('reports', 'AcademiaReportsController@print');
+
+
     Route::get('add_attend_by_date', 'AttendsCrudController@addAttendByDate');
-    Route::get('add_attend_easy_form', 'AttendsCrudController@addAttendEasyForm');
+    Route::get('attend_easy_form', 'AttendsCrudController@AttendEasyForm');
+    Route::get('save_attend_easy_form', 'AttendsCrudController@SaveAttendEasyForm');
 });
 
 

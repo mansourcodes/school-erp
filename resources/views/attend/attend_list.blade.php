@@ -5,7 +5,7 @@
 
 
 @section('content')
-<div class="container-fluid">
+<div class="__container-fluid">
     <h2>
         <span class="text-capitalize">
             {{__('attend.add_attend_w_date')}}
@@ -13,7 +13,7 @@
     </h2>
 
 
-    <div class="col-6 ">
+    <div class="col-lg-6 ">
         <div class="card ">
             <div class="card-header">
                 <strong>
@@ -24,11 +24,11 @@
                 <form>
                     <!-- /.row-->
                     <div class="row">
-                        <div class="form-group col-6">
+                        <div class="form-group col-lg-6">
                             <label for="ccmonth">{{__('base.date')}}</label>
                             <input name="chosen_date" class="form-control" type="date" value="{{$chosen_date}}">
                         </div>
-                        <div class="form-group col-6">
+                        <div class="form-group col-lg-6">
                             <label>&nbsp; &nbsp; </label>
                             <button class="btn btn-block btn-primary" type="submit">
                                 {{__('base.search')}}
@@ -68,8 +68,8 @@
                 <td>{{$classroom->long_name}}</td>
                 <td>{{$classroom->course->long_name}}</td>
                 <td>
-                    @if($active_attend_table['is_recorded'])
-                    <form action="{{ backpack_url('add_attend_easy_form') }} ">
+                    @if(!$active_attend_table['is_recorded'])
+                    <form action="{{ backpack_url('attend_easy_form') }}">
 
                         <input type="hidden" name="date" value="{{$chosen_date}}" />
                         <input type="hidden" name="start_time" value="{{$active_attend_table['start_time']->format('H:m')}}" />

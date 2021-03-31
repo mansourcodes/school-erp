@@ -104,7 +104,6 @@ class ClassRoom extends Model
         $attends =  Attends::where('date', $date->format('Y-m-d'))->get()->pluck('code')->toArray();
 
 
-        // dd($attends, $classrooms);
 
         foreach ($classrooms as $key => $classroom) {
             $classroom->attributes['active_attend_table'] = [];
@@ -124,6 +123,8 @@ class ClassRoom extends Model
                         $start_time = (new Carbon($attend_table['start_time']))->format('H:m');
                         $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculumـid'];
 
+                        var_dump(in_array($attend_table_code, $attends));
+
                         if (in_array($attend_table_code, $attends)) {
                             $attend_table['is_recorded'] = true;
                         } else {
@@ -135,9 +136,6 @@ class ClassRoom extends Model
                     }
                 }
             }
-
-
-            // if()
         }
 
         return $classrooms;

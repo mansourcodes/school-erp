@@ -22,4 +22,13 @@ return [
 
     'late_students'         => 'التأخير',
     'late_w_excuse_students'         => 'التأخير بعذر',
+
+
+
+    'student_attended'         => 'حاضر',
+    'student_absent'         => 'غائب',
+    'student_absent_w_excuse'         => 'غائب بعذر',
+    'student_late'         => 'متأخر',
+    'student_late_w_excuse'         => 'متأخر بعذر',
+
 ];

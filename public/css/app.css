@@ -10005,6 +10005,10 @@ h3 {
     border-color: #dee2e6;
   }
 }
+.navbar-toggler {
+  z-index: 100;
+}
+
 div.dataTables_filter {
   text-align: end;
 }
@@ -10038,4 +10042,40 @@ body {
 
 .w-1 {
   width: 1%;
+}
+
+@media (max-width: 991.98px) {
+  .app-header .navbar-brand {
+    left: 30%;
+  }
+}
+.switch-absent .switch-input:checked + .switch-slider {
+  background-color: #161c2d;
+  border-color: #05070b;
+}
+
+.switch-absent_w_excuse .switch-input:checked + .switch-slider {
+  background-color: #869ab8;
+  border-color: #869ab8;
+}
+
+.switch-late .switch-input:checked + .switch-slider {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.switch-late_w_excuse .switch-input:checked + .switch-slider {
+  background-color: #e2d098;
+  border-color: #e2d098;
+}
+
+.attend-switch {
+  width: 136px;
+}
+.attend-switch .switch-input:checked ~ .switch-slider:before {
+  transform: translateX(110px);
+}
+.attend-switch .switch-slider {
+  padding: 0 30px;
+  color: white;
 }

@@ -455,7 +455,7 @@ class AttendsCrudController extends CrudController
     }
 
 
-    public function addAttendEasyForm(Request $request)
+    public function AttendEasyForm(Request $request)
     {
 
         $date = $request->get('date');
@@ -476,7 +476,7 @@ class AttendsCrudController extends CrudController
     }
 
 
-    public function save(Request $request)
+    public function SaveAttendEasyForm(Request $request)
     {
         $attend = new Attends();
 
@@ -487,7 +487,7 @@ class AttendsCrudController extends CrudController
         $attend->curriculum_id = $request->get('curriculum_id');
 
 
-        $attend->save();
+        // $attend->save();
 
 
         dd($attend);

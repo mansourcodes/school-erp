@@ -1,3 +1,7 @@
+.navbar-toggler {
+    z-index: 100;
+}
+
 div.dataTables_filter {
     text-align: end;
 }
@@ -28,4 +32,10 @@ body {
 
 .w-1 {
     width: 1%;
+}
+
+@media (max-width: 991.98px) {
+    .app-header .navbar-brand {
+        left: 30%;
+    }
 }
