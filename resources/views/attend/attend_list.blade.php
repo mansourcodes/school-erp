@@ -41,7 +41,11 @@
         </div>
     </div>
 
-
+    @if (session('status'))
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+    @endif
 
     <table class="table table-responsive-sm table-bordered">
         <thead>
@@ -68,6 +72,8 @@
                 <td>{{$classroom->long_name}}</td>
                 <td>{{$classroom->course->long_name}}</td>
                 <td>
+
+
                     @if(!$active_attend_table['is_recorded'])
                     <form action="{{ backpack_url('attend_easy_form') }}">
 
@@ -81,9 +87,17 @@
                         </button>
                     </form>
                     @else
+
+                    @if(session('attend_code_added') == $active_attend_table['code'] )
+                    <i class="bg-success p-2 rounded las la-list-alt la-lg"></i>
+                    {{__('attend.attend_added_successfuly')}}
+                    @else
                     <button class="btn  btn-sm " disabled type="button">
                         {{__('attend.added_attends')}}
                     </button>
+                    @endif
+
+
                     @endif
 
 

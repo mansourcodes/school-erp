@@ -2,6 +2,7 @@
 
 return [
 
+    'attend_added_successfuly' => 'تم رصد الحضور بنجاح!',
 
     'attend_and_d'         => 'الحضور والإنضباط',
 
@@ -30,5 +31,7 @@ return [
     'student_absent_w_excuse'         => 'غائب بعذر',
     'student_late'         => 'متأخر',
     'student_late_w_excuse'         => 'متأخر بعذر',
+
+
 
 ];

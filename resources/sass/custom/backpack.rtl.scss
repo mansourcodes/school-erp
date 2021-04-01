@@ -34,6 +34,15 @@ body {
     width: 1%;
 }
 
+[dir="rtl"] .float-right {
+    float: right !important;
+}
+
+#crudTable thead > tr > th.sorting_disabled,
+table.dataTable thead > tr > th.sorting_disabled {
+    padding-right: 12px;
+}
+
 @media (max-width: 991.98px) {
     .app-header .navbar-brand {
         left: 30%;

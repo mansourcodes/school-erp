@@ -24,7 +24,11 @@ class AttendsCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkDeleteOperation {
+        bulkDelete as traitBulkDelete;
+    }
+
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -46,6 +50,8 @@ class AttendsCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->enableExportButtons();
+
         // CRUD::column('date');
         // CRUD::column('start_time');
         // CRUD::column('class_room_id');
@@ -485,12 +491,38 @@ class AttendsCrudController extends CrudController
         $attend->class_room_id = $request->get('class_room_id');
         $attend->course_id = $request->get('course_id');
         $attend->curriculum_id = $request->get('curriculum_id');
+        $student_attend_state = $request->get('student_attend_state');
+
+        $attend_state = [];
+
+        $attend_state['attend'] = [];
+        $attend_state['absent'] = [];
+        $attend_state['absent_w_excuse'] = [];
+        $attend_state['late'] = [];
+        $attend_state['late_w_excuse'] = [];
+
+        foreach ($student_attend_state as $key => $value) {
+            $attend_state[$value][] = $key;
+        }
+
+        $attend->save();
+
+        $attend->attendStudents()->sync($attend_state['attend']);
+        $attend->absentStudents()->sync($attend_state['absent']);
+        $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
+        $attend->lateStudents()->sync($attend_state['late']);
+        $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
+
+        $attend->update();
 
 
-        // $attend->save();
 
+        $chosen_date = Carbon::parse($request->get('date'));
 
-        dd($attend);
-        return view('attend.add_attend_easy_form');
+        return redirect('/admin/add_attend_by_date?chosen_date=' . $chosen_date->format('Y-m-d'))
+            ->with([
+                'status' => trans('attend.attend_added_successfuly'),
+                'attend_code_added' => $attend->code,
+            ]);
     }
 }

@@ -111,4 +111,12 @@ return [
         'print'             => 'طباعة',
         'column_visibility' => 'رؤية العمود',
     ],
+
+    // Bulk delete
+    'bulk_delete_are_you_sure'   => 'هل أنت متأكد من مسح :number سجلات',
+    'bulk_delete_sucess_title'   => 'السجلات مسحت',
+    'bulk_delete_sucess_message' => ' سجلات مسحت',
+    'bulk_delete_error_title'    => 'فشلت عمليت المسح',
+    'bulk_delete_error_message'  => 'يجب تحديد السجلات التي ترغب في مسحها',
+
 ];

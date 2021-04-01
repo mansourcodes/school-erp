@@ -123,7 +123,6 @@ class ClassRoom extends Model
                         $start_time = (new Carbon($attend_table['start_time']))->format('H:m');
                         $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculumـid'];
 
-                        var_dump(in_array($attend_table_code, $attends));
 
                         if (in_array($attend_table_code, $attends)) {
                             $attend_table['is_recorded'] = true;
@@ -131,7 +130,7 @@ class ClassRoom extends Model
                             $attend_table['is_recorded'] = false;
                         }
 
-
+                        $attend_table['code'] = $attend_table_code;
                         $classroom->attributes['active_attend_table'][] =  $attend_table;
                     }
                 }

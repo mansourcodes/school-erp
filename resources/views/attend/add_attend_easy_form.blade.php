@@ -71,32 +71,33 @@
                         <td>
                             {{$student->student_name}}
                         </td>
+
                         <td>
-
-
                             <label class="switch attend-switch switch-pill switch-success">
-                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]" checked><span class="switch-slider">{{__('attend.student_attended')}}</span>
+                                <input class="switch-input" type="radio" value="attend" name="student_attend_state[{{$student->id}}]" checked><span class="switch-slider">{{__('attend.student_attended')}}</span>
                             </label>
                         </td>
+
+
                         <td>
                             <label class="switch attend-switch switch-pill switch-late">
-                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late')}}</span>
+                                <input class="switch-input" type="radio" value="late" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late')}}</span>
                             </label>
                             <label class="switch attend-switch switch-pill switch-late_w_excuse">
-                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late_w_excuse')}}</span>
+                                <input class="switch-input" type="radio" value="late_w_excuse" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_late_w_excuse')}}</span>
                             </label>
-
                         </td>
 
 
                         <td>
                             <label class="switch attend-switch switch-pill switch-absent">
-                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent')}}</span>
+                                <input class="switch-input" type="radio" value="absent" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent')}}</span>
                             </label>
                             <label class="switch attend-switch switch-pill switch-absent_w_excuse">
-                                <input class="switch-input" type="radio" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent_w_excuse')}}</span>
+                                <input class="switch-input" type="radio" value="absent_w_excuse" name="student_attend_state[{{$student->id}}]"><span class="switch-slider">{{__('attend.student_absent_w_excuse')}}</span>
                             </label>
                         </td>
+
                     </tr>
                     @endforeach
 
