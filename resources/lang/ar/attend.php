@@ -3,7 +3,10 @@
 return [
 
     'attend_added_successfuly' => 'تم رصد الحضور بنجاح!',
+    'attend_added_fail' => 'فشلت عملت رصد الحضور!',
     'attend_deleted_successfuly' => 'تم مسح السجل!',
+    'attend_exist' => 'سجل الحضور موجود فعلا!',
+    'now_add_new_attend' => 'الآن اضف رصد الحضور من جديد',
 
     'attend_and_d'         => 'الحضور والإنضباط',
 

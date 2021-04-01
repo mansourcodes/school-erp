@@ -13,6 +13,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Http\Request;
 use stdClass;
 use Backpack\CRUD\app\Library\Widget;
+use Alert;
 
 /**
  * Class AttendsCrudController
@@ -518,6 +519,9 @@ class AttendsCrudController extends CrudController
 
     public function SaveAttendEasyForm(Request $request)
     {
+        $chosen_date = Carbon::parse($request->get('date'));
+
+
         $attend = new Attends();
 
         $attend->date = $request->get('date');
@@ -539,7 +543,19 @@ class AttendsCrudController extends CrudController
             $attend_state[$value][] = $key;
         }
 
-        $attend->save();
+
+        try {
+            $attend->save();
+        } catch (\Exception $e) {
+            \Alert::add('error', trans('attend.attend_added_fail'))->flash();
+
+            if (str_contains($e->getMessage(), 'attends_date_start_time_class_room_id_curriculum_id_unique')) {
+                \Alert::add('info', trans('attend.attend_exist'))->flash();
+            }
+
+            return redirect('/admin/add_attend_by_date?chosen_date=' . $chosen_date->format('Y-m-d'));
+        }
+
 
         $attend->attendStudents()->sync($attend_state['attend']);
         $attend->absentStudents()->sync($attend_state['absent']);
@@ -548,10 +564,6 @@ class AttendsCrudController extends CrudController
         $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
 
         $attend->update();
-
-
-
-        $chosen_date = Carbon::parse($request->get('date'));
 
         return redirect('/admin/add_attend_by_date?chosen_date=' . $chosen_date->format('Y-m-d'))
             ->with([
@@ -568,10 +580,10 @@ class AttendsCrudController extends CrudController
         $url = '/admin/attend_easy_form?date=' . $attend->date . '&start_time=' . $attend->start_time . '&curriculum_id=' . $attend->curriculum_id . '&class_room_id=' . $attend->class_room_id . '&course_id=' . $attend->course_id . '';
         $code = $attend->code;
         $attend->delete();
-        return redirect($url)
-            ->with([
-                'status' => trans('attend.attend_deleted_successfuly'),
-                'attend_code_targeted' => $code,
-            ]);
+
+        \Alert::add('info', trans('attend.attend_deleted_successfuly'))->flash();
+        \Alert::add('light', trans('attend.now_add_new_attend'))->flash();
+
+        return redirect($url);
     }
 }
