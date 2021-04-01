@@ -36,3 +36,15 @@
         color: white;
     }
 }
+
+.sidebar .nav-link.active {
+    background: #182235;
+}
+
+.sidebar .nav-dropdown.open > .nav-dropdown-items {
+    background: #212d46;
+}
+
+.app-header.navbar {
+    padding: 0;
+}

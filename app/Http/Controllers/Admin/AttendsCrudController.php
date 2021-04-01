@@ -12,6 +12,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Http\Request;
 use stdClass;
+use Backpack\CRUD\app\Library\Widget;
 
 /**
  * Class AttendsCrudController
@@ -21,13 +22,14 @@ use stdClass;
 class AttendsCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\BulkDeleteOperation {
         bulkDelete as traitBulkDelete;
     }
+
 
 
     /**
@@ -69,7 +71,8 @@ class AttendsCrudController extends CrudController
             [
                 'name'        => 'start_time',
                 'label'       => trans('classroom.start_time'),
-                'type'        => 'time',
+                'type'  => 'datetime',
+                'format' => 'H:MM a'
             ]
         );
 
@@ -241,7 +244,10 @@ class AttendsCrudController extends CrudController
                 // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
                 // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
                 // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                'attributes' => [
+                    'readonly'    => 'readonly',
 
+                ],
                 'wrapper' => ['class' => 'form-group col-md-4'],
             ],
         );
@@ -251,6 +257,10 @@ class AttendsCrudController extends CrudController
                 'name'        => 'date',
                 'label'       => trans('base.date'),
                 'type'        => 'date',
+                'attributes' => [
+                    'readonly'    => 'readonly',
+
+                ],
                 'wrapper' => ['class' => 'form-group col-md-4'],
             ]
         );
@@ -260,6 +270,10 @@ class AttendsCrudController extends CrudController
                 'name'        => 'start_time',
                 'label'       => trans('classroom.start_time'),
                 'type'        => 'time',
+                'attributes' => [
+                    'readonly'    => 'readonly',
+
+                ],
                 'wrapper' => ['class' => 'form-group col-md-4'],
             ]
         );
@@ -280,7 +294,10 @@ class AttendsCrudController extends CrudController
                 // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
                 // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
                 // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                'attributes' => [
+                    'readonly'    => 'readonly',
 
+                ],
                 'wrapper' => ['class' => 'form-group col-md-6'],
             ],
         );
@@ -302,7 +319,10 @@ class AttendsCrudController extends CrudController
                 // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
                 // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
                 // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                'attributes' => [
+                    'readonly'    => 'readonly',
 
+                ],
                 'wrapper' => ['class' => 'form-group col-md-6'],
             ],
         );
@@ -439,6 +459,20 @@ class AttendsCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        $currentAttends = Attends::find($this->crud->getCurrentEntryId());
+
+        $currentAttends->date;
+        $widget_definition_array = [
+            'type'       => 'card',
+            'wrapper' => ['class' => 'col-md-6'], // optional
+            'class'   => 'card border-danger', // optional
+            'content'    => [
+                'header' => trans('base.notice'), // optional
+                'body'   => trans('attend.edit_attends_notice') . ' <br> <a href="' . backpack_url('quick_delete_and_add?id=' . $currentAttends->id) . '" class="btn btn-sm btn-primary float-left"> <i class="las la-trash-alt"></i>' . trans('attend.quick_delete_and_add') . '</a>',
+            ]
+        ];
+
+        Widget::add($widget_definition_array)->to('before_content');
     }
 
 
@@ -523,6 +557,21 @@ class AttendsCrudController extends CrudController
             ->with([
                 'status' => trans('attend.attend_added_successfuly'),
                 'attend_code_added' => $attend->code,
+            ]);
+    }
+
+    public function QuickDeleteAndAdd(Request $request)
+    {
+
+        $id = $request->get('id');
+        $attend = Attends::find($id);
+        $url = '/admin/attend_easy_form?date=' . $attend->date . '&start_time=' . $attend->start_time . '&curriculum_id=' . $attend->curriculum_id . '&class_room_id=' . $attend->class_room_id . '&course_id=' . $attend->course_id . '';
+        $code = $attend->code;
+        $attend->delete();
+        return redirect($url)
+            ->with([
+                'status' => trans('attend.attend_deleted_successfuly'),
+                'attend_code_targeted' => $code,
             ]);
     }
 }

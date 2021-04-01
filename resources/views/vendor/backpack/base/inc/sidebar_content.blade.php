@@ -1,7 +1,7 @@
 <!-- This file is used to store sidebar items, starting with Backpack\Base 0.9.0 -->
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 
-<li class="nav-title">{{__('attend.attend_and_d')}}</li>
+<!-- <li class="nav-title">{{__('attend.attend_and_d')}}</li> -->
 
 
 <!-- academicManagment -->
@@ -18,7 +18,7 @@
 </li>
 
 
-<li class="nav-title">{{__('base.academicRegistration')}}</li>
+<!-- <li class="nav-title">{{__('base.academicRegistration')}}</li> -->
 
 
 <!-- academicManagment -->
@@ -36,16 +36,14 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('course') }}'><i class='nav-icon la la-campground'></i> {{__('course.courses')}}</a></li>
 
 
-        <li class="nav-title">
-            <hr>
-        </li>
+
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-cog'></i> {{__('reportssettings.reportssettings')}}</a></li>
 
     </ul>
 </li>
 
-<li class="nav-title">{{__('base.academicManagment')}}</li>
+<!-- <li class="nav-title">{{__('base.academicManagment')}}</li> -->
 
 
 <!-- academicManagment -->
@@ -67,9 +65,7 @@
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('academicpath') }}'><i class='nav-icon la la-road'></i> {{__('academicpath.academicpaths')}}</a></li>
 
-        <li class="nav-title">
-            <hr>
-        </li>
+
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('curriculum') }}'><i class='nav-icon la la-book'></i> {{__('curriculum.curricula')}}</a></li>
 
@@ -82,7 +78,7 @@
 </li>
 
 
-<li class="nav-title">{{__('base.systemManagment')}}</li>
+<!-- <li class="nav-title">{{__('base.systemManagment')}}</li> -->
 
 
 

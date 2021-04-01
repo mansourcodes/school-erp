@@ -39,6 +39,7 @@ Route::group([
     Route::get('add_attend_by_date', 'AttendsCrudController@addAttendByDate');
     Route::get('attend_easy_form', 'AttendsCrudController@AttendEasyForm');
     Route::get('save_attend_easy_form', 'AttendsCrudController@SaveAttendEasyForm');
+    Route::get('quick_delete_and_add', 'AttendsCrudController@QuickDeleteAndAdd');
 });
 
 

@@ -3,6 +3,7 @@
 return [
 
     'attend_added_successfuly' => 'تم رصد الحضور بنجاح!',
+    'attend_deleted_successfuly' => 'تم مسح السجل!',
 
     'attend_and_d'         => 'الحضور والإنضباط',
 
@@ -31,6 +32,12 @@ return [
     'student_absent_w_excuse'         => 'غائب بعذر',
     'student_late'         => 'متأخر',
     'student_late_w_excuse'         => 'متأخر بعذر',
+
+
+
+    'edit_attends_notice'         => 'لا تقم ابدا بتغيير المعلومات عدى اسماء الطلاب، لتعديل رصد الحضور بطريقة اسهل، قم بمسح التسجيل وتسجيله من جديد!',
+
+    'quick_delete_and_add' => 'مسح والتعديل السريع',
 
 
 

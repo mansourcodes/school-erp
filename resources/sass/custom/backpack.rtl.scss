@@ -38,6 +38,10 @@ body {
     float: right !important;
 }
 
+[dir="rtl"] .float-left {
+    float: left !important;
+}
+
 #crudTable thead > tr > th.sorting_disabled,
 table.dataTable thead > tr > th.sorting_disabled {
     padding-right: 12px;
