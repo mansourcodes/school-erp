@@ -71,6 +71,10 @@ class ClassRoom extends Model
 
         $list = [
             [
+                'label' => trans('reports.student_attend'),
+                'url' => backpack_url('reports?view=student_attend&classroom=' . $this->id),
+            ],
+            [
                 'label' => trans('reports.scoring_sheet'),
                 'url' => backpack_url('reports?view=scoring_sheet&classroom=' . $this->id),
             ],

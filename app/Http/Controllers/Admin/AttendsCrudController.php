@@ -557,11 +557,11 @@ class AttendsCrudController extends CrudController
         }
 
 
-        $attend->attendStudents()->sync($attend_state['attend']);
-        $attend->absentStudents()->sync($attend_state['absent']);
-        $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
-        $attend->lateStudents()->sync($attend_state['late']);
-        $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
+        $attend->attendStudents($attend_state['attend']);
+        // $attend->absentStudents()->sync($attend_state['absent']);
+        // $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
+        // $attend->lateStudents()->sync($attend_state['late']);
+        // $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
 
         $attend->update();
 
@@ -579,6 +579,10 @@ class AttendsCrudController extends CrudController
         $attend = Attends::find($id);
         $url = '/admin/attend_easy_form?date=' . $attend->date . '&start_time=' . $attend->start_time . '&curriculum_id=' . $attend->curriculum_id . '&class_room_id=' . $attend->class_room_id . '&course_id=' . $attend->course_id . '';
         $code = $attend->code;
+
+
+
+
         $attend->delete();
 
         \Alert::add('info', trans('attend.attend_deleted_successfuly'))->flash();

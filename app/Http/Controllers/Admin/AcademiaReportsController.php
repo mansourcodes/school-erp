@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\FormBuilderHelper;
+use App\Models\Attends;
 use App\Models\ClassRoom;
 use App\Models\Course;
 use App\Models\ReportsSettings;
@@ -287,6 +288,34 @@ class AcademiaReportsController extends Controller
 
         $data['classroom'] = $classroom;
         $data['marks'] = $marks;
+        return $data;
+    }
+
+    function reportStudentAttend(Request $request)
+    {
+
+        $classroom_id = $request->input('classroom');
+        $classroom = ClassRoom::find($classroom_id);
+
+
+        $attends = Attends::Where('course_id', $classroom->course_id);
+
+        $student_report = [];
+        foreach ($classroom->students as $student) {
+            $student_id = $student->id;
+
+            $attends_copy = clone $attends;
+            $student_report[$student_id]['attend'] = $attends_copy->with(['attendStudents' =>  function ($query) use ($student_id) {
+                $query->where('id', $student_id);
+            }])->get()->count();
+        }
+
+        $attends_copy = clone $attends;
+        $data['total_days'] = $attends_copy->count();
+        $data['student_report'] = $student_report;
+        dd($attends->get(), $data);
+
+        $data['classroom'] = $classroom;
         return $data;
     }
 }
