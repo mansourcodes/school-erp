@@ -39,6 +39,9 @@
 
 .sidebar .nav-link.active {
     background: #7c69ef;
+    .nav-icon {
+        color: #fff;
+    }
 }
 
 .sidebar .nav-dropdown.open > .nav-dropdown-items {

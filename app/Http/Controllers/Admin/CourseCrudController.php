@@ -46,6 +46,17 @@ class CourseCrudController extends CrudController
 
 
         CRUD::addColumn([
+            'name'  => 'is_active',
+            'label' => trans('course.active_state'),
+            'type'  => 'boolean',
+            // optionally override the Yes/No texts
+            'options' => [
+                0 => '<i class="las btn btn-light la-eye-slash"></i>',
+                1 => '<i class="las btn btn-success la-eye"></i>'
+            ]
+        ],);
+
+        CRUD::addColumn([
             // any type of relationship
             'name'         => 'AcademicPath', // name of relationship method in the model
             'type'         => 'relationship',
@@ -75,10 +86,7 @@ class CourseCrudController extends CrudController
             'name' => 'semester',
             'label' => trans('course.semester'),
         ]);
-        CRUD::addColumn([
-            'name' => 'duration',
-            'label' => trans('course.duration'),
-        ]);
+
         CRUD::addColumn([
             'name' => 'start_date',
             'label' => trans('course.start_date'),
@@ -92,7 +100,10 @@ class CourseCrudController extends CrudController
 
         ]);
 
-
+        CRUD::addColumn([
+            'name' => 'duration',
+            'label' => trans('course.duration'),
+        ]);
 
 
 

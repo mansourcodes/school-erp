@@ -10105,6 +10105,9 @@ table.dataTable thead > tr > th.sorting_disabled {
 .sidebar .nav-link.active {
   background: #7c69ef;
 }
+.sidebar .nav-link.active .nav-icon {
+  color: #fff;
+}
 
 .sidebar .nav-dropdown.open > .nav-dropdown-items {
   background: #212d46;
