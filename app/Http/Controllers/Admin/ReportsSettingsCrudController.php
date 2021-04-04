@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ReportsSettingsRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
+
 
 /**
  * Class ReportsSettingsCrudController
@@ -64,6 +66,18 @@ class ReportsSettingsCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
+
+        $widget_definition_array = [
+            'type'       => 'card',
+            'wrapper' => ['class' => 'p-0 col-md-6'], // optional
+            'class'   => 'card border-info', // optional
+            'content'    => [
+                'header' => trans('base.notice'), // optional
+                'body'   => trans('reportssettings.reportssettings_note'),
+            ]
+        ];
+
+        Widget::add($widget_definition_array)->to('after_content');
     }
 
     /**
@@ -103,6 +117,18 @@ class ReportsSettingsCrudController extends CrudController
             'default'     => 'string',
             'wrapper' => ['class' => 'form-group col-md-4'],
         ]);
+
+        $widget_definition_array = [
+            'type'       => 'card',
+            'wrapper' => ['class' => 'p-0 col-md-6'], // optional
+            'class'   => 'card border-info', // optional
+            'content'    => [
+                'header' => trans('base.notice'), // optional
+                'body'   => trans('reportssettings.reportssettings_note'),
+            ]
+        ];
+
+        Widget::add($widget_definition_array)->to('after_content');
     }
 
     /**
@@ -118,9 +144,6 @@ class ReportsSettingsCrudController extends CrudController
 
 
         $currentReportsSettings = \App\Models\ReportsSettings::find($this->crud->getCurrentEntryId());
-
-
-
 
         CRUD::addField([
             'name' => 'description',

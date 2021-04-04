@@ -8,12 +8,12 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_attend_report.title']['value'] ?? __('reports.student_attend_report')}}</h2>
+    <h2 class="text-center">{{$settings['student_attend_list_list.title']['value'] ?? __('reports.student_attend_list')}}</h2>
 
 
     <br>
 
-    {!! $settings['student_attend_report.pre']['value'] ?? '' !!}
+    {!! $settings['student_attend_list.pre']['value'] ?? '' !!}
 
     <br>
 
@@ -108,7 +108,7 @@
 
 
 
-    {!! $settings['student_attend_report.pro']['value'] ?? '' !!}
+    {!! $settings['student_attend_list.pro']['value'] ?? '' !!}
 
 </div>
 <div class="new-page"></div>
