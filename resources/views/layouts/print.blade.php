@@ -68,8 +68,8 @@
 
             table.table.table-ziped td,
             table.table.table-ziped th {
-                padding: 2px;
-                font-size: 12px;
+                padding: 2px 15px;
+                font-size: 14px;
             }
         </style>
 

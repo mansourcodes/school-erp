@@ -291,6 +291,11 @@ class AcademiaReportsController extends Controller
         return $data;
     }
 
+    function reportStudentAttendReport(Request $request)
+    {
+        return $this->reportStudentAttend($request);
+    }
+
     function reportStudentAttend(Request $request)
     {
 
@@ -299,21 +304,50 @@ class AcademiaReportsController extends Controller
 
 
         $attends = Attends::Where('course_id', $classroom->course_id);
+        $data['total_days'] = $attends->count();
+
 
         $student_report = [];
         foreach ($classroom->students as $student) {
             $student_id = $student->id;
 
-            $attends_copy = clone $attends;
-            $student_report[$student_id]['attend'] = $attends_copy->with(['attendStudents' =>  function ($query) use ($student_id) {
-                $query->where('id', $student_id);
-            }])->get()->count();
+
+            //attend
+            $student_report[$student_id]['attend'] = Attends::whereHas('attendStudents',  function ($query) use ($student_id) {
+                $query->whereIn('id', [$student_id]);
+            })->get()->count();
+            $student_report[$student_id]['attend_per'] = round($student_report[$student_id]['attend'] / $data['total_days'] * 100);
+
+            //absent
+            $student_report[$student_id]['absent'] = Attends::whereHas('absentStudents',  function ($query) use ($student_id) {
+                $query->whereIn('id', [$student_id]);
+            })->get()->count();
+            $student_report[$student_id]['absent_per'] = round($student_report[$student_id]['absent'] / $data['total_days'] * 100);
+
+
+            $student_report[$student_id]['absentWithExcuse'] = Attends::whereHas('absentWithExcuseStudents',  function ($query) use ($student_id) {
+                $query->whereIn('id', [$student_id]);
+            })->get()->count();
+            $student_report[$student_id]['absentWithExcuse_per'] = round($student_report[$student_id]['absentWithExcuse'] / $data['total_days'] * 100);
+
+
+
+            //late
+            $student_report[$student_id]['late'] = Attends::whereHas('lateStudents',  function ($query) use ($student_id) {
+                $query->whereIn('id', [$student_id]);
+            })->get()->count();
+            $student_report[$student_id]['late_per'] = round($student_report[$student_id]['late'] / $data['total_days'] * 100);
+
+
+            $student_report[$student_id]['lateWithExcuse'] = Attends::whereHas('lateWithExcuseStudents',  function ($query) use ($student_id) {
+                $query->whereIn('id', [$student_id]);
+            })->get()->count();
+            $student_report[$student_id]['lateWithExcuse_per'] = round($student_report[$student_id]['lateWithExcuse'] / $data['total_days'] * 100);
         }
 
-        $attends_copy = clone $attends;
-        $data['total_days'] = $attends_copy->count();
+
+
         $data['student_report'] = $student_report;
-        dd($attends->get(), $data);
 
         $data['classroom'] = $classroom;
         return $data;

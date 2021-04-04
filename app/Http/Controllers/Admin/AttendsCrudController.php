@@ -246,7 +246,7 @@ class AttendsCrudController extends CrudController
                 // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
                 // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
                 'attributes' => [
-                    'readonly'    => 'readonly',
+                    // 'readonly'    => 'readonly',
 
                 ],
                 'wrapper' => ['class' => 'form-group col-md-4'],
@@ -557,11 +557,11 @@ class AttendsCrudController extends CrudController
         }
 
 
-        $attend->attendStudents($attend_state['attend']);
-        // $attend->absentStudents()->sync($attend_state['absent']);
-        // $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
-        // $attend->lateStudents()->sync($attend_state['late']);
-        // $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
+        $attend->attendStudents()->sync($attend_state['attend']);
+        $attend->absentStudents()->sync($attend_state['absent']);
+        $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
+        $attend->lateStudents()->sync($attend_state['late']);
+        $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
 
         $attend->update();
 

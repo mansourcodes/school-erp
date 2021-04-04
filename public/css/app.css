@@ -10057,6 +10057,15 @@ table.dataTable thead > tr > th.sorting_disabled {
   padding-right: 12px;
 }
 
+.select2-container--bootstrap li.select2-results__option[aria-selected=true] {
+  background-color: #d6ecff;
+}
+
+.select2-container--bootstrap li.select2-results__option--highlighted[aria-selected] {
+  background-color: #337ab7;
+  color: #fff;
+}
+
 @media (max-width: 991.98px) {
   .app-header .navbar-brand {
     left: 30%;

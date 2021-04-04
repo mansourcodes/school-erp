@@ -9,4 +9,5 @@ return [
 
 
     'student_attend'         => 'تقرير إجمالي للحضور',
+    'student_attend_report'         => 'تقرير الإنضباط للصف',
 ];

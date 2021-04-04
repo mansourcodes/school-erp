@@ -5,7 +5,6 @@
 
 
 
-@foreach ($classroom->students as $student)
 
 <div class="page">
 
@@ -18,24 +17,18 @@
 
     <br>
 
+
     <table class="table  ">
         <tr>
-            <td colspan="2">
-                <b>  
-                    الاسم:
-                </b>
-
-                {{$student->student_name}}
-            </td>
             <td>
-                <b>
-                    البرنامج:
+                <b>  
+                    الصف:
                 </b>
 
-                {{$classroom->course->academicPath->academic_path_type}}
+                {{$classroom->class_room_name}}
+
+
             </td>
-        </tr>
-        <tr>
             <td>
                 <b>  
                     المرحلة:
@@ -66,44 +59,30 @@
         </tr>
     </table>
 
-    <br>
 
-    <table class="table text-center ">
+    <table class="table  table-ziped text-center">
         <tr>
-            <th rowspan="2 " class="align-middle">
-                عدد أيام الدراسة
-            </th>
-            <th rowspan="2" class="align-middle">
-                الحضور
-            </th>
-            <th colspan="2">
-                عدد أيام الغياب
-            </th>
-            <th colspan="2">
-                عدد أيام التأخير
-            </th>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الحضور</th>
+            <th>الغياب</th>
+            <th>الغياب بعذر</th>
+            <th>التأخير</th>
+            <th>التأخير بعذر</th>
+            <th>ملاحظات الإدارة</th>
+
         </tr>
+        @foreach ($classroom->students as $key => $student)
+
         <tr>
-            <th>
-                بعذر
-            </th>
-            <th>
-                من دون عذر
-            </th>
-            <th>
-                بعذر
-            </th>
-            <th>
-                من دون عذر
-            </th>
-        </tr>
-        <tr>
-            <td rowspan="2" class="align-middle">{{$total_days}}</td>
+            <td rowspan="2" class="align-middle">{{$key+1}}</td>
+            <th rowspan="2" class="align-middle text-right">{{$student->student_name}}</th>
             <td>{{$student_report[$student->id]['attend']}}</td>
             <td>{{$student_report[$student->id]['absent']}}</td>
             <td>{{$student_report[$student->id]['absentWithExcuse']}}</td>
             <td>{{$student_report[$student->id]['late']}}</td>
             <td>{{$student_report[$student->id]['lateWithExcuse']}}</td>
+            <td rowspan="2" class="align-middle"></td>
         </tr>
         <tr>
             <td>%{{$student_report[$student->id]['attend_per']}}</td>
@@ -112,7 +91,20 @@
             <td>%{{$student_report[$student->id]['late_per']}}</td>
             <td>%{{$student_report[$student->id]['lateWithExcuse_per']}}</td>
         </tr>
+        @endforeach
+
     </table>
+
+    <table class="table">
+        <tr>
+            <th class="align-middle">
+                عدد أيام الدراسة
+            </th>
+            <td class="align-middle">{{$total_days}}</td>
+
+        </tr>
+    </table>
+    <br>
 
 
 
@@ -122,5 +114,4 @@
 <div class="new-page"></div>
 
 
-@endforeach
 @endsection

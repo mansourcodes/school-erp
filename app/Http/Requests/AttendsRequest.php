@@ -39,10 +39,10 @@ class AttendsRequest extends FormRequest
             // 'name' => 'required|min:5|max:255'
             'date' => [
                 'required',
-                Rule::unique('student_marks')->where(function ($query) use ($id, $date, $start_time, $class_room_id, $curriculum_id) {
+                Rule::unique('attends')->where(function ($query) use ($id, $date, $start_time, $class_room_id, $curriculum_id) {
                     return $query
                         ->where('id', '!=', $id)
-                        ->where('student_id', $date)
+                        ->where('date', $date)
                         ->where('start_time', $start_time)
                         ->where('class_room_id', $class_room_id)
                         ->where('curriculum_id', $curriculum_id);
