@@ -40,27 +40,27 @@ class Attends extends Model
 
     public function attendStudents()
     {
-        return $this->hasMany(\App\Models\Student::class, 'attends_student_attend');
+        return $this->belongsToMany(\App\Models\Student::class, 'attends_student_attend');
     }
 
     public function absentStudents()
     {
-        return $this->hasMany(\App\Models\Student::class, 'attends_student_absent');
+        return $this->belongsToMany(\App\Models\Student::class, 'attends_student_absent');
     }
 
     public function absentWithExcuseStudents()
     {
-        return $this->hasMany(\App\Models\Student::class, 'attends_student_absent_w_excuse');
+        return $this->belongsToMany(\App\Models\Student::class, 'attends_student_absent_w_excuse');
     }
 
     public function lateStudents()
     {
-        return $this->hasMany(\App\Models\Student::class, 'attends_student_late');
+        return $this->belongsToMany(\App\Models\Student::class, 'attends_student_late');
     }
 
     public function lateWithExcuseStudents()
     {
-        return $this->hasMany(\App\Models\Student::class, 'attends_student_late_w_excuse');
+        return $this->belongsToMany(\App\Models\Student::class, 'attends_student_late_w_excuse');
     }
 
     public function classRoom()
