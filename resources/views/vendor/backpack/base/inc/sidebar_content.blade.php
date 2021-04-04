@@ -33,12 +33,8 @@
 
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('student') }}'><i class='nav-icon la la-user-graduate'></i> {{__('student.students')}}</a></li>
 
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('course') }}'><i class='nav-icon la la-campground'></i> {{__('course.courses')}}</a></li>
 
 
-
-
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-cog'></i> {{__('reportssettings.reportssettings')}}</a></li>
 
     </ul>
 </li>
@@ -59,6 +55,8 @@
         </li> -->
 
 
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('course') }}'><i class='nav-icon la la-campground'></i> {{__('course.courses')}}</a></li>
+
 
 
 
@@ -73,6 +71,9 @@
 
 
 
+
+
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-cog'></i> {{__('reportssettings.reportssettings')}}</a></li>
 
     </ul>
 </li>

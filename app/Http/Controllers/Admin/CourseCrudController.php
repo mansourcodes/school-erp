@@ -79,6 +79,18 @@ class CourseCrudController extends CrudController
             'name' => 'duration',
             'label' => trans('course.duration'),
         ]);
+        CRUD::addColumn([
+            'name' => 'start_date',
+            'label' => trans('course.start_date'),
+            'type'        => 'date',
+
+        ]);
+        CRUD::addColumn([
+            'name' => 'end_date',
+            'label' => trans('course.end_date'),
+            'type'        => 'date',
+
+        ]);
 
 
 
@@ -135,6 +147,20 @@ class CourseCrudController extends CrudController
             }
         );
 
+        $this->crud->addFilter([
+            'name'  => 'is_active',
+            'type'  => 'select2',
+            'label' => trans('course.active_state'),
+        ], function () {
+            return [
+                1 => trans('course.active'),
+                2 => trans('course.not_active'),
+            ];
+        }, function ($value) { // if the filter is active
+
+            $this->crud->addClause('where', 'is_active', ($value == 1));
+        });
+
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -153,6 +179,14 @@ class CourseCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(CourseRequest::class);
+
+        CRUD::addField([
+            'name' => 'is_active',
+            'label' => trans('course.is_active'),
+            'type'        => 'checkbox',
+            'default'        => true,
+
+        ]);
 
         CRUD::addField(
             [
@@ -198,6 +232,20 @@ class CourseCrudController extends CrudController
         ]);
 
 
+        CRUD::addField([
+            'name' => 'start_date',
+            'label' => trans('course.start_date'),
+            'type'        => 'date',
+            'wrapper' => ['class' => 'form-group col-md-6'],
+
+        ]);
+        CRUD::addField([
+            'name' => 'end_date',
+            'label' => trans('course.end_date'),
+            'type'        => 'date',
+            'wrapper' => ['class' => 'form-group col-md-6'],
+
+        ]);
 
 
         CRUD::addField(

@@ -40,6 +40,7 @@ return [
     'hour' => 'الساعة',
     'search' => 'بحث',
     'notice' => 'ملاحظة',
+    'show_all' => 'إظهر الكل',
 
     // days
 

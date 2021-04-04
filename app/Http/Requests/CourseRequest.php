@@ -33,6 +33,8 @@ class CourseRequest extends FormRequest
             'hijri_year' => 'required',
             'semester' => 'required',
             'duration' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
         ];
     }
 

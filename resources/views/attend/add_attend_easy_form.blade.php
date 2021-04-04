@@ -55,9 +55,34 @@
                     <tr>
                         <th>#</th>
                         <th>{{__('student.student_name')}}</th>
-                        <th>{{__('attend.attend_students')}}</th>
-                        <th>{{__('attend.late_students')}}</th>
-                        <th>{{__('attend.absent_students')}}</th>
+                        <th>{{__('attend.attend_students')}}
+
+
+                            <button type="button" class="btn   btn-success float-left" onclick="allAttend()">
+                                <i class="las la-fill-drip"></i>
+                            </button>
+
+                        </th>
+                        <th>{{__('attend.late_students')}}
+
+                            <button type="button" class="btn  float-left" onclick="allLateWithExcuse()">
+                                <i class="las la-fill-drip"></i>
+                            </button>
+                            <button type="button" class="btn   btn-warning float-left" onclick="allLate()">
+                                <i class="las la-fill-drip"></i>
+                            </button>
+                        </th>
+                        <th>{{__('attend.absent_students')}}
+
+                            <button type="button" class="btn  float-left" onclick="allAbsentWithExcuse()">
+                                <i class="las la-fill-drip"></i>
+                            </button>
+                            <button type="button" class="btn   btn-dark float-left" onclick="allAbsent()">
+                                <i class="las la-fill-drip"></i>
+                            </button>
+
+
+                        </th>
 
                     </tr>
                 </thead>
@@ -132,11 +157,25 @@
 @section('after_scripts')
 
 <script>
-    $(document).ready(function() {
+    function allAttend() {
+        $('.switch-success').click();
+    }
 
-        $('[data-toggle="switch"]').bootstrapSwitch();
+    function allLate() {
+        $('.switch-late').click();
+    }
 
-    });
+    function allLateWithExcuse() {
+        $('.switch-late_w_excuse').click();
+    }
+
+    function allAbsent() {
+        $('.switch-absent').click();
+    }
+
+    function allAbsentWithExcuse() {
+        $('.switch-absent_w_excuse').click();
+    }
 </script>
 
 @endsection

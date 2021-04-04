@@ -22,6 +22,9 @@ class Course extends Model
         'hijri_year',
         'semester',
         'duration',
+        'start_date',
+        'end_date',
+        'is_active',
         'academic_path_id',
         'course_root_id',
     ];
@@ -33,6 +36,9 @@ class Course extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'is_active' => 'boolean',
     ];
 
 
@@ -43,14 +49,12 @@ class Course extends Model
     public function academicPath()
     {
         return $this->belongsTo(\App\Models\AcademicPath::class);
-        // return $this->hasOne(\App\Models\AcademicPath::class);
     }
 
 
     public function classRooms()
     {
         return $this->hasMany(\App\Models\ClassRoom::class);
-        // return $this->belongsToMany(\App\Models\ClassRoom::class);
     }
 
 
@@ -80,10 +84,7 @@ class Course extends Model
             ],
         ];
 
-
         $html = HtmlHelper::dropdownMenuButton($list);
-
-
         return $html;
     }
 }

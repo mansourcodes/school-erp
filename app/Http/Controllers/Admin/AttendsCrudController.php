@@ -211,6 +211,31 @@ class AttendsCrudController extends CrudController
             }
         );
 
+
+        $this->crud->addFilter([
+            'name'  => 'show_all',
+            'type'  => 'select2',
+            'label' => trans('base.show_all'),
+        ], function () {
+            return [
+                1 => trans('base.show_all'),
+            ];
+        }, function ($value) {
+        });
+
+        $is_filter_active = false;
+        $filters = $this->crud->filters();
+        foreach ($filters as $key => $singleFilter) {
+            if ($singleFilter->currentValue !== null) {
+                $is_filter_active = true;
+            }
+        }
+        if (!$is_filter_active) {
+            $this->crud->addClause('whereHas', 'course', function ($query) {
+                $query->where('is_active', true);
+            });
+        }
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
