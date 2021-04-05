@@ -3,109 +3,116 @@
 
 @section('content')
 
+<style>
+    @media print {
+        @page {
+            size: landscape
+        }
+    }
+
+    th.rotate {
+        width: 60px;
+        height: 130px;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+    }
+
+    table.table.fixed-layout {
+        /* table-layout: fixed; */
+
+    }
+
+    th.rotate>p {
+        transform: rotate(90deg);
+        position: absolute;
+        left: 0;
+        top: 50px;
+        margin: auto;
+        width: -webkit-fill-available;
+        height: 23px;
+    }
+
+    tr th.onlinecontent,
+    tr td.onlinecontent {
+        width: 1%;
+        white-space: nowrap;
+    }
+</style>
+
+@foreach ($attend_table as $attend_curriculum_table)
 
 
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_attend_list_list.title']['value'] ?? __('reports.student_attend_list')}}</h2>
+    <h2 class="text-center">{{$settings['student_attend_list.title']['value'] ?? __('reports.student_attend_list')}}</h2>
 
 
-    <br>
+
 
     {!! $settings['student_attend_list.pre']['value'] ?? '' !!}
 
-    <br>
 
-
-    <table class="table  ">
+    <table class="table fixed-layout  ">
         <tr>
-            <td>
+            <td colspan="2">
                 <b>  
+                    {{__('curriculum.curriculum')}}:
+                </b>
+
+                {{$attend_curriculum_table['curriculum']->curriculumـname}}
+            </td>
+            <td>
+                <b>
+                    {{$attend_curriculum_table['day_name']}}
+                </b>
+
+                {{$attend_curriculum_table['start_time']->format('h:m')}}
+                {{__('base.'.$attend_curriculum_table['start_time']->format('a'))}}
+            </td>
+            <td>
+                <b>
+                    المعلم:
+                </b>
+                {{@$teachers[$attend_curriculum_table['curriculum']->id]}}
+            </td>
+            <td>
+                <b>
                     الصف:
+                    {{$classroom->long_name}}
+
                 </b>
-
-                {{$classroom->class_room_name}}
-
-
-            </td>
-            <td>
-                <b>  
-                    المرحلة:
-                </b>
-
-                {{$classroom->course->academicPath->academic_path_name}}
-
-
-            </td>
-            <td>
-                <b>  
-                    السنة الدراسية:
-                </b>
-
-
-                {{$classroom->course->hijri_year}} هـ
-
-                ({{$classroom->course->course_year}} م)
-
-            </td>
-            <td>
-                <b>  
-                    الفصل:
-                </b>
-                {{$classroom->course->semester}}
 
             </td>
         </tr>
     </table>
+
 
 
     <table class="table  table-ziped text-center">
         <tr>
-            <th>#</th>
-            <th>الاسم</th>
-            <th>الحضور</th>
-            <th>الغياب</th>
-            <th>الغياب بعذر</th>
-            <th>التأخير</th>
-            <th>التأخير بعذر</th>
-            <th>ملاحظات الإدارة</th>
-
+            <th style="width: 1%;" class="align-middle">#</th>
+            <th class="align-middle">الاسم</th>
+            @foreach ($attend_curriculum_table['calander_days'] as $date)
+            <th class="rotate">
+                <p>{{$date}}</p>
+            </th>
+            @endforeach
         </tr>
         @foreach ($classroom->students as $key => $student)
 
         <tr>
-            <td rowspan="2" class="align-middle">{{$key+1}}</td>
-            <th rowspan="2" class="align-middle text-right">{{$student->student_name}}</th>
-            <td>{{$student_report[$student->id]['attend']}}</td>
-            <td>{{$student_report[$student->id]['absent']}}</td>
-            <td>{{$student_report[$student->id]['absentWithExcuse']}}</td>
-            <td>{{$student_report[$student->id]['late']}}</td>
-            <td>{{$student_report[$student->id]['lateWithExcuse']}}</td>
-            <td rowspan="2" class="align-middle"></td>
-        </tr>
-        <tr>
-            <td>%{{$student_report[$student->id]['attend_per']}}</td>
-            <td>%{{$student_report[$student->id]['absent_per']}}</td>
-            <td>%{{$student_report[$student->id]['absentWithExcuse_per']}}</td>
-            <td>%{{$student_report[$student->id]['late_per']}}</td>
-            <td>%{{$student_report[$student->id]['lateWithExcuse_per']}}</td>
+            <td>{{$key+1}}</td>
+            <th class="onlinecontent text-right">{{$student->student_name}}</th>
+            @foreach ($attend_curriculum_table['calander_days'] as $date)
+            <td></td>
+            @endforeach
+
         </tr>
         @endforeach
 
     </table>
-
-    <table class="table">
-        <tr>
-            <th class="align-middle">
-                عدد أيام الدراسة
-            </th>
-            <td class="align-middle">{{$total_days}}</td>
-
-        </tr>
-    </table>
-    <br>
-
 
 
     {!! $settings['student_attend_list.pro']['value'] ?? '' !!}
@@ -114,4 +121,5 @@
 <div class="new-page"></div>
 
 
+@endforeach
 @endsection

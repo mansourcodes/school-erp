@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Helpers\FormBuilderHelper;
+use App\Helpers\HtmlHelper;
 use App\Models\Attends;
 use App\Models\ClassRoom;
 use App\Models\Course;
@@ -291,6 +293,7 @@ class AcademiaReportsController extends Controller
         return $data;
     }
 
+
     function reportStudentAttendReport(Request $request)
     {
         return $this->reportStudentAttend($request);
@@ -351,5 +354,45 @@ class AcademiaReportsController extends Controller
 
         $data['classroom'] = $classroom;
         return $data;
+    }
+
+    function reportStudentAttendList(Request $request)
+    {
+
+
+        $return = $this->reportStudentAttend($request);
+        $classroom_id = $request->input('classroom');
+        $classroom = ClassRoom::find($classroom_id);
+
+        $week_days = [
+            7 =>  trans('base.Sunday'),
+            1 => trans('base.Monday'),
+            2 => trans('base.Tuesday'),
+            3 => trans('base.Wednesday'),
+            4 => trans('base.Thursday'),
+            5 => trans('base.Friday'),
+            6 => trans('base.Saturday'),
+        ];
+
+
+        $attend_table = $classroom->attend_table;
+        foreach ($attend_table as $key => &$attend_curriculum_table) {
+            $attend_curriculum_table['start_time'] = Carbon::parse($attend_curriculum_table['start_time']);
+            $attend_curriculum_table['day_name'] = $week_days[$attend_curriculum_table['day']];
+            $attend_curriculum_table['curriculum'] = Curriculum::find((int)$attend_curriculum_table['curriculumـid']);
+            $attend_curriculum_table['calander_days'] = HtmlHelper::getDaysInRange($attend_curriculum_table['day'], $classroom->course->start_date, $classroom->course->end_date);
+        }
+
+        $teachers = [];
+        foreach ($classroom['teachers'] as $key => $teachers_object) {
+            $teachers[$teachers_object['curriculumـid']] = $teachers_object['teacher_name'];
+        }
+
+
+        $return['teachers'] = $teachers;
+        $return['attend_table'] = $attend_table;
+        $return['classroom'] = $classroom;
+
+        return $return;
     }
 }
