@@ -8,29 +8,7 @@ use Illuminate\Support\Facades\Schema;
 class AddSettingsToSettingsTable extends Migration
 {
 
-    /**
-     * The settings to add.
-     */
-    protected $settings = [
-        [
-            'key'         => 'organization_name',
-            'name'        => 'اسم المؤسسة',
-            'description' => '',
-            'value'       => 'تعليم الصلاة',
-            'field'       => '{"name":"value","label":"Value","type":"text"}',
-            'active'      => 1,
-        ],
-        [
-            'key'         => 'print_header',
-            'name'        => 'هيدر الطباعة',
-            'description' => '',
-            'value'       => '',
-            'field'       => '{"name":"value","label":"Value","type":"file"}',
-            'active'      => 1,
 
-        ],
-
-    ];
 
 
     /**
@@ -40,17 +18,85 @@ class AddSettingsToSettingsTable extends Migration
      */
     public function up()
     {
-        foreach ($this->settings as $index => $setting) {
-            $result = DB::table('settings')->insert($setting);
 
-            if (!$result) {
-                $this->command->info("Insert failed at record $index.");
+        /**
+         * The settings to add.
+         */
+        $settings = [];
 
-                return;
-            }
+
+        // main settings
+
+        $settings = array_merge($settings, [
+            [
+                'key'         => 'organization_name',
+                'name'        => 'اسم المؤسسة',
+                'description' => '',
+                'value'       => 'تعليم الصلاة',
+                'field'       => '{"name":"value","label":"Value","type":"text"}',
+                'active'      => 1,
+            ],
+            [
+                'key'         => 'print_header',
+                'name'        => 'هيدر الطباعة',
+                'description' => '',
+                'value'       => '',
+                'field'       => '{"name":"value","label":"Value","type":"browse"}',
+                'active'      => 1,
+            ],
+        ]);
+
+
+
+        $reports_list = [
+            'scoring_sheet',
+            'student_attend_list',
+            'student_attend_report',
+            'student_attend',
+            'student_courses_transcript',
+            'student_edu_statement',
+            'transcript',
+        ];
+
+        foreach ($reports_list as $key) {
+            $settings = array_merge($settings, [
+                [
+                    'key'         => $key . '.title',
+                    'name'        => trans('reports.title') . ':' . trans('reports.' . $key),
+                    'description' => '',
+                    'value'       => '',
+                    'field'       => '{"name":"value","label":"Value","type":"text"}',
+                    'active'      => 1,
+                ],
+                [
+                    'key'         => $key . '.pre',
+                    'name'        => trans('reports.pre') . ':' . trans('reports.' . $key),
+                    'description' => '',
+                    'value'       => '',
+                    'field'       => '{"name":"value","label":"Value","type":"tinymce"}',
+                    'active'      => 1,
+                ],
+                [
+                    'key'         => $key . '.pro',
+                    'name'        => trans('reports.pro') . ':' . trans('reports.' . $key),
+                    'description' => '',
+                    'value'       => '',
+                    'field'       => '{"name":"value","label":"Value","type":"tinymce"}',
+                    'active'      => 1,
+                ]
+            ]);
         }
 
-        // $this->command->info('Inserted ' . count($this->settings) . ' records.');
+
+
+
+
+
+
+
+        foreach (array_reverse($settings) as $index => $setting) {
+            $result = DB::table('settings')->insert($setting);
+        }
     }
 
     /**

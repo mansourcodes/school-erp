@@ -52,13 +52,13 @@
     @endif
 
     <h1 class="title text-center">
-        {{$settings['student_attend_list.title']['value'] ?? __('reports.student_attend_list')}}
+        {{Setting::get('student_attend_list.title') === '' ? __('reports.student_attend_list') : Setting::get('student_attend_list.title') }}
     </h1>
 
 
 
 
-    {!! $settings['student_attend_list.pre']['value'] ?? '' !!}
+    {!! Setting::get('student_attend_list.pre') !!}
 
 
     <table class="table fixed-layout  ">
@@ -122,7 +122,7 @@
     </table>
 
 
-    {!! $settings['student_attend_list.pro']['value'] ?? '' !!}
+    {!! Setting::get('student_attend_list.pro') !!}
 
 </div>
 <div class="new-page"></div>

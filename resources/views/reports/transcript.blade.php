@@ -6,10 +6,15 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['transcript.title']['value'] ?? __('reports.transcript')}}</h2>
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
 
+    <h1 class="title text-center">
+        {{Setting::get('transcript.title') === '' ? __('reports.transcript') : Setting::get('transcript.title') }}
+    </h1>
 
-    {!! $settings['transcript.pre']['value'] ?? '' !!}
+    {!! Setting::get('transcript.pre') !!}
 
 
     <table class="table table-no-border">
@@ -78,7 +83,7 @@
 
     </table>
 
-    {!! $settings['transcript.pro']['value'] ?? '' !!}
+    {!! Setting::get('transcript.pro') !!}
 
 </div>
 <div class="new-page"></div>

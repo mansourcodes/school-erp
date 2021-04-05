@@ -72,9 +72,6 @@
 
 
 
-
-        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('reportssettings') }}'><i class='nav-icon la la-cog'></i> {{__('reportssettings.reportssettings')}}</a></li>
-
     </ul>
 </li>
 

@@ -6,7 +6,14 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_courses_transcript.title']['value'] ?? __('reports.student_courses_transcript')}}</h2>
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
+
+    <h1 class="title text-center">
+        {{Setting::get('student_courses_transcript.title') === '' ? __('reports.student_courses_transcript') : Setting::get('student_courses_transcript.title') }}
+    </h1>
+
 
 
 
@@ -53,7 +60,7 @@
         </tr>
     </table>
 
-    {!! $settings['student_courses_transcript.pre']['value'] ?? '' !!}
+    {!! Setting::get('student_courses_transcript.pre') !!}
 
 
     <table class="table">
@@ -141,7 +148,7 @@
 
     </table>
 
-    {!! $settings['student_courses_transcript.pro']['value'] ?? '' !!}
+    {!! Setting::get('student_courses_transcript.pro') !!}
 
 </div>
 <div class="new-page"></div>

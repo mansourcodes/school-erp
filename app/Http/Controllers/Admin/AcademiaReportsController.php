@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-use App\Helpers\FormBuilderHelper;
 use App\Helpers\HtmlHelper;
 use App\Models\Attends;
 use App\Models\ClassRoom;
 use App\Models\Course;
-use App\Models\ReportsSettings;
 use App\Models\Curriculum;
 use App\Models\StudentMarks;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,7 +29,6 @@ class AcademiaReportsController extends Controller
         $function =  Str::camel('report_' . $view);
         $data = $this->{$function}($request);
 
-        $data['settings'] = ReportsSettings::where('key', 'like', $view . '.%')->get()->keyBy('key');
 
         $print = $request->input('print');
         if ($print == 'pdf') {

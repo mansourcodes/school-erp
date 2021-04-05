@@ -6,7 +6,15 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_edu_statement.title']['value'] ?? __('reports.student_edu_statement')}}</h2>
+
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
+
+    <h1 class="title text-center">
+        {{Setting::get('student_edu_statement.title') === '' ? __('reports.student_edu_statement') : Setting::get('student_edu_statement.title') }}
+    </h1>
+
 
 
 
@@ -53,7 +61,7 @@
         </tr>
     </table>
 
-    {!! $settings['student_edu_statement.pre']['value'] ?? '' !!}
+    {!! Setting::get('student_edu_statement.pre') !!}
 
 
     <table class="table">
@@ -114,7 +122,7 @@
 
     </table>
 
-    {!! $settings['student_edu_statement.pro']['value'] ?? '' !!}
+    {!! Setting::get('student_edu_statement.pro') !!}
 
 </div>
 <div class="new-page"></div>

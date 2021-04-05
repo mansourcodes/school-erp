@@ -9,14 +9,19 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_attend.title']['value'] ?? __('reports.student_attend')}}</h2>
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
+
+    <h1 class="title text-center">
+        {{Setting::get('student_attend.title') === '' ? __('reports.student_attend') : Setting::get('student_attend.title') }}
+    </h1>
 
 
-    <br>
 
-    {!! $settings['student_attend.pre']['value'] ?? '' !!}
 
-    <br>
+    {!! Setting::get('student_attend.pre') !!}
+
 
     <table class="table  ">
         <tr>
@@ -116,7 +121,7 @@
 
 
 
-    {!! $settings['student_attend.pro']['value'] ?? '' !!}
+    {!! Setting::get('student_attend.pro') !!}
 
 </div>
 <div class="new-page"></div>

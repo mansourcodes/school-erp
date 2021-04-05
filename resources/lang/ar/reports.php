@@ -11,4 +11,12 @@ return [
     'student_attend'         => 'تقرير إجمالي للحضور',
     'student_attend_report'         => 'تقرير الإنضباط للصف',
     'student_attend_list'         => 'كشف أسماء الطلاب',
+
+
+    // settings
+
+    'title'         => 'عنوان',
+    'pre'         => 'مستهل',
+    'pro'         => 'ختام ',
+
 ];

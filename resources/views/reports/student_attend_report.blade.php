@@ -9,17 +9,20 @@
 <div class="page">
 
 
+
     @if(Setting::get('print_header'))
     <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
     @endif
 
     <h1 class="title text-center">
-        {{$settings['student_attend_report.title']['value'] ?? __('reports.student_attend_report')}}
+        {{Setting::get('student_attend_report.title') === '' ? __('reports.student_attend_report') : Setting::get('student_attend_report.title') }}
     </h1>
 
 
 
-    {!! $settings['student_attend_report.pre']['value'] ?? '' !!}
+
+    {!! Setting::get('student_attend_report.pre') !!}
+
 
 
 
@@ -112,7 +115,7 @@
 
 
 
-    {!! $settings['student_attend_report.pro']['value'] ?? '' !!}
+    {!! Setting::get('student_attend_report.pro') !!}
 
 </div>
 <div class="new-page"></div>
