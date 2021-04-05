@@ -8,14 +8,19 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_attend_report.title']['value'] ?? __('reports.student_attend_report')}}</h2>
+
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
+
+    <h1 class="title text-center">
+        {{$settings['student_attend_report.title']['value'] ?? __('reports.student_attend_report')}}
+    </h1>
 
 
-    <br>
 
     {!! $settings['student_attend_report.pre']['value'] ?? '' !!}
 
-    <br>
 
 
     <table class="table  ">
@@ -104,7 +109,6 @@
 
         </tr>
     </table>
-    <br>
 
 
 

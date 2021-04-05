@@ -12,7 +12,7 @@
 <body>
     <div id="app">
 
-        <div style="position: fixed; top:1rem; right:1rem;" class="text-center  noPrint">
+        <div style="position: fixed; top:1rem; right:1rem;z-index: 9999999999;" class="text-center  noPrint">
             <div class="text-center btn btn-primary noPrint" onclick="printPage()">
                 <i class="la la-print"></i> طباعة
             </div>
@@ -43,6 +43,10 @@
                 padding: 20px;
             }
 
+            .page {
+                position: relative;
+            }
+
             table.table {
                 border-collapse: collapse;
                 margin: 1%;
@@ -70,6 +74,16 @@
             table.table.table-ziped th {
                 padding: 2px 15px;
                 font-size: 14px;
+            }
+
+            h1.title {
+                /* position: absolute;
+                top: 60px;
+                left: 50%;
+                margin-left: -200px;
+                width: 400px; */
+                font-size: 2rem;
+
             }
         </style>
 

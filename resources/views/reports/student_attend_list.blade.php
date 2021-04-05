@@ -46,7 +46,14 @@
 
 <div class="page">
 
-    <h2 class="text-center">{{$settings['student_attend_list.title']['value'] ?? __('reports.student_attend_list')}}</h2>
+
+    @if(Setting::get('print_header'))
+    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
+    @endif
+
+    <h1 class="title text-center">
+        {{$settings['student_attend_list.title']['value'] ?? __('reports.student_attend_list')}}
+    </h1>
 
 
 
