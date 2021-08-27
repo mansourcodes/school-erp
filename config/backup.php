@@ -17,7 +17,7 @@ return [
          * --disable-notifications
          */
         'backpack_flags' => [
-            '--disable-notifications'=> true,
+            '--disable-notifications' => true,
         ],
 
         /*
@@ -34,7 +34,7 @@ return [
                  * The list of directories and files that will be included in the backup.
                  */
                 'include' => [
-                    base_path(),
+                    // base_path(),
                 ],
 
                 /*
