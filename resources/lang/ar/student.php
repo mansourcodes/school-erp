@@ -9,7 +9,7 @@ return [
 
 
 
-    'student_name'         => 'اسم الطلاب',
+    'student_name'         => 'الاسم',
 
     'cpr'         => 'الرقم الشخصي',
 

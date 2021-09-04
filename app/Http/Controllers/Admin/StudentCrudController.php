@@ -106,15 +106,16 @@ class StudentCrudController extends CrudController
         CRUD::addField([
             'name' => 'cpr',
             'label' => trans('student.cpr'),
+            'type' => 'text',
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
         CRUD::addField([
             'name' => 'email',
             'label' => trans('student.email'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
 
@@ -123,14 +124,14 @@ class StudentCrudController extends CrudController
             'name' => 'mobile',
             'label' => trans('student.mobile'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
         CRUD::addField([
             'name' => 'mobile2',
             'label' => trans('student.mobile2'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
 
@@ -145,7 +146,7 @@ class StudentCrudController extends CrudController
                 'language' => 'ar'
             ],
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
 
@@ -159,7 +160,7 @@ class StudentCrudController extends CrudController
                 'language' => 'ar',
             ],
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
 
@@ -169,7 +170,7 @@ class StudentCrudController extends CrudController
             'label' => trans('student.relationshipـstate'),
             'type' => 'select_from_array',
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
             'options' => [
                 "UNKNOWN" => trans('student.relationshipـstate_options.UNKNOWN'),
@@ -186,7 +187,7 @@ class StudentCrudController extends CrudController
         //     'label' => trans('student.relationshipـstate'),
         //     'type' => 'enum',
         //     'wrapper'   => [
-        //         'class'      => 'col-6'
+        //         'class'      => 'form-group col-md-6'
         //     ],
         //     'tab'   => trans('student.relationshipـstate'),
         // ]);
@@ -194,7 +195,7 @@ class StudentCrudController extends CrudController
             'name' => 'family_depends',
             'label' => trans('student.family_depends'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
             'tab'   => trans('student.relationshipـstate'),
         ]);
@@ -202,7 +203,7 @@ class StudentCrudController extends CrudController
             'name' => 'family_members',
             'label' => trans('student.family_members'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
             'tab'   => trans('student.relationshipـstate'),
         ]);
@@ -213,7 +214,7 @@ class StudentCrudController extends CrudController
             'label' => trans('student.live_inـstate'),
             'type' => 'select_from_array',
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
             'options' => [
                 "UNKNOWN" => trans('student.live_inـstate_options.UNKNOWN'),
@@ -232,7 +233,7 @@ class StudentCrudController extends CrudController
         //     'label' => trans('student.live_inـstate'),
         //     'type' => 'enum',
         //     'wrapper'   => [
-        //         'class'      => 'col-6'
+        //         'class'      => 'form-group col-md-6'
         //     ],
         //     'tab'   => trans('student.financialـstate'),
         // ]);
@@ -244,7 +245,7 @@ class StudentCrudController extends CrudController
             'label' => trans('student.financialـstate'),
             'type' => 'select_from_array',
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
             'options' => [
                 "UNKNOWN" => trans('student.financialـstate_options.UNKNOWN'),
@@ -264,7 +265,7 @@ class StudentCrudController extends CrudController
         //     'label' => trans('student.financialـstate'),
         //     'type' => 'enum',
         //     'wrapper'   => [
-        //         'class'      => 'col-6'
+        //         'class'      => 'form-group col-md-6'
         //     ],
         //     'tab'   => trans('student.financialـstate'),
         // ]);
@@ -290,7 +291,7 @@ class StudentCrudController extends CrudController
             'label' => trans('student.hawzaـhistory'),
             'tab'   => trans('student.hawzaـhistory'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
         CRUD::addField([
@@ -298,7 +299,7 @@ class StudentCrudController extends CrudController
             'label' => trans('student.degree'),
             'tab'   => trans('student.hawzaـhistory'),
             'wrapper'   => [
-                'class'      => 'col-6'
+                'class'      => 'form-group col-md-6'
             ],
         ]);
         CRUD::addField([
