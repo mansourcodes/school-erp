@@ -514,8 +514,20 @@ class AttendsCrudController extends CrudController
             trans('attend.add_attend_w_date') => false,
         ];
 
-
         $data['classrooms'] = ClassRoom::getByDate($chosen_date);
+
+        // foreach ($data['classrooms'] as $class) {
+
+        //     foreach ($class->active_attend_table as $key => $value) {
+
+        //         if (!$value['curriculum']) {
+        //             dd($value, $class);
+        //         }
+
+        //         // dd($value['curriculum']->long_name);
+        //     }
+        // }
+        // dd(1);
 
         return view('attend.attend_list', $data);
     }

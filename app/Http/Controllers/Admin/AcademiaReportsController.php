@@ -306,6 +306,10 @@ class AcademiaReportsController extends Controller
         $attends = Attends::Where('course_id', $classroom->course_id);
         $data['total_days'] = $attends->count();
 
+        if ($data['total_days'] == 0) {
+            $data['total_days'] = 1;
+        }
+
 
         $student_report = [];
         foreach ($classroom->students as $student) {
@@ -316,7 +320,8 @@ class AcademiaReportsController extends Controller
             $student_report[$student_id]['attend'] = Attends::whereHas('attendStudents',  function ($query) use ($student_id) {
                 $query->whereIn('id', [$student_id]);
             })->get()->count();
-            $student_report[$student_id]['attend_per'] = round($student_report[$student_id]['attend'] / $data['total_days'] * 100);
+            $student_report[$student_id]['attend_per'] =
+                round($student_report[$student_id]['attend'] / $data['total_days'] * 100);
 
             //absent
             $student_report[$student_id]['absent'] = Attends::whereHas('absentStudents',  function ($query) use ($student_id) {
