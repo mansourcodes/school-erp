@@ -26,6 +26,7 @@ class Payment extends Model
         'student_id',
         'amount',
         'source',
+        'type',
         'meta',
     ];
 

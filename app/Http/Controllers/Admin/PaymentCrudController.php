@@ -86,7 +86,6 @@ class PaymentCrudController extends CrudController
         CRUD::addColumn(
             [
                 'name'    => 'amount',
-                'type'    => 'number',
                 'suffix'    => ' دب',
                 'label'   => trans('account.amount'),
 
@@ -95,8 +94,16 @@ class PaymentCrudController extends CrudController
 
         CRUD::addColumn(
             [
-                'name'    => 'source',
+                'name'    => 'type',
                 'label'   => trans('account.payment_type'),
+
+            ]
+        );
+
+        CRUD::addColumn(
+            [
+                'name'    => 'source',
+                'label'   => trans('account.payment_source'),
 
             ]
         );
@@ -169,14 +176,29 @@ class PaymentCrudController extends CrudController
         CRUD::addField(
             [   // select2_from_array
                 'name'        => 'source',
-                'label'       => trans('account.payment_type'), // Table column heading
+                'label'       => trans('account.payment_source'), // Table column heading
                 'type'        => 'select2_from_array',
-                'options'     => getPaymentTypesArray(),
+                'options'     => getPaymentSourceArray(),
                 'allows_null' => false,
                 'default'     => 'CASH',
                 // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
                 'wrapper'   => [
-                    'class'      => 'form-group col-6'
+                    'class'      => 'form-group col-4'
+                ],
+            ],
+        );
+
+        CRUD::addField(
+            [   // select2_from_array
+                'name'        => 'type',
+                'label'       => trans('account.payment_type'), // Table column heading
+                'type'        => 'select2_from_array',
+                'options'     => getPaymentTypesArray(),
+                'allows_null' => false,
+                'default'     => 'Full',
+                // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
+                'wrapper'   => [
+                    'class'      => 'form-group col-4'
                 ],
             ],
         );
@@ -188,8 +210,13 @@ class PaymentCrudController extends CrudController
                 'type'        => 'number',
                 'default'     => '25',
 
+                // optionals
+                'attributes' => ["step" => "any"], // allow decimals
+                'prefix'     => " دب ",
+                // 'suffix'     => ".00",
+
                 'wrapper'   => [
-                    'class'      => 'form-group col-6'
+                    'class'      => 'form-group col-4'
                 ],
             ],
         );

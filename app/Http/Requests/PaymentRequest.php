@@ -29,6 +29,7 @@ class PaymentRequest extends FormRequest
             'course_id' => 'required|',
             'student_id' => 'required|',
             'source' => 'required',
+            'type' => 'required',
             'amount' => 'required|numeric',
         ];
     }
