@@ -5,10 +5,16 @@ namespace App\Models\Account;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 
 class Payment extends Model
 {
+    use CrudTrait;
     use HasFactory, SoftDeletes;
+
+    protected $table = 'payments';
+    protected $guarded = ['id'];
+
 
     /**
      * The attributes that are mass assignable.
@@ -35,14 +41,45 @@ class Payment extends Model
         'amount' => 'double',
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONS
+    |--------------------------------------------------------------------------
+    */
 
     public function course()
     {
-        return $this->belongsTo(\App\Models\Account\Course::class);
+        return $this->belongsTo(\App\Models\Course::class);
     }
 
     public function student()
     {
-        return $this->belongsTo(\App\Models\Account\Student::class);
+        return $this->belongsTo(\App\Models\Student::class);
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FUNCTIONS
+    |--------------------------------------------------------------------------
+    */
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPES
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACCESSORS
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | MUTATORS
+    |--------------------------------------------------------------------------
+    */
 }

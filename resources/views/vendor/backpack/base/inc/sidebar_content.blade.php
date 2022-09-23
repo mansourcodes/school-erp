@@ -18,6 +18,19 @@
 </li>
 
 
+<!-- academicManagment -->
+<li class="nav-item nav-dropdown">
+    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-cash-register"></i> {{__('account.account')}}</a>
+    <ul class="nav-dropdown-items">
+
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('payment') }}'><i class='nav-icon la la-file-invoice-dollar'></i> {{__('account.payments')}}</a></li>
+
+
+
+    </ul>
+</li>
+
+
 <!-- <li class="nav-title">{{__('base.academicRegistration')}}</li> -->
 
 
