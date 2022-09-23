@@ -1,12 +1,7 @@
 created:
-    - database/factories/Models/AttendsFactory.php
-    - database/migrations/2021_03_30_115308_create_attends_table.php
-    - database/migrations/2021_03_30_115309_create_attends_student_table.php
-    - database/migrations/2021_03_30_115310_create_attends_student2_table.php
-    - database/migrations/2021_03_30_115311_create_attends_student3_table.php
-    - database/migrations/2021_03_30_115312_create_attends_student4_table.php
-    - database/migrations/2021_03_30_115313_create_attends_student5_table.php
-    - app/Models/Attends.php
+    - database/factories/Models/Account/PaymentFactory.php
+    - database/migrations/2022_09_23_074506_create_payments_table.php
+    - app/Models/Account/Payment.php
 models:
     Models\User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
     Models\Curriculum: { curriculumـname: 'string:200 nullable', bookـname: 'string:200 nullable', weightـinـhours: 'integer unsigned default:5 nullable', softdeletes: softDeletes, timestamps: timestamps, relationships: { hasOne: CurriculumCategory, belongsToMany: AcademicPath } }
@@ -18,3 +13,4 @@ models:
     Models\StudentMarks: { student_id: 'string:200', course_id: 'string:200', marks: 'longText nullable' }
     Models\ReportsSettings: { key: 'string unique', type: string, value: 'text nullable' }
     Models\Attends: { date: date, start_time: time, class_room_id: string, course_id: string, timestamps: timestamps, relationships: { belongsToMany: 'Student,Student2,Student3,Student4,Student5', belongsTo: 'ClassRoom,Course' } }
+    Models\Account\Payment: { course_id: 'id foreign', student_id: 'id foreign', amount: double, source: string, meta: 'longText nullable', softdeletes: softDeletes, timestamps: timestamps }

@@ -1,0 +1,9 @@
+models:
+  Models\Account\Payment:
+    course_id: id foreign
+    student_id: id foreign
+    amount: double
+    source: string
+    meta: longText nullable
+    softDeletes: true
+    timestamps: true
