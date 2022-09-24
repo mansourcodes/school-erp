@@ -1,0 +1,8 @@
+models:
+  Models\ExamTool:
+    subject: string:200 nullable
+    course_id: id foreign
+    zip_file_path: string:200 nullable
+    zip_file_size: string:200 nullable
+    meta: longText nullable
+    timestamps: true

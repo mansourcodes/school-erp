@@ -83,6 +83,7 @@
         <li class='nav-item'><a class='nav-link' href='{{ backpack_url('curriculumcategory') }}'><i class='nav-icon la la-project-diagram'></i> {{__('curriculumcategory.curriculumcategories')}}</a></li>
 
 
+        <li class='nav-item'><a class='nav-link' href='{{ backpack_url('examtool') }}'><i class='nav-icon la la-tools'></i> {{__('examtool.examtools')}}</a></li>
 
 
     </ul>
