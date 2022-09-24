@@ -18,6 +18,7 @@ class ExamTool extends Model
     protected $fillable = [
         'subject',
         'course_id',
+        'file',
         'zip_file_path',
         'zip_file_size',
         'meta',
@@ -37,5 +38,17 @@ class ExamTool extends Model
     public function course()
     {
         return $this->belongsTo(\App\Models\Course::class);
+    }
+
+
+    public function setFileAttribute($value)
+    {
+        $attribute_name = "file";
+        $disk = "public";
+        $destination_path = "examtools/exams";
+
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
+
+        // return $this->attributes[{$attribute_name}]; // uncomment if this is a translatable field
     }
 }

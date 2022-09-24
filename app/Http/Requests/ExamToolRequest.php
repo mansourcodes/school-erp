@@ -26,7 +26,9 @@ class ExamToolRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'subject' => 'required',
+            'course_id' => 'required',
+            'file' => 'required|mimes:docx|max:10240'
         ];
     }
 

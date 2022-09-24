@@ -15,9 +15,9 @@ class ExamToolCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -28,7 +28,7 @@ class ExamToolCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\ExamTool::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/examtool');
-        CRUD::setEntityNameStrings('examtool', 'exam_tools');
+        CRUD::setEntityNameStrings(trans('examtool.examtool'), trans('examtool.examtools'));
     }
 
     /**
@@ -39,11 +39,33 @@ class ExamToolCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('subject');
-        CRUD::column('course_id');
-        CRUD::column('zip_file_path');
-        CRUD::column('zip_file_size');
-        CRUD::column('meta');
+        CRUD::column('subject')->label(trans('examtool.subject'));
+
+
+
+        CRUD::addColumn([
+            'name' => 'course_id',
+            'label' => trans('course.course'),
+            'type'         => 'relationship',
+            // OPTIONAL
+            // 'entity'    => 'tags', // the method that defines the relationship in your Model
+            'attribute' => 'long_name', // foreign key attribute that is shown to user
+            // 'model'     => App\Models\Category::class, // foreign key model
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query->orWhereHas('course', function ($query) use ($column, $searchTerm) {
+                    $query->where('course_year', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('hijri_year', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('semester', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('academicPath', function ($query) use ($column, $searchTerm) {
+                            $query->where('academic_path_name', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            }
+        ]);
+
+        // CRUD::column('file')->label(trans('examtool.file'));
+        CRUD::column('zip_file_size')->label(trans('examtool.zip_file_size'));
+        // CRUD::column('meta')->label(trans('examtool.meta'));
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -63,10 +85,47 @@ class ExamToolCrudController extends CrudController
         CRUD::setValidation(ExamToolRequest::class);
 
         CRUD::field('subject');
-        CRUD::field('course_id');
-        CRUD::field('zip_file_path');
-        CRUD::field('zip_file_size');
-        CRUD::field('meta');
+
+
+        CRUD::addField(
+            [   // 1-n relationship
+                'label'       => trans('course.course'), // Table column heading
+                'type'        => "select2_from_ajax",
+                'name'        => 'course_id', // the column that contains the ID of that connected entity
+                'entity'      => 'course', // the method that defines the relationship in your Model
+                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'data_source' => url("api/course"), // url to controller search function (with /{id} should return model)
+
+                // OPTIONAL
+                'placeholder'             => "Select a course", // placeholder for the select
+                'minimum_input_length'    => 1, // minimum characters to type before querying results
+                // 'model'                   => "App\Models\Category", // foreign key model
+                // 'dependencies'            => ['category'], // when a dependency changes, this select2 is reset to null
+                // 'method'                  => 'GET', // optional - HTTP method to use for the AJAX call (GET, POST)
+                // 'include_all_form_fields' => false, // optional - only send the current field through AJAX (for a smaller payload if you're not using multiple chained select2s)
+                'wrapper'   => [
+                    'class'      => 'form-group col-6'
+                ],
+            ],
+        );
+
+
+
+        // CRUD::field('file');
+        CRUD::addField(
+            [   // Upload
+                'name'      => 'file',
+                'label'     => trans('examtool.file'),
+                'type'      => 'upload',
+                'upload'    => true,
+                'wrapper'   => [
+                    'class'      => 'form-group col-6 text-left'
+                ],
+            ],
+        );
+
+        // CRUD::field('zip_file_size');
+        // CRUD::field('meta');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
