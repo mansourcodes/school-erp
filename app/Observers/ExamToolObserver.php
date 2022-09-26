@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\generateExamsDocxJob;
 use App\Models\ExamTool;
 
 class ExamToolObserver
@@ -14,7 +15,7 @@ class ExamToolObserver
      */
     public function creating(ExamTool $examTool)
     {
-        dd($examTool);
+        dispatch(new generateExamsDocxJob($examTool));
     }
 
     public function deleting(ExamTool $examTool)
