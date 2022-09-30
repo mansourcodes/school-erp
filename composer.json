@@ -23,7 +23,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "laravelcollective/html": "^6.2"
+        "laravelcollective/html": "^6.2",
+        "phpoffice/phpword": "^0.18.3"
     },
     "require-dev": {
         "backpack/generators": "^3.1",
@@ -55,7 +56,8 @@
         },
         "files": [
             "app/Helpers/FormBuilderHelper.php",
-            "app/Helpers/helpers.php"
+            "app/Helpers/helpers.php",
+            "app/Helpers/lib/tbszip/tbszip.php"
         ]
     },
     "autoload-dev": {
