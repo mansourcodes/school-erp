@@ -28,7 +28,8 @@ class ExamToolRequest extends FormRequest
         return [
             'subject' => 'required',
             'course_id' => 'required',
-            'file' => 'required|mimes:docx|max:10240'
+            'file' => 'required|mimes:docx|max:10240',
+            'status' => 'required'
         ];
     }
 

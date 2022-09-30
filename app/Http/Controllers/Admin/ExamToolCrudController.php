@@ -65,6 +65,7 @@ class ExamToolCrudController extends CrudController
 
         // CRUD::column('file')->label(trans('examtool.file'));
         CRUD::column('zip_file_size')->label(trans('examtool.zip_file_size'));
+        CRUD::column('status')->label(trans('examtool.status'));
         // CRUD::column('meta')->label(trans('examtool.meta'));
 
         /**

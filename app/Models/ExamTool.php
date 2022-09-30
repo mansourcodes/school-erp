@@ -19,6 +19,7 @@ class ExamTool extends Model
         'subject',
         'course_id',
         'file',
+        'status',
         'zip_file_path',
         'zip_file_size',
         'meta',

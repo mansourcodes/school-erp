@@ -20,6 +20,8 @@ class ExamToolObserver
 
     public function deleting(ExamTool $examTool)
     {
-        dd($examTool);
+        // dd($examTool);
+        echo 'hi';
+        exit;
     }
 }
