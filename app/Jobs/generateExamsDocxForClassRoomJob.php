@@ -56,18 +56,21 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
 
 
 
-    function replaceWithCard($examTool, $stundet)
+    function replaceWithCard($examTool, $student)
     {
-        $cardTemplate = $this->getCardTemplate($examTool);
+        $cardTemplate = $this->getCardTemplate();
+
+        $studentArray = $student->toArray();
+        $studentArray['course']  = $examTool->course->id;
+        $studentCard = $this->createStudentCard($cardTemplate, $studentArray);
 
         echo $cardTemplate;
     }
 
 
-    function getCardTemplate($examTool)
+    function getCardTemplate()
     {
         $zip = new clsTbsZip();
-
 
         // Open the document
         $zip->Open(public_path() . '/files/card_template.docx');
@@ -77,5 +80,13 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
 
         $content = substr($content, $p_start, $p_end - $p_start);
         return $content;
+    }
+
+    function createStudentCard($cardTemplate, $studentArray)
+    {
+        foreach ($studentArray as $key => $value) {
+            $cardTemplate = str_replace('XX' . $key . 'XX', $value, $cardTemplate);
+        }
+        return $cardTemplate;
     }
 }
