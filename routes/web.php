@@ -1,5 +1,7 @@
 <?php
 
+use App\Jobs\generateExamsDocxJob;
+use App\Models\ExamTool;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/admin');
+});
+Route::get('/debug', function () {
+
+    $examTool = ExamTool::find(3);
+
+    dispatch(new generateExamsDocxJob($examTool));
 });
 
 

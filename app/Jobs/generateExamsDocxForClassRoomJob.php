@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\ClassRoom;
 use App\Models\ExamTool;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -9,21 +10,26 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use phpDocumentor\Reflection\Types\Boolean;
 
-class generateExamsDocxJob implements ShouldQueue
+class generateExamsDocxForClassRoomJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $examTool;
+    private $classRoom;
+    private $examTool;
+    private $isLast;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ExamTool $examTool)
+    public function __construct(ClassRoom $classRoom, ExamTool $examTool, $isLast = false)
     {
+        $this->classRoom = $classRoom;
         $this->examTool = $examTool;
+        $this->isLast = $isLast;
     }
 
     /**
@@ -34,12 +40,12 @@ class generateExamsDocxJob implements ShouldQueue
     public function handle()
     {
         //
-        foreach ($this->examTool->course->classRooms as $key => $classRoom) {
-            if ($key === array_key_last($this->examTool->course->classRooms->toArray())) {
-                dispatch(new generateExamsDocxForClassRoomJob($classRoom, $this->examTool, true));
-            } else {
-                dispatch(new generateExamsDocxForClassRoomJob($classRoom, $this->examTool));
-            }
+
+        dd($this->classRoom->students);
+
+
+        if ($this->isLast) {
+            // dispatch(new zipExamFilesJob($this->examTool));
         }
     }
 }
