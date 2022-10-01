@@ -45,38 +45,60 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
     public function handle()
     {
         //
+        $tmpPath = Storage::path('public') . "/examtools/tmp/examtool_" . $this->examTool->id;
+        File::ensureDirectoryExists($tmpPath, '0777');
+
+
         $cardTemplate = $this->getCardTemplate();
         $student = $this->classRoom->students[0];
-
+        $counter = 1;
         foreach ($this->classRoom->students as $key => $student) {
-            $studentArray = $student->toArray();
-
-            $studentArray['course']  = $this->examTool->course->id;
-            $studentArray['class_name']  = $this->classRoom->class_room_name;
-            $studentArray = Arr::only($studentArray, [
-                'student_name',
-                'cpr',
-                'student_id',
-                'mobile',
-                // 'course',
-                'class_name',
-            ]);
-
+            $studentArray = $this->getStudentArray($student);
             $studentCard = $this->createStudentCard($cardTemplate,  $studentArray, $this->examTool);
+            $studentExamFileName = $this->getStudentExamFileName($student, $counter++);
+            $this->createStudentExamFile(
+                Storage::path('public/') . $this->examTool->file,
+                $studentCard,
+                $tmpPath . $studentExamFileName
+            );
 
-            var_dump($studentCard);
+
             break;
         }
 
 
 
-        dd();
+        dd('end');
         if ($this->isLast) {
             // dispatch(new zipExamFilesJob($this->examTool));
         }
     }
 
 
+
+    function getStudentExamFileName($student, $counter)
+    {
+        $studentExamFileName = $counter . '_' . $this->classRoom->id . '_' . $student->student_id . ".docx";
+        $studentExamFileName =  str_replace(' ', '_',  $studentExamFileName);
+        return;
+    }
+
+    function getStudentArray($student)
+    {
+        $studentArray = $student->toArray();
+
+        $studentArray['course']  = $this->examTool->course->id;
+        $studentArray['class_name']  = $this->classRoom->class_room_name;
+        $studentArray = Arr::only($studentArray, [
+            'student_name',
+            'cpr',
+            'student_id',
+            'mobile',
+            // 'course',
+            'class_name',
+        ]);
+        return $studentArray;
+    }
 
     function getCardTemplate()
     {
@@ -100,5 +122,34 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         }
 
         return $cardTemplate;
+    }
+
+
+    function createStudentExamFile($templateFile, $cardTempalte, $newFileNameWithPath)
+    {
+        $zip = new clsTbsZip();
+        $needle_tag = "++student++";
+
+
+        // Open the document
+        $zip->Open($templateFile);
+        $content = $zip->FileRead('word/document.xml');
+        $p = strpos($content, '</w:body>');
+        if ($p === false) {
+            abort(500, "Tag </w:body> not found in document. Not supported document.");
+        }
+
+        $p_tag = strpos($content, '++student++');
+        if ($p_tag === false) {
+            // dd($content);
+            abort(500, "Tag ++student++ not found in document.It`s needed for adding the student information.");
+        }
+
+
+        $content = str_replace($needle_tag, $cardTempalte, $content);
+        $zip->FileReplace('word/document.xml', $content, TBSZIP_STRING);
+
+        // Save as a new file
+        $zip->Flush(TBSZIP_FILE, $newFileNameWithPath);
     }
 }
