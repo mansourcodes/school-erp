@@ -57,7 +57,8 @@ class Student extends Model
 
 
     protected $appends = [
-        'long_name'
+        'long_name',
+        'student_id',
     ];
 
     public function classRooms()
@@ -71,5 +72,12 @@ class Student extends Model
         $mobile2 = ($this->mobile2) ? '-' . $this->mobile2 : '';
 
         return "[" . $this->cpr . "] " . $this->student_name . " [" . $this->mobile . $mobile2 . "]";
+    }
+
+    public function getStudentIdAttribute()
+    {
+
+        $registration_at = ($this->registration_at) ?: $this->created_at;
+        return ($registration_at->year .  str_pad($this->id, 4, '0', STR_PAD_LEFT));
     }
 }

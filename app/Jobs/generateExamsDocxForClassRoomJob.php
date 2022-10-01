@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -44,9 +45,30 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
     public function handle()
     {
         //
+        $cardTemplate = $this->getCardTemplate();
+        $student = $this->classRoom->students[0];
+
+        foreach ($this->classRoom->students as $key => $student) {
+            $studentArray = $student->toArray();
+
+            $studentArray['course']  = $this->examTool->course->id;
+            $studentArray['class_name']  = $this->classRoom->class_room_name;
+            $studentArray = Arr::only($studentArray, [
+                'student_name',
+                'cpr',
+                'student_id',
+                'mobile',
+                // 'course',
+                'class_name',
+            ]);
+
+            $studentCard = $this->createStudentCard($cardTemplate,  $studentArray, $this->examTool);
+
+            var_dump($studentCard);
+            break;
+        }
 
 
-        $this->replaceWithCard($this->examTool, $this->classRoom->students[0]);
 
         dd();
         if ($this->isLast) {
@@ -54,18 +76,6 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         }
     }
 
-
-
-    function replaceWithCard($examTool, $student)
-    {
-        $cardTemplate = $this->getCardTemplate();
-
-        $studentArray = $student->toArray();
-        $studentArray['course']  = $examTool->course->id;
-        $studentCard = $this->createStudentCard($cardTemplate, $studentArray);
-
-        echo $cardTemplate;
-    }
 
 
     function getCardTemplate()
@@ -82,11 +92,13 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         return $content;
     }
 
-    function createStudentCard($cardTemplate, $studentArray)
+    function createStudentCard($cardTemplate, $studentArray, $examTool)
     {
+
         foreach ($studentArray as $key => $value) {
             $cardTemplate = str_replace('XX' . $key . 'XX', $value, $cardTemplate);
         }
+
         return $cardTemplate;
     }
 }

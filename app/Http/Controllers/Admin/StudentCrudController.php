@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\StudentRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Support\Carbon;
 
 /**
  * Class StudentCrudController
@@ -150,10 +151,12 @@ class StudentCrudController extends CrudController
             ],
         ]);
 
+
         CRUD::addField([
             'name' => 'registration_at',
             'label' => trans('student.registration_at'),
             'type' => 'date_picker',
+            'default' => Carbon::now()->format('Y-m-d'),
             'date_picker_options' => [
                 'todayBtn' => 'linked',
                 // 'format'   => 'dd-mm-yyyy',

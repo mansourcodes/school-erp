@@ -47,7 +47,7 @@ class StudentRequest extends FormRequest
             // 'financialـstate' => ['required'],
             // 'financial_details',
             // 'student_notes',
-            // 'registration_at',
+            'registration_at' => 'required',
         ];
     }
 
