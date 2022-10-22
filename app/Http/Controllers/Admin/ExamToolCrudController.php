@@ -40,6 +40,9 @@ class ExamToolCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+
+        CRUD::column('id');
+
         CRUD::column('subject')->label(trans('examtool.subject'));
 
 

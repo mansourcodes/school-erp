@@ -4,6 +4,7 @@ use App\Jobs\generateExamsDocxJob;
 use App\Jobs\zipExamFilesJob;
 use App\Models\ExamTool;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +22,10 @@ Route::get('/', function () {
 });
 Route::get('/debug', function () {
 
-    $examTool = ExamTool::find(3);
-
-    dispatch(new zipExamFilesJob($examTool));
+    // $examTool = ExamTool::find(10);
+    // dispatch(new generateExamsDocxJob($examTool))->delay(
+    //     now()->addSeconds(10)
+    // );;
 });
 
 
