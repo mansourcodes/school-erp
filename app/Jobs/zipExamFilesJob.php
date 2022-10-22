@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class zipExamFilesJob implements ShouldQueue
@@ -16,6 +17,8 @@ class zipExamFilesJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $examTool;
+    private $filePath;
+    private $contentPath;
 
 
     /**
@@ -26,6 +29,8 @@ class zipExamFilesJob implements ShouldQueue
     public function __construct(ExamTool $examTool)
     {
         $this->examTool = $examTool;
+        $this->filePath = Storage::path('public') . "/examtools/exams/examtool_" . $this->examTool->id . ".zip";
+        $this->contentPath = Storage::path('public') . "/examtools/tmp/examtool_" . $this->examTool->id;
     }
 
     /**
@@ -36,12 +41,18 @@ class zipExamFilesJob implements ShouldQueue
     public function handle()
     {
 
-        $this->create();
         // zip files on /public/examtools/tmp/examtool_{id}/*
         // save zip file on /public/examtools/exams/zip/exam_{subject}_{id}.zip
-        // update with path on Examtool 
-        // update status
+        $this->create();
+
+        // update Examtool 
+        $this->examTool->zip_file_path = $this->filePath;
+        $this->examTool->zip_file_size = round(File::size($this->filePath) / 1000 / 1000, 2);
+        $this->examTool->status = 'Ready';
+        $this->examTool->save();
+
         // delete all files
+        Storage::deleteDirectory($this->contentPath);
     }
 
 
@@ -51,20 +62,16 @@ class zipExamFilesJob implements ShouldQueue
     public function create()
     {
         // $filePath = 'app/course/files.zip';
-        $filePath = Storage::path('public') . "/examtools/exams/examtool_" . $this->examTool->id . ".zip";
-        $contentPath = Storage::path('public') . "/examtools/tmp/examtool_" . $this->examTool->id;
 
         $zip = new \ZipArchive();
 
-        if ($zip->open($filePath, \ZipArchive::CREATE) !== true) {
-            throw new \RuntimeException('Cannot open ' . $filePath);
+        if ($zip->open($this->filePath, \ZipArchive::CREATE) !== true) {
+            throw new \RuntimeException('Cannot open ' . $this->filePath);
         }
 
         // $this->addContent($zip, realpath('app/course'));
-        $this->addContent($zip, $contentPath);
+        $this->addContent($zip, $this->contentPath);
         $zip->close();
-
-        dd(1);
     }
 
 
