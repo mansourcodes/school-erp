@@ -46,8 +46,9 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
     {
         //
         $tmpPath = Storage::path('public') . "/examtools/tmp/examtool_" . $this->examTool->id;
-        File::ensureDirectoryExists($tmpPath, '0777');
-
+        if (!file_exists($tmpPath)) {
+            mkdir($tmpPath, 0755, true);
+        }
 
         $cardTemplate = $this->getCardTemplate();
         $student = $this->classRoom->students[0];
@@ -55,22 +56,18 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         foreach ($this->classRoom->students as $key => $student) {
             $studentArray = $this->getStudentArray($student);
             $studentCard = $this->createStudentCard($cardTemplate,  $studentArray, $this->examTool);
-            $studentExamFileName = $this->getStudentExamFileName($student, $counter++);
+            $studentExamFileNameAndPath = $tmpPath . '/' . $this->getStudentExamFileName($student, $counter++);
             $this->createStudentExamFile(
                 Storage::path('public/') . $this->examTool->file,
                 $studentCard,
-                $tmpPath . $studentExamFileName
+                $studentExamFileNameAndPath
             );
-
-
-            break;
         }
 
 
 
-        dd('end');
         if ($this->isLast) {
-            // dispatch(new zipExamFilesJob($this->examTool));
+            dispatch(new zipExamFilesJob($this->examTool));
         }
     }
 
@@ -80,7 +77,7 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
     {
         $studentExamFileName = $counter . '_' . $this->classRoom->id . '_' . $student->student_id . ".docx";
         $studentExamFileName =  str_replace(' ', '_',  $studentExamFileName);
-        return;
+        return $studentExamFileName;
     }
 
     function getStudentArray($student)
