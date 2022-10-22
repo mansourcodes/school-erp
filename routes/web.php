@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\generateExamsDocxJob;
+use App\Jobs\zipExamFilesJob;
 use App\Models\ExamTool;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,7 @@ Route::get('/debug', function () {
 
     $examTool = ExamTool::find(3);
 
-    dispatch(new generateExamsDocxJob($examTool));
+    dispatch(new zipExamFilesJob($examTool));
 });
 
 
