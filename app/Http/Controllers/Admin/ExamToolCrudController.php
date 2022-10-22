@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ExamToolRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 
 /**
  * Class ExamToolCrudController
@@ -73,6 +74,8 @@ class ExamToolCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
+
+        $this->notesWidgets();
     }
 
     /**
@@ -126,13 +129,15 @@ class ExamToolCrudController extends CrudController
         );
 
         // CRUD::field('zip_file_size');
-        // CRUD::field('meta');
+        CRUD::field('status')->default('On Process')->type('hidden');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
          * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
          */
+
+        $this->notesWidgets();
     }
 
     /**
@@ -144,5 +149,25 @@ class ExamToolCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+
+
+
+    protected function notesWidgets()
+    {
+
+
+        $widget_definition_array = [
+            'type'       => 'card',
+            'wrapper' => ['class' => 'col-md-12'], // optional
+            'class'   => 'card border-danger bg-info ', // optional
+            'content'    => [
+                'header' => trans('base.notice'), // optional
+                'body'   => trans('examtool.upload_note'),
+            ]
+        ];
+
+        Widget::add($widget_definition_array)->to('before_content');
     }
 }
