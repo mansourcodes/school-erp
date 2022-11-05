@@ -49,4 +49,28 @@ class StudentController extends Controller
 
         return $return;
     }
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studentCards_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studentTables_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
 }

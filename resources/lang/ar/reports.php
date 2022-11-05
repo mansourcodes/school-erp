@@ -24,5 +24,7 @@ return [
     'student' => 'الطالب',
 
     'update_students_info' => 'تحديث بيانات الطلاب',
+    'student_tables' => 'جداول الطلاب',
+    'student_cards' => 'بطاقات الطلاب',
 
 ];
