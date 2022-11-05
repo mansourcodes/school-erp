@@ -76,6 +76,16 @@ class Course extends Model
 
     public function getPrintDropdown()
     {
+        $html = '';
+        $list = [
+            [
+                'label' => trans('reports.transcript'),
+                'url' => backpack_url('reports?view=transcript&course=' . $this->id),
+            ],
+        ];
+
+        $html .= HtmlHelper::dropdownMenuButton($list);
+
 
         $list = [
             [
@@ -84,7 +94,8 @@ class Course extends Model
             ],
         ];
 
-        $html = HtmlHelper::dropdownMenuButton($list);
+        $html .= HtmlHelper::dropdownMenuButton($list, trans('reports.student'));
+
         return $html;
     }
 }
