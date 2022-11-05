@@ -23,4 +23,6 @@ return [
 
     'student' => 'الطالب',
 
+    'update_students_info' => 'تحديث بيانات الطلاب',
+
 ];

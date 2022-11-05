@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 /**
  * Class StudentCrudController
@@ -18,9 +20,33 @@ class StudentController extends Controller
      *
      * @return view
      */
-    protected function updateStudentsInfo()
+    public function print(Request $request)
     {
 
-        return view('reports.student.update_students_info');
+        $view = $request->input('view');
+        $function =  Str::camel($view) . '_';
+        $data = $this->{$function}($request);
+
+        $print = $request->input('print');
+        if ($print == 'pdf') {
+            $data['print'] = 'pdf';
+            // $pdf = PDF::loadView('reports.' . $view, $data);
+            // return $pdf->stream();
+        }
+
+        $data['print'] = 'print';
+        return view('reports.student.' . Str::snake($view), $data);
+    }
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function updateStudentsInfo_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
     }
 }

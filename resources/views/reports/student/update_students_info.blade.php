@@ -2,7 +2,10 @@
 
 
 @section('content')
-@foreach ($studentmarks as $studentmark)
+
+TODO
+
+{{-- @foreach ($studentmarks as $studentmark)
 
 <div class="page">
 
@@ -24,5 +27,5 @@
 <div class="new-page"></div>
 
 
-@endforeach
+@endforeach --}}
 @endsection

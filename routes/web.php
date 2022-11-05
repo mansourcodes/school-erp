@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Report\StudentController;
 use App\Jobs\generateExamsDocxJob;
 use App\Jobs\zipExamFilesJob;
 use App\Models\ExamTool;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +24,20 @@ Route::get('/', function () {
 });
 Route::get('/debug', function () {
 
-    // $examTool = ExamTool::find(10);
-    // dispatch(new generateExamsDocxJob($examTool))->delay(
-    //     now()->addSeconds(10)
-    // );;
+    $list = [];
+    $class_methods = get_class_methods(new StudentController());
+    foreach ($class_methods as $method_name) {
+        $functionOriginalName = substr($method_name, 0, -1);
+        if (substr($method_name, -1) === '_') {
+
+            array_push($list, [
+                'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
+                'url' => backpack_url('reports?view=' . $functionOriginalName . '&course='),
+            ]);
+        }
+    }
+
+    dd($list);
 });
 
 
@@ -45,6 +57,7 @@ Route::group([
 ], function () { // custom admin routes
 
     Route::get('reports', 'AcademiaReportsController@print');
+    Route::get('studentReports', [StudentController::class, 'print']);
 
 
     Route::get('add_attend_by_date', 'AttendsCrudController@addAttendByDate');
