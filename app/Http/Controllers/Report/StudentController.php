@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -58,7 +59,8 @@ class StudentController extends Controller
     public function studentCards_(Request $request)
     {
         $return['_'] = '';
-
+        $course = Course::find($request->course);
+        $return['classRooms'] = $course->classRooms;
         return $return;
     }
 

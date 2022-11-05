@@ -3,29 +3,33 @@
 
 @section('content')
 
-TODO
+<style>
+.card_c {
+    display: inline-block;
+    margin: 0;
+    width: 96%;
+    text-align: right;
+    border: 0px solid #000;
+    padding: 0 15px;
+    font-size: 18px;
+    line-height: normal;
+    height: 100px;
+}
+</style>
 
-{{-- @foreach ($studentmarks as $studentmark)
-
-<div class="page">
-
-    @if(Setting::get('print_header'))
-    <img class="w-100" src="{{URL::asset(Setting::get('print_header'))}}" />
-    @endif
-
-    <h1 class="title text-center">
-        {{Setting::get('update_students_info.title') === '' ? __('reports.update_students_info') : Setting::get('update_students_info.title') }}
-    </h1>
-
-    {!! Setting::get('update_students_info.pre') !!}
-
-    --Content --
-
-    {!! Setting::get('update_students_info.pro') !!}
-
-</div>
-<div class="new-page"></div>
+@foreach ($classRooms as $classRoom)
+        @foreach ($classRoom->students as $student)
 
 
-@endforeach --}}
+            <div class="card_c" >
+                {{$classRoom->long_name}}<br />
+                {{$student->student_name}}<br />
+                <b>الرقم الشخصي: {{$student->cpr}}</b> 
+                <b>رقم الطالب: {{$student->student_id}}</b> 
+                <b>النقال: {{$student->mobile}}  	</b> 
+            </div>
+
+
+        @endforeach
+@endforeach
 @endsection

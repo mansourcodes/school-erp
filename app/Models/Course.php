@@ -106,7 +106,7 @@ class Course extends Model
 
                 array_push($list, [
                     'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
-                    'url' => backpack_url('studentReports?view=' . $functionOriginalName . '&course='),
+                    'url' => backpack_url('studentReports?view=' . $functionOriginalName . '&course=' . $this->id),
                 ]);
             }
         }
