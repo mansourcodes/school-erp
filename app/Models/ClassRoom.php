@@ -41,6 +41,7 @@ class ClassRoom extends Model
     protected $appends = [
         'long_name',
         'code',
+        'curriculums',
     ];
 
     public function course()
@@ -64,6 +65,25 @@ class ClassRoom extends Model
     public function getLongNameAttribute()
     {
         return $this->class_room_name . " [" . $this->class_room_number . "]";
+    }
+
+    public function getCurriculumsAttribute()
+    {
+        $curriculums = [];
+        foreach ($this->teachers as $teachers) {
+            $id = $teachers['curriculumـid'];
+            $curriculums[$id]['teacher_name'] = $teachers['teacher_name'];
+        }
+        foreach ($this->attend_table as $attend_table) {
+            $id = $attend_table['curriculumـid'];
+            $curriculums[$id]['days'][] = $attend_table['day'];
+            $curriculums[$id]['attend_table'][$attend_table['day']] = $attend_table['start_time'];
+        }
+        foreach ($curriculums as $curriculumId => $value) {
+            $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
+        }
+
+        return $curriculums;
     }
 
     public function getPrintDropdown()
