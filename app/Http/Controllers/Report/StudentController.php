@@ -47,6 +47,9 @@ class StudentController extends Controller
     public function updateStudentsInfo_(Request $request)
     {
         $return['_'] = '';
+        $course = Course::find($request->course);
+        $return['classRooms'] = $course->classRooms;
+
 
         return $return;
     }
