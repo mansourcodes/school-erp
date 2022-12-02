@@ -11,8 +11,12 @@
                 @endif
 
                 <h1 class="title text-center">
-                    {{ empty(Setting::get('attendance_marks_template.title')) ? __('reports.attendance_marks_template') : Setting::get('attendance_marks_template.title') }}
+                    {{ $course->long_name }}
                 </h1>
+
+                <h3 class="title text-center">
+                    {{ empty(Setting::get('attendance_marks_template.title')) ? __('reports.attendance_marks_template') : Setting::get('attendance_marks_template.title') }}
+                </h3>
 
 
                 {!! Setting::get('attendance_marks_template.pre') !!}
