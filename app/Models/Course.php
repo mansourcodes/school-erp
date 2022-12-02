@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Helpers\HtmlHelper;
+use App\Http\Controllers\Report\AccountController;
+use App\Http\Controllers\Report\CourseController;
+use App\Http\Controllers\Report\StatisticController;
 use App\Http\Controllers\Report\StudentController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -89,6 +92,9 @@ class Course extends Model
         $html .= HtmlHelper::dropdownMenuButton($list);
 
         $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(StudentController::class, 'studentReports'), trans('reports.student'));
+        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(CourseController::class, 'courseReports'), trans('reports.course'));
+        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(AccountController::class, 'accountReports'), trans('reports.account'));
+        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(StatisticController::class, 'statisticReports'), trans('reports.statistic'));
 
 
         return $html;

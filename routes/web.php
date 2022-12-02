@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Report\AccountController;
+use App\Http\Controllers\Report\CourseController;
+use App\Http\Controllers\Report\StatisticController;
 use App\Http\Controllers\Report\StudentController;
 use App\Jobs\generateExamsDocxJob;
 use App\Jobs\zipExamFilesJob;
@@ -58,6 +61,9 @@ Route::group([
 
     Route::get('reports', 'AcademiaReportsController@print');
     Route::get('studentReports', [StudentController::class, 'print']);
+    Route::get('courseReports', [CourseController::class, 'print']);
+    Route::get('accountReports', [AccountController::class, 'print']);
+    Route::get('statisticReports', [StatisticController::class, 'print']);
 
 
     Route::get('add_attend_by_date', 'AttendsCrudController@addAttendByDate');

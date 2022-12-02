@@ -28,4 +28,12 @@ return [
     'student_table' => 'جدول الطالب',
     'student_cards' => 'بطاقات الطلاب',
 
+
+
+
+
+    'course' => 'الدورة',
+    'account' => 'المحاسبة',
+    'statistic' => 'الاحصائيات',
+
 ];
