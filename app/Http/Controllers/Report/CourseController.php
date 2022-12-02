@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -48,6 +49,34 @@ class CourseController extends Controller
         $return['_'] = '';
         $course = Course::find($request->course);
         $return['classRooms'] = $course->classRooms;
+        return $return;
+    }
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function attendanceMarksTemplate_(Request $request)
+    {
+        $return['_'] = '';
+        $course = Course::find($request->course);
+        $return['classRooms'] = $course->classRooms;
+        $return['course'] = $course;
+
+        $return['weekDays'] = [
+            7 =>  trans('base.Sunday'),
+            1 => trans('base.Monday'),
+            2 => trans('base.Tuesday'),
+            3 => trans('base.Wednesday'),
+            4 => trans('base.Thursday'),
+            5 => trans('base.Friday'),
+            6 => trans('base.Saturday'),
+        ];
+
+
+        // dd(Setting::get('attendance_marks_template.title'));
+
         return $return;
     }
 }
