@@ -88,25 +88,26 @@ class Course extends Model
 
         $html .= HtmlHelper::dropdownMenuButton($list);
 
-        $html .= HtmlHelper::dropdownMenuButton($this->getStudentReportsList(), trans('reports.student'));
+        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(StudentController::class, 'studentReports'), trans('reports.student'));
+
 
         return $html;
     }
 
 
 
-    public function getStudentReportsList()
+    public function getClassReportsList($class, $route)
     {
 
         $list = [];
-        $class_methods = get_class_methods(new StudentController());
+        $class_methods = get_class_methods($class);
         foreach ($class_methods as $method_name) {
             $functionOriginalName = substr($method_name, 0, -1);
             if (substr($method_name, -1) === '_') {
 
                 array_push($list, [
                     'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
-                    'url' => backpack_url('studentReports?view=' . $functionOriginalName . '&course=' . $this->id),
+                    'url' => backpack_url($route . '?view=' . $functionOriginalName . '&course=' . $this->id),
                 ]);
             }
         }
