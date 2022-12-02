@@ -35,6 +35,7 @@ return [
     'course' => 'الدورة',
 
     'attendance_marks_template' => 'كشف درجات الحضور و الحفظ',
+    'remember_marks_template' => 'كشف درجات الحفظ',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
