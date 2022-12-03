@@ -38,6 +38,7 @@ return [
     'remember_marks_template' => 'كشف درجات الحفظ',
     'monthly_exams_template' => 'الوقفات التقويمية',
     'attend_sheet_template' => 'كشف الحضور و الغياب',
+    'classroom_list' => 'كشف الصفوف',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
