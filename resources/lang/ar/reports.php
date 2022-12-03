@@ -39,6 +39,7 @@ return [
     'monthly_exams_template' => 'الوقفات التقويمية',
     'attend_sheet_template' => 'كشف الحضور و الغياب',
     'classroom_list' => 'كشف الصفوف',
+    'teacher_table' => 'جدول المدرس',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
