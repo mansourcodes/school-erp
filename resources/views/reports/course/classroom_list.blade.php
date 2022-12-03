@@ -32,7 +32,7 @@
                     </tbody>
                 </table>
 
-                <table class="table table-striped table-bordered" style=";page-break-after: always;">
+                <table class="table table-striped table-bordered">
 
 
                     <tbody>

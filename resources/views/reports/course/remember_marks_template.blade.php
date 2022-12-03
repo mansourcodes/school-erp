@@ -33,7 +33,7 @@
                 </table>
 
 
-                <table style="table-layout: auto;page-break-after: always;" class="table table-striped table-bordered">
+                <table style="table-layout: auto;" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th width="1%">#</th>
