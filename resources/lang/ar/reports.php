@@ -18,6 +18,7 @@ return [
     'title'         => 'عنوان',
     'pre'         => 'مستهل',
     'pro'         => 'ختام ',
+    'ceo_names'         => 'اسم رئيس المركز',
 
 
 
@@ -40,6 +41,7 @@ return [
     'attend_sheet_template' => 'كشف الحضور و الغياب',
     'classroom_list' => 'كشف الصفوف',
     'teacher_table' => 'جدول المدرس',
+    'parent_meeting_template' => 'استمارة اليوم المفتوح    ',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
