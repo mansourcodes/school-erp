@@ -44,6 +44,8 @@ return [
     'parent_meeting_template' => 'استمارة اليوم المفتوح    ',
     'registration_form' => 'استمارة تسجيل',
     'teacher_file_label' => 'ملصقات ملفات المعلمين',
+    'students_marks'         => 'كشف الدرجات',
+
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',

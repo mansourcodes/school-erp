@@ -27,6 +27,10 @@ class CourseController extends Controller
         $function =  Str::camel($view) . '_';
         $data = $this->{$function}($request);
 
+        if (gettype($data) == 'object') {
+            return $data;
+        }
+
         $print = $request->input('print');
         if ($print == 'pdf') {
             $data['print'] = 'pdf';
@@ -262,6 +266,18 @@ class CourseController extends Controller
         // dd(Setting::get('attendance_marks_template.title'));
 
         return $return;
+    }
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studentsMarks_(Request $request)
+    {
+        $return['_'] = '';
+        // dd('reports?view=transcript&course=' . $request->course);
+        return redirect('/admin/reports?view=transcript&course=' . $request->course)->with('status', 'Profile updated!');
     }
 
     /**
