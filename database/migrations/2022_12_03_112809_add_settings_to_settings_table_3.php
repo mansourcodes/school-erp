@@ -84,8 +84,5 @@ class AddSettingsToSettingsTable3 extends Migration
      */
     public function down()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            Setting::truncate();
-        });
     }
 }
