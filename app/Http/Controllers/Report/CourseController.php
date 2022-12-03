@@ -44,19 +44,6 @@ class CourseController extends Controller
      *
      * @return view
      */
-    public function tmp_(Request $request)
-    {
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $return['classRooms'] = $course->classRooms;
-        return $return;
-    }
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
     public function attendanceMarksTemplate_(Request $request)
     {
         $return['_'] = '';
