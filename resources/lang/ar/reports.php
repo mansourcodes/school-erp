@@ -42,6 +42,7 @@ return [
     'classroom_list' => 'كشف الصفوف',
     'teacher_table' => 'جدول المدرس',
     'parent_meeting_template' => 'استمارة اليوم المفتوح    ',
+    'registration_form' => 'استمارة تسجيل',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
