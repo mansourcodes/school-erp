@@ -43,6 +43,7 @@ return [
     'teacher_table' => 'جدول المدرس',
     'parent_meeting_template' => 'استمارة اليوم المفتوح    ',
     'registration_form' => 'استمارة تسجيل',
+    'teacher_file_label' => 'ملصقات ملفات المعلمين',
 
     'account' => 'المحاسبة',
     'statistic' => 'الاحصائيات',
