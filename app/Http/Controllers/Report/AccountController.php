@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account\Payment;
 use App\Models\Course;
+use App\Models\Student;
 use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
@@ -136,7 +138,32 @@ class AccountController extends Controller
     public function listOfUnconfirmedStudentsReport_(Request $request)
     {
 
-        return view();
+
+        $return['_'] = '';
+        $course = Course::find($request->course);
+        $course_students = $course->classRooms->pluck('students');
+        $in_classroom_students_id = Arr::flatten($course_students->pluck('*.id')->toArray());
+
+
+        $confirmed_students_id = $course->payments->where('type', 'CONFIRM')->pluck('student_id')->toArray();
+        $paid_students_id = $course->payments->where('type', '!=', 'CONFIRM')->pluck('student_id')->toArray();
+
+        $unconfirmed_students_id = [];
+        foreach ($in_classroom_students_id as $id) {
+            if (in_array($id, $confirmed_students_id) || in_array($id, $paid_students_id)) {
+                // comfirmed student
+            } else {
+                // unconfirmed 
+                $unconfirmed_students_id[] = $id;
+            }
+        }
+
+
+
+        $return['students'] = Student::whereIn('id', $unconfirmed_students_id)->get();
+        $return['course'] = $course;
+
+        return $return;
     }
 
 
@@ -148,6 +175,28 @@ class AccountController extends Controller
     public function listOfNonPayingStudentsReport_(Request $request)
     {
 
-        return view();
+
+        $return['_'] = '';
+        $course = Course::find($request->course);
+        $course_students = $course->classRooms->pluck('students');
+        $in_classroom_students_id = Arr::flatten($course_students->pluck('*.id')->toArray());
+
+        $paid_students_id = $course->payments->where('type', '!=', 'CONFIRM')->pluck('student_id')->toArray();
+
+        $unpaid_students_id = [];
+        foreach ($in_classroom_students_id as $id) {
+            if (in_array($id, $paid_students_id)) {
+                // paid student
+            } else {
+                // unpaid 
+                $unpaid_students_id[] = $id;
+            }
+        }
+
+
+        $return['students'] = Student::whereIn('id', $unpaid_students_id)->get();
+        $return['course'] = $course;
+
+        return $return;
     }
 }
