@@ -67,6 +67,11 @@ class Student extends Model
         return $this->belongsToMany(\App\Models\ClassRoom::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\Account\Payment::class);
+    }
+
     public function getLongNameAttribute()
     {
         $mobile2 = ($this->mobile2) ? '-' . $this->mobile2 : '';

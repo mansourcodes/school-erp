@@ -23,7 +23,7 @@ class AddPaymentSourcesIntoSettingsTable extends Migration
                 'name'        => 'payment_types',
                 'description' => '',
                 'value'       => '[{"key":"cash"},{"key":"benefit pay"}]',
-                'field'       => '{ "name":"value", "label":"Value", "type":"table", "entity_singular":"Payment type", "columns":{"key":"Key"}, "max":"5", "min":"0" }',
+                'field'       => '{ "name":"value", "label":"Value", "type":"table", "entity_singular":"Payment type", "columns":{"key":"Key"}, "max":"50", "min":"0" }',
                 'active'      => 1,
 
             ],

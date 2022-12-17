@@ -62,6 +62,11 @@ class Course extends Model
         return $this->hasMany(\App\Models\ClassRoom::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\Account\Payment::class);
+    }
+
 
     public function courseRootId()
     {

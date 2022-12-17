@@ -2,92 +2,74 @@
 
 
 @section('content')
-    @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->curriculums as $curriculum)
-            <div class="page">
+    <div class="page">
 
-                @if (Setting::get('print_header'))
-                    <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
-                @endif
+        @if (Setting::get('print_header'))
+            <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
+        @endif
 
-                <h1 class="title text-center">
-                    {{ $course->long_name }}
-                </h1>
+        <h1 class="title text-center">
+            {{ $course->long_name }}
+        </h1>
 
-                <h3 class="title text-center">
-                    {{ empty(Setting::get('balance_statement_report.title')) ? __('reports.balance_statement_report') : Setting::get('balance_statement_report.title') }}
-                </h3>
+        <h3 class="title text-center">
+            {{ empty(Setting::get('balance_statement_report.title')) ? __('reports.balance_statement_report') : Setting::get('balance_statement_report.title') }}
+        </h3>
 
-
-                {!! Setting::get('balance_statement_report.pre') !!}
-
-                <table class="table table-striped table-bordered">
-                    <tbody>
-                        <tr>
-                            <td>
-                                {{ $curriculum['curriculumـname'] ?? '' }} -
-                                {{ $curriculum['teacher_name'] ?? '' }} -
-                                {{ $classRoom->long_name }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <p class=" text-center">هذا التقرير يظهر الطلاب الدافعين والغير مفروزين بالإضافة للمفروزين</p>
 
 
-                <table style="table-layout: auto;" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th width="1%">#</th>
-                            <th width="20%">اسم الطالب</th>
-                            <th>الهاتف</th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @foreach ($classRoom->students as $key => $student)
-                            <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>
-                                    {{ $student->student_name }}
-                                </td>
-                                <td>{{ $student->mobile }} - {{ $student->mobile2 }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+        {!! Setting::get('balance_statement_report.pre') !!}
 
 
-                    </tbody>
-                </table>
+        <p>
+            Total funds: {{ $payments->count() }} <br>
+
+            @foreach ($payment_filtered as $key => $payment_collection)
+                @continue($payment_collection->count() == 0)
+                Total type: {{ $key }} Total number: {{ $payment_collection->count() }} <br>
+            @endforeach
+
+            Total BD: {{ $payments->sum('amount') }} <br>
+        </p>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>رقم الرصيد</th>
+                    <th>التدقيق </th>
+                    <th>الرقم </th>
+                    <th>الإسم</th>
+                    <th>الدورة</th>
+                    <th>النوع</th>
+                    <th>المبلغ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($payments as $key => $payment)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $payment->id }}</td>
+                        <td></td>
+                        <td>{{ $payment->student->student_id }}</td>
+                        <td>{{ $payment->student->student_name }}</td>
+                        <td> {{ $course->long_name }} </td>
+                        <td>{{ $payment->type }}</td>
+                        <td>{{ $payment->amount }}</td>
+                    </tr>
+                @endforeach
+
+            </tbody>
+        </table>
 
 
 
 
 
-                {!! Setting::get('balance_statement_report.pro') !!}
 
-            </div>
-            <div class="new-page"></div>
-        @endforeach
-    @endforeach
+        {!! Setting::get('balance_statement_report.pro') !!}
+
+    </div>
+    <div class="new-page"></div>
 @endsection
