@@ -38,16 +38,63 @@ class AccountController extends Controller
     }
 
 
+
     /**
      * Title: 
      *
      * @return view
      */
-    public function tmp_(Request $request)
+    public function balanceStatementReport_()
     {
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $return['classRooms'] = $course->classRooms;
-        return $return;
+
+        return view();
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function detectingHelpersReport_()
+    {
+
+        return view();
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function listOfAssistanceStudentsWhoParticipatedInThePaymentReport_()
+    {
+
+        return view();
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function listOfUnconfirmedStudentsReport_()
+    {
+
+        return view();
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function listOfNonPayingStudentsReport_()
+    {
+
+        return view();
     }
 }

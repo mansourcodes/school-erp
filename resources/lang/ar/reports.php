@@ -48,6 +48,16 @@ return [
 
 
     'account' => 'المحاسبة',
+
+
+    'balance_statement_report' => 'كشف الارصدة',
+    'detecting_helpers_report' => 'كشف طلبة المساعدة',
+    'list_of_assistance_students_who_participated_in_the_payment_report' => 'كشف طلبة المساعدة الذين قاموا بالدفع',
+    'list_of_unconfirmed_students_report' => 'قائمة الطلبة غير المؤكدين',
+    'list_of_non_paying_students_report' => 'قائمة الطلبة غير الدافعين',
+
+
+
     'statistic' => 'الاحصائيات',
 
 ];
