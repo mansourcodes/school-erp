@@ -108,7 +108,23 @@ class AccountController extends Controller
     public function listOfAssistanceStudentsWhoParticipatedInThePaymentReport_(Request $request)
     {
 
-        return view();
+        $return['_'] = '';
+        $course = Course::find($request->course);
+        $payments_free = $course->payments->filter(function ($p, $key) {
+            return $p->type == 'FREE';
+        });
+
+        $student_id_array = $payments_free->pluck('student_id')->toArray();
+
+        $payments_paid = $course->payments->filter(function ($p, $key) use ($student_id_array) {
+            return $p->type != 'FREE' && in_array($p->student_id, $student_id_array);
+        });
+
+        $return['payments_free'] = $payments_free;
+        $return['payments_paid'] = $payments_paid;
+        $return['course'] = $course;
+
+        return $return;
     }
 
 
