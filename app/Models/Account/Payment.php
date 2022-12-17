@@ -42,6 +42,11 @@ class Payment extends Model
         'amount' => 'double',
     ];
 
+
+    protected $appends = [
+        'class_room',
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -56,6 +61,13 @@ class Payment extends Model
     public function student()
     {
         return $this->belongsTo(\App\Models\Student::class);
+    }
+
+    public function getClassRoomAttribute()
+    {
+        return \App\Models\ClassRoom::where('course_id', $this->course_id)->whereDoesntHave('students', function ($q) {
+            $q->where('student_id', $this->student_id);
+        })->get();
     }
 
 

@@ -83,8 +83,20 @@ class AccountController extends Controller
      */
     public function detectingHelpersReport_(Request $request)
     {
+        $return['_'] = '';
+        $course = Course::find($request->course);
+        $payment_filtered = $course->payments->filter(function ($p, $key) {
+            return $p->type == 'FREE';
+        });
 
-        return view();
+        // dd(
+        //     $payment_filtered->first()->classRoom->implode('class_room_name', ', ')
+        // );
+
+        $return['payments'] = $payment_filtered;
+        $return['course'] = $course;
+
+        return $return;
     }
 
 

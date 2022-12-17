@@ -2,92 +2,59 @@
 
 
 @section('content')
-    @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->curriculums as $curriculum)
-            <div class="page">
+    <div class="page">
 
-                @if (Setting::get('print_header'))
-                    <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
-                @endif
+        @if (Setting::get('print_header'))
+            <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
+        @endif
 
-                <h1 class="title text-center">
-                    {{ $course->long_name }}
-                </h1>
+        <h1 class="title text-center">
+            {{ $course->long_name }}
+        </h1>
 
-                <h3 class="title text-center">
-                    {{ empty(Setting::get('detecting_helpers_report.title')) ? __('reports.detecting_helpers_report') : Setting::get('detecting_helpers_report.title') }}
-                </h3>
+        <h3 class="title text-center">
+            {{ empty(Setting::get('detecting_helpers_report.title')) ? __('reports.detecting_helpers_report') : Setting::get('detecting_helpers_report.title') }}
+        </h3>
 
 
-                {!! Setting::get('detecting_helpers_report.pre') !!}
-
-                <table class="table table-striped table-bordered">
-                    <tbody>
-                        <tr>
-                            <td>
-                                {{ $curriculum['curriculumـname'] ?? '' }} -
-                                {{ $curriculum['teacher_name'] ?? '' }} -
-                                {{ $classRoom->long_name }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+        {!! Setting::get('detecting_helpers_report.pre') !!}
 
 
-                <table style="table-layout: auto;" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th width="1%">#</th>
-                            <th width="20%">اسم الطالب</th>
-                            <th>الهاتف</th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th># </th>
+                    <th>رقم الطالب </th>
+                    <th>الإسم</th>
+                    <th>الرقم الشخصي</th>
+                    <th>النقال</th>
+                    <th>المنطقة</th>
+                    <th>الصف</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($payments as $key => $payment)
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $payment->student->student_id }}</td>
+                        <td>{{ $payment->student->student_name }}</td>
+                        <td>{{ $payment->student->cpr }}</td>
+                        <td>{{ $payment->student->mobile }}</td>
+                        <td>{{ $payment->student->address }}</td>
+                        <td>{{ $payment->classRoom->implode('class_room_name', ', ') }} </td>
+                    </tr>
+                @endforeach
 
-                        @foreach ($classRoom->students as $key => $student)
-                            <tr>
-                                <td>{{ ++$key }}</td>
-                                <td>
-                                    {{ $student->student_name }}
-                                </td>
-                                <td>{{ $student->mobile }} - {{ $student->mobile2 }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-
-
-                    </tbody>
-                </table>
+            </tbody>
+        </table>
 
 
 
 
 
-                {!! Setting::get('detecting_helpers_report.pro') !!}
 
-            </div>
-            <div class="new-page"></div>
-        @endforeach
-    @endforeach
+        {!! Setting::get('detecting_helpers_report.pro') !!}
+
+    </div>
+    <div class="new-page"></div>
 @endsection
