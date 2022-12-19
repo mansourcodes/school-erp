@@ -110,19 +110,6 @@ class StatisticController extends Controller
     }
 
 
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function statisticsForTheNumberOfStudentsInClasses_(Request $request)
-    {
-
-        $return['_'] = '';
-
-        return $return;
-    }
-
 
     /**
      * Title: 
@@ -145,58 +132,6 @@ class StatisticController extends Controller
             5 => trans('base.Friday'),
             6 => trans('base.Saturday'),
         ];
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function studentListStatistics_(Request $request)
-    {
-        $return['_'] = '';
-
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function studentListStatisticsForEachGrade_(Request $request)
-    {
-        $return['_'] = '';
-
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function statisticsOfStudentsScoresAccordingToGrades_(Request $request)
-    {
-        $return['_'] = '';
-
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function classAverageScoreStatistics_(Request $request)
-    {
-        $return['_'] = '';
-
         return $return;
     }
 }
