@@ -91,6 +91,20 @@ class StatisticController extends Controller
     public function studentDetectionStatisticsInClasses_(Request $request)
     {
         $return['_'] = '';
+        $course = Course::find($request->course);
+        $return['classRooms'] = $course->classRooms;
+        $return['course'] = $course;
+
+        $return['weekDays'] = [
+            7 =>  trans('base.Sunday'),
+            1 => trans('base.Monday'),
+            2 => trans('base.Tuesday'),
+            3 => trans('base.Wednesday'),
+            4 => trans('base.Thursday'),
+            5 => trans('base.Friday'),
+            6 => trans('base.Saturday'),
+        ];
+
 
         return $return;
     }
