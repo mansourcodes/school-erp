@@ -50,6 +50,33 @@ class StatisticController extends Controller
     {
         $return['_'] = '';
         $course = Course::find($request->course);
+        $return['course'] = $course;
+
+
+        $curriculums_array = [];
+        foreach ($course->classRooms as $key => $classRoom) {
+            $curriculums_array = array_merge($curriculums_array,  $classRoom->curriculums);
+        }
+        $curriculums_statistics  = [];
+        foreach ($curriculums_array as $key => $curriculum) {
+            $curriculums_statistics[$curriculum['id']] = $curriculum;
+        }
+
+
+
+        foreach ($course->classRooms as $key => $classRoom) {
+            foreach ($classRoom->curriculums as $curriculum_id => $curriculum) {
+                if (!isset($curriculums_statistics[$curriculum_id]['count_class_rooms'])) {
+                    $curriculums_statistics[$curriculum_id]['count_class_rooms'] = 1;
+                    $curriculums_statistics[$curriculum_id]['count_students'] = $classRoom->students->count();
+                } else {
+                    $curriculums_statistics[$curriculum_id]['count_class_rooms']++;
+                    $curriculums_statistics[$curriculum_id]['count_students'] += $classRoom->students->count();
+                }
+            }
+        }
+
+        $return['curriculums_statistics'] = $curriculums_statistics;
 
 
         return $return;

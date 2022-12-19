@@ -80,6 +80,7 @@ class ClassRoom extends Model
             $curriculums[$id]['attend_table'][$attend_table['day']] = $attend_table['start_time'];
         }
         foreach ($curriculums as $curriculumId => $value) {
+            $curriculums[$curriculumId]['id'] = $curriculumId;
             $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
         }
 
