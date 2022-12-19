@@ -34,7 +34,25 @@ class StatisticController extends Controller
         }
 
         $data['print'] = 'print';
-        return view('reports.account.' . Str::snake($view), $data);
+        return view('reports.statistic.' . Str::snake($view), $data);
+    }
+
+
+
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function classesAndStudentsStatisticsForEachLevel_(Request $request)
+    {
+        $return['_'] = '';
+        $course = Course::find($request->course);
+
+
+        return $return;
     }
 
 
@@ -43,11 +61,88 @@ class StatisticController extends Controller
      *
      * @return view
      */
-    public function tmp_(Request $request)
+    public function studentDetectionStatisticsInClasses_(Request $request)
     {
         $return['_'] = '';
-        $course = Course::find($request->course);
-        $return['classRooms'] = $course->classRooms;
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function statisticsForTheNumberOfStudentsInClasses_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studyGroupDataDisclosureStatistics_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studentListStatistics_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studentListStatisticsForEachGrade_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function statisticsOfStudentsScoresAccordingToGrades_(Request $request)
+    {
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function classAverageScoreStatistics_(Request $request)
+    {
+        $return['_'] = '';
+
         return $return;
     }
 }
