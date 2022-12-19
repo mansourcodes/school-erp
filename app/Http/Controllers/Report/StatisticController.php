@@ -117,6 +117,20 @@ class StatisticController extends Controller
      */
     public function statisticsForTheNumberOfStudentsInClasses_(Request $request)
     {
+
+        $return['_'] = '';
+
+        return $return;
+    }
+
+
+    /**
+     * Title: 
+     *
+     * @return view
+     */
+    public function studyGroupDataDisclosureStatistics_(Request $request)
+    {
         $return['_'] = '';
         $course = Course::find($request->course);
         $return['classRooms'] = $course->classRooms;
@@ -131,21 +145,6 @@ class StatisticController extends Controller
             5 => trans('base.Friday'),
             6 => trans('base.Saturday'),
         ];
-
-
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function studyGroupDataDisclosureStatistics_(Request $request)
-    {
-        $return['_'] = '';
-
         return $return;
     }
 

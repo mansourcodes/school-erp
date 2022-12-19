@@ -64,7 +64,7 @@ return [
     'classes_and_students_statistics_for_each_level' => 'إحصائيات الفصول والطلاب لكل مستوى',
     'student_detection_statistics_in_classes' => 'إحصائيات الكشف عن الطلاب في الفصول الدراسية',
     'statistics_for_the_number_of_students_in_classes' => 'إحصائيات عن عدد الطلاب في الفصول',
-    'study_group_data_disclosure_statistics' => 'إحصائيات الإفصاح عن بيانات مجموعة الدراسة',
+    'study_group_data_disclosure_statistics' => 'كشف بيانات المجموعات الدراسية',
     'student_list_statistics' => 'إحصائيات قائمة الطلاب',
     'student_list_statistics_for_each_grade' => 'إحصائيات قائمة الطلاب لكل درجة',
     'statistics_of_students_scores_according_to_grades' => 'احصاء درجات الطلاب حسب الدرجات',
