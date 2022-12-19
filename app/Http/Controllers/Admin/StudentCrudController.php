@@ -18,7 +18,7 @@ class StudentCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -88,8 +88,7 @@ class StudentCrudController extends CrudController
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
 
-
-        $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
+        $this->crud->addButtonFromModelFunction('line', 'get_courses_dropdown', 'getCoursesDropdown', 'beginning');
     }
 
     /**

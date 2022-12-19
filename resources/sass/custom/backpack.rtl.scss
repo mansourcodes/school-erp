@@ -62,3 +62,31 @@ table.dataTable thead > tr > th.sorting_disabled {
         left: 30%;
     }
 }
+
+/* hover dropdown menus */
+
+.dropdown-multilevel {
+    display: initial;
+
+    .dropdown-submenu {
+        position: relative;
+
+        a > i {
+            color: black;
+            margin: 0;
+            position: absolute;
+            left: 0;
+            top: 42%;
+        }
+
+        .dropdown-menu {
+            top: 0;
+            right: 100%;
+            margin-top: -1px;
+        }
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+}

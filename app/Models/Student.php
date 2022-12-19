@@ -85,4 +85,14 @@ class Student extends Model
         $registration_at = ($this->registration_at) ?: $this->created_at;
         return ($registration_at->year .  str_pad($this->id, 4, '0', STR_PAD_LEFT));
     }
+
+
+
+    public function getCoursesDropdown($crud = false)
+    {
+
+        $data['test'] = 'hi';
+
+        return view('vendor.backpack.crud.buttons.multilevel_dropdown', $data);
+    }
 }

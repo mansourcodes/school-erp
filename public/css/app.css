@@ -10071,6 +10071,29 @@ table.dataTable thead > tr > th.sorting_disabled {
     left: 30%;
   }
 }
+/* hover dropdown menus */
+.dropdown-multilevel {
+  display: initial;
+}
+.dropdown-multilevel .dropdown-submenu {
+  position: relative;
+}
+.dropdown-multilevel .dropdown-submenu a > i {
+  color: black;
+  margin: 0;
+  position: absolute;
+  left: 0;
+  top: 42%;
+}
+.dropdown-multilevel .dropdown-submenu .dropdown-menu {
+  top: 0;
+  right: 100%;
+  margin-top: -1px;
+}
+.dropdown-multilevel .dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
 .switch-absent .switch-input:checked + .switch-slider {
   background-color: #161c2d;
   border-color: #05070b;
