@@ -87,6 +87,9 @@ class StudentCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
+
+
+        $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
     }
 
     /**
