@@ -91,7 +91,24 @@ class Student extends Model
     public function getCoursesDropdown($crud = false)
     {
 
-        $data['test'] = 'hi';
+        $list = [];
+        foreach ($this->classRooms as $key => $classRoom) {
+            $list[] = [
+                'label' => $classRoom->course->long_name,
+                'url' => [
+                    [
+                        'label' => trans('reports.student_table'),
+                        'url' => backpack_url('studentReports/SingleStudentTable' . '?course=' . $classRoom->course->id . '&student=' . $this->id),
+                    ],
+                    [
+                        'label' => trans('reports.update_students_info'),
+                        'url' => backpack_url('studentReports/SingleUpdateStudentsInfo' . '?course=' . $classRoom->course->id . '&student=' . $this->id),
+                    ],
+                ]
+
+            ];
+        }
+        $data['list'] = $list;
 
         return view('vendor.backpack.crud.buttons.multilevel_dropdown', $data);
     }

@@ -10078,12 +10078,13 @@ table.dataTable thead > tr > th.sorting_disabled {
 .dropdown-multilevel .dropdown-submenu {
   position: relative;
 }
-.dropdown-multilevel .dropdown-submenu a > i {
+.dropdown-multilevel .dropdown-submenu span > i {
   color: black;
   margin: 0;
   position: absolute;
   left: 0;
-  top: 42%;
+  top: 50%;
+  line-height: 0;
 }
 .dropdown-multilevel .dropdown-submenu .dropdown-menu {
   top: 0;

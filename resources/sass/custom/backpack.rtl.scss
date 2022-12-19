@@ -71,12 +71,13 @@ table.dataTable thead > tr > th.sorting_disabled {
     .dropdown-submenu {
         position: relative;
 
-        a > i {
+        span > i {
             color: black;
             margin: 0;
             position: absolute;
             left: 0;
-            top: 42%;
+            top: 50%;
+            line-height: 0;
         }
 
         .dropdown-menu {
