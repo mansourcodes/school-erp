@@ -7,6 +7,7 @@ use App\Http\Controllers\Report\StudentController;
 use App\Jobs\generateExamsDocxJob;
 use App\Jobs\zipExamFilesJob;
 use App\Models\ExamTool;
+use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,17 +28,20 @@ Route::get('/', function () {
 });
 Route::get('/debug', function () {
 
-    $list = [];
-    $class_methods = get_class_methods(new StudentController());
-    foreach ($class_methods as $method_name) {
-        $functionOriginalName = substr($method_name, 0, -1);
-        if (substr($method_name, -1) === '_') {
+    $student = Student::find(52);
 
-            array_push($list, [
-                'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
-                'url' => backpack_url('reports?view=' . $functionOriginalName . '&course='),
-            ]);
-        }
+    $list = [];
+    foreach ($student->classRooms as $key => $classRoom) {
+        $list[] = [
+            'label' => $classRoom->course->long_name,
+            'url' => [
+                [
+                    'label' => $classRoom->course->long_name,
+                    'url' => backpack_url('studentReports/SingleStudentTable' . '?course=' . $classRoom->course->id . '&student=' . $student->id),
+                ],
+            ]
+
+        ];
     }
 
     dd($list);
@@ -60,10 +64,15 @@ Route::group([
 ], function () { // custom admin routes
 
     Route::get('reports', 'AcademiaReportsController@print');
-    Route::get('studentReports', [StudentController::class, 'print']);
     Route::get('courseReports', [CourseController::class, 'print']);
     Route::get('accountReports', [AccountController::class, 'print']);
     Route::get('statisticReports', [StatisticController::class, 'print']);
+
+
+    // student reports
+    Route::get('studentReports', [StudentController::class, 'print']);
+    Route::get('studentReports/SingleStudentTable', [StudentController::class, 'SingleStudentTable']);
+
 
 
     Route::get('add_attend_by_date', 'AttendsCrudController@addAttendByDate');
