@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account\Payment;
 use App\Models\ClassRoom;
 use App\Models\Course;
 use App\Models\Student;
@@ -99,7 +100,7 @@ class StudentController extends Controller
      *
      * @return view
      */
-    public function SingleStudentTable(Request $request)
+    public function singleStudentTable(Request $request)
     {
         $student_id = $request->student;
 
@@ -135,7 +136,7 @@ class StudentController extends Controller
      *
      * @return view
      */
-    public function SingleUpdateStudentsInfo(Request $request)
+    public function singleUpdateStudentsInfo(Request $request)
     {
         $student_id = $request->student;
 

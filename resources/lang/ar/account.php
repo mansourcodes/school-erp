@@ -4,6 +4,7 @@ return [
 
     'account'         => 'المحاسبة',
     'payment'         => 'رصيد',
+    'store_payment'         => 'انشاء رصيد',
     'payments'         => 'الارصدة',
 
 

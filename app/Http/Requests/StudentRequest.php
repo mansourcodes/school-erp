@@ -32,7 +32,7 @@ class StudentRequest extends FormRequest
             'cpr' => 'required|numeric',
             // 'email',
             'mobile' => 'required|numeric',
-            // 'mobile2',
+            'mobile2' => 'nullable|numeric',
             // 'dob',
             // 'address',
             // 'live_inـstate'  => ['required'],

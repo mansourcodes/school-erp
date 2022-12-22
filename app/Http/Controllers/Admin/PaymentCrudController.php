@@ -128,6 +128,7 @@ class PaymentCrudController extends CrudController
     {
         CRUD::setValidation(PaymentRequest::class);
 
+
         CRUD::addField(
             [   // 1-n relationship
                 'label'       => trans('student.student'), // Table column heading
@@ -147,6 +148,7 @@ class PaymentCrudController extends CrudController
                 'wrapper'   => [
                     'class'      => 'form-group col-6'
                 ],
+                'default'   => request()->student,
             ],
         );
 
@@ -169,6 +171,7 @@ class PaymentCrudController extends CrudController
                 'wrapper'   => [
                     'class'      => 'form-group col-6'
                 ],
+                'default'   => request()->course,
             ],
         );
 

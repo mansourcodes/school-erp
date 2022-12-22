@@ -30,23 +30,10 @@ Route::get('/debug', function () {
 
     $student = Student::find(52);
 
-    $list = [];
-    foreach ($student->classRooms as $key => $classRoom) {
-        $list[] = [
-            'label' => $classRoom->course->long_name,
-            'url' => [
-                [
-                    'label' => $classRoom->course->long_name,
-                    'url' => backpack_url('studentReports/SingleStudentTable' . '?course=' . $classRoom->course->id . '&student=' . $student->id),
-                ],
-                [
-                    'label' => $classRoom->course->long_name,
-                    'url' => backpack_url('studentReports/SingleUpdateStudentsInfo' . '?course=' . $classRoom->course->id . '&student=' . $student->id),
-                ],
-            ]
+    dd($student->courses->mapWithKeys(function ($item, $key) {
+        return [$item['id'] => $item['long_name']];
+    })->toArray());
 
-        ];
-    }
 
     dd($list);
 });
@@ -75,8 +62,8 @@ Route::group([
 
     // student reports
     Route::get('studentReports', [StudentController::class, 'print']);
-    Route::get('studentReports/SingleStudentTable', [StudentController::class, 'SingleStudentTable']);
-    Route::get('studentReports/SingleUpdateStudentsInfo', [StudentController::class, 'SingleUpdateStudentsInfo']);
+    Route::get('studentReports/SingleStudentTable', [StudentController::class, 'singleStudentTable']);
+    Route::get('studentReports/SingleUpdateStudentsInfo', [StudentController::class, 'singleUpdateStudentsInfo']);
 
 
 
