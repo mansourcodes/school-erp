@@ -71,8 +71,7 @@ class StudentMarks extends Model
         ];
 
 
-        $html = HtmlHelper::dropdownMenuButton($list);
-
-        return $html;
+        $data['list'] = $list;
+        return view('vendor.backpack.crud.buttons.multilevel_dropdown', $data);
     }
 }

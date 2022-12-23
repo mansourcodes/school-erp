@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Helper;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-use App\Helpers\HtmlHelper;
 use App\Models\Attends;
 use App\Models\ClassRoom;
 use App\Models\Course;
@@ -382,7 +382,7 @@ class AcademiaReportsController extends Controller
             $attend_curriculum_table['start_time'] = Carbon::parse($attend_curriculum_table['start_time']);
             $attend_curriculum_table['day_name'] = $week_days[$attend_curriculum_table['day']];
             $attend_curriculum_table['curriculum'] = Curriculum::find((int)$attend_curriculum_table['curriculumـid']);
-            $attend_curriculum_table['calander_days'] = HtmlHelper::getDaysInRange($attend_curriculum_table['day'], $classroom->course->start_date, $classroom->course->end_date);
+            $attend_curriculum_table['calander_days'] = Helper::getDaysInRange($attend_curriculum_table['day'], $classroom->course->start_date, $classroom->course->end_date);
         }
 
         $teachers = [];

@@ -3,36 +3,8 @@
 namespace App\Helpers;
 
 
-class HtmlHelper
+class Helper
 {
-
-
-
-
-
-  static public function dropdownMenuButton($list, $title = '')
-  {
-
-    $links = [];
-    foreach ($list as $key => $value) {
-      $links[] = '<a class="dropdown-item" target="_blank" href="' . $value['url']   . '">' . $value['label'] . '</a>';
-    }
-
-
-    return '<div class="btn-group">
-        <div class="dropdown">
-          <button class="btn btn-primary btn-sm dropdown-toggle" id="dropdownMenuButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="la la-print"></i> ' . $title . '
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-
-                    ' . implode('', $links) . '
-
-          </div>
-        </div>
-      </div>';
-  }
-
 
   static function getDaysInRange($day_number, $dateFromString, $dateToString)
   {
