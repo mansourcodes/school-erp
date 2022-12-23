@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\Account\Payment;
+use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Carbon;
 
 /**
@@ -359,5 +362,69 @@ class StudentCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        $this->addStudentHistoryWidget();
+    }
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     *
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupShowOperation()
+    {
+        $this->addStudentHistoryWidget();
+    }
+
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     *
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function addStudentHistoryWidget()
+    {
+        $this->setupCreateOperation();
+        $student = Student::find($this->crud->getCurrentEntryId());
+
+        $classRoomsList = [];
+        foreach ($student->classRooms as $key => $classRoom) {
+
+            $data['payments'] = Payment::where([
+                ['course_id', $classRoom->course->id],
+                ['student_id', $student->id],
+            ])->get();
+
+            $data['classRoom'] = $classRoom;
+            $data['course'] = $classRoom->course;
+            $data['weekDays'] = [
+                7 =>  trans('base.Sunday'),
+                1 => trans('base.Monday'),
+                2 => trans('base.Tuesday'),
+                3 => trans('base.Wednesday'),
+                4 => trans('base.Thursday'),
+                5 => trans('base.Friday'),
+                6 => trans('base.Saturday'),
+            ];
+
+            $classRoomsList[] = [
+                'type'       => 'card',
+                'wrapper' => ['class' => 'col-md-6'], // optional
+                'class'   => 'card border-success bg-info', // optional
+                'content'    => [
+                    'header' => $classRoom->course->long_name, // optional
+                    'body'   => view('reports.student.components.widget_classroom_info', $data)
+                ]
+            ];
+        }
+
+        $warpWidgets = [
+            'type' => 'div',
+            'class' => 'row',
+            'content' => $classRoomsList
+        ];
+
+        Widget::add($warpWidgets)->to('after_content');
     }
 }
