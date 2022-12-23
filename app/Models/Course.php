@@ -86,42 +86,27 @@ class Course extends Model
 
     public function getPrintDropdown()
     {
-        $html = '';
+
         $list = [
             [
-                'label' => trans('reports.transcript'),
-                'url' => backpack_url('reports?view=transcript&course=' . $this->id),
+                'label' => trans('reports.student'),
+                'url' => getReportClassFunctions(StudentController::class, 'studentReports', $this->id)
+            ],
+            [
+                'label' => trans('reports.course'),
+                'url' => getReportClassFunctions(CourseController::class, 'courseReports', $this->id)
+            ],
+            [
+                'label' => trans('reports.account'),
+                'url' => getReportClassFunctions(AccountController::class, 'accountReports', $this->id)
+            ],
+            [
+                'label' => trans('reports.statistic'),
+                'url' => getReportClassFunctions(StatisticController::class, 'statisticReports', $this->id)
             ],
         ];
 
-        $html .= HtmlHelper::dropdownMenuButton($list);
-
-        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(StudentController::class, 'studentReports'), trans('reports.student'));
-        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(CourseController::class, 'courseReports'), trans('reports.course'));
-        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(AccountController::class, 'accountReports'), trans('reports.account'));
-        $html .= HtmlHelper::dropdownMenuButton($this->getClassReportsList(StatisticController::class, 'statisticReports'), trans('reports.statistic'));
-
-
-        return $html;
-    }
-
-
-
-    public function getClassReportsList($class, $route)
-    {
-
-        $list = [];
-        $class_methods = get_class_methods($class);
-        foreach ($class_methods as $method_name) {
-            $functionOriginalName = substr($method_name, 0, -1);
-            if (substr($method_name, -1) === '_') {
-
-                array_push($list, [
-                    'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
-                    'url' => backpack_url($route . '?view=' . $functionOriginalName . '&course=' . $this->id),
-                ]);
-            }
-        }
-        return $list;
+        $data['list'] = $list;
+        return view('vendor.backpack.crud.buttons.multilevel_dropdown', $data);
     }
 }

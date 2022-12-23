@@ -10093,6 +10093,9 @@ table.dataTable thead > tr > th.sorting_disabled {
 }
 .dropdown-multilevel .dropdown-submenu:hover > .dropdown-menu {
   display: block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .switch-absent .switch-input:checked + .switch-slider {

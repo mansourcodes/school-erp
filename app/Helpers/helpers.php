@@ -40,3 +40,22 @@ function titleCase($value)
 {
     return Str::title(str_replace('_', ' ', $value));
 }
+
+
+function getReportClassFunctions($class, $route, $id)
+{
+
+    $list = [];
+    $class_methods = get_class_methods($class);
+    foreach ($class_methods as $method_name) {
+        $functionOriginalName = substr($method_name, 0, -1);
+        if (substr($method_name, -1) === '_') {
+
+            array_push($list, [
+                'label' => trans('reports.' . Str::of($functionOriginalName)->snake()),
+                'url' => backpack_url($route . '?view=' . $functionOriginalName . '&course=' . $id),
+            ]);
+        }
+    }
+    return $list;
+}

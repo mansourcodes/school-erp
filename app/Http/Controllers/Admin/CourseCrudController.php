@@ -78,21 +78,21 @@ class CourseCrudController extends CrudController
             'name' => 'course_year',
             'label' => trans('course.course_year'),
         ]);
-        CRUD::addColumn([
-            'name' => 'hijri_year',
-            'label' => trans('course.hijri_year'),
-        ]);
+        // CRUD::addColumn([
+        //     'name' => 'hijri_year',
+        //     'label' => trans('course.hijri_year'),
+        // ]);
         CRUD::addColumn([
             'name' => 'semester',
             'label' => trans('course.semester'),
         ]);
 
-        CRUD::addColumn([
-            'name' => 'start_date',
-            'label' => trans('course.start_date'),
-            'type'        => 'date',
+        // CRUD::addColumn([
+        //     'name' => 'start_date',
+        //     'label' => trans('course.start_date'),
+        //     'type'        => 'date',
 
-        ]);
+        // ]);
         // CRUD::addColumn([
         //     'name' => 'end_date',
         //     'label' => trans('course.end_date'),
@@ -178,7 +178,7 @@ class CourseCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
-        $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
+        $this->crud->addButtonFromModelFunction('line', 'get_print_dropdown', 'getPrintDropdown', 'beginning');
     }
 
     /**
