@@ -141,12 +141,14 @@ class AcademiaReportsController extends Controller
             })
                 ->where('course_id', $data['studentmarks'][0]->course->id)->first();
 
-            foreach ($classroom->teachers as $teacher) {
-                # code...
-                if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                    $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+            if (isset($classroom->teachers)) {
+                foreach ($classroom->teachers as $teacher) {
+                    # code...
+                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
+                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    }
+                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
                 }
-                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
             }
         } elseif ($classroom_id) {
 
@@ -169,26 +171,30 @@ class AcademiaReportsController extends Controller
                     }
                 }
             }
+            if (isset($classroom->teachers)) {
 
-            foreach ($classroom->teachers as $teacher) {
-                # code...
-                if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                    $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                foreach ($classroom->teachers as $teacher) {
+                    # code...
+                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
+                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    }
+                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
                 }
-                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
             }
         }
 
 
         foreach ($data['studentmarks'] as $studentmarks) {
             # code...
+            if (isset($classroom->teachers)) {
 
-            foreach ($classroom->teachers as $teacher) {
-                # code...
-                if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                    $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                foreach ($classroom->teachers as $teacher) {
+                    # code...
+                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
+                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    }
+                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
                 }
-                $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
             }
         }
 
@@ -241,13 +247,15 @@ class AcademiaReportsController extends Controller
             $classroom = ClassRoom::whereHas('students', function (Builder $query) use ($marksRequred) {
                 $query->where('id', $marksRequred->student->id);
             })->where('course_id', $marksRequred->course->id)->first();
+            if (isset($classroom->teachers)) {
 
-            foreach ($classroom->teachers as $teacher) {
-                # code...
-                if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']])) {
-                    $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                foreach ($classroom->teachers as $teacher) {
+                    # code...
+                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']])) {
+                        $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    }
+                    $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
                 }
-                $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
             }
         }
 
@@ -386,6 +394,7 @@ class AcademiaReportsController extends Controller
         }
 
         $teachers = [];
+
         foreach ($classroom['teachers'] as $key => $teachers_object) {
             $teachers[$teachers_object['curriculumـid']] = $teachers_object['teacher_name'];
         }
