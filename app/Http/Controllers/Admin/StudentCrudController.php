@@ -47,6 +47,11 @@ class StudentCrudController extends CrudController
 
 
         CRUD::addColumn([
+            'name' => 'student_id',
+            'label' => '#',
+        ]);
+
+        CRUD::addColumn([
             'name' => 'student_name',
             'label' => trans('student.student_name'),
         ]);
