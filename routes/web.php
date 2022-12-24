@@ -2,15 +2,11 @@
 
 use App\Http\Controllers\Report\AccountController;
 use App\Http\Controllers\Report\CourseController;
+use App\Http\Controllers\Pull\OldToNewDbController;
 use App\Http\Controllers\Report\StatisticController;
 use App\Http\Controllers\Report\StudentController;
-use App\Jobs\generateExamsDocxJob;
-use App\Jobs\zipExamFilesJob;
-use App\Models\ExamTool;
-use App\Models\Student;
+use App\Models\Old\OldStudent;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +24,10 @@ Route::get('/', function () {
 });
 Route::get('/debug', function () {
 
-    $student = Student::find(52);
-
-    dd($student->courses->mapWithKeys(function ($item, $key) {
-        return [$item['id'] => $item['long_name']];
-    })->toArray());
+    $student = OldStudent::find(19844);
 
 
-    dd($list);
+    dd($student->payments());
 });
 
 
@@ -101,4 +93,18 @@ Route::group([
 
     Route::get('classroom', 'ClassRoomsController@index');
     Route::get('classroom/{id}', 'ClassRoomsController@show');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Pull Old Database Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::group([
+    'prefix'     => 'pull'
+], function () { // routes
+
+    Route::get('pullClassRoom', [OldToNewDbController::class, 'pullClassRoom']);
+    Route::get('emptyTables', [OldToNewDbController::class, 'emptyTables']);
 });
