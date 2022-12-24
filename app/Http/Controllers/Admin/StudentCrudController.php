@@ -396,6 +396,7 @@ class StudentCrudController extends CrudController
                 ['student_id', $student->id],
             ])->get();
 
+            $data['wrapper_id'] = "classroom_id_{$classRoom->id}";
             $data['classRoom'] = $classRoom;
             $data['course'] = $classRoom->course;
             $data['weekDays'] = [
@@ -410,8 +411,8 @@ class StudentCrudController extends CrudController
 
             $classRoomsList[] = [
                 'type'       => 'card',
-                'wrapper' => ['class' => 'col-md-6'], // optional
-                'class'   => 'card border-success bg-info', // optional
+                'wrapper' => ['class' => 'col-md-6', 'id' => $data['wrapper_id']], // optional
+                'class'   => 'card card-toggle border-success  ', // optional
                 'content'    => [
                     'header' => $classRoom->course->long_name, // optional
                     'body'   => view('reports.student.components.widget_classroom_info', $data)

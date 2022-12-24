@@ -92,3 +92,21 @@ table.dataTable thead > tr > th.sorting_disabled {
         width: fit-content;
     }
 }
+
+/* */
+
+.card-toggle {
+    .card-header {
+        cursor: pointer;
+    }
+    .card-header:hover {
+        // background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+        background-blend-mode: darken;
+    }
+    .card-body {
+        display: none;
+    }
+    .card-body.show {
+        display: block;
+    }
+}

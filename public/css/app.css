@@ -10098,6 +10098,20 @@ table.dataTable thead > tr > th.sorting_disabled {
   width: fit-content;
 }
 
+/* */
+.card-toggle .card-header {
+  cursor: pointer;
+}
+.card-toggle .card-header:hover {
+  background-blend-mode: darken;
+}
+.card-toggle .card-body {
+  display: none;
+}
+.card-toggle .card-body.show {
+  display: block;
+}
+
 .switch-absent .switch-input:checked + .switch-slider {
   background-color: #161c2d;
   border-color: #05070b;
