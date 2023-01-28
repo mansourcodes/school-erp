@@ -36,7 +36,7 @@ class OldToNewDbController extends Controller
         $limit = 40;
 
         $old_course_id = 38;
-        $course_id = 8;
+        $course_id = 1;
 
         $oldClassRooms = OldClassRoom::where('semester', $old_course_id)->skip($page * $limit)->take($limit)->get();
 

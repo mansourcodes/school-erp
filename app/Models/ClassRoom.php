@@ -81,7 +81,9 @@ class ClassRoom extends Model
         }
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
-            $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
+            if (isset(Curriculum::find($curriculumId)->curriculumـname)) {
+                $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
+            }
         }
 
         return $curriculums;

@@ -46,7 +46,7 @@
         @foreach ($classRoom->curriculums as $curriculum)
             <tr>
                 <td>
-                    {{ $curriculum['curriculumـname'] }} <br>
+                    {{ $curriculum['curriculumـname'] ?? '' }} <br>
                     {{ $curriculum['teahcer_name'] ?? '' }}
 
                 </td>
