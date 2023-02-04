@@ -8,7 +8,7 @@ return [
     'curricula_short'         => 'مناهج',
 
     'curriculumـname'         => 'اسم المنهج',
-    'shortـname'         => 'رمز المنهج',
+    'short_name'         => 'رمز المنهج',
     'bookـname'         => 'اسم الكتاب',
     'weightـinـhours'         => 'الثقل (عدد الساعات)',
 

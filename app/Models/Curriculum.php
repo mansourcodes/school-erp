@@ -20,7 +20,7 @@ class Curriculum extends Model
      */
     protected $fillable = [
         'curriculumـname',
-        'shortـname',
+        'short_name',
         'bookـname',
         'weightـinـhours',
         'curriculum_category_id',
