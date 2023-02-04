@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Helpers\HtmlHelper;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -64,7 +65,13 @@ class ClassRoom extends Model
 
     public function getLongNameAttribute()
     {
-        return $this->class_room_name . " [" . $this->class_room_number . "]";
+        $curriculums = new Collection($this->curriculums);
+
+        foreach ($curriculums as $key => $single_curriculum) {
+            $return[] = $single_curriculum['teacher_name'] . '-' . $single_curriculum['short_name'] . "-" . $this->class_room_number . "-(" . array_shift($single_curriculum['attend_table']) . ')';
+        }
+
+        return $return;
     }
 
     public function getCurriculumsAttribute()
@@ -81,9 +88,8 @@ class ClassRoom extends Model
         }
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
-            if (isset(Curriculum::find($curriculumId)->curriculumـname)) {
-                $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
-            }
+            $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
+            $curriculums[$curriculumId]['short_name'] = Curriculum::find($curriculumId)->short_name;
         }
 
         return $curriculums;
