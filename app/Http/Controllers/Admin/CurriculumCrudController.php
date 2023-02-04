@@ -47,6 +47,10 @@ class CurriculumCrudController extends CrudController
 
 
         CRUD::addColumn([
+            'name' => 'shortـname',
+            'label' => trans('curriculum.shortـname'),
+        ]);
+        CRUD::addColumn([
             'name' => 'curriculumـname',
             'label' => trans('curriculum.curriculumـname'),
         ]);
@@ -115,6 +119,11 @@ class CurriculumCrudController extends CrudController
         CRUD::addField([
             'name' => 'curriculumـname',
             'label' => trans('curriculum.curriculumـname'),
+        ]);
+
+        CRUD::addField([
+            'name' => 'shortـname',
+            'label' => trans('curriculum.shortـname'),
         ]);
 
         CRUD::addField([
