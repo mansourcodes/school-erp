@@ -3,7 +3,7 @@
 
 @section('content')
     @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->curriculums as $curriculum)
+        @foreach ($classRoom->long_name as $class_room_long_name)
             <div class="page">
 
                 @if (Setting::get('print_header'))
@@ -25,9 +25,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                {{ $curriculum['curriculumـname'] ?? '' }} -
-                                {{ $curriculum['teacher_name'] ?? '' }} -
-                                {{ $classRoom->long_name }}</td>
+                                {{ $class_room_long_name }}
                         </tr>
                     </tbody>
                 </table>

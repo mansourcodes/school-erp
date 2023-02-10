@@ -3,7 +3,7 @@
 
 @section('content')
     @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->curriculums as $curriculum)
+        @foreach ($classRoom->curriculums as $key => $curriculum)
             <div class="page">
 
                 @if (Setting::get('print_header'))
@@ -11,7 +11,7 @@
                 @endif
 
                 <h1 class="title text-center">
-                    {{ $course->long_name }}
+                    {{ $course->long_name[$key] }}
                 </h1>
 
                 <h3 class="title text-center">
@@ -25,9 +25,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                {{ $curriculum['curriculumـname'] ?? '' }} -
-                                {{ $curriculum['teacher_name'] ?? '' }} -
-                                {{ $classRoom->long_name }}</td>
+                                {{ $classRoom->long_name[$key] }}</td>
                         </tr>
                     </tbody>
                 </table>

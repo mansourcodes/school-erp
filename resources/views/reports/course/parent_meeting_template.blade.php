@@ -3,7 +3,7 @@
 
 @section('content')
     @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->curriculums as $curriculum)
+        @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
             @foreach ($classRoom->students as $student)
                 <div class="page">
 
@@ -12,7 +12,7 @@
                     @endif
 
                     <h1 class="title text-center">
-                        {{ $course->long_name }}
+                        {{ $course->long_name[$curriculum_id] }}
                     </h1>
 
                     <h3 class="title text-center">

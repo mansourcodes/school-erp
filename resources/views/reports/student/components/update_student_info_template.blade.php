@@ -72,10 +72,12 @@
             <td>رقم الطالب في المركز</td>
             <td>{{ $student->student_id }}</td>
         </tr>
-        <tr>
-            <td>الصف</td>
-            <td>{{ $classRoom->long_name }}</td>
-        </tr>
+        @foreach ($classRoom->long_name as $class_room_long_name)
+            <tr>
+                <td>الصف</td>
+                <td>{{ $class_room_long_name }}</td>
+            </tr>
+        @endforeach
         <tr>
             <td>تم تحديث البيانات بواسطة</td>
             <td></td>
