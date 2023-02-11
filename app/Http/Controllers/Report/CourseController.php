@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Report;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Backpack\Settings\app\Models\Setting;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -288,8 +289,20 @@ class CourseController extends Controller
     {
         $return['_'] = '';
         $course = Course::find($request->course);
-        $return['classRooms'] = $course->classRooms;
-        $return['course'] = $course;
+
+        foreach ($course->classRooms as  $classRoom) {
+            foreach ($classRoom->curriculums as  $curriculum) {
+                $key = $classRoom->id . '_' . $curriculum['id'];
+                $sessions[$key]['class_room_number'] =  $classRoom->class_room_number;
+                $sessions[$key]['curriculum'] =  $curriculum;
+                $sessions[$key]['long_name'] =  $classRoom->long_name[$curriculum['id']];
+                $sessions[$key]['orderKey'] =  array_shift($curriculum['attend_table']);
+            }
+        }
+
+        $sessions = new Collection($sessions);
+        $sessions = $sessions->sortBy('orderKey')->groupBy('orderKey');
+        $return['sessions'] = $sessions;
 
         $return['weekDays'] = [
             7 =>  trans('base.Sunday'),
