@@ -24,12 +24,8 @@
 <table class="table table-striped table-bordered bg-info">
     <tbody>
         <tr>
-            <td>الصف</td>
-            <td>{{ $classRoom->long_name }}</td>
-        </tr>
-        <tr>
             <td>رقم الصف</td>
-            <td>{{ $classRoom->class_room_number }} {{ $classRoom->class_room_name }}</td>
+            <td>{{ $classRoom->class_room_number }}</td>
         </tr>
         <tr>
             <td>مكان الدراسة</td>
@@ -43,7 +39,17 @@
             <td>يوم وتاريخ نهاية الدراسة</td>
             <td>{{ $course->end_date->format('d-m-Y') }}</td>
         </tr>
-        @foreach ($classRoom->curriculums as $curriculum)
+
+    </tbody>
+</table>
+
+<table class="table table-striped table-bordered bg-info">
+    <tbody>
+        @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
+            <tr>
+                <td>الصف</td>
+                <td>{{ $classRoom->long_name[$curriculum_id] }}</td>
+            </tr>
             <tr>
                 <td>
                     {{ $curriculum['curriculumـname'] ?? '' }} <br>

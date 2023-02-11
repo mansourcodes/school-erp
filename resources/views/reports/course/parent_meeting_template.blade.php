@@ -12,7 +12,7 @@
                     @endif
 
                     <h1 class="title text-center">
-                        {{ $course->long_name[$curriculum_id] }}
+                        {{ $course->long_name }}
                     </h1>
 
                     <h3 class="title text-center">
@@ -49,19 +49,15 @@
                         <tbody>
                             <tr>
                                 <td></td>
-                                <td>درجة التقييم</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td colspan="5">درجة التقييم</td>
                             </tr>
                             <tr>
-                                <td>جوانب التقييم</td>
-                                <td>ممتاز</td>
-                                <td>جيد جدا</td>
-                                <td>جيد</td>
-                                <td>متوسط</td>
-                                <td>ضعيف</td>
+                                <td style="width: 16%">جوانب التقييم</td>
+                                <td style="width: 16%">ممتاز</td>
+                                <td style="width: 16%">جيد جدا</td>
+                                <td style="width: 16%">جيد</td>
+                                <td style="width: 16%">متوسط</td>
+                                <td style="width: 16%">ضعيف</td>
                             </tr>
                             <tr>
                                 <td>القراءة</td>

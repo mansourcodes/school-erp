@@ -22,8 +22,8 @@
                 <div class="card_c">
                     {{ $long_name }}<br />
                     {{ $student->student_name }}<br />
-                    <b>الرقم الشخصي: {{ $student->cpr }}</b>
-                    <b>رقم الطالب: {{ $student->student_id }}</b>
+                    <b>الرقم الشخصي: {{ $student->cpr }}</b><br />
+                    <b>رقم الطالب: {{ $student->student_id }}</b><br />
                     <b>النقال: {{ $student->mobile }} </b>
                 </div>
             @endforeach

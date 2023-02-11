@@ -10,9 +10,9 @@
                     <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
                 @endif
 
-                <h1 class="title text-center">
-                    {{ $course->long_name[$key] }}
-                </h1>
+                <h3 class="title text-center">
+                    {{ $course->long_name }}
+                </h3>
 
                 <h3 class="title text-center">
                     {{ empty(Setting::get('classroom_list.title')) ? __('reports.classroom_list') : Setting::get('classroom_list.title') }}
@@ -55,7 +55,7 @@
                             <td>{{ $course->end_date->format('d-m-Y') }}</td>
                         </tr>
                         <tr>
-                            <td>عدد ساعات المقررة</td>
+                            <td>عدد الساعات المقررة</td>
                             <td>{{ $course->duration }}</td>
                         </tr>
                         <tr>

@@ -11,7 +11,7 @@
                 @endif
 
                 <h1 class="title text-center">
-                    {{ $course->long_name[$key] }}
+                    {{ $course->long_name }}
                 </h1>
 
                 <h3 class="title text-center">
@@ -40,7 +40,7 @@
                         </tr>
                         <tr>
                             <td>رقم الصف</td>
-                            <td>{{ $classRoom->class_room_number }} {{ $classRoom->class_room_name }}</td>
+                            <td>{{ $classRoom->class_room_number }}</td>
                         </tr>
                         <tr>
                             <td>مكان الدراسة</td>

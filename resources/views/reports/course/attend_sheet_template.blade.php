@@ -10,25 +10,26 @@
                     <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
                 @endif
 
-                <h1 class="title text-center">
-                    {{ $course->long_name[$key] }}
-                </h1>
+                <h3 class="title text-center">
+                    {{ $course->long_name }}
+                </h3>
 
                 <h3 class="title text-center">
                     {{ empty(Setting::get('attend_sheet_template.title')) ? __('reports.attend_sheet_template') : Setting::get('attend_sheet_template.title') }}
+                    - {{ $classRoom->long_name[$key] }}
                 </h3>
 
 
                 {!! Setting::get('attend_sheet_template.pre') !!}
 
-                <table class="table table-striped table-bordered">
+                {{-- <table class="table table-striped table-bordered">
                     <tbody>
                         <tr>
                             <td>
                                 {{ $classRoom->long_name[$key] }}</td>
                         </tr>
                     </tbody>
-                </table>
+                </table> --}}
 
 
                 <table style="table-layout: auto;" class="table table-striped table-bordered">

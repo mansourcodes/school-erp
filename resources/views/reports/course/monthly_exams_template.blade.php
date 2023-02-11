@@ -10,14 +10,14 @@
                     <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
                 @endif
 
-                <h1 class="title text-center">
-                    {{ $course->long_name }}
-                </h1>
 
                 <h3 class="title text-center">
                     {{ empty(Setting::get('monthly_exams_template.title')) ? __('reports.monthly_exams_template') : Setting::get('monthly_exams_template.title') }}
                 </h3>
 
+                <h3 class="title text-center">
+                    {{ $course->long_name }}
+                </h3>
 
                 {!! Setting::get('monthly_exams_template.pre') !!}
 

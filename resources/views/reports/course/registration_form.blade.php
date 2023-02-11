@@ -11,12 +11,9 @@
                         <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
                     @endif
 
-                    <h1 class="title text-center">
-                        {{ $course->long_name[$curriculum_id] }}
-                    </h1>
-
                     <h3 class="title text-center">
                         {{ empty(Setting::get('registration_form.title')) ? __('reports.registration_form') : Setting::get('registration_form.title') }}
+                        - {{ $course->long_name }}
                     </h3>
 
 
@@ -72,6 +69,12 @@
                             style="color: black; font-family: 'Wingdings 2'; font-size: 12pt; line-height: 1.3em;">%</span>
                     </p>
                     <br>
+
+
+                    <h3 class="title text-center">
+                        {{ empty(Setting::get('registration_form.title')) ? __('reports.registration_form') : Setting::get('registration_form.title') }}
+                        - {{ $course->long_name }}
+                    </h3>
 
                     <table dir="rtl" style="margin: auto;" style="padding: 20px;" border="1" width="400"
                         cellspacing="0" cellpadding="0">
