@@ -180,6 +180,24 @@ class StudentCrudController extends CrudController
 
 
         CRUD::addField([
+            'name' => 'parentsـstate',
+            'label' => trans('student.parentsـstate'),
+            'type' => 'select_from_array',
+            'wrapper'   => [
+                'class'      => 'form-group col-md-6'
+            ],
+            'options' => [
+                "BOTH" => trans('student.parentsـstate_options.BOTH'),
+                "MOTHER" => trans('student.parentsـstate_options.MOTHER'),
+                "FATHER" => trans('student.parentsـstate_options.FATHER'),
+                "NONE" => trans('student.parentsـstate_options.NONE')
+            ],
+            'allows_null' => false,
+            'tab'   => trans('student.relationshipـstate'),
+            // 'default' => 'one',
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
+        ]);
+        CRUD::addField([
             'name' => 'relationshipـstate',
             'label' => trans('student.relationshipـstate'),
             'type' => 'select_from_array',
@@ -222,6 +240,24 @@ class StudentCrudController extends CrudController
             'tab'   => trans('student.relationshipـstate'),
         ]);
 
+        CRUD::addField([
+            'name' => 'financial_support_status',
+            'label' => trans('student.financial_support_status'),
+            'type' => 'select_from_array',
+            'wrapper'   => [
+                'class'      => 'form-group col-md-12'
+            ],
+            'options' => [
+                "UNKNOWN" => trans('student.financial_support_status_options.UNKNOWN'),
+                "FINANCIAL_ISSUE" => trans('student.financial_support_status_options.FINANCIAL_ISSUE'),
+                "PARENTS_ISSUE" => trans('student.financial_support_status_options.PARENTS_ISSUE'),
+                "TEACHER_SONS" => trans('student.financial_support_status_options.TEACHER_SONS'),
+            ],
+            'allows_null' => false,
+            'tab'   => trans('student.financialـstate'),
+            // 'default' => 'one',
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
+        ]);
 
         CRUD::addField([
             'name' => 'live_inـstate',
@@ -251,6 +287,8 @@ class StudentCrudController extends CrudController
         //     ],
         //     'tab'   => trans('student.financialـstate'),
         // ]);
+
+
 
 
 

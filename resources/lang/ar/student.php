@@ -39,6 +39,15 @@ return [
         "MARRIED" => 'متزوج'
     ],
 
+
+    'parentsـstate'         => 'حالة الوالدين',
+    'parentsـstate_options'         => [
+        "BOTH" => "متواجدين",
+        "MOTHER" => "مع الام فقط",
+        "FATHER" => "مع الاب فقط",
+        "NONE" => "يتيم الابوين",
+    ],
+
     'family_depends'         => 'عدد أفراد العائلة',
 
     'family_members'         => 'عدد الأفراد المعالين منهم',
@@ -62,6 +71,14 @@ return [
         "AVERAGE" => 'متوسط',
         "GOOD" => 'جيد',
         "EXCELLENT" => 'متمكن',
+    ],
+
+    'financial_support_status'         => 'الدعم المالي',
+    'financial_support_status_options'         => [
+        "UNKNOWN" => 'لا يوجد دعم',
+        "FINANCIAL_ISSUE" => 'غير قادر على الدفع',
+        "PARENTS_ISSUE" => 'ايتام',
+        "TEACHER_SONS" => 'ابناء العاملين',
     ],
 
 
