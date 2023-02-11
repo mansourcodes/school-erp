@@ -88,6 +88,7 @@ class ClassRoom extends Model
         }
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
+            $curriculums[$curriculumId]['curriculum'] = Curriculum::find($curriculumId);
             $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
             $curriculums[$curriculumId]['short_name'] = Curriculum::find($curriculumId)->short_name;
         }

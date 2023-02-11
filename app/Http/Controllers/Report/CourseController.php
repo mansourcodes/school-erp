@@ -93,7 +93,6 @@ class CourseController extends Controller
             6 => trans('base.Saturday'),
         ];
 
-
         // dd(Setting::get('attendance_marks_template.title'));
 
         return $return;

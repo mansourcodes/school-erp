@@ -23,6 +23,7 @@ return [
     'project_marks_details'         => 'درجات المشاريع/البحوث',
     'midexam_marks_details'         => 'درجات المنتصف',
     'practice_mark_details'         => 'درجة العملي/الشفوي',
+    'memorize_mark_details'         => 'درجة الحفظ',
     'class_mark_details'         => 'درجة الاعمال',
     'attend_mark_details'         => 'الحضور والانضباط',
     'marks_details'         => 'تفاصل درجة الاعمال في الصف',

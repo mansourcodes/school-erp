@@ -3,7 +3,7 @@
 
 @section('content')
     @foreach ($classRooms as $classRoom)
-        @foreach ($classRoom->long_name as $class_room_long_name)
+        @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
             <div class="page">
 
                 @if (Setting::get('print_header'))
@@ -25,7 +25,8 @@
                     <tbody>
                         <tr>
                             <td>
-                                {{ $class_room_long_name }}
+                                {{ $classRoom->long_name[$curriculum_id] }}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -37,6 +38,12 @@
                             <th width="1%">#</th>
                             <th width="20%">اسم الطالب</th>
                             <th>الدرجة النهائية (10)</th>
+                            @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
+                                <th>
+                                    {{ $memorize_mark_details->label ?? '' }}
+                                    {{ $memorize_mark_details->mark ?? '' }}
+                                </th>
+                            @endforeach
 
                         </tr>
                     </thead>
@@ -49,6 +56,9 @@
                                     {{ $student->student_name }}
                                 </td>
                                 <td></td>
+                                @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
+                                    <td></td>
+                                @endforeach
                             </tr>
                         @endforeach
                     </tbody>
