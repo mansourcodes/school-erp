@@ -69,6 +69,11 @@ class StudentCrudController extends CrudController
             'label' => trans('student.mobile'),
         ]);
 
+        CRUD::addColumn([
+            'name' => 'age',
+            'label' => trans('student.age'),
+        ]);
+
         // CRUD::addColumn([
         //     'name' => 'email',
         //     'label' => trans('student.email'),

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Account\Payment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -61,6 +62,7 @@ class Student extends Model
         'long_name',
         'student_id',
         'courses',
+        'age',
     ];
 
     public function classRooms()
@@ -96,6 +98,24 @@ class Student extends Model
 
         $registration_at = ($this->registration_at) ?: $this->created_at;
         return ($registration_at->year .  str_pad($this->id, 4, '0', STR_PAD_LEFT));
+    }
+
+    public function getAgeAttribute()
+    {
+        if (isset($this->dob)) {
+            $dob = new Carbon($this->dob);
+            return $dob->diff(new Carbon())->y;
+        } else if (strlen($this->cpr) <= 9) {
+
+            $cpr = sprintf('%09d', $this->cpr);
+            $month = substr($cpr, 2, 2);
+            $year = substr($cpr, 0, 2);
+            $year = ($year > 50) ? "19$year" : "20$year";
+            $dob = new Carbon("$year-$month-01");
+            return $dob->diff(new Carbon())->y;
+        } else {
+            return 0;
+        }
     }
 
 
