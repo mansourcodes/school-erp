@@ -32,6 +32,7 @@
                     <th>النقال</th>
                     <th>الهاتف</th>
                     <th>الصف</th>
+                    <th>الفترة</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,25 +49,33 @@
                             <td>{{ $student->mobile }}</td>
                             <td>{{ $student->mobile2 }}</td>
                             <td class="p-0">
-                                @foreach ($classRoom->curriculums as $curriculum)
+                                @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
                                     <table class="table table-striped table-bordered m-0 w-100">
                                         <tbody>
 
                                             <tr>
-                                                <td>{{ $curriculum['teacher_name'] ?? '' }}</td>
-                                                <td>{{ $curriculum['curriculumـname'] ?? '' }}</td>
+                                                <td>{{ $classRoom->long_name[$curriculum_id] ?? '' }}</td>
 
                                                 <td>
-                                                    @foreach ($curriculum['days'] as $day)
+
+                                                    @php
+                                                        echo array_shift($curriculum['attend_table']);
+                                                    @endphp
+                                                    {{-- @foreach ($curriculum['days'] as $day)
                                                         {{ $weekDays[$day] ?? '' }}
                                                         {{ $curriculum['attend_table'][$day] ?? '' }} -
-                                                    @endforeach
+                                                    @endforeach --}}
 
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 @endforeach
+                            </td>
+
+                            <td>
+                                X
+
                             </td>
                         </tr>
                     @endforeach

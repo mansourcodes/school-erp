@@ -103,6 +103,7 @@ class StudentCrudController extends CrudController
 
         $this->crud->addButtonFromModelFunction('line', 'get_courses_dropdown', 'getCoursesDropdown', 'end');
         $this->crud->addButtonFromModelFunction('line', 'get_unpaid_payments_dropdown', 'getUnpaidPaymentsDropdown', 'end');
+        $this->filters();
     }
 
     /**
@@ -470,5 +471,34 @@ class StudentCrudController extends CrudController
         ];
 
         Widget::add($warpWidgets)->to('after_content');
+    }
+
+
+    protected function filters()
+    {
+
+        /*
+         *      age 
+         *
+         */
+        $this->crud->addFilter(
+            [
+                'name'       => 'number',
+                'type'       => 'range',
+                'label'      => 'Age',
+                'label_from' => 'min',
+                'label_to'   => 'max'
+            ],
+            false,
+            function ($value) { // if the filter is active
+                $range = json_decode($value);
+                if ($range->from) {
+                    $this->crud->addClause('where', 'age', '>=', (float) $range->from);
+                }
+                if ($range->to) {
+                    $this->crud->addClause('where', 'age', '<=', (float) $range->to);
+                }
+            }
+        );
     }
 }

@@ -39,14 +39,13 @@
             <tbody>
                 @foreach ($classRooms as $key => $classRoom)
                     @foreach ($classRoom->students as $student)
-                        @foreach ($classRoom->curriculums as $curriculum)
+                        @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
                             <tr>
-                                <td>{{ $curriculum['teacher_name'] ?? '' }}
-                                    - {{ $curriculum['curriculumـname'] ?? '' }}
-                                    - {{ $classRoom->class_room_number }}
+                                <td>
+                                    {{ $classRoom->long_name[$curriculum_id] ?? '' }}
                                 </td>
 
-                                <td> {{ $curriculum['curriculumـname'] ?? '' }} </td>
+                                <td> {{ $curriculum['short_name'] ?? '' }} </td>
                                 <td> {{ $curriculum['teacher_name'] ?? '' }} </td>
                                 <td>{{ $classRoom->class_room_number }}</td>
                                 <td>{{ $classRoom->class_room_name }}</td>

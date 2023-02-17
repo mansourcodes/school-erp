@@ -37,7 +37,7 @@
                         <tr>
                             <th width="1%">#</th>
                             <th width="20%">اسم الطالب</th>
-                            <th>الدرجة النهائية (10)</th>
+                            <th>الدرجة النهائية</th>
                             @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
                                 <th>
                                     {{ $memorize_mark_details->label ?? '' }}
