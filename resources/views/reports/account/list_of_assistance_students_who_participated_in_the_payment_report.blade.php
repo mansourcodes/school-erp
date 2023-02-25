@@ -28,24 +28,25 @@
                     <th># </th>
                     <th>رقم الطالب </th>
                     <th>الإسم</th>
-                    <th>الرقم الشخصي</th>
-                    <th>الرصيد المعفي</th>
-                    <th>الرصيد الاخر</th>
-                    <th>نوع الرصيد الاخر</th>
-                    <th>مبلغ الرصيد الاخر</th>
+                    <th>الهاتف</th>
+                    <th>الرصيد id</th>
+                    <th>نوع الرصيد </th>
+                    <th>مبلغ الرصيد </th>
+                    <th>الدعم</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($payments_free as $key => $payment)
+                @foreach ($payments_paid as $key => $payment)
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $payment->student->student_id }}</td>
                         <td>{{ $payment->student->student_name }}</td>
-                        <td>{{ $payment->student->cpr }}</td>
+                        <td>{{ $payment->student->mobile }}</td>
                         <td>{{ $payment->id }}</td>
-                        <td>{{ $payments_paid->where('student_id', $payment->student_id)->first()->id }}</td>
-                        <td>{{ $payments_paid->where('student_id', $payment->student_id)->first()->type }}</td>
-                        <td>{{ $payments_paid->where('student_id', $payment->student_id)->first()->amount }}</td>
+                        <td>{{ $payment->type }}</td>
+                        <td>{{ $payment->amount }}</td>
+                        <td>{{ __('student.financial_support_status_options.' . $payment->student->financial_support_status) }}
+                        </td>
                     </tr>
                 @endforeach
 

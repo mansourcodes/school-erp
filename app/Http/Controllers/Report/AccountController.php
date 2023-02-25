@@ -7,6 +7,7 @@ use App\Models\Account\Payment;
 use App\Models\Course;
 use App\Models\Student;
 use Backpack\Settings\app\Models\Setting;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -112,19 +113,24 @@ class AccountController extends Controller
 
         $return['_'] = '';
         $course = Course::find($request->course);
-        $payments_free = $course->payments->filter(function ($p, $key) {
-            return $p->type == 'FREE';
-        });
-
-        $student_id_array = $payments_free->pluck('student_id')->toArray();
-
-        $payments_paid = $course->payments->filter(function ($p, $key) use ($student_id_array) {
-            return $p->type != 'FREE' && in_array($p->student_id, $student_id_array);
-        });
-
-        $return['payments_free'] = $payments_free;
-        $return['payments_paid'] = $payments_paid;
         $return['course'] = $course;
+        $course_students = $course->classRooms->pluck('students');
+        $in_classroom_students = Arr::flatten($course_students->pluck('*'));
+        $students = new Collection($in_classroom_students);
+
+        $students = $students->filter(function ($value, int $key) {
+            return $value->financial_support_status != 'NONE';
+        });
+
+        // $return['students'] = $students;
+
+
+        //-------
+        $support_students_ids = Arr::flatten($students->pluck('id')->toArray());
+        $payments = Payment::where('course_id', $course->id)->whereIn('student_id', $support_students_ids)->get();
+
+        $return['payments_paid'] = $payments;
+
 
         return $return;
     }

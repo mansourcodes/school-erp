@@ -39,6 +39,7 @@ class Student extends Model
         'financial_details',
         'student_notes',
         'registration_at',
+        'financial_support_status',
     ];
 
     /**
