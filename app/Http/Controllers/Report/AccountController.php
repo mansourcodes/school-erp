@@ -187,12 +187,22 @@ class AccountController extends Controller
         $course_students = $course->classRooms->pluck('students');
         $in_classroom_students_id = Arr::flatten($course_students->pluck('*.id')->toArray());
 
+        // supported students 
+        $course_students_one_array = Arr::flatten($course_students->pluck('*'));
+        $course_students_collection = new Collection($course_students_one_array);
+        $support_students = $course_students_collection->filter(function ($value, int $key) {
+            return $value->financial_support_status != 'NONE';
+        });
+        $support_students_ids = Arr::flatten($support_students->pluck('id')->toArray());
+
         $paid_students_id = $course->payments->where('type', '!=', 'CONFIRM')->pluck('student_id')->toArray();
 
         $unpaid_students_id = [];
         foreach ($in_classroom_students_id as $id) {
             if (in_array($id, $paid_students_id)) {
                 // paid student
+            } elseif (in_array($id, $support_students_ids)) {
+                // spported student
             } else {
                 // unpaid 
                 $unpaid_students_id[] = $id;
