@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -77,6 +78,8 @@ class StatisticController extends Controller
         }
 
         $return['curriculums_statistics'] = $curriculums_statistics;
+        $return['total']['count_class_rooms'] = collect(Arr::pluck($curriculums_statistics, 'count_class_rooms'))->sum();
+        $return['total']['count_students'] = collect(Arr::pluck($curriculums_statistics, 'count_students'))->sum();
 
 
         return $return;

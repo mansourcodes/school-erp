@@ -38,7 +38,11 @@
                         <td>{{ $curriculum['count_students'] }}</td>
                     </tr>
                 @endforeach
-
+                <tr>
+                    <td> --------------------- المجموع</td>
+                    <td>{{ $total['count_class_rooms'] }}</td>
+                    <td>{{ $total['count_students'] }}</td>
+                </tr>
             </tbody>
         </table>
 
