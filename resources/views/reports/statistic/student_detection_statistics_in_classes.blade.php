@@ -59,7 +59,7 @@
                                                 <td>
 
                                                     @php
-                                                        echo array_shift($curriculum['attend_table']);
+                                                        echo current($curriculum['attend_table']);
                                                     @endphp
                                                     {{-- @foreach ($curriculum['days'] as $day)
                                                         {{ $weekDays[$day] ?? '' }}
@@ -74,8 +74,11 @@
                             </td>
 
                             <td>
-                                X
-
+                                @php
+                                    if (!empty($classRoom->curriculums)) {
+                                        echo current(current($classRoom->curriculums)['attend_table']);
+                                    }
+                                @endphp
                             </td>
                         </tr>
                     @endforeach
