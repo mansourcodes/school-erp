@@ -84,8 +84,13 @@ class ClassRoom extends Model
         foreach ($this->attend_table as $attend_table) {
             $id = $attend_table['curriculumـid'];
             $curriculums[$id]['days'][] = $attend_table['day'];
-            $curriculums[$id]['attend_table'][$attend_table['day']] = $attend_table['start_time'];
-            $curriculums[$id]['end_table'][$attend_table['day']] = $attend_table['end_time'] ?? $this->findEndTime($attend_table['start_time']);
+            $curriculums[$id]['attend_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['start_time']);
+
+            if (isset($attend_table['end_time'])) {
+                $curriculums[$id]['end_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['end_time']);
+            } else {
+                $curriculums[$id]['end_table'][$attend_table['day']] = $this->findEndTime($attend_table['start_time']);
+            }
         }
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
@@ -187,7 +192,25 @@ class ClassRoom extends Model
 
     private function findEndTime($start_time)
     {
+
         $date = Carbon::parse($start_time)->addHour();
-        return $date->format('H:i');
+        $time = $date->format('h:i a');
+
+        $time = str_replace('am', 'ص', $time);
+        $time = str_replace('pm', 'م', $time);
+
+        return $time;
+    }
+
+    private function formatToHumanTime($time)
+    {
+
+        $date = Carbon::parse($time);
+        $time = $date->format('h:i a');
+
+        $time = str_replace('am', 'ص', $time);
+        $time = str_replace('pm', 'م', $time);
+
+        return $time;
     }
 }
