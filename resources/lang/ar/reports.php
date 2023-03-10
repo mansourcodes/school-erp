@@ -64,6 +64,7 @@ return [
     'classes_and_students_statistics_for_each_level' => 'إحصائيات الفصول والطلاب لكل مستوى',
     'student_detection_statistics_in_classes' => 'إحصائيات الكشف عن الطلاب في الفصول الدراسية',
     'study_group_data_disclosure_statistics' => 'كشف بيانات المجموعات الدراسية',
+    'students_names_sheet' => 'قائمة الطلبة لكل صف',
 
 
 ];
