@@ -17,4 +17,5 @@ return [
     'attend_table'         => 'جدول الحصص',
     'attend_table_single'         => 'حصة في الجدول الزمني',
     'start_time'         => 'وقت الحصة',
+    'end_time'         => 'نهاية الحصة',
 ];

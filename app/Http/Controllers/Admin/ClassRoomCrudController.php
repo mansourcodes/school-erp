@@ -42,7 +42,6 @@ class ClassRoomCrudController extends CrudController
         $this->crud->enableExportButtons();
 
 
-
         CRUD::addColumn([
             // any type of relationship
             'name'         => 'course', // name of relationship method in the model
@@ -300,7 +299,7 @@ class ClassRoomCrudController extends CrudController
                     'options'     => $curricula_list,
                     'allows_null' => false,
                     // 'default'     => '',
-                    'wrapper' => ['class' => 'form-group col-md-5'],
+                    'wrapper' => ['class' => 'form-group col-md-9'],
                     'hint' => trans('studentmark.curriculum_hint'),
 
                 ],
@@ -311,7 +310,7 @@ class ClassRoomCrudController extends CrudController
                     'options'     => $week_days,
                     'allows_null' => false,
                     'default'     => 7,
-                    'wrapper' => ['class' => 'form-group col-md-3'],
+                    'wrapper' => ['class' => 'form-group col-md-4'],
 
                 ],
                 [
@@ -319,7 +318,15 @@ class ClassRoomCrudController extends CrudController
                     'label'       => trans('classroom.start_time'),
                     'type'        => 'time',
 
-                    'wrapper' => ['class' => 'form-group col-md-3'],
+                    'wrapper' => ['class' => 'form-group col-md-4'],
+
+                ],
+                [
+                    'name'        => 'end_time',
+                    'label'       => trans('classroom.end_time'),
+                    'type'        => 'time',
+
+                    'wrapper' => ['class' => 'form-group col-md-4'],
 
                 ],
             ],

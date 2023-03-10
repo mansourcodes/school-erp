@@ -92,6 +92,7 @@ class StudentController extends Controller
             6 => trans('base.Saturday'),
         ];
 
+
         return $return;
     }
 

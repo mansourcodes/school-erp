@@ -64,7 +64,8 @@
                 <td>وقت الدراسة</td>
                 <td>
                     @foreach ($curriculum['days'] as $day)
-                        {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} <br>
+                        {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} ->
+                        {{ $curriculum['end_table'][$day] ?? '' }} <br>
                     @endforeach
 
                 </td>

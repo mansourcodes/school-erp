@@ -85,6 +85,7 @@ class ClassRoom extends Model
             $id = $attend_table['curriculumـid'];
             $curriculums[$id]['days'][] = $attend_table['day'];
             $curriculums[$id]['attend_table'][$attend_table['day']] = $attend_table['start_time'];
+            $curriculums[$id]['end_table'][$attend_table['day']] = $attend_table['end_time'] ?? $this->findEndTime($attend_table['start_time']);
         }
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
@@ -180,5 +181,13 @@ class ClassRoom extends Model
         }
 
         return $classrooms;
+    }
+
+
+
+    private function findEndTime($start_time)
+    {
+        $date = Carbon::parse($start_time)->addHour();
+        return $date->format('H:i');
     }
 }
