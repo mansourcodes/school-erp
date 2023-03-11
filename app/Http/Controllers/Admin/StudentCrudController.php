@@ -476,29 +476,5 @@ class StudentCrudController extends CrudController
 
     protected function filters()
     {
-
-        /*
-         *      age 
-         *
-         */
-        $this->crud->addFilter(
-            [
-                'name'       => 'number',
-                'type'       => 'range',
-                'label'      => 'Age',
-                'label_from' => 'min',
-                'label_to'   => 'max'
-            ],
-            false,
-            function ($value) { // if the filter is active
-                $range = json_decode($value);
-                if ($range->from) {
-                    $this->crud->addClause('where', 'age', '>=', (float) $range->from);
-                }
-                if ($range->to) {
-                    $this->crud->addClause('where', 'age', '<=', (float) $range->to);
-                }
-            }
-        );
     }
 }
