@@ -41,6 +41,11 @@ class ClassRoomCrudController extends CrudController
     {
         $this->crud->enableExportButtons();
 
+        CRUD::addColumn([
+            'name'  => 'first_long_name',
+            'label' => 'Title',
+            'type'  => 'text'
+        ],);
 
         CRUD::addColumn([
             // any type of relationship
@@ -53,10 +58,10 @@ class ClassRoomCrudController extends CrudController
             // 'model'     => App\Models\Category::class, // foreign key model
         ],);
 
-        CRUD::addColumn([
-            'name' => 'class_room_name',
-            'label' => trans('classroom.class_room_name'),
-        ]);
+        // CRUD::addColumn([
+        //     'name' => 'class_room_name',
+        //     'label' => trans('classroom.class_room_name'),
+        // ]);
         CRUD::addColumn([
             'name' => 'class_room_number',
             'label' => trans('classroom.class_room_number'),
@@ -72,16 +77,16 @@ class ClassRoomCrudController extends CrudController
 
         ],);
 
-        CRUD::addColumn([
-            // any type of relationship
-            'name'         => 'students', // name of relationship method in the model
-            'type'         => 'relationship',
-            'label'        => trans('student.students'), // Table column heading
-            // OPTIONAL
-            // 'entity'    => 'tags', // the method that defines the relationship in your Model
-            // 'attribute' => 'name', // foreign key attribute that is shown to user
-            // 'model'     => App\Models\Category::class, // foreign key model
-        ],);
+        // CRUD::addColumn([
+        //     // any type of relationship
+        //     'name'         => 'students', // name of relationship method in the model
+        //     'type'         => 'relationship',
+        //     'label'        => trans('student.students'), // Table column heading
+        //     // OPTIONAL
+        //     // 'entity'    => 'tags', // the method that defines the relationship in your Model
+        //     // 'attribute' => 'name', // foreign key attribute that is shown to user
+        //     // 'model'     => App\Models\Category::class, // foreign key model
+        // ],);
 
         // CRUD::addColumn([
         //     'name' => 'created_at',

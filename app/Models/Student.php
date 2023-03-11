@@ -66,6 +66,24 @@ class Student extends Model
         'age',
     ];
 
+
+    // - 
+    public const FINANCIAL_SUPPORT_STATUS = [
+        "UNKNOWN" => 'student.financial_support_status_options.UNKNOWN',
+        "FINANCIAL_ISSUE" => 'student.financial_support_status_options.FINANCIAL_ISSUE',
+        "PARENTS_ISSUE" => 'student.financial_support_status_options.PARENTS_ISSUE',
+        "TEACHER_SONS" => 'student.financial_support_status_options.TEACHER_SONS',
+    ];
+
+    public static function FinancialSupportStatusArray()
+    {
+        $array = [];
+        foreach (Student::FINANCIAL_SUPPORT_STATUS as $key => $value) {
+            $array[$key] = __($value);
+        }
+        return $array;
+    }
+
     public function classRooms()
     {
         // return $this->hasMany(\App\Models\ClassRoom::class);

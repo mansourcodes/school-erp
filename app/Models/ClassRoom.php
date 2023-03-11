@@ -41,6 +41,7 @@ class ClassRoom extends Model
 
     protected $appends = [
         'long_name',
+        'first_long_name',
         'code',
         'curriculums',
     ];
@@ -72,6 +73,12 @@ class ClassRoom extends Model
         }
 
         return $return;
+    }
+
+    public function getFirstLongNameAttribute()
+    {
+
+        return current($this->long_name);
     }
 
     public function getCurriculumsAttribute()

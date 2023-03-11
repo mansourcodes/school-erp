@@ -476,5 +476,20 @@ class StudentCrudController extends CrudController
 
     protected function filters()
     {
+
+        /*
+         *      financial_support_status 
+         *
+         */
+        // select2_multiple filter
+        $this->crud->addFilter([
+            'name'  => 'financial_support_status',
+            'type'  => 'select2_multiple',
+            'label' => __('student.financial_support_status')
+        ], function () {
+            return Student::FinancialSupportStatusArray();
+        }, function ($values) { // if the filter is active
+            $this->crud->addClause('whereIn', 'financial_support_status', json_decode($values));
+        });
     }
 }
