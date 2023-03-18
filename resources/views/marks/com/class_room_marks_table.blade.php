@@ -17,13 +17,21 @@
     <script>
         const container_{{ $key }} = document.querySelector('#example_{{ $key }}');
         const hot_{{ $key }} = new Handsontable(container_{{ $key }}, {
+            licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
             data: @php
                 echo json_encode($table);
             @endphp,
-            rowHeaders: true,
-            colHeaders: true,
+            rowHeaders: false,
+            colHeaders: false,
             height: 'auto',
-            licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+            // render Handsontable from the right to the left
+            layoutDirection: 'rtl',
+            // load an RTL language (e.g., Arabic)
+            language: 'ar-AR',
+            // enable a few options that exemplify the layout direction
+            dropdownMenu: false,
+            filters: false,
+            contextMenu: true
         });
     </script>
 @endsection

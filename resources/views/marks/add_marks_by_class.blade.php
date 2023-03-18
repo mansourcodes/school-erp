@@ -28,4 +28,5 @@
 
 @section('before_scripts')
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/languages/ar-AR.js"></script>
 @endsection
