@@ -69,7 +69,14 @@ class ClassRoom extends Model
         $curriculums = new Collection($this->curriculums);
 
         foreach ($curriculums as $key => $single_curriculum) {
-            $return[$key] = $single_curriculum['teacher_name'] . '-' . $single_curriculum['short_name'] . "-" . $this->class_room_number . "-(" . array_shift($single_curriculum['attend_table']) . ')';
+            if (isset($single_curriculum['attend_table'])) {
+                $time = current($single_curriculum['attend_table']);
+            }
+            $return[$key] =
+                $single_curriculum['teacher_name'] . '-'
+                . $single_curriculum['short_name'] . "-"
+                . $this->class_room_number
+                . "-(" . $time . ')';
         }
 
         return $return;
