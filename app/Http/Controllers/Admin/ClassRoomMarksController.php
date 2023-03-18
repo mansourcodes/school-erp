@@ -26,8 +26,13 @@ class ClassRoomMarksController extends Controller
         foreach ($classRoom->curriculums as $curriculum) {
             $table = array();
             $marks_template = $curriculum['curriculum']->marks_labels_flat;
+
+            //header 
+            $table[] = ['id', __('student.student_name'), ...$marks_template];
+
+            //body
             foreach ($classRoom->students as $student) {
-                $table[] = [$student->id, $student->student_name, ...$marks_template];
+                $table[] = [$student->id, $student->student_name, ...array_fill(0, count($marks_template), '')];
             }
 
             $classMarks[] = [
@@ -35,6 +40,7 @@ class ClassRoomMarksController extends Controller
                 'table' => $table
             ];
         }
+
 
         $data['classRoom'] = $classRoom;
         $data['classMarks'] = $classMarks;
