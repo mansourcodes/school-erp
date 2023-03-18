@@ -63,6 +63,11 @@ Route::group([
     Route::get('attend_easy_form', 'AttendsCrudController@AttendEasyForm');
     Route::get('save_attend_easy_form', 'AttendsCrudController@SaveAttendEasyForm');
     Route::get('quick_delete_and_add', 'AttendsCrudController@QuickDeleteAndAdd');
+
+    // 
+
+    Route::get('addMarksByClass/{id}', 'StudentMarksCrudController@addMarksByClass');
+    Route::get('saveMarksByClassForm', 'StudentMarksCrudController@saveMarksByClassForm');
 });
 
 

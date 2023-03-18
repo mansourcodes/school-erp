@@ -151,6 +151,7 @@ class ClassRoomCrudController extends CrudController
          */
 
         $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
+        $this->crud->addButtonFromModelFunction('line', 'print', 'addMarksByClass');
     }
 
     /**

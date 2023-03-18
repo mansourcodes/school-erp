@@ -109,6 +109,15 @@ class ClassRoom extends Model
         return $curriculums;
     }
 
+    public function addMarksByClass()
+    {
+        return "        
+            <a class='btn btn-primary' href='" . backpack_url('addMarksByClass/' . $this->id) . "'>
+                " . __('studentmark.add_marks_by_class') . "
+            </a>
+        ";
+    }
+
     public function getPrintDropdown()
     {
 
