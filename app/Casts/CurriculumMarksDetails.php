@@ -30,13 +30,13 @@ class CurriculumMarksDetails implements CastsAttributes
         } else {
 
             foreach ($value as $key => $obj) :
-                $obj->finalexam_mark_details = json_decode($obj->finalexam_mark_details);
-                $obj->midexam_marks_details = json_decode($obj->midexam_marks_details);
-                $obj->class_mark_details = json_decode($obj->class_mark_details);
-                $obj->marks_details = json_decode($obj->marks_details);
-                $obj->project_marks_details = json_decode($obj->project_marks_details);
-                $obj->practice_mark_details = json_decode($obj->practice_mark_details);
-                $obj->memorize_mark_details = json_decode($obj->memorize_mark_details);
+                @$obj->finalexam_mark_details = json_decode($obj->finalexam_mark_details);
+                @$obj->midexam_marks_details = json_decode($obj->midexam_marks_details);
+                @$obj->class_mark_details = json_decode($obj->class_mark_details);
+                @$obj->marks_details = json_decode($obj->marks_details);
+                @$obj->project_marks_details = json_decode($obj->project_marks_details);
+                @$obj->practice_mark_details = json_decode($obj->practice_mark_details);
+                @$obj->memorize_mark_details = json_decode($obj->memorize_mark_details);
                 @$obj->attend_mark_details = json_decode($obj->attend_mark_details);
             endforeach;
         }

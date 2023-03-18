@@ -38,7 +38,8 @@ class Curriculum extends Model
     ];
 
     protected $appends = [
-        'long_name'
+        'long_name',
+        'marks_labels_flat'
     ];
 
 
@@ -58,5 +59,18 @@ class Curriculum extends Model
     public function getLongNameAttribute()
     {
         return "[" . $this->curriculumـname . "] " . $this->bookـname;
+    }
+
+
+    public function getMarksLabelsFlatAttribute()
+    {
+        $flat_array = array();
+        foreach ($this->marks_labels as $key => $value_array) {
+            if ($value_array)
+                foreach ($value_array as $key => $value) {
+                    $flat_array[] = "$value->label ($value->mark)";
+                }
+        }
+        return $flat_array;
     }
 }

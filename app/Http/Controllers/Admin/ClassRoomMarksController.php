@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClassRoom;
 
 /**
  * Class StudentMarksCrudController
@@ -18,9 +19,27 @@ class ClassRoomMarksController extends Controller
     {
 
         // TODO: list students and 
+        $classRoom = ClassRoom::find($id);
 
-        dd($id);
-        return view('marks.add_marks_by_class');
+        $classMarks = array();
+
+        foreach ($classRoom->curriculums as $curriculum) {
+            $table = array();
+            $marks_template = $curriculum['curriculum']->marks_labels_flat;
+            foreach ($classRoom->students as $student) {
+                $table[] = [$student->id, $student->student_name, ...$marks_template];
+            }
+
+            $classMarks[] = [
+                'curriculum' => $curriculum['curriculum'],
+                'table' => $table
+            ];
+        }
+
+        $data['classRoom'] = $classRoom;
+        $data['classMarks'] = $classMarks;
+
+        return view('marks.add_marks_by_class', $data);
     }
 
     public function saveMarksByClass()
