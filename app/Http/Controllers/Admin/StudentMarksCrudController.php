@@ -452,21 +452,4 @@ class StudentMarksCrudController extends CrudController
     {
         return $this->fetch(\App\Models\Curriculum::class);
     }
-
-
-
-    public function addMarksByClass($id)
-    {
-
-        // TODO: list students and 
-
-        dd($id);
-        return view('marks.add_marks_by_class');
-    }
-
-    public function saveMarksByClass()
-    {
-        // TODO: respone to json save 
-        dd('save_12312aa');
-    }
 }
