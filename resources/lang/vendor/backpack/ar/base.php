@@ -32,7 +32,7 @@ return [
     'change_password'        => 'تغيير كلمة السر',
     'unauthorized'           => 'غير مصرح',
     'dashboard'              => 'الصفحة الرئيسية',
-    'handcrafted_by'         => 'برمجة وتصميم ',
+    'handcrafted_by'         => 'رابط المصدر المفتوح لبرنامج',
     'powered_by'             => 'بدعم من ',
     'my_account'             => 'حسابي',
     'update_account_info'    => 'تحديث معلومات الحساب',
