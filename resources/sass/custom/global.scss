@@ -45,7 +45,14 @@
 }
 
 .sidebar .nav-dropdown.open > .nav-dropdown-items {
-    background: #73818f;
+    background: #f8fafc;
+    .nav-link {
+        color: #73818f;
+    }
+    .nav-link.active,
+    .nav-link:hover {
+        color: #fff;
+    }
 }
 
 .app-header.navbar {

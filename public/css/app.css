@@ -10151,7 +10151,14 @@ table.dataTable thead > tr > th.sorting_disabled {
 }
 
 .sidebar .nav-dropdown.open > .nav-dropdown-items {
-  background: #73818f;
+  background: #f8fafc;
+}
+.sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link {
+  color: #73818f;
+}
+.sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link.active,
+.sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link:hover {
+  color: #fff;
 }
 
 .app-header.navbar {
