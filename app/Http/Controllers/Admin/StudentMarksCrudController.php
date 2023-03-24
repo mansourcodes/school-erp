@@ -438,7 +438,18 @@ class StudentMarksCrudController extends CrudController
                     'min' => 0, // minimum rows allowed in the table
                 ],
 
-
+                [   // Table
+                    'name'            => 'memorize_mark_details',
+                    'label'           => trans('studentmark.memorize_mark_details'),
+                    'type'            => 'table',
+                    'entity_singular' => '', // used on the "Add X" button
+                    'columns'         => [
+                        'label'  => trans('studentmark.marks_details_label'),
+                        'mark'  => trans('curriculum.full_mark'),
+                    ],
+                    'max' => 20, // maximum rows allowed in the table
+                    'min' => 0, // minimum rows allowed in the table
+                ],
             ],
 
         ]);
