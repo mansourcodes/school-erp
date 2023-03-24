@@ -58,6 +58,15 @@
                         'body' => "<a class='h1 d-block py-5 m-0 text-white' href='" . backpack_url('add_attend_by_date') . "' ><i class='nav-icon la la-check-square'></i>" . trans('attend.add_attend_w_date') . '</a>',
                     ],
                 ],
+                [
+                    'type' => 'card',
+                    'wrapper' => ['class' => 'col-sm-12 col-md-4'], // optional
+                    'class' => 'card bg-green text-white', // optional
+                    'content' => [
+                        // 'header' => 'Some card title', // optional
+                        'body' => "<a class='h1 d-block py-5 m-0 text-white' href='" . backpack_url('classroom') . "' ><i class='nav-icon la la-chalkboard-teacher'></i>" . trans('classroom.classrooms') . '</a>',
+                    ],
+                ],
             ], // widgets end
         ],
     

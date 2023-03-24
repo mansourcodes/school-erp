@@ -28,16 +28,41 @@ class ClassRoomMarksController extends Controller
             $marks_template = $curriculum['curriculum']->marks_labels_flat;
 
             //header 
-            $table[] = ['id', __('student.student_name'), ...$marks_template];
+            $table[] = [
+                'id' => 'id',
+                'name' => __('student.student_name'),
+                ...$marks_template
+            ];
 
             //body
             foreach ($classRoom->students as $student) {
-                $table[] = [$student->id, $student->student_name, ...array_fill(0, count($marks_template), '')];
+                $table[] = [
+                    'id' => $student->id,
+                    'name' => $student->student_name,
+                    ...array_fill(0, count($marks_template), '')
+                ];
             }
+
+            $colHeaders = array_shift($table);
+
+            //columns
+            $columns = array();
+            foreach ($colHeaders as $key => $value) {
+                $columns[] = [
+                    'data' => $key,
+                    'type' => 'numeric',
+
+                ];
+            }
+            $columns[0]['readOnly'] = true;
+            $columns[1]['readOnly'] = true;
+            $columns[1]['type'] = 'text';
 
             $classMarks[] = [
                 'curriculum' => $curriculum['curriculum'],
-                'table' => $table
+                'colHeaders' => $colHeaders,
+                'columns' => $columns,
+                'table' => $table,
             ];
         }
 

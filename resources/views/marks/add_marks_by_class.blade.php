@@ -13,6 +13,8 @@
         @include('marks.com.class_room_marks_table', [
             'curriculum' => $classMark['curriculum'],
             'table' => $classMark['table'],
+            'colHeaders' => $classMark['colHeaders'],
+            'columns' => $classMark['columns'],
             'classRoom' => $classRoom,
         ])
 
