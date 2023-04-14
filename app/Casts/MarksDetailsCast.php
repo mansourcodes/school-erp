@@ -36,6 +36,7 @@ class MarksDetailsCast implements CastsAttributes
                 $obj->marks_details = json_decode($obj->marks_details);
                 $obj->project_marks_details = json_decode($obj->project_marks_details);
                 $obj->practice_mark_details = json_decode($obj->practice_mark_details);
+                $obj->memorize_mark_details = json_decode($obj->memorize_mark_details);
                 @$obj->attend_mark_details = json_decode($obj->attend_mark_details);
             endforeach;
         }
