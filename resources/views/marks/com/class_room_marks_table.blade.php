@@ -67,7 +67,7 @@
                     body: JSON.stringify({
                         course_id: {{ $classRoom->course_id }},
                         curriculum_id: {{ $curriculum->id }},
-                        data: hot_{{ $key }}.getData()
+                        data: hot_{{ $key }}.getSourceData()
                     })
                 })
                 .then(function(response) {
