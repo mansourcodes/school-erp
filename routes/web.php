@@ -67,7 +67,7 @@ Route::group([
     // 
 
     Route::get('addMarksByClass/{id}', 'ClassRoomMarksController@addMarksByClass');
-    Route::get('saveMarksByClassForm', 'ClassRoomMarksController@saveMarksByClassForm');
+    Route::post('saveMarksByClassForm', 'ClassRoomMarksController@saveMarksByClassJson');
 });
 
 

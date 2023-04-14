@@ -8,6 +8,8 @@ use App\Models\Curriculum;
 use App\Models\Student;
 use App\Models\StudentMarks;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 /**
  * Class StudentMarksCrudController
@@ -80,12 +82,6 @@ class ClassRoomMarksController extends Controller
         return view('marks.add_marks_by_class', $data);
     }
 
-    public function saveMarksByClass()
-    {
-        // TODO: respone to json save 
-        dd('save_12312aa');
-    }
-
 
     private function findStudentMarks($course_id, Curriculum $curriculum, Student $student)
     {
@@ -124,5 +120,18 @@ class ClassRoomMarksController extends Controller
         }
 
         return $result;
+    }
+
+
+
+
+    public function saveMarksByClassJson(Request $request)
+    {
+
+        return Response([
+            'curriculum_id' => $request->input('curriculum_id'),
+            'course_id' => $request->input('course_id'),
+            'data' => $request->input('data'),
+        ]);
     }
 }
