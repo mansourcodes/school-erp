@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
+use App\Models\Curriculum;
+use App\Models\Student;
+use App\Models\StudentMarks;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class StudentMarksCrudController
@@ -36,10 +40,13 @@ class ClassRoomMarksController extends Controller
 
             //body
             foreach ($classRoom->students as $student) {
+
+                $marks_array = $this->findStudentMarks($classRoom->course_id, $curriculum['curriculum'], $student);
+
                 $table[] = [
                     'id' => $student->id,
                     'name' => $student->student_name,
-                    ...array_fill(0, count($marks_template), '')
+                    ...$marks_array
                 ];
             }
 
@@ -77,5 +84,45 @@ class ClassRoomMarksController extends Controller
     {
         // TODO: respone to json save 
         dd('save_12312aa');
+    }
+
+
+    private function findStudentMarks($course_id, Curriculum $curriculum, Student $student)
+    {
+
+        $marks = StudentMarks::where([
+            'student_id' => $student->id,
+            'course_id' => $course_id
+        ])
+            ->where('marks', 'like', "%curriculumـid_:_{$curriculum->id}_,%")
+            ->first();
+
+        if (!$marks) {
+            return array_fill(0, count($curriculum->marks_labels_flat), '');
+        }
+
+        $marksCollection = new Collection($marks->marks);
+        $StudentCurriculumMarks = $marksCollection->where('curriculumـid', $curriculum->id)->first();
+
+        if (!$StudentCurriculumMarks) {
+            return array_fill(0, count($curriculum->marks_labels_flat), '');
+        }
+
+
+        // map marks 
+        $result = [];
+        foreach ($curriculum->marks_labels as $key => $value_part) {
+            if (is_array($value_part))
+                foreach ($value_part as $key_part => $value) {
+                    // dd($StudentCurriculumMarks->{$key}[$key_part]->mark);
+                    if (isset($StudentCurriculumMarks->{$key}[$key_part]->mark)) {
+                        $result[]  =  $StudentCurriculumMarks->{$key}[$key_part]->mark;
+                    } else {
+                        $result[]  = '';
+                    }
+                }
+        }
+
+        return $result;
     }
 }
