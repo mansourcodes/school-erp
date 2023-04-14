@@ -128,6 +128,9 @@ class ClassRoomMarksController extends Controller
     public function saveMarksByClassJson(Request $request)
     {
 
+
+
+
         return Response([
             'curriculum_id' => $request->input('curriculum_id'),
             'course_id' => $request->input('course_id'),
