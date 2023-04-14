@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ClassRoomMarksController;
 use App\Http\Controllers\Report\AccountController;
 use App\Http\Controllers\Report\CourseController;
 use App\Http\Controllers\Pull\OldToNewDbController;
@@ -70,6 +71,9 @@ Route::group([
     Route::post('saveMarksByClassForm', 'ClassRoomMarksController@saveMarksByClassJson');
 });
 
+Route::post('debug/saveMarksByClassForm', [
+    ClassRoomMarksController::class, 'saveMarksByClassJson'
+]);
 
 /*
 |--------------------------------------------------------------------------
