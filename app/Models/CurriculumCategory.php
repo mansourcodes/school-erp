@@ -17,7 +17,7 @@ class CurriculumCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'categoryـname',
+        'category_name',
     ];
 
     /**

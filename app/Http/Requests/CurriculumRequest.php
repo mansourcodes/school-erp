@@ -28,9 +28,9 @@ class CurriculumRequest extends FormRequest
         return [
             // 'name' => 'required|min:5|max:255'
 
-            'curriculumـname' => 'required',
-            'bookـname' => 'required',
-            'weightـinـhours' => 'required',
+            'curriculum_name' => 'required',
+            'book_name' => 'required',
+            'weight_in_hours' => 'required',
             'curriculum_category_id' => 'required',
         ];
     }

@@ -68,7 +68,7 @@
                     {{__('curriculum.curriculum')}}:
                 </b>
 
-                {{$attend_curriculum_table['curriculum']->curriculumـname}}
+                {{$attend_curriculum_table['curriculum']->curriculum_name}}
             </td>
             <td>
                 <b>

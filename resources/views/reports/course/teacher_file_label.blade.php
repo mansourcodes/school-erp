@@ -16,7 +16,7 @@
                         </td>
                         <td width="20%">
 
-                            {{ $session['curriculum']['curriculumـname'] ?? '' }}
+                            {{ $session['curriculum']['curriculum_name'] ?? '' }}
                         </td>
 
                         @foreach ($session['curriculum']['days'] as $day)

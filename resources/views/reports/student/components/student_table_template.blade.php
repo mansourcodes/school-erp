@@ -49,7 +49,7 @@
 
             <tr>
                 <td width="200px">المنهج</td>
-                <td>{{ $curriculum['curriculumـname'] ?? '' }}</td>
+                <td>{{ $curriculum['curriculum_name'] ?? '' }}</td>
             </tr>
 
             <tr>

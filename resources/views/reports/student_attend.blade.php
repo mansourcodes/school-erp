@@ -56,7 +56,7 @@
                 </b>
 
 
-                {{$classroom->course->hijri_year}} هـ
+                {{$classroom->course->hijri_year}} ه_
 
                 ({{$classroom->course->course_year}} م)
 

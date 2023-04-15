@@ -297,7 +297,7 @@ class StudentMarksCrudController extends CrudController
         $curricula_list = [];
         $currentStudentMarks = \App\Models\StudentMarks::find($this->crud->getCurrentEntryId());
         foreach ($currentStudentMarks->course->academicPath->curricula as $curriculum) {
-            $curricula_list[$curriculum->id] = $curriculum->curriculumـname;
+            $curricula_list[$curriculum->id] = $curriculum->curriculum_name;
         }
 
         CRUD::addField([   // repeatable
@@ -314,8 +314,8 @@ class StudentMarksCrudController extends CrudController
             'fields' => [
                 [
 
-                    'name'        => 'curriculumـid',
-                    'label'       => trans('curriculum.curriculumـname'),
+                    'name'        => 'curriculum_id',
+                    'label'       => trans('curriculum.curriculum_name'),
                     'type'        => 'select_from_array',
                     'options'     => $curricula_list,
                     'allows_null' => false,

@@ -15,7 +15,7 @@ class AddSupportToStudentsTable extends Migration
     {
         Schema::table('students', function (Blueprint $table) {
             //
-            $table->enum('parentsـstate', ["BOTH", "MOTHER", "FATHER", "NONE"]);
+            $table->enum('parents_state', ["BOTH", "MOTHER", "FATHER", "NONE"]);
             $table->string('financial_support_status', 50)->default('NONE')->nullable();
         });
     }
@@ -29,7 +29,7 @@ class AddSupportToStudentsTable extends Migration
     {
         Schema::table('students', function (Blueprint $table) {
             //
-            $table->dropColumn('parentsـstate');
+            $table->dropColumn('parents_state');
             $table->dropColumn('financial_support_status');
         });
     }

@@ -51,18 +51,18 @@ class CurriculumCrudController extends CrudController
             'label' => trans('curriculum.short_name'),
         ]);
         CRUD::addColumn([
-            'name' => 'curriculumـname',
-            'label' => trans('curriculum.curriculumـname'),
+            'name' => 'curriculum_name',
+            'label' => trans('curriculum.curriculum_name'),
         ]);
 
         CRUD::addColumn([
-            'name' => 'bookـname',
-            'label' => trans('curriculum.bookـname'),
+            'name' => 'book_name',
+            'label' => trans('curriculum.book_name'),
         ]);
 
         CRUD::addColumn([
-            'name' => 'weightـinـhours',
-            'label' => trans('curriculum.weightـinـhours'),
+            'name' => 'weight_in_hours',
+            'label' => trans('curriculum.weight_in_hours'),
         ]);
 
 
@@ -77,7 +77,7 @@ class CurriculumCrudController extends CrudController
             // 'model'     => App\Models\Category::class, // foreign key model
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhereHas('curriculumCategory', function ($query) use ($column, $searchTerm) {
-                    $query->where('categoryـname', 'like', '%' . $searchTerm . '%');
+                    $query->where('category_name', 'like', '%' . $searchTerm . '%');
                 });
             }
         ],);
@@ -117,8 +117,8 @@ class CurriculumCrudController extends CrudController
 
 
         CRUD::addField([
-            'name' => 'curriculumـname',
-            'label' => trans('curriculum.curriculumـname'),
+            'name' => 'curriculum_name',
+            'label' => trans('curriculum.curriculum_name'),
         ]);
 
         CRUD::addField([
@@ -127,18 +127,18 @@ class CurriculumCrudController extends CrudController
         ]);
 
         CRUD::addField([
-            'name' => 'bookـname',
-            'label' => trans('curriculum.bookـname'),
+            'name' => 'book_name',
+            'label' => trans('curriculum.book_name'),
         ]);
 
         CRUD::addField([
-            'name' => 'weightـinـhours',
-            'label' => trans('curriculum.weightـinـhours'),
+            'name' => 'weight_in_hours',
+            'label' => trans('curriculum.weight_in_hours'),
         ]);
 
         CRUD::addField([
-            'name' => 'weightـinـhours',
-            'label' => trans('curriculum.weightـinـhours'),
+            'name' => 'weight_in_hours',
+            'label' => trans('curriculum.weight_in_hours'),
         ]);
 
         CRUD::addField(
@@ -159,7 +159,7 @@ class CurriculumCrudController extends CrudController
                 ],
                 // OPTIONALS:
                 'label' => trans('curriculumcategory.curriculumcategory'),
-                'attribute' => "categoryـname", // foreign key attribute that is shown to user (identifiable attribute)
+                'attribute' => "category_name", // foreign key attribute that is shown to user (identifiable attribute)
                 'entity' => 'curriculumCategory', // the method that defines the relationship in your Model
                 // 'model' => "App\Models\Category", // foreign key Eloquent model
                 'placeholder' => "Select a Category", // placeholder for the select2 input
@@ -321,7 +321,7 @@ class CurriculumCrudController extends CrudController
 
         return $this->fetch([
             'model' => \App\Models\CurriculumCategory::class, // required
-            'searchable_attributes' => ['categoryـname'],
+            'searchable_attributes' => ['category_name'],
             'paginate' => 10, // items to show per page
             // 'query' => function ($model) {
             //     return $model->active();

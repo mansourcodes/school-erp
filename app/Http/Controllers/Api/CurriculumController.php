@@ -21,8 +21,8 @@ class CurriculumController extends Controller
         // 'academic_path_id',
 
         if ($search_term) {
-            $results = Curriculum::where('curriculumـname', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('bookـname', 'LIKE', '%' . $search_term . '%')
+            $results = Curriculum::where('curriculum_name', 'LIKE', '%' . $search_term . '%')
+                ->orWhere('book_name', 'LIKE', '%' . $search_term . '%')
                 ->paginate(10);
         } else {
             $results = Curriculum::paginate(10);

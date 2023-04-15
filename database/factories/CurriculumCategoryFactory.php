@@ -23,7 +23,7 @@ class CurriculumCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'categoryـname' => $this->faker->country,
+            'category_name' => $this->faker->country,
         ];
     }
 }

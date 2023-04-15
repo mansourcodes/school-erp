@@ -19,10 +19,10 @@ class Curriculum extends Model
      * @var array
      */
     protected $fillable = [
-        'curriculumـname',
+        'curriculum_name',
         'short_name',
-        'bookـname',
-        'weightـinـhours',
+        'book_name',
+        'weight_in_hours',
         'curriculum_category_id',
         'marks_labels',
     ];
@@ -58,7 +58,7 @@ class Curriculum extends Model
 
     public function getLongNameAttribute()
     {
-        return "[" . $this->curriculumـname . "] " . $this->bookـname;
+        return "[" . $this->curriculum_name . "] " . $this->book_name;
     }
 
 

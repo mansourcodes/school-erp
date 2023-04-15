@@ -54,8 +54,8 @@ class AcademiaReportsController extends Controller
             $data['studentmarks'][$counter] = StudentMarks::find($studentmarks_id);
             if ($data['studentmarks'][$counter]->marks)
                 foreach ($data['studentmarks'][$counter]->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculumـid])) {
-                        $data['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
+                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                     }
                 }
         } elseif ($classroom_id) {
@@ -74,8 +74,8 @@ class AcademiaReportsController extends Controller
                 }
 
                 foreach ($studentmark->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculumـid])) {
-                        $data['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
+                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                     }
                 }
             }
@@ -105,8 +105,8 @@ class AcademiaReportsController extends Controller
                     }
 
                     foreach ($studentmark->marks as $mark_key => $mark) {
-                        if (!isset($data['curriculums'][(int)$mark->curriculumـid])) {
-                            $data['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                        if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
+                            $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                         }
                     }
                     $data['studentmarks'][] = $studentmark;
@@ -131,8 +131,8 @@ class AcademiaReportsController extends Controller
 
             $data['studentmarks'][0] = StudentMarks::find($studentmarks_id);
             foreach ($data['studentmarks'][0]->marks as $mark_key => $mark) {
-                if (!isset($data['curriculums'][(int)$mark->curriculumـid])) {
-                    $data['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
+                    $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                 }
             }
 
@@ -144,10 +144,10 @@ class AcademiaReportsController extends Controller
             if (isset($classroom->teachers)) {
                 foreach ($classroom->teachers as $teacher) {
                     # code...
-                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    if (!isset($data['curriculums'][$teacher['curriculum_id']])) {
+                        $data['curriculums'][$teacher['curriculum_id']] = new stdClass();
                     }
-                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+                    $data['curriculums'][$teacher['curriculum_id']]->teacher_name = $teacher['teacher_name'];
                 }
             }
         } elseif ($classroom_id) {
@@ -166,8 +166,8 @@ class AcademiaReportsController extends Controller
                 }
 
                 foreach ($studentmark->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculumـid])) {
-                        $data['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
+                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                     }
                 }
             }
@@ -175,10 +175,10 @@ class AcademiaReportsController extends Controller
 
                 foreach ($classroom->teachers as $teacher) {
                     # code...
-                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    if (!isset($data['curriculums'][$teacher['curriculum_id']])) {
+                        $data['curriculums'][$teacher['curriculum_id']] = new stdClass();
                     }
-                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+                    $data['curriculums'][$teacher['curriculum_id']]->teacher_name = $teacher['teacher_name'];
                 }
             }
         }
@@ -190,10 +190,10 @@ class AcademiaReportsController extends Controller
 
                 foreach ($classroom->teachers as $teacher) {
                     # code...
-                    if (!isset($data['curriculums'][$teacher['curriculumـid']])) {
-                        $data['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    if (!isset($data['curriculums'][$teacher['curriculum_id']])) {
+                        $data['curriculums'][$teacher['curriculum_id']] = new stdClass();
                     }
-                    $data['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+                    $data['curriculums'][$teacher['curriculum_id']]->teacher_name = $teacher['teacher_name'];
                 }
             }
         }
@@ -234,8 +234,8 @@ class AcademiaReportsController extends Controller
 
             if ($marksRequred->marks) {
                 foreach ($marksRequred->marks as $mark_key => $mark) {
-                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculumـid])) {
-                        $data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculumـid]  = Curriculum::find((int)$mark->curriculumـid);
+                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculum_id])) {
+                        $data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
                     }
                 }
             } else {
@@ -251,10 +251,10 @@ class AcademiaReportsController extends Controller
 
                 foreach ($classroom->teachers as $teacher) {
                     # code...
-                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']])) {
-                        $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']] = new stdClass();
+                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculum_id']])) {
+                        $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculum_id']] = new stdClass();
                     }
-                    $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculumـid']]->teacher_name = $teacher['teacher_name'];
+                    $data['course_id'][$marksRequred->course_id]['curriculums'][$teacher['curriculum_id']]->teacher_name = $teacher['teacher_name'];
                 }
             }
         }
@@ -286,7 +286,7 @@ class AcademiaReportsController extends Controller
             }
 
             foreach ($studentmark->marks as $mark_key => $mark) {
-                $marks[(int)$mark->curriculumـid][(int)$studentmark->student_id] = $mark;
+                $marks[(int)$mark->curriculum_id][(int)$studentmark->student_id] = $mark;
             }
         }
 
@@ -389,14 +389,14 @@ class AcademiaReportsController extends Controller
         foreach ($attend_table as $key => &$attend_curriculum_table) {
             $attend_curriculum_table['start_time'] = Carbon::parse($attend_curriculum_table['start_time']);
             $attend_curriculum_table['day_name'] = $week_days[$attend_curriculum_table['day']];
-            $attend_curriculum_table['curriculum'] = Curriculum::find((int)$attend_curriculum_table['curriculumـid']);
+            $attend_curriculum_table['curriculum'] = Curriculum::find((int)$attend_curriculum_table['curriculum_id']);
             $attend_curriculum_table['calander_days'] = Helper::getDaysInRange($attend_curriculum_table['day'], $classroom->course->start_date, $classroom->course->end_date);
         }
 
         $teachers = [];
 
         foreach ($classroom['teachers'] as $key => $teachers_object) {
-            $teachers[$teachers_object['curriculumـid']] = $teachers_object['teacher_name'];
+            $teachers[$teachers_object['curriculum_id']] = $teachers_object['teacher_name'];
         }
 
 

@@ -43,7 +43,7 @@
 
                 {{$student_data['studentmarks']->course->academicPath->academic_path_name}}
 
-                {{$student_data['studentmarks']->course->hijri_year}} هـ
+                {{$student_data['studentmarks']->course->hijri_year}} ه_
 
                 ({{$student_data['studentmarks']->course->course_year}} م)
 
@@ -104,20 +104,20 @@
             <th scope="row">{{ ++$counter }}</th>
 
             <td>
-                {{$student_data['curriculums'][$subject_mark->curriculumـid]->curriculumـname}}
+                {{$student_data['curriculums'][$subject_mark->curriculum_id]->curriculum_name}}
                 -
-                {{$student_data['curriculums'][$subject_mark->curriculumـid]->bookـname}}
+                {{$student_data['curriculums'][$subject_mark->curriculum_id]->book_name}}
             </td>
             <td>
-                {{$student_data['curriculums'][$subject_mark->curriculumـid]->curriculumCategory->categoryـname ?? '-'}}
+                {{$student_data['curriculums'][$subject_mark->curriculum_id]->curriculumCategory->category_name ?? '-'}}
             </td>
 
             <td>
-                {{$student_data['curriculums'][$subject_mark->curriculumـid]->teacher_name}}
+                {{$student_data['curriculums'][$subject_mark->curriculum_id]->teacher_name}}
 
             </td>
             <td>
-                {{$student_data['curriculums'][$subject_mark->curriculumـid]->weightـinـhours}}
+                {{$student_data['curriculums'][$subject_mark->curriculum_id]->weight_in_hours}}
             </td>
 
 

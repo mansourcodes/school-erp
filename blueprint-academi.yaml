@@ -1,8 +1,8 @@
 models:
   Models\Curriculum:
-    curriculumـname: string:200 nullable
-    bookـname: string:200 nullable
-    weightـinـhours: integer unsigned default:5 nullable
+    curriculum_name: string:200 nullable
+    book_name: string:200 nullable
+    weight_in_hours: integer unsigned default:5 nullable
     softDeletes: true
     timestamps: true
     relationships:
@@ -10,7 +10,7 @@ models:
       belongsToMany: AcademicPath
 
   Models\CurriculumCategory:
-    categoryـname: string:200
+    category_name: string:200
     softDeletes: true
     timestamps: true
     relationships:
@@ -53,16 +53,16 @@ models:
     mobile2: bigInteger unsigned nullable
     dob: date nullable
     address: string:200 nullable
-    live_inـstate: enum:UNKNOWN,OWN,RENT
-    relationshipـstate: enum:UNKNOWN,SINGLE,MARRIED,DIVORCED
+    live_in_state: enum:UNKNOWN,OWN,RENT
+    relationship_state: enum:UNKNOWN,SINGLE,MARRIED,DIVORCED
     family_members: integer unsigned default:0 nullable
     family_depends: integer unsigned default:0 nullable
     degree: string:200 nullable
-    hawzaـhistory: boolean default:0 nullable
-    hawzaـhistory_details: text nullable
-    healthـhistory: boolean default:0 nullable
-    healthـhistory_details: text nullable
-    financialـstate: enum:UNKNOWN,POOR,AVERAGE,GOOD,EXCELLENT
+    hawza_history: boolean default:0 nullable
+    hawza_history_details: text nullable
+    health_history: boolean default:0 nullable
+    health_history_details: text nullable
+    financial_state: enum:UNKNOWN,POOR,AVERAGE,GOOD,EXCELLENT
     financial_details: text nullable
     student_notes: text nullable
     registration_at: date nullable

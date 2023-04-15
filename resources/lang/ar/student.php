@@ -33,16 +33,16 @@ return [
 
 
 
-    'relationshipـstate'         => 'الحالة الإجتماعية',
-    'relationshipـstate_options'         => [
+    'relationship_state'         => 'الحالة الإجتماعية',
+    'relationship_state_options'         => [
         "UNKNOWN" => 'لم يحدد',
         "SINGLE" => 'أعزب',
         "MARRIED" => 'متزوج'
     ],
 
 
-    'parentsـstate'         => 'حالة الوالدين',
-    'parentsـstate_options'         => [
+    'parents_state'         => 'حالة الوالدين',
+    'parents_state_options'         => [
         "BOTH" => "متواجدين",
         "MOTHER" => "مع الام فقط",
         "FATHER" => "مع الاب فقط",
@@ -56,8 +56,8 @@ return [
 
 
 
-    'live_inـstate'         => 'نوع السكن',
-    'live_inـstate_options' => [
+    'live_in_state'         => 'نوع السكن',
+    'live_in_state_options' => [
         "UNKNOWN" => 'لم يحدد',
         "OWN" => 'ملك خاص',
         "RENT" => 'إيجار'
@@ -65,8 +65,8 @@ return [
 
     'financial_details'         => 'تفاصيل الحالة المالية',
 
-    'financialـstate'         => 'الحالة المالية',
-    'financialـstate_options'         => [
+    'financial_state'         => 'الحالة المالية',
+    'financial_state_options'         => [
         "UNKNOWN" => 'لم يحدد',
         "POOR" => 'ضعيف',
         "AVERAGE" => 'متوسط',
@@ -87,16 +87,16 @@ return [
 
     'degree'         => 'المؤهل الأكاديمي',
 
-    'hawzaـhistory'         => 'الدراسة الحوزوية السابقة',
+    'hawza_history'         => 'الدراسة الحوزوية السابقة',
 
-    'hawzaـhistory_details'         => 'تفاصل الدراسة الحوزوية إن وجد',
-
-
+    'hawza_history_details'         => 'تفاصل الدراسة الحوزوية إن وجد',
 
 
-    'healthـhistory'         => 'الحالة الصحية الجسدية والنفسية',
 
-    'healthـhistory_details'         => 'تفاصيل الحالة الصحية إن وجد',
+
+    'health_history'         => 'الحالة الصحية الجسدية والنفسية',
+
+    'health_history_details'         => 'تفاصيل الحالة الصحية إن وجد',
 
 
 

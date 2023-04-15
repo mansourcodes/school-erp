@@ -15,7 +15,7 @@ class CreateCurriculumCategoriesTable extends Migration
     {
         Schema::create('curriculum_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('categoryـname', 200);
+            $table->string('category_name', 200);
             $table->softDeletes();
             $table->timestamps();
         });

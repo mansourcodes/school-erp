@@ -43,7 +43,7 @@
                 السنة الدراسية:
             </th>
             <td>
-                {{$studentmark->course->hijri_year}} هـ
+                {{$studentmark->course->hijri_year}} ه_
             </td>
             <th>
                 الفصل:
@@ -70,10 +70,10 @@
         @foreach ($studentmark->marks as $subject_mark)
         <tr>
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->curriculumـname}}
+                {{$curriculums[$subject_mark->curriculum_id]->curriculum_name}}
             </td>
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->bookـname}}
+                {{$curriculums[$subject_mark->curriculum_id]->book_name}}
             </td>
             <td>
                 {{$subject_mark->total_mark}}

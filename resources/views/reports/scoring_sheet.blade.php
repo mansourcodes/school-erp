@@ -29,7 +29,7 @@
                 {{__('curriculum.curriculum')}}:
             </th>
             <td colspan="3">
-                {{$curriculum->curriculumـname}}
+                {{$curriculum->curriculum_name}}
             </td>
         </tr>
         <tr>
@@ -44,7 +44,7 @@
                 السنة الدراسية:
             </th>
             <td>
-                {{$classroom->course->hijri_year}} هـ
+                {{$classroom->course->hijri_year}} ه_
             </td>
             <th>
                 الفصل:

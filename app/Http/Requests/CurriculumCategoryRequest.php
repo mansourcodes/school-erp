@@ -27,7 +27,7 @@ class CurriculumCategoryRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
-            'categoryـname'  => 'required',
+            'category_name'  => 'required',
         ];
     }
 

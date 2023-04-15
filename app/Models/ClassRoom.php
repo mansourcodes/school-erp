@@ -92,11 +92,11 @@ class ClassRoom extends Model
     {
         $curriculums = [];
         foreach ($this->teachers as $teachers) {
-            $id = $teachers['curriculumـid'];
+            $id = $teachers['curriculum_id'];
             $curriculums[$id]['teacher_name'] = $teachers['teacher_name'];
         }
         foreach ($this->attend_table as $attend_table) {
-            $id = $attend_table['curriculumـid'];
+            $id = $attend_table['curriculum_id'];
             $curriculums[$id]['days'][] = $attend_table['day'];
             $curriculums[$id]['attend_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['start_time']);
 
@@ -109,7 +109,7 @@ class ClassRoom extends Model
         foreach ($curriculums as $curriculumId => $value) {
             $curriculums[$curriculumId]['id'] = $curriculumId;
             $curriculums[$curriculumId]['curriculum'] = Curriculum::find($curriculumId);
-            $curriculums[$curriculumId]['curriculumـname'] = Curriculum::find($curriculumId)->curriculumـname;
+            $curriculums[$curriculumId]['curriculum_name'] = Curriculum::find($curriculumId)->curriculum_name;
             $curriculums[$curriculumId]['short_name'] = Curriculum::find($curriculumId)->short_name;
         }
 
@@ -185,14 +185,14 @@ class ClassRoom extends Model
 
                     if ($attend_table['day'] == $day_number) {
 
-                        $attend_table['curriculum'] = Curriculum::find($attend_table['curriculumـid']);
+                        $attend_table['curriculum'] = Curriculum::find($attend_table['curriculum_id']);
                         $chosen_date = Carbon::parse($attend_table['start_time']);
                         $attend_table['start_time'] = $chosen_date;
 
 
                         $date_string = (new Carbon($date))->format('Y-m-d');
                         $start_time = (new Carbon($attend_table['start_time']))->format('H:m');
-                        $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculumـid'];
+                        $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculum_id'];
 
 
                         if (in_array($attend_table_code, $attends)) {

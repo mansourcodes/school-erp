@@ -90,7 +90,7 @@ class ClassRoomMarksController extends Controller
             'student_id' => $student->id,
             'course_id' => $course_id
         ])
-            ->where('marks', 'like', "%curriculumـid_:_{$curriculum->id}_,%")
+            ->where('marks', 'like', "%curriculum_id_:_{$curriculum->id}_,%")
             ->first();
 
         if (!$marks) {
@@ -98,7 +98,7 @@ class ClassRoomMarksController extends Controller
         }
 
         $marksCollection = new Collection($marks->marks);
-        $StudentCurriculumMarks = $marksCollection->where('curriculumـid', $curriculum->id)->first();
+        $StudentCurriculumMarks = $marksCollection->where('curriculum_id', $curriculum->id)->first();
 
         if (!$StudentCurriculumMarks) {
             return array_fill(0, count($curriculum->marks_labels_flat), '');
@@ -140,7 +140,7 @@ class ClassRoomMarksController extends Controller
                 'student_id' => $newMarks['id'],
                 'course_id' => $course_id
             ])
-                ->where('marks', 'like', "%curriculumـid_:_{$curriculum_id}_,%")
+                ->where('marks', 'like', "%curriculum_id_:_{$curriculum_id}_,%")
                 ->first();
 
             if (!$marks) {
@@ -164,7 +164,7 @@ class ClassRoomMarksController extends Controller
     private function replaceStudentMarks($marks, $newMarks, $course_id, $curriculum)
     {
         $newMarksResult = $curriculum->marks_labels;
-        $newMarksResult['curriculumـid'] = $curriculum->id;
+        $newMarksResult['curriculum_id'] = $curriculum->id;
         $newMarksResult['total_mark'] = 0;
         $newMarksResult['final_grade'] = "";
 
@@ -187,7 +187,7 @@ class ClassRoomMarksController extends Controller
 
         // remove old marks
         foreach ($old_marks as $key => $old_mark_single_curriculum) {
-            if ($old_mark_single_curriculum->curriculumـid == $curriculum->id) {
+            if ($old_mark_single_curriculum->curriculum_id == $curriculum->id) {
                 unset($old_marks[$key]);
             }
         }

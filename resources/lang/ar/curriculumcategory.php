@@ -6,5 +6,5 @@ return [
     'curriculumcategory'         => 'فرع المادة',
     'curriculumcategories'         => 'فرع مادة المنهاج',
 
-    'categoryـname'         => 'اسم فرع المادة',
+    'category_name'         => 'اسم فرع المادة',
 ];

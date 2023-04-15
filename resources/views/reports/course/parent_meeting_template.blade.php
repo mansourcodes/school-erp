@@ -35,7 +35,7 @@
                             </tr>
                             <tr>
                                 <td>المنهج</td>
-                                <td>{{ $curriculum['curriculumـname'] ?? '' }}</td>
+                                <td>{{ $curriculum['curriculum_name'] ?? '' }}</td>
                             </tr>
                         </tbody>
                         <tbody>

@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td>
-                    {{ $curriculum['curriculumـname'] ?? '' }} <br>
+                    {{ $curriculum['curriculum_name'] ?? '' }} <br>
                     {{ $curriculum['teahcer_name'] ?? '' }}
 
                 </td>

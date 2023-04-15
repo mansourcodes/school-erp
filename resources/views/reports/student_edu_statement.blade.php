@@ -44,7 +44,7 @@
 
                 {{$studentmark->course->academicPath->academic_path_name}}
 
-                {{$studentmark->course->hijri_year}} هـ
+                {{$studentmark->course->hijri_year}} ه_
 
                 ({{$studentmark->course->course_year}} م)
 
@@ -94,20 +94,20 @@
             <th scope="row">{{ ++$counter }}</th>
 
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->curriculumـname}}
+                {{$curriculums[$subject_mark->curriculum_id]->curriculum_name}}
                 -
-                {{$curriculums[$subject_mark->curriculumـid]->bookـname}}
+                {{$curriculums[$subject_mark->curriculum_id]->book_name}}
             </td>
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->curriculumCategory->categoryـname ?? '-'}}
+                {{$curriculums[$subject_mark->curriculum_id]->curriculumCategory->category_name ?? '-'}}
             </td>
 
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->teacher_name}}
+                {{$curriculums[$subject_mark->curriculum_id]->teacher_name}}
 
             </td>
             <td>
-                {{$curriculums[$subject_mark->curriculumـid]->weightـinـhours}}
+                {{$curriculums[$subject_mark->curriculum_id]->weight_in_hours}}
             </td>
 
 

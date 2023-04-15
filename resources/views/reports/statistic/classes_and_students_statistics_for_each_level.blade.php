@@ -33,7 +33,7 @@
             <tbody>
                 @foreach ($curriculums_statistics as $key => $curriculum)
                     <tr>
-                        <td>{{ $curriculum['curriculumـname'] }}</td>
+                        <td>{{ $curriculum['curriculum_name'] }}</td>
                         <td>{{ $curriculum['count_class_rooms'] }}</td>
                         <td>{{ $curriculum['count_students'] }}</td>
                     </tr>
