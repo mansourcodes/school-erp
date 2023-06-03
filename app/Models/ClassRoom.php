@@ -69,6 +69,7 @@ class ClassRoom extends Model
         $curriculums = new Collection($this->curriculums);
 
         foreach ($curriculums as $key => $single_curriculum) {
+            $time = '';
             if (isset($single_curriculum['attend_table'])) {
                 $time = current($single_curriculum['attend_table']);
             }
@@ -79,6 +80,9 @@ class ClassRoom extends Model
                 . "-(" . $time . ')';
         }
 
+        if (empty($return)) {
+            return ['Class:' . $this->id];
+        }
         return $return;
     }
 
@@ -92,10 +96,20 @@ class ClassRoom extends Model
     {
         $curriculums = [];
         foreach ($this->teachers as $teachers) {
+
+            if (!isset($teachers['curriculum_id'])) {
+                continue;
+            }
+
             $id = $teachers['curriculum_id'];
             $curriculums[$id]['teacher_name'] = $teachers['teacher_name'];
         }
         foreach ($this->attend_table as $attend_table) {
+
+            if (!isset($attend_table['curriculum_id'])) {
+                continue;
+            }
+
             $id = $attend_table['curriculum_id'];
             $curriculums[$id]['days'][] = $attend_table['day'];
             $curriculums[$id]['attend_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['start_time']);
