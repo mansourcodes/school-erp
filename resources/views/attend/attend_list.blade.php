@@ -69,7 +69,7 @@
                                 {{ __('base.' . $active_attend_table['start_time']->format('a')) }}
                             </td>
                             <td>{{ $active_attend_table['curriculum']->long_name ?? 'ERROR' }}</td>
-                            <td>{{ $classroom->long_name }}</td>
+                            <td>{{ $classroom->first_long_name }}</td>
                             <td>{{ $classroom->course->long_name }}</td>
                             <td>
 
@@ -89,7 +89,6 @@
                                         </button>
                                     </form>
                                 @else
-
                                     @if (session('attend_code_added') == $active_attend_table['code'])
                                         <i class="bg-success p-2 rounded las la-list-alt la-lg"></i>
                                         {{ __('attend.attend_added_successfuly') }}
@@ -98,8 +97,6 @@
                                             {{ __('attend.added_attends') }}
                                         </button>
                                     @endif
-
-
                                 @endif
 
 
@@ -112,15 +109,9 @@
         </table>
 
     </div>
-
-
 @endsection
 
 
 @section('after_scripts')
-
-    <script>
-
-    </script>
-
+    <script></script>
 @endsection
