@@ -35,7 +35,7 @@ class ClassRoomMarksController extends Controller
 
             //header 
             $table[] = [
-                'id' => 'id',
+                'student_id' => 'student_id',
                 'name' => __('student.student_name'),
                 ...$marks_template
             ];
@@ -43,10 +43,10 @@ class ClassRoomMarksController extends Controller
             //body
             foreach ($classRoom->students as $student) {
 
-                $marks_array = $this->findStudentMarks($classRoom->course_id, $curriculum['curriculum'], $student);
+                $marks_array = $this->_findStudentMarks($classRoom->course_id, $curriculum['curriculum'], $student);
 
                 $table[] = [
-                    'id' => $student->id,
+                    'student_id' => $student->id,
                     'name' => $student->student_name,
                     ...$marks_array
                 ];
@@ -83,21 +83,20 @@ class ClassRoomMarksController extends Controller
     }
 
 
-    private function findStudentMarks($course_id, Curriculum $curriculum, Student $student)
+    private function _findStudentMarks($course_id, Curriculum $curriculum, Student $student)
     {
 
-        $marks = StudentMarks::where([
+        $studentMarksObject = StudentMarks::where([
             'student_id' => $student->id,
             'course_id' => $course_id
         ])
             ->where('marks', 'like', "%curriculum_id_:_{$curriculum->id}_,%")
             ->first();
 
-        if (!$marks) {
+        if (!$studentMarksObject) {
             return array_fill(0, count($curriculum->marks_labels_flat), '');
         }
-
-        $marksCollection = new Collection($marks->marks);
+        $marksCollection = new Collection($studentMarksObject->marks);
         $StudentCurriculumMarks = $marksCollection->where('curriculum_id', $curriculum->id)->first();
 
         if (!$StudentCurriculumMarks) {
@@ -105,14 +104,15 @@ class ClassRoomMarksController extends Controller
         }
 
 
+
         // map marks 
         $result = [];
         foreach ($curriculum->marks_labels as $key => $value_part) {
             if (is_array($value_part))
                 foreach ($value_part as $key_part => $value) {
-                    // dd($StudentCurriculumMarks->{$key}[$key_part]->mark);
-                    if (isset($StudentCurriculumMarks->{$key}[$key_part]->mark)) {
-                        $result[]  =  $StudentCurriculumMarks->{$key}[$key_part]->mark;
+
+                    if (isset($StudentCurriculumMarks[$key][$key_part]->mark)) {
+                        $result[]  =  $StudentCurriculumMarks[$key][$key_part]->mark;
                     } else {
                         $result[]  = '';
                     }
@@ -133,26 +133,21 @@ class ClassRoomMarksController extends Controller
 
         $curriculum = Curriculum::find($curriculum_id);
 
-        foreach ($data as $key => $newMarks) {
+        foreach ($data as $key => $new_marks_data) {
 
 
-            $marks = StudentMarks::where([
-                'student_id' => $newMarks['id'],
+            $studentMarksObject = StudentMarks::where([
+                'student_id' => $new_marks_data['student_id'],
                 'course_id' => $course_id
             ])
-                ->where('marks', 'like', "%curriculum_id_:_{$curriculum_id}_,%")
+                ->orWhere([
+                    ['marks', 'like', "%\"curriculum_id\":_{$curriculum_id}_,%"],
+                    ['marks', 'like', "%\"curriculum_id\":{$curriculum_id},%"],
+                ])
                 ->first();
 
-            if (!$marks) {
-                $this->addStudentMarks($newMarks, $course_id, $curriculum);
-            } else {
-                $this->replaceStudentMarks($marks, $newMarks, $course_id, $curriculum);
-            }
-
-            dd($newMarks, $curriculum->marks_labels, $marks->marks, json_encode($marks->marks));
+            $this->_addStudentMarks($new_marks_data, $course_id, $curriculum, $studentMarksObject);
         }
-
-
 
         return Response([
             'curriculum_id' => $request->input('curriculum_id'),
@@ -161,7 +156,7 @@ class ClassRoomMarksController extends Controller
         ]);
     }
 
-    private function replaceStudentMarks($marks, $newMarks, $course_id, $curriculum)
+    private function _addStudentMarks($new_marks_data, $course_id, Curriculum $curriculum, StudentMarks $studentMarksObject = null)
     {
         $newMarksResult = $curriculum->marks_labels;
         $newMarksResult['curriculum_id'] = $curriculum->id;
@@ -169,46 +164,33 @@ class ClassRoomMarksController extends Controller
         $newMarksResult['final_grade'] = "";
 
 
+        // create new marks array from by merge the template with new data
         $counter = 0;
         foreach ($newMarksResult as  $valueArray) {
             if (is_array($valueArray)) {
                 foreach ($valueArray as $k => $value) {
-                    $value->mark = $newMarks[$counter++];
-
+                    $value->mark = $new_marks_data[$counter++];
                     $newMarksResult['total_mark'] += $value->mark;
-                    if ($newMarksResult['total_mark'] > 50) {
+                    if ($newMarksResult['total_mark'] >= 50) {
                         $newMarksResult['final_grade'] = "PASS";
                     }
                 }
             }
         }
 
-        $old_marks = $marks->marks;
-
-        // remove old marks
-        foreach ($old_marks as $key => $old_mark_single_curriculum) {
-            if ($old_mark_single_curriculum->curriculum_id == $curriculum->id) {
-                unset($old_marks[$key]);
-            }
+        if (is_null($studentMarksObject)) {
+            $studentMarksObject = new StudentMarks();
+            $studentMarksObject->student_id = $new_marks_data['student_id'];
+            $studentMarksObject->course_id = $course_id;
         }
-        array_push($old_marks, (object)$newMarksResult);
 
 
-        dd($old_marks);
-
-        $marks->marks = json_encode($old_marks);
-        $marks->save();
-
-        dd((object)$newMarksResult, $marks);
-
-        dd($newMarks, $newMarksResult,  $curriculum->marks_labels, $marks->marks, json_encode($marks->marks));
-
-        dd(1);
-    }
-
-    private function addStudentMarks($newMarks, $course_id, $curriculum_id)
-    {
-
-        dd('addStudentMarks');
+        $studentMarksObject->total_mark = $newMarksResult['total_mark'];
+        $studentMarksObject->final_grade = $newMarksResult['final_grade'];
+        foreach ($newMarksResult as $key => $value) {
+            $newMarksResult[$key] = json_encode($value);
+        }
+        $studentMarksObject->marks = json_encode([$newMarksResult]);
+        $studentMarksObject->save();
     }
 }
