@@ -38,12 +38,15 @@
                             <th width="1%">#</th>
                             <th width="20%">اسم الطالب</th>
                             <th>الدرجة النهائية</th>
-                            @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
-                                <th>
-                                    {{ $memorize_mark_details->label ?? '' }}
-                                    {{ $memorize_mark_details->mark ?? '' }}
-                                </th>
-                            @endforeach
+                            @if (isset($curriculum['curriculum']->marks_labels['memorize_mark_details']))
+                                @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
+                                    <th>
+                                        {{ $memorize_mark_details->label ?? '' }}
+                                        {{ $memorize_mark_details->mark ?? '' }}
+                                    </th>
+                                @endforeach
+                            @endif
+
 
                         </tr>
                     </thead>
@@ -56,9 +59,12 @@
                                     {{ $student->student_name }}
                                 </td>
                                 <td></td>
-                                @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
-                                    <td></td>
-                                @endforeach
+                                @if (isset($curriculum['curriculum']->marks_labels['memorize_mark_details']))
+                                    @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
+                                        <td></td>
+                                    @endforeach
+                                @endif
+
                             </tr>
                         @endforeach
                     </tbody>

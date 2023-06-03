@@ -296,7 +296,12 @@ class CourseController extends Controller
                 $sessions[$key]['class_room_number'] =  $classRoom->class_room_number;
                 $sessions[$key]['curriculum'] =  $curriculum;
                 $sessions[$key]['long_name'] =  $classRoom->long_name[$curriculum['id']];
-                $sessions[$key]['orderKey'] =  array_shift($curriculum['attend_table']);
+
+                if (!empty($curriculum['attend_table'])) {
+                    $sessions[$key]['orderKey'] =  array_shift($curriculum['attend_table']);
+                } else {
+                    $sessions[$key]['orderKey'] =  "empty";
+                }
             }
         }
 

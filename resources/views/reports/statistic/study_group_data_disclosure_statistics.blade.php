@@ -51,9 +51,12 @@
                                 <td>{{ $classRoom->class_room_name }}</td>
                                 <td>{{ $course->start_date->format('d-m-Y') }}</td>
                                 <td>
-                                    @foreach ($curriculum['days'] as $day)
-                                        {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} -
-                                    @endforeach
+                                    @isset($curriculum['days'])
+                                        @foreach ($curriculum['days'] as $day)
+                                            {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} -
+                                        @endforeach
+                                    @endisset
+
                                 </td>
                                 <td>{{ $course->end_date->format('d-m-Y') }}</td>
 

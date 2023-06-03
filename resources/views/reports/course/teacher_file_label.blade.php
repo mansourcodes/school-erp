@@ -18,10 +18,12 @@
 
                             {{ $session['curriculum']['curriculum_name'] ?? '' }}
                         </td>
+                        @isset($session['curriculum']['days'])
+                            @foreach ($session['curriculum']['days'] as $day)
+                                <td> {{ $weekDays[$day] ?? '' }} {{ $session['curriculum']['attend_table'][$day] ?? '' }} </td>
+                            @endforeach
+                        @endisset
 
-                        @foreach ($session['curriculum']['days'] as $day)
-                            <td> {{ $weekDays[$day] ?? '' }} {{ $session['curriculum']['attend_table'][$day] ?? '' }} </td>
-                        @endforeach
                     </tr>
                 </tbody>
             </table>

@@ -57,10 +57,12 @@
                                                 <td>{{ $classRoom->long_name[$curriculum_id] ?? '' }}</td>
 
                                                 <td>
+                                                    @isset($curriculum['attend_table'])
+                                                        @php
+                                                            echo current($curriculum['attend_table']);
+                                                        @endphp
+                                                    @endisset
 
-                                                    @php
-                                                        echo current($curriculum['attend_table']);
-                                                    @endphp
                                                     {{-- @foreach ($curriculum['days'] as $day)
                                                         {{ $weekDays[$day] ?? '' }}
                                                         {{ $curriculum['attend_table'][$day] ?? '' }} -
@@ -74,11 +76,14 @@
                             </td>
 
                             <td>
-                                @php
-                                    if (!empty($classRoom->curriculums)) {
-                                        echo current(current($classRoom->curriculums)['attend_table']);
-                                    }
-                                @endphp
+                                @isset($curriculum['attend_table'])
+                                    @php
+                                        if (!empty($classRoom->curriculums)) {
+                                            echo current(current($classRoom->curriculums)['attend_table']);
+                                        }
+                                    @endphp
+                                @endisset
+
                             </td>
                         </tr>
                     @endforeach

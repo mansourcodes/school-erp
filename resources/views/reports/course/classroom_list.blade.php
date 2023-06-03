@@ -61,9 +61,11 @@
                         <tr>
                             <td>وقت الدراسة</td>
                             <td>
-                                @foreach ($curriculum['days'] as $day)
-                                    {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} <br>
-                                @endforeach
+                                @isset($curriculum['days'])
+                                    @foreach ($curriculum['days'] as $day)
+                                        {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} <br>
+                                    @endforeach
+                                @endisset
 
                             </td>
                         </tr>
