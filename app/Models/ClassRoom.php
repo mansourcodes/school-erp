@@ -74,7 +74,7 @@ class ClassRoom extends Model
                 $time = current($single_curriculum['attend_table']);
             }
             $return[$key] =
-                $single_curriculum['teacher_name'] . '-'
+                @$single_curriculum['teacher_name'] . '-'
                 . $single_curriculum['short_name'] . "-"
                 . $this->class_room_number
                 . "-(" . $time . ')';
