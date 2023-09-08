@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account\Payment;
 use App\Models\ClassRoom;
 use App\Models\Course;
+use App\Models\Curriculum;
 use App\Models\Old\OldClassRoom;
 use App\Models\Old\OldPayment;
 use App\Models\Old\OldStudent;
@@ -125,12 +126,23 @@ class OldToNewDbController extends Controller
 
         $teacher = OldStudent::find($oldClassRoom->teacher);
 
+        //find curriculum id
+        switch ($oldClassRoom->level) {
+            case 'التأهيلي':
+                $curriculum = Curriculum::Where('short_name', 'حفظ')->firstOrFail();
+                break;
+
+            default:
+                $curriculum = Curriculum::Where('short_name', $oldClassRoom->level)->firstOrFail();
+                break;
+        }
+
         $classRoom = new ClassRoom();
         $classRoom->course_id =     $course_id;
         $classRoom->class_room_number =     $oldClassRoom->room;
         $classRoom->class_room_name =     $oldClassRoom->location;
-        $classRoom->teachers =  json_decode('[{"curriculum\u0640id":"1","teacher_name":"' . $teacher->name . '"}]');
-        $classRoom->attend_table =  json_decode('[{"curriculum\u0640id":"1","day":"5","start_time":"01:00"},{"curriculum\u0640id":"1","day":"6","start_time":"01:00"}]');
+        $classRoom->teachers =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"teacher_name":"' . $teacher->name . '"}]');
+        $classRoom->attend_table =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"day":"5","start_time":"01:00"},{"curriculum_id":"1","day":"6","start_time":"01:00"}]');
         $classRoom->save();
 
 
