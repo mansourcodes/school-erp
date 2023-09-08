@@ -16,6 +16,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Class 
@@ -31,12 +34,28 @@ class OldToNewDbController extends Controller
     public function pullClassRoom(Request $request)
     {
 
+        $validator = Validator::make($request->all(), [
+            'old_course_id' => 'required|integer',
+            'course_id' => 'required|integer',
+            // 'doEmptyTables' => [
+            //     'required',
+            //     Rule::in(['yes', 'no']),
+            // ],
+        ]);
+
+        if ($validator->fails()) {
+            abort(403, 'missing ?old_course_id=@&course_id=@');
+        }
+
+        // Retrieve the validated input...
+        $validated = $validator->validated();
+
         $this->emptyTables();
         $page = 0;
         $limit = 40;
 
-        $old_course_id = 38;
-        $course_id = 1;
+        $old_course_id = $validated['old_course_id'];
+        $course_id = $validated['course_id'];
 
         $oldClassRooms = OldClassRoom::where('semester', $old_course_id)->skip($page * $limit)->take($limit)->get();
 
@@ -48,7 +67,7 @@ class OldToNewDbController extends Controller
 
         $this->updateSetting();
 
-        dd(1);
+        dd('Done');
     }
     /**
      * Title: 
