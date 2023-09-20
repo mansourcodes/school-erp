@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ClassRoomMarksController;
 use App\Http\Controllers\Report\AccountController;
 use App\Http\Controllers\Report\CourseController;
 use App\Http\Controllers\Pull\OldToNewDbController;
+use App\Http\Controllers\Report\PaymentController;
 use App\Http\Controllers\Report\StatisticController;
 use App\Http\Controllers\Report\StudentController;
 use App\Models\Old\OldStudent;
@@ -51,6 +52,7 @@ Route::group([
     Route::get('courseReports', [CourseController::class, 'print']);
     Route::get('accountReports', [AccountController::class, 'print']);
     Route::get('statisticReports', [StatisticController::class, 'print']);
+    Route::get('paymentReports', [PaymentController::class, 'print']);
 
 
     // student reports

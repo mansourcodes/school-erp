@@ -2,6 +2,7 @@
 
 namespace App\Models\Account;
 
+use App\Http\Controllers\Report\PaymentController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -95,4 +96,14 @@ class Payment extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+
+
+    public function getPrintButton($crud = false)
+    {
+        $data['crud'] = $crud;
+        $data['url'] = backpack_url('paymentReports' . '?view=' . 'paymentPrint' . '&payment_id=' . $this->id);
+        $data['label'] = trans('crud.export.print');
+
+        return view('vendor.backpack.crud.buttons.custom_button', $data);
+    }
 }
