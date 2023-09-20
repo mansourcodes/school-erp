@@ -35,9 +35,12 @@ class OldToNewDbController extends Controller
     public function pullClassRoom(Request $request)
     {
 
+
+
         $validator = Validator::make($request->all(), [
             'old_course_id' => 'required|integer',
             'course_id' => 'required|integer',
+            'today_date' => ['required',  Rule::in([date("d")])],
             // 'doEmptyTables' => [
             //     'required',
             //     Rule::in(['yes', 'no']),
@@ -45,7 +48,7 @@ class OldToNewDbController extends Controller
         ]);
 
         if ($validator->fails()) {
-            abort(403, 'missing ?old_course_id=@&course_id=@');
+            abort(403, 'missing ?old_course_id=@&course_id=@&today_date=day_of_month');
         }
 
         // Retrieve the validated input...
