@@ -137,14 +137,51 @@ class OldToNewDbController extends Controller
                 break;
         }
 
+        // start & end time 
+        $re = '/\d+\:\d\d/m';
+        preg_match_all($re, $oldClassRoom->time, $matches, PREG_SET_ORDER, 0);
+
+        $start_time = str_pad($matches[0][0], 5, "0", STR_PAD_LEFT);
+        $end_time = str_pad($matches[1][0], 5, "0", STR_PAD_LEFT);
+        if (strpos($oldClassRoom->time, 'صباحا') > -1) {
+            // do nothing
+        } else if (strpos($oldClassRoom->time, 'ظهرا') > -1) {
+            $start_hour = substr($start_time, 0, 2);
+            if ((int)$start_hour < 12) {
+                $start_hour += 12;
+                $start_time = $start_hour + substr($start_time, 2);
+            }
+
+            $end_hour = substr($end_time, 0, 2);
+            if ((int)$end_hour < 12) {
+                $end_hour += 12;
+                $end_time = $end_hour . substr($end_time, 2);
+            }
+        } else {
+            dd($oldClassRoom->time);
+        }
+
+
+        // days
+        if (strpos($oldClassRoom->day, 'الجمعة') > -1) {
+            $day_1 = 5; // الجمعة
+            $day_2 = 6; // السبت
+        } else {
+            $day_1 = 1; // الاثنين
+            $day_2 = 3; // الاربعا
+        }
+
+
+
         $classRoom = new ClassRoom();
         $classRoom->course_id =     $course_id;
         $classRoom->class_room_number =     $oldClassRoom->room;
         $classRoom->class_room_name =     $oldClassRoom->location;
         $classRoom->teachers =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"teacher_name":"' . $teacher->name . '"}]');
-        $classRoom->attend_table =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"day":"5","start_time":"01:00"},{"curriculum_id":"1","day":"6","start_time":"01:00"}]');
+        $classRoom->attend_table =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"day":' . $day_1 . ',"start_time":"' . $start_time . '","end_time":"' . $end_time . '"},{"curriculum_id":' . $curriculum->id . ',"day":' . $day_2 . ',"start_time":"' . $start_time . '","end_time":"' . $end_time . '"}]');
         $classRoom->save();
 
+        // [{"curriculum_id":"9","day":"5","start_time":"10:36","end_time":"10:37"},{"curriculum_id":"9","day":"6","start_time":"11:37","end_time":"23:37"}]
 
         $oldStudents = OldStudent::whereIn('id', explode(',', $oldClassRoom->students))->get();
 
