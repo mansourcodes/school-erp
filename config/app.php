@@ -175,7 +175,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
 
 
