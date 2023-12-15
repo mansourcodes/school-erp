@@ -43,7 +43,7 @@
                     @foreach ($classRoom->students as $student)
                         <tr>
                             <td>{{ $counter++ }}</td>
-                            <td>{{ $student->student_name }}</td>
+                            <td>{{ $student->name }}</td>
                             <td>{{ $student->cpr }}</td>
                             <td>{{ $student->address }}</td>
                             <td>{{ $student->mobile }}</td>

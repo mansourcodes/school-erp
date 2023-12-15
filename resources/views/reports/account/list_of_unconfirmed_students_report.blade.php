@@ -32,7 +32,7 @@
                 @foreach ($students as $key => $student)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $student->student_name }}</td>
+                        <td>{{ $student->name }}</td>
                         <td>{{ $student->mobile }}</td>
                     </tr>
                 @endforeach

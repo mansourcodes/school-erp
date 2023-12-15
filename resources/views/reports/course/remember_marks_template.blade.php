@@ -56,7 +56,7 @@
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>
-                                    {{ $student->student_name }}
+                                    {{ $student->name }}
                                 </td>
                                 <td></td>
                                 @if (isset($curriculum['curriculum']->marks_labels['memorize_mark_details']))

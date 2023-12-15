@@ -7,11 +7,16 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
-class Student extends Model
+class Student extends Authenticatable
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
+    use HasRoles;
+
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +24,9 @@ class Student extends Model
      * @var array
      */
     protected $fillable = [
-        'student_name',
+        'name',
         'cpr',
+        'password',
         'email',
         'mobile',
         'mobile2',
@@ -43,6 +49,16 @@ class Student extends Model
     ];
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -56,6 +72,7 @@ class Student extends Model
         'hawza_history' => 'boolean',
         'health_history' => 'boolean',
         'registration_at' => 'date',
+        'email_verified_at' => 'datetime',
     ];
 
 
@@ -99,7 +116,7 @@ class Student extends Model
     {
         $mobile2 = ($this->mobile2) ? '-' . $this->mobile2 : '';
 
-        return "[" . $this->cpr . "] " . $this->student_name . " [" . $this->mobile . $mobile2 . "]";
+        return "[" . $this->cpr . "] " . $this->name . " [" . $this->mobile . $mobile2 . "]";
     }
 
     public function getCoursesAttribute()

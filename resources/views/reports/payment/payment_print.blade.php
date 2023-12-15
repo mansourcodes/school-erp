@@ -32,7 +32,7 @@
                     </tr>
                     <tr>
                         <td>استلمنا من:</td>
-                        <td colspan="2">{{ $payment->student->student_name }}</td>
+                        <td colspan="2">{{ $payment->student->name }}</td>
                     </tr>
                     <tr>
                         <td>مبلغ:</td>

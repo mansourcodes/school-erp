@@ -37,7 +37,7 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $payment->student->student_id }}</td>
-                        <td>{{ $payment->student->student_name }}</td>
+                        <td>{{ $payment->student->name }}</td>
                         <td>{{ $payment->student->cpr }}</td>
                         <td>{{ $payment->student->mobile }}</td>
                         <td>{{ $payment->student->address }}</td>

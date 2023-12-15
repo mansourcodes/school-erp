@@ -53,7 +53,7 @@
                         <td>{{ $payment->id }}</td>
                         <td></td>
                         <td>{{ $payment->student->student_id }}</td>
-                        <td>{{ $payment->student->student_name }}</td>
+                        <td>{{ $payment->student->name }}</td>
                         <td> {{ $course->long_name }} </td>
                         <td>{{ $payment->type }}</td>
                         <td>{{ $payment->amount }}</td>

@@ -88,7 +88,7 @@
                                             <tr>
                                                 <td colspan="10" valign="top" width="743">
                                                     <p dir="RTL">
-                                                        {{ $student->student_name }}
+                                                        {{ $student->name }}
                                                     </p>
                                                     <p dir="RTL">
 

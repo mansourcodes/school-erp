@@ -27,7 +27,7 @@
                         <tbody>
                             <tr>
                                 <td>الاسم</td>
-                                <th> {{ $student->student_name }}</th>
+                                <th> {{ $student->name }}</th>
                             </tr>
                             <tr>
                                 <td>اسم المدرس</td>

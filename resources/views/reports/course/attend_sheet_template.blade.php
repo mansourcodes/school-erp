@@ -57,7 +57,7 @@
                             <tr>
                                 <td>{{ ++$key }}</td>
                                 <td>
-                                    {{ $student->student_name }}
+                                    {{ $student->name }}
                                 </td>
                                 <td>{{ $student->mobile }} - {{ $student->mobile2 }}</td>
                                 <td></td>

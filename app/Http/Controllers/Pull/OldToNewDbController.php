@@ -203,7 +203,7 @@ class OldToNewDbController extends Controller
             }
 
 
-            $student->student_name = $old->name;
+            $student->name = $old->name;
             $student->email = $old->email;
             $student->mobile =  (empty($old->mobile)) ? null : $old->mobile;
             $student->mobile2 = (empty($old->phone)) ? null : $old->phone;

@@ -22,7 +22,7 @@
                         الاسم:
                     </th>
                     <td colspan="3">
-                        {{ $studentmark->student->student_name }}
+                        {{ $studentmark->student->name }}
                     </td>
                     <th>
                         البرنامج:

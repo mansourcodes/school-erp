@@ -15,7 +15,7 @@
     <tbody>
         <tr>
             <td width="200px">اسم الطالب</td>
-            <td>{{ $student->student_name }}</td>
+            <td>{{ $student->name }}</td>
         </tr>
         <tr>
             <td>رقم الطالب</td>
