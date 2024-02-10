@@ -138,19 +138,26 @@ class Student extends Authenticatable
 
     public function getAgeAttribute()
     {
-        if (isset($this->dob)) {
-            $dob = new Carbon($this->dob);
-            return $dob->diff(new Carbon())->y;
-        } else if (strlen($this->cpr) <= 9) {
+        try {
 
-            $cpr = sprintf('%09d', $this->cpr);
-            $month = substr($cpr, 2, 2);
-            $year = substr($cpr, 0, 2);
-            $year = ($year > 50) ? "19$year" : "20$year";
-            $dob = new Carbon("$year-$month-01");
-            return $dob->diff(new Carbon())->y;
-        } else {
-            return 0;
+
+            if (isset($this->dob)) {
+                $dob = new Carbon($this->dob);
+                return $dob->diff(new Carbon())->y;
+            } else if (strlen($this->cpr) <= 9) {
+
+                $cpr = sprintf('%09d', $this->cpr);
+                $month = substr($cpr, 2, 2);
+                $year = substr($cpr, 0, 2);
+                $year = ($year > 50) ? "19$year" : "20$year";
+                $dob = new Carbon("$year-$month-01");
+                return $dob->diff(new Carbon())->y;
+            } else {
+                return 0;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return 'error';
         }
     }
 
