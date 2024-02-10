@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class generateExamsDocxJob implements ShouldQueue
+class generateExamsDocxJob // implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -38,8 +38,6 @@ class generateExamsDocxJob implements ShouldQueue
         //
         $len = count($this->examTool->course->classRooms->toArray()) - 1;
         foreach ($this->examTool->course->classRooms as $key => $classRoom) {
-            Log::debug($key);
-
             if ($key === $len) {
                 dispatch(new generateExamsDocxForClassRoomJob($classRoom, $this->examTool, true));
             } else {

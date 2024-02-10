@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\Types\Boolean;
 
 
-class generateExamsDocxForClassRoomJob implements ShouldQueue
+class generateExamsDocxForClassRoomJob // implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -85,7 +85,7 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         $studentArray = $student->toArray();
 
         $studentArray['course']  = $this->examTool->course->id;
-        $studentArray['class_name']  = $this->classRoom->class_room_name;
+        $studentArray['class_name']  = $this->classRoom->first_long_name;
         $studentArray = Arr::only($studentArray, [
             'name',
             'cpr',
@@ -125,7 +125,7 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
     function createStudentExamFile($templateFile, $cardTempalte, $newFileNameWithPath)
     {
         $zip = new clsTbsZip();
-        $needle_tag = "++student++";
+        $needle_tag = "student_card_replacer";
 
 
         // Open the document
@@ -133,13 +133,18 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         $content = $zip->FileRead('word/document.xml');
         $p = strpos($content, '</w:body>');
         if ($p === false) {
+
+            $this->examTool->status = "Word file broken";
+            $this->examTool->save();
             abort(500, "Tag </w:body> not found in document. Not supported document.");
         }
 
-        $p_tag = strpos($content, '++student++');
+        $p_tag = strpos($content, 'student_card_replacer');
         if ($p_tag === false) {
-            // dd($content);
-            abort(500, "Tag ++student++ not found in document.It`s needed for adding the student information.");
+
+            $this->examTool->status = "Tag student_card_replacer not found";
+            $this->examTool->save();
+            abort(500, "Tag student_card_replacer not found in document.It`s needed for adding the student information.");
         }
 
 

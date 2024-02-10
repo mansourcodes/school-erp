@@ -52,4 +52,26 @@ class ExamTool extends Model
 
         // return $this->attributes[{$attribute_name}]; // uncomment if this is a translatable field
     }
+
+
+    public function getZipFileUrlAttribute($crud = false)
+    {
+
+        if (!$this->zip_file_path) {
+            return '';
+        }
+
+        $file_path = explode('/', $this->zip_file_path);
+        $file_path = array_splice($file_path, count($file_path) - 3, 3);
+        return  url('/') . '/storage/' . implode('/', $file_path);
+    }
+
+    public function downloadLinkHtml($crud = false)
+    {
+        if ($this->zip_file_url) {
+            return '<a class="btn btn-sm btn-success" target="_blank" href="' . $this->zip_file_url . '" data-toggle="tooltip" title="Just a demo custom button."><i class="fa fa-search"></i> ' . trans('examtool.download') . '</a>';
+        } else {
+            return '';
+        }
+    }
 }

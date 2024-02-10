@@ -71,6 +71,7 @@ class ExamToolCrudController extends CrudController
         CRUD::column('zip_file_size')->label(trans('examtool.zip_file_size'))->prefix(' MB ');
         CRUD::column('status')->label(trans('examtool.status'));
         // CRUD::column('meta')->label(trans('examtool.meta'));
+        $this->crud->addButtonFromModelFunction('line', 'download', 'downloadLinkHtml', 'beginning');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
