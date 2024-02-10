@@ -14,7 +14,7 @@ class ChangeStudentNameToNameIntoStudentsTable extends Migration
     public function up()
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->renameColumn('name', 'name');
+            $table->renameColumn('student_name', 'name');
         });
     }
 
