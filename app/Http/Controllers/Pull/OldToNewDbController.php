@@ -196,44 +196,44 @@ class OldToNewDbController extends Controller
         $payments = [];
         foreach ($oldStudents as $key => $old) {
 
-            $is_exist = Student::where('cpr', $old->cpr)->first();
-            if ($is_exist) {
-                continue;
+            $student = Student::where([
+                ['mobile', $old->mobile],
+                ['name', $old->name]
+            ])->first();
+
+            if (!$student) {
+                //* new student
+                $student = new Student();
+                if (strlen($old->cpr) < 8) {
+                    $student->cpr = '99999' . $old->mobile . rand(111, 999);
+                } else {
+                    $student->cpr = str_pad($old->cpr, 9, '0', STR_PAD_LEFT);
+                }
+                $student->password = Hash::make($old->cpr);
+
+
+                $student->name = $old->name;
+                $student->email = $old->email;
+                $student->mobile =  (empty($old->mobile)) ? null : $old->mobile;
+                $student->mobile2 = (empty($old->phone)) ? null : $old->phone;
+                $student->dob = null;
+                $student->address = $old->address;
+                $student->live_in_state = 'UNKNOWN';
+                $student->relationship_state = 'SINGLE';
+                $student->family_members = 0;
+                $student->family_depends = 0;
+                $student->degree = null;
+                $student->hawza_history = 0;
+                $student->hawza_history_details = null;
+                $student->health_history = 0;
+                $student->health_history_details = null;
+                $student->financial_state = 'UNKNOWN';
+                $student->financial_details = null;
+                $student->student_notes = '';
+                $student->registration_at =  Carbon::now();
+                $student->save();
             }
-
-            //*
-            $student = new Student();
-            if (strlen($old->cpr) < 8) {
-                $student->cpr = '99999' . $old->mobile . rand(111, 999);
-            } else {
-                $student->cpr = str_pad($old->cpr, 9, '0', STR_PAD_LEFT);
-            }
-            $student->password = Hash::make($old->cpr);
-
-
-            $student->name = $old->name;
-            $student->email = $old->email;
-            $student->mobile =  (empty($old->mobile)) ? null : $old->mobile;
-            $student->mobile2 = (empty($old->phone)) ? null : $old->phone;
-            $student->dob = null;
-            $student->address = $old->address;
-            $student->live_in_state = 'UNKNOWN';
-            $student->relationship_state = 'SINGLE';
-            $student->family_members = 0;
-            $student->family_depends = 0;
-            $student->degree = null;
-            $student->hawza_history = 0;
-            $student->hawza_history_details = null;
-            $student->health_history = 0;
-            $student->health_history_details = null;
-            $student->financial_state = 'UNKNOWN';
-            $student->financial_details = null;
-            $student->student_notes = '';
-            $student->registration_at =  Carbon::now();
-            $student->save();
-
             $students[] = $student;
-
 
             //*
 
