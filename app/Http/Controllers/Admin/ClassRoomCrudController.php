@@ -150,7 +150,7 @@ class ClassRoomCrudController extends CrudController
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
 
-        $this->crud->addButtonFromModelFunction('line', 'print', 'getPrintDropdown');
+        $this->crud->addButtonFromModelFunction('line', 'print_list', 'getPrintDropdown');
         $this->crud->addButtonFromModelFunction('line', 'print', 'addMarksByClass');
     }
 

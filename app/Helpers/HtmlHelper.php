@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 
-class Helper
+class HtmlHelper
 {
 
   static function getDaysInRange($day_number, $dateFromString, $dateToString)

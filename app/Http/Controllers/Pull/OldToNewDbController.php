@@ -183,8 +183,8 @@ class OldToNewDbController extends Controller
         $classRoom->course_id =     $course_id;
         $classRoom->class_room_number =     $oldClassRoom->room;
         $classRoom->class_room_name =     $oldClassRoom->location;
-        $classRoom->teachers =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"teacher_name":"' . $teacher->name . '"}]');
-        $classRoom->attend_table =  json_decode('[{"curriculum_id":' . $curriculum->id . ',"day":' . $day_1 . ',"start_time":"' . $start_time . '","end_time":"' . $end_time . '"},{"curriculum_id":' . $curriculum->id . ',"day":' . $day_2 . ',"start_time":"' . $start_time . '","end_time":"' . $end_time . '"}]');
+        $classRoom->teachers =  json_decode('[{"curriculum_id":"' . $curriculum->id . '","teacher_name":"' . $teacher->name . '"}]');
+        $classRoom->attend_table =  json_decode('[{"curriculum_id":"' . $curriculum->id . '","day":"' . $day_1 . '","start_time":"' . $start_time . '","end_time":"' . $end_time . '"},{"curriculum_id":"' . $curriculum->id . '","day":"' . $day_2 . '","start_time":"' . $start_time . '","end_time":"' . $end_time . '"}]');
         $classRoom->save();
 
         // [{"curriculum_id":"9","day":"5","start_time":"10:36","end_time":"10:37"},{"curriculum_id":"9","day":"6","start_time":"11:37","end_time":"23:37"}]
