@@ -54,7 +54,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('student.student_name')}}</th>
+                        <th>{{__('student.name')}}</th>
                         <th>{{__('attend.attend_students')}}
 
 
@@ -94,7 +94,7 @@
                             {{$key+1}}
                         </td>
                         <td>
-                            {{$student->student_name}}
+                            {{$student->name}}
                         </td>
 
                         <td>

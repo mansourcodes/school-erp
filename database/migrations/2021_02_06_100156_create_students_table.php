@@ -15,7 +15,7 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('student_name', 200)->nullable();
+            $table->string('name', 200)->nullable();
             $table->unsignedBigInteger('cpr')->unique()->nullable();
             $table->string('email', 100)->nullable();
             $table->unsignedBigInteger('mobile')->nullable();

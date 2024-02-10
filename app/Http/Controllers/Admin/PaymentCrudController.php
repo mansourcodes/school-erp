@@ -46,7 +46,7 @@ class PaymentCrudController extends CrudController
 
         CRUD::addColumn([
             'name' => 'student_id',
-            'label' => trans('student.student_name'),
+            'label' => trans('student.name'),
             'type'         => 'relationship',
             // OPTIONAL
             // 'entity'    => 'tags', // the method that defines the relationship in your Model
@@ -54,7 +54,7 @@ class PaymentCrudController extends CrudController
             // 'model'     => App\Models\Category::class, // foreign key model
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhereHas('student', function ($query) use ($column, $searchTerm) {
-                    $query->where('student_name', 'like', '%' . $searchTerm . '%')
+                    $query->where('name', 'like', '%' . $searchTerm . '%')
                         ->orWhere('mobile', 'like', '%' . $searchTerm . '%')
                         ->orWhere('mobile2', 'like', '%' . $searchTerm . '%')
                         ->orWhere('cpr', 'like', '%' . $searchTerm . '%');

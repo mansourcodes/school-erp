@@ -261,7 +261,7 @@ class AcademiaReportsController extends Controller
 
 
 
-        // echo $data['course_id']['299']['studentmarks']->student->student_name;
+        // echo $data['course_id']['299']['studentmarks']->student->name;
         // dd($data);
 
         return $data;

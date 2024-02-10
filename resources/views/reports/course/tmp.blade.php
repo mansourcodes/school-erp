@@ -23,7 +23,7 @@
 
             <div class="card_c" >
                 {{$classRoom->long_name}}<br />
-                {{$student->student_name}}<br />
+                {{$student->name}}<br />
                 <b>الرقم الشخصي: {{$student->cpr}}</b> 
                 <b>رقم الطالب: {{$student->student_id}}</b> 
                 <b>النقال: {{$student->mobile}}  	</b> 

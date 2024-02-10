@@ -87,7 +87,7 @@ class generateExamsDocxForClassRoomJob implements ShouldQueue
         $studentArray['course']  = $this->examTool->course->id;
         $studentArray['class_name']  = $this->classRoom->class_room_name;
         $studentArray = Arr::only($studentArray, [
-            'student_name',
+            'name',
             'cpr',
             'student_id',
             'mobile',

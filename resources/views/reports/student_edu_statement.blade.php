@@ -26,7 +26,7 @@
                     نفيدكم علماً أنّ الطالب /
                 </b>
 
-                {{$studentmark->student->student_name}}
+                {{$studentmark->student->name}}
             </td>
             <td>
                 <b>

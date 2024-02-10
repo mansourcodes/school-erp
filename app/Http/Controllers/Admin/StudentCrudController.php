@@ -55,8 +55,8 @@ class StudentCrudController extends CrudController
         ]);
 
         CRUD::addColumn([
-            'name' => 'student_name',
-            'label' => trans('student.student_name'),
+            'name' => 'name',
+            'label' => trans('student.name'),
         ]);
 
         CRUD::addColumn([
@@ -118,8 +118,8 @@ class StudentCrudController extends CrudController
 
 
         CRUD::addField([
-            'name' => 'student_name',
-            'label' => trans('student.student_name'),
+            'name' => 'name',
+            'label' => trans('student.name'),
         ]);
         CRUD::addField([
             'name' => 'cpr',

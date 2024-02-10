@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -41,20 +42,22 @@ class OldToNewDbController extends Controller
             'old_course_id' => 'required|integer',
             'course_id' => 'required|integer',
             'today_date' => ['required',  Rule::in([date("d")])],
-            // 'doEmptyTables' => [
-            //     'required',
-            //     Rule::in(['yes', 'no']),
-            // ],
+            'fresh' => [
+                'required',
+                Rule::in(['yes', 'no']),
+            ],
         ]);
 
         if ($validator->fails()) {
-            abort(403, 'missing ?old_course_id=@&course_id=@&today_date=day_of_month');
+            abort(403, 'missing ?old_course_id=@&course_id=@&today_date=day_of_month&fresh=no');
         }
 
         // Retrieve the validated input...
         $validated = $validator->validated();
 
-        $this->emptyTables();
+        if ($validated['fresh'] == 'yes') {
+            $this->emptyTables();
+        }
         $page = 0;
         $limit = 40;
 
@@ -193,6 +196,10 @@ class OldToNewDbController extends Controller
         $payments = [];
         foreach ($oldStudents as $key => $old) {
 
+            $is_exist = Student::where('cpr', $old->cpr)->first();
+            if ($is_exist) {
+                continue;
+            }
 
             //*
             $student = new Student();
@@ -201,6 +208,7 @@ class OldToNewDbController extends Controller
             } else {
                 $student->cpr = str_pad($old->cpr, 9, '0', STR_PAD_LEFT);
             }
+            $student->password = Hash::make($old->cpr);
 
 
             $student->name = $old->name;

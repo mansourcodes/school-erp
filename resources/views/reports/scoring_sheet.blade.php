@@ -103,7 +103,7 @@
                 {{$key+1}}
             </td>
             <td class=" text-right">
-                {{$student->student_name}}
+                {{$student->name}}
             </td>
             @if ($curriculum->marks_labels)
             @foreach (array_reverse($curriculum->marks_labels) as $section_key => $section)

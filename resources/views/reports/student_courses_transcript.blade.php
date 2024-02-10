@@ -25,7 +25,7 @@
                     نفيدكم علماً أنّ الطالب /
                 </b>
 
-                {{$student_data['studentmarks']->student->student_name}}
+                {{$student_data['studentmarks']->student->name}}
             </td>
             <td>
                 <b>

@@ -46,7 +46,7 @@ models:
       hasMany: Student
 
   Models\Student:
-    student_name: string:200 nullable
+    name: string:200 nullable
     cpr: bigInteger unsigned unique nullable
     email: string:100 unique nullable
     mobile: bigInteger unsigned nullable

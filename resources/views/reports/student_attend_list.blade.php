@@ -111,7 +111,7 @@
 
         <tr>
             <td>{{$key+1}}</td>
-            <th class="onlinecontent text-right">{{$student->student_name}}</th>
+            <th class="onlinecontent text-right">{{$student->name}}</th>
             @foreach ($attend_curriculum_table['calander_days'] as $date)
             <td></td>
             @endforeach

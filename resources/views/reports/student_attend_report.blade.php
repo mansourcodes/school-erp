@@ -84,7 +84,7 @@
 
         <tr>
             <td rowspan="2" class="align-middle">{{$key+1}}</td>
-            <th rowspan="2" class="align-middle text-right">{{$student->student_name}}</th>
+            <th rowspan="2" class="align-middle text-right">{{$student->name}}</th>
             <td>{{$student_report[$student->id]['attend']}}</td>
             <td>{{$student_report[$student->id]['absent']}}</td>
             <td>{{$student_report[$student->id]['absentWithExcuse']}}</td>

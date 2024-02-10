@@ -18,7 +18,7 @@ class StudentController extends Controller
         $search_term = $request->input('q');
 
         if ($search_term) {
-            $results = Student::where('student_name', 'LIKE', '%' . $search_term . '%')
+            $results = Student::where('name', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('cpr', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('mobile', 'LIKE', '%' . $search_term . '%')
                 ->orWhere('mobile2', 'LIKE', '%' . $search_term . '%')

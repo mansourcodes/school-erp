@@ -36,7 +36,7 @@ class ClassRoomMarksController extends Controller
             //header 
             $table[] = [
                 'student_id' => 'student_id',
-                'name' => __('student.student_name'),
+                'name' => __('student.name'),
                 ...$marks_template
             ];
 
@@ -47,7 +47,7 @@ class ClassRoomMarksController extends Controller
 
                 $table[] = [
                     'student_id' => $student->id,
-                    'name' => $student->student_name,
+                    'name' => $student->name,
                     ...$marks_array
                 ];
             }

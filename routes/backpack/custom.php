@@ -6,6 +6,9 @@
 // This route file is loaded automatically by Backpack\Base.
 // Routes you generate using Backpack\Generators will be placed here.
 
+use App\Http\Controllers\Pull\OldToNewDbController;
+use Illuminate\Support\Facades\Route;
+
 Route::group([
     'prefix'     => config('backpack.base.route_prefix', 'admin'),
     'middleware' => array_merge(
@@ -18,16 +21,16 @@ Route::group([
 
 
     Route::get('reports', 'AcademiaReportsController@print');
-    Route::get('courseReports', [CourseController::class, 'print']);
-    Route::get('accountReports', [AccountController::class, 'print']);
-    Route::get('statisticReports', [StatisticController::class, 'print']);
-    Route::get('paymentReports', [PaymentController::class, 'print']);
+    Route::get('courseReports', [App\Http\Controllers\Report\CourseController::class, 'print']);
+    Route::get('accountReports', [App\Http\Controllers\Report\AccountController::class, 'print']);
+    Route::get('statisticReports', [App\Http\Controllers\Report\StatisticController::class, 'print']);
+    Route::get('paymentReports', [App\Http\Controllers\Report\PaymentController::class, 'print']);
 
 
     // student reports
-    Route::get('studentReports', [StudentController::class, 'print']);
-    Route::get('studentReports/SingleStudentTable', [StudentController::class, 'singleStudentTable']);
-    Route::get('studentReports/SingleUpdateStudentsInfo', [StudentController::class, 'singleUpdateStudentsInfo']);
+    Route::get('studentReports', [App\Http\Controllers\Report\StudentController::class, 'print']);
+    Route::get('studentReports/SingleStudentTable', [App\Http\Controllers\Report\StudentController::class, 'singleStudentTable']);
+    Route::get('studentReports/SingleUpdateStudentsInfo', [App\Http\Controllers\Report\StudentController::class, 'singleUpdateStudentsInfo']);
 
 
 

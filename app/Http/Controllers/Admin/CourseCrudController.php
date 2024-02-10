@@ -43,6 +43,9 @@ class CourseCrudController extends CrudController
         $this->crud->enableExportButtons();
 
 
+        CRUD::addColumn([
+            'name'  => 'id',
+        ]);
 
 
         CRUD::addColumn([

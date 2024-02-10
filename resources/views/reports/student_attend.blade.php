@@ -30,7 +30,7 @@
                     الاسم:
                 </b>
 
-                {{$student->student_name}}
+                {{$student->name}}
             </td>
             <td>
                 <b>
