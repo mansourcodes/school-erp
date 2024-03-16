@@ -196,8 +196,10 @@ class OldToNewDbController extends Controller
         $payments = [];
         foreach ($oldStudents as $key => $old) {
 
+            $mobile = (empty($old->mobile)) ? $old->id : $old->mobile;
+
             $student = Student::where([
-                ['mobile', $old->mobile],
+                ['mobile', $mobile],
                 ['name', $old->name]
             ])->first();
 
@@ -214,7 +216,7 @@ class OldToNewDbController extends Controller
 
                 $student->name = $old->name;
                 $student->email = $old->email;
-                $student->mobile =  (empty($old->mobile)) ? null : $old->mobile;
+                $student->mobile = $mobile;
                 $student->mobile2 = (empty($old->phone)) ? null : $old->phone;
                 $student->dob = null;
                 $student->address = $old->address;

@@ -185,7 +185,9 @@ class ClassRoom extends Model
     public static function getByDate($date, $activeCourse = true)
     {
         $day_number = $date->format('N');
-        $classrooms =  ClassRoom::where('attend_table', 'like', '%"day":"' . $day_number . '"%')->get();
+        $classrooms =  ClassRoom::where('attend_table', 'like', '%"day":"' . $day_number . '",%')
+            ->orWhere('attend_table', 'like', '%"day":' . $day_number . ',%')
+            ->get();
         $attends =  Attends::where('date', $date->format('Y-m-d'))->get()->pluck('code')->toArray();
 
 
