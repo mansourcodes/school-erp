@@ -52,10 +52,11 @@ class AcademiaReportsController extends Controller
         if ($studentmarks_id) {
 
             $data['studentmarks'][$counter] = StudentMarks::find($studentmarks_id);
+
             if ($data['studentmarks'][$counter]->marks)
                 foreach ($data['studentmarks'][$counter]->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
-                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
+                    if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                     }
                 }
         } elseif ($classroom_id) {
@@ -74,8 +75,8 @@ class AcademiaReportsController extends Controller
                 }
 
                 foreach ($studentmark->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
-                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
+                    if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                     }
                 }
             }
@@ -131,8 +132,8 @@ class AcademiaReportsController extends Controller
 
             $data['studentmarks'][0] = StudentMarks::find($studentmarks_id);
             foreach ($data['studentmarks'][0]->marks as $mark_key => $mark) {
-                if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
-                    $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
+                if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                    $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                 }
             }
 
@@ -166,8 +167,8 @@ class AcademiaReportsController extends Controller
                 }
 
                 foreach ($studentmark->marks as $mark_key => $mark) {
-                    if (!isset($data['curriculums'][(int)$mark->curriculum_id])) {
-                        $data['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
+                    if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                     }
                 }
             }
@@ -234,8 +235,8 @@ class AcademiaReportsController extends Controller
 
             if ($marksRequred->marks) {
                 foreach ($marksRequred->marks as $mark_key => $mark) {
-                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculum_id])) {
-                        $data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark->curriculum_id]  = Curriculum::find((int)$mark->curriculum_id);
+                    if (!isset($data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['course_id'][$marksRequred->course_id]['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                     }
                 }
             } else {
@@ -286,7 +287,7 @@ class AcademiaReportsController extends Controller
             }
 
             foreach ($studentmark->marks as $mark_key => $mark) {
-                $marks[(int)$mark->curriculum_id][(int)$studentmark->student_id] = $mark;
+                $marks[(int)$mark['curriculum_id']][(int)$studentmark->student_id] = $mark;
             }
         }
 
