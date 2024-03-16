@@ -76,11 +76,13 @@
                 }).then(function(json) {
                     console.log(json);
                     // change course
+                    alert('تم حفظ الدرجات');
 
                 })
                 .catch(function(error) {
 
                     console.error(error);
+                    alert('حدث خطأ');
 
                 });
         });

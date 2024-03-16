@@ -68,7 +68,11 @@ class Curriculum extends Model
         foreach ($this->marks_labels as $key => $value_array) {
             if ($value_array)
                 foreach ($value_array as $key => $value) {
-                    $flat_array[] = "$value->label ($value->mark)";
+                    $tmp_label = '';
+                    $tmp_label .= $value->label ?? 'لا يوجد عنوان';
+                    $tmp_label .= isset($value->mark) ? "($value->mark)" : '(لا يوجد درجة)';
+
+                    $flat_array[] = $tmp_label;
                 }
         }
         return $flat_array;
