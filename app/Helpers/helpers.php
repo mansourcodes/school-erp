@@ -59,3 +59,12 @@ function getReportClassFunctions($class, $route, $id)
     }
     return $list;
 }
+
+
+function encodeArabicForJsonSqlSearch($word)
+{
+    $str_encoded = substr(json_encode($word), 1, -1);
+    $str_encoded = str_replace('\\', '%\\', $str_encoded);
+
+    return $str_encoded;
+}

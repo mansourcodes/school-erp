@@ -41,6 +41,18 @@ class ClassRoomCrudController extends CrudController
     {
         $this->crud->enableExportButtons();
 
+
+        $this->crud->addColumn([
+            'name'        => 'id',
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $query
+                    ->orWhere('teachers', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('teachers', 'like', '%' . encodeArabicForJsonSqlSearch($searchTerm) . '%')
+                    ->orWhere('attend_table', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('attend_table', 'like', '%' . encodeArabicForJsonSqlSearch($searchTerm) . '%');
+            }
+        ]);
+
         CRUD::addColumn([
             'name'  => 'first_long_name',
             'label' => 'Title',
