@@ -172,7 +172,9 @@ class OldToNewDbController extends Controller
             }
         } catch (\Throwable $th) {
             // throw $th;
-            dd($matches, "match not find time");
+            // dd($matches, "match not find time");
+            $start_time = "01:00";
+            $end_time = "01:01";
         }
 
         // days
