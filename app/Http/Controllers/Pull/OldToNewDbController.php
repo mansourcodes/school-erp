@@ -143,30 +143,37 @@ class OldToNewDbController extends Controller
                 break;
         }
 
-        // start & end time 
-        $re = '/\d+\:\d\d/m';
-        preg_match_all($re, $oldClassRoom->time, $matches, PREG_SET_ORDER, 0);
+        try {
+            //code...
+            // start & end time 
+            $re = '/\d+\:\d\d/m';
+            preg_match_all($re, $oldClassRoom->time, $matches, PREG_SET_ORDER, 0);
 
-        $start_time = str_pad($matches[0][0], 5, "0", STR_PAD_LEFT);
-        $end_time = str_pad($matches[1][0], 5, "0", STR_PAD_LEFT);
-        if (strpos($oldClassRoom->time, 'صباحا') > -1) {
-            // do nothing
-        } else if (strpos($oldClassRoom->time, 'ظهرا') > -1) {
-            $start_hour = substr($start_time, 0, 2);
-            if ((int)$start_hour < 12) {
-                $start_hour += 12;
-                $start_time = $start_hour + substr($start_time, 2);
-            }
+            $start_time = str_pad($matches[0][0], 5, "0", STR_PAD_LEFT);
+            $end_time = str_pad($matches[1][0], 5, "0", STR_PAD_LEFT);
 
-            $end_hour = substr($end_time, 0, 2);
-            if ((int)$end_hour < 12) {
-                $end_hour += 12;
-                $end_time = $end_hour . substr($end_time, 2);
+
+            if (strpos($oldClassRoom->time, 'صباحا') > -1) {
+                // do nothing
+            } else if (strpos($oldClassRoom->time, 'ظهرا') > -1) {
+                $start_hour = substr($start_time, 0, 2);
+                if ((int)$start_hour < 12) {
+                    $start_hour += 12;
+                    $start_time = $start_hour + substr($start_time, 2);
+                }
+
+                $end_hour = substr($end_time, 0, 2);
+                if ((int)$end_hour < 12) {
+                    $end_hour += 12;
+                    $end_time = $end_hour . substr($end_time, 2);
+                }
+            } else {
+                dd($oldClassRoom->time);
             }
-        } else {
-            dd($oldClassRoom->time);
+        } catch (\Throwable $th) {
+            // throw $th;
+            dd($matches, "match not find time");
         }
-
 
         // days
         if (strpos($oldClassRoom->day, 'الجمعة') > -1) {
