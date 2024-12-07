@@ -77,6 +77,7 @@ class AttendsCrudController extends CrudController
             ]
         );
 
+        /*
         CRUD::addColumn(
             [
                 // any type of relationship
@@ -102,7 +103,7 @@ class AttendsCrudController extends CrudController
                 // 'model'     => App\Models\Category::class, // foreign key model
             ]
         );
-        /*
+        //*/
 
         CRUD::addColumn(
             [
@@ -220,8 +221,7 @@ class AttendsCrudController extends CrudController
             return [
                 1 => trans('base.show_all'),
             ];
-        }, function ($value) {
-        });
+        }, function ($value) {});
 
         $is_filter_active = false;
         $filters = $this->crud->filters();
