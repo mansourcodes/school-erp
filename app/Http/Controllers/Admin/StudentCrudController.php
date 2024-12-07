@@ -18,8 +18,12 @@ use Illuminate\Support\Carbon;
 class StudentCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
+        store as traitStore;
+    }
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {
+        update as traitUpdate;
+    }
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
@@ -389,7 +393,23 @@ class StudentCrudController extends CrudController
         ]);
 
 
+        if ($this->crud->getCurrentEntryId()) {
+            $this->crud->addFields([
+                [
+                    'name'  => 'password',
+                    'label' => trans('backpack::permissionmanager.password'),
+                    'type'  => 'password',
+                    'tab'   => 'password',
 
+                ],
+                [
+                    'name'  => 'password_confirmation',
+                    'label' => trans('backpack::permissionmanager.password_confirmation'),
+                    'type'  => 'password',
+                    'tab'   => 'password',
+                ],
+            ]);
+        }
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
@@ -491,5 +511,53 @@ class StudentCrudController extends CrudController
         }, function ($values) { // if the filter is active
             $this->crud->addClause('whereIn', 'financial_support_status', json_decode($values));
         });
+    }
+
+    /**
+     * Store a newly created resource in the database.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store()
+    {
+        $this->crud->setRequest($this->crud->validateRequest());
+        $this->crud->setRequest($this->handlePasswordInput($this->crud->getRequest()));
+        $this->crud->unsetValidation(); // validation has already been run
+
+        return $this->traitStore();
+    }
+
+    /**
+     * Update the specified resource in the database.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update()
+    {
+        $this->crud->setRequest($this->crud->validateRequest());
+        $this->crud->setRequest($this->handlePasswordInput($this->crud->getRequest()));
+        $this->crud->unsetValidation(); // validation has already been run
+
+        return $this->traitUpdate();
+    }
+
+    /**
+     * Handle password input fields.
+     */
+    protected function handlePasswordInput($request)
+    {
+        // Remove fields not present on the user.
+        $request->request->remove('password_confirmation');
+        $request->request->remove('roles_show');
+        $request->request->remove('permissions_show');
+
+        // Encrypt password if specified.
+        if ($request->input('password')) {
+            $request->request->set('password', Hash::make($request->input('password')));
+        } else {
+            $request->request->remove('password');
+        }
+
+        return $request;
     }
 }

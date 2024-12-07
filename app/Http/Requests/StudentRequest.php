@@ -25,7 +25,8 @@ class StudentRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+
+        $rules = [
             // 'name' => 'required|min:5|max:255'
 
             'name' => 'required',
@@ -48,7 +49,17 @@ class StudentRequest extends FormRequest
             // 'financial_details',
             // 'student_notes',
             'registration_at' => 'required',
+
         ];
+
+        // if the student is new
+        if (!request()->id) {
+            $rules['password'] = 'nullable';
+        } else {
+            $rules['password'] = 'nullable|confirmed';
+        }
+
+        return $rules;
     }
 
     /**
