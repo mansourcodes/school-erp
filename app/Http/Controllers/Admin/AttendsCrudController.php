@@ -77,7 +77,7 @@ class AttendsCrudController extends CrudController
             ]
         );
 
-        /*
+
         CRUD::addColumn(
             [
                 // any type of relationship
@@ -90,8 +90,8 @@ class AttendsCrudController extends CrudController
                 // 'model'     => App\Models\Category::class, // foreign key model
             ]
         );
-        //*/
 
+        /*
         CRUD::addColumn(
             [
                 // any type of relationship
@@ -104,7 +104,7 @@ class AttendsCrudController extends CrudController
                 // 'model'     => App\Models\Category::class, // foreign key model
             ]
         );
-
+        //*/
         CRUD::addColumn(
             [
                 // any type of relationship
