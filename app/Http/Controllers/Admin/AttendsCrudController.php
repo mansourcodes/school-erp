@@ -118,7 +118,7 @@ class AttendsCrudController extends CrudController
 
 
 
-
+        /*
         // select2_ajax filter
         $this->crud->addFilter(
             [
@@ -235,6 +235,8 @@ class AttendsCrudController extends CrudController
                 $query->where('is_active', true);
             });
         }
+
+        //*/
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
