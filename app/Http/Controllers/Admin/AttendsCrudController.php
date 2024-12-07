@@ -91,7 +91,7 @@ class AttendsCrudController extends CrudController
             ]
         );
 
-        /*
+
         CRUD::addColumn(
             [
                 // any type of relationship
@@ -100,11 +100,11 @@ class AttendsCrudController extends CrudController
                 'label'        => trans('classroom.classroom'), // Table column heading
                 // OPTIONAL
                 // 'entity'    => 'tags', // the method that defines the relationship in your Model
-                'attribute' => 'long_name', // foreign key attribute that is shown to user
-                // 'model'     => App\Models\Category::class, // foreign key model
+                'attribute' => 'first_long_name', // foreign key attribute that is shown to user
+                'model'     => \App\Models\ClassRoom::class, // foreign key model
             ]
         );
-        //*/
+
         CRUD::addColumn(
             [
                 // any type of relationship
