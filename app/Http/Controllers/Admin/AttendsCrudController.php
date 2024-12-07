@@ -76,7 +76,6 @@ class AttendsCrudController extends CrudController
                 'format' => 'H:MM a'
             ]
         );
-        /*
 
         CRUD::addColumn(
             [
@@ -103,6 +102,7 @@ class AttendsCrudController extends CrudController
                 // 'model'     => App\Models\Category::class, // foreign key model
             ]
         );
+        /*
 
         CRUD::addColumn(
             [
