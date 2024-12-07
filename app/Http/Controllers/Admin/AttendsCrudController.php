@@ -76,6 +76,7 @@ class AttendsCrudController extends CrudController
                 'format' => 'H:MM a'
             ]
         );
+        /*
 
         CRUD::addColumn(
             [
@@ -118,7 +119,6 @@ class AttendsCrudController extends CrudController
 
 
 
-        /*
         // select2_ajax filter
         $this->crud->addFilter(
             [
