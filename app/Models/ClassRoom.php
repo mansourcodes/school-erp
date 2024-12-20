@@ -54,8 +54,8 @@ class ClassRoom extends Model
 
     public function students()
     {
-        return $this->belongsToMany(\App\Models\Student::class);
-        // return $this->hasMany(\App\Models\Student::class);
+        // sort alphabetically
+        return $this->belongsToMany(\App\Models\Student::class)->orderBy('name');
     }
 
     public function studentsCount()
