@@ -312,7 +312,7 @@ class AttendsCrudController extends CrudController
                 'type'        => "select2_from_ajax",
                 'name'        => 'class_room_id', // the column that contains the ID of that connected entity
                 'entity'      => 'classRoom', // the method that defines the relationship in your Model
-                'attribute'   => "long_name", // foreign key attribute that is shown to user
+                'attribute'   => "first_long_name", // foreign key attribute that is shown to user
                 'data_source' => url("api/classroom"), // url to controller search function (with /{id} should return model)
 
                 // OPTIONAL
