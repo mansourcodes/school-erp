@@ -333,6 +333,13 @@ class CourseCrudController extends CrudController
         $clonedCourse->course_year = $course->course_year . ' (Copy)';
         $clonedCourse->save();
 
+        // Clone all related classRooms
+        foreach ($course->classRooms as $classRoom) {
+            $clonedClassRoom = $classRoom->replicate();
+            $clonedClassRoom->course_id = $clonedCourse->id; // Associate with the cloned course
+            $clonedClassRoom->save();
+        }
+
         // Redirect back with a success message
         // return redirect()->back()->with('success', 'Course cloned successfully!');
     }
