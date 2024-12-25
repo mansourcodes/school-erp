@@ -19,6 +19,9 @@ class CourseCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     // use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CloneOperation {
+        clone as traitClone;
+    }
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -314,5 +317,23 @@ class CourseCrudController extends CrudController
             //     return $model->active();
             // } // to filter the results that are returned
         ]);
+    }
+
+
+    public function clone($id)
+    {
+        $this->crud->hasAccessOrFail('clone');
+        $this->crud->setOperation('clone');
+
+        // Find the course to clone
+        $course = \App\Models\Course::findOrFail($id);
+
+        // Duplicate the course and append " (Work Copy)" to its name
+        $clonedCourse = $course->replicate();
+        $clonedCourse->course_year = $course->course_year . ' (Copy)';
+        $clonedCourse->save();
+
+        // Redirect back with a success message
+        // return redirect()->back()->with('success', 'Course cloned successfully!');
     }
 }
