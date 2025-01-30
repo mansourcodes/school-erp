@@ -51,6 +51,22 @@ class Course extends Model
         'long_name'
     ];
 
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Listen for the deleting event
+        static::deleting(function ($course) {
+            // Delete all related classrooms
+            $course->classrooms->each(function ($classroom) {
+                // Delete the classroom
+                $classroom->delete();
+            });
+        });
+    }
+
+
     public function academicPath()
     {
         return $this->belongsTo(\App\Models\AcademicPath::class);
