@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ClassRoom extends Model
 {
@@ -251,5 +252,38 @@ class ClassRoom extends Model
         $time = str_replace('pm', 'م', $time);
 
         return $time;
+    }
+
+
+
+
+    function cloneClassRoomWithStudents()
+    {
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Retrieve the original ClassRoom
+            $originalClassRoom = ClassRoom::with('students')->findOrFail($this->id);
+
+            // Create a copy of the ClassRoom
+            $clonedClassRoom = $originalClassRoom->replicate();
+            $clonedClassRoom->save();
+
+            // Sync the students to the cloned ClassRoom
+            $studentIds = $originalClassRoom->students->pluck('id');
+            $clonedClassRoom->students()->sync($studentIds);
+
+            // Commit the transaction
+            DB::commit();
+
+            return $clonedClassRoom;
+        } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+
+            // Rethrow the exception or handle it as needed
+            throw $e;
+        }
     }
 }

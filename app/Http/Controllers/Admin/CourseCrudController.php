@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\CourseRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class CourseCrudController
@@ -325,22 +326,40 @@ class CourseCrudController extends CrudController
         $this->crud->hasAccessOrFail('clone');
         $this->crud->setOperation('clone');
 
-        // Find the course to clone
-        $course = \App\Models\Course::findOrFail($id);
+        // Begin a database transaction
+        DB::beginTransaction();
 
-        // Duplicate the course and append " (Work Copy)" to its name
-        $clonedCourse = $course->replicate();
-        $clonedCourse->course_year = $course->course_year . ' (Copy)';
-        $clonedCourse->save();
+        try {
+            // Find the course to clone
+            $course = \App\Models\Course::with('classRooms')->findOrFail($id);
 
-        // Clone all related classRooms
-        foreach ($course->classRooms as $classRoom) {
-            $clonedClassRoom = $classRoom->replicate();
-            $clonedClassRoom->course_id = $clonedCourse->id; // Associate with the cloned course
-            $clonedClassRoom->save();
+            // Duplicate the course
+            $clonedCourse = $course->replicate();
+            $clonedCourse->course_year = $course->course_year . ' (Copy)';
+            $clonedCourse->is_active = false; // Default to inactive
+            $clonedCourse->save();
+
+            // Clone all related classRooms
+            foreach ($course->classRooms as $classRoom) {
+                $clonedClassRoom = $classRoom->cloneClassRoomWithStudents();
+                $clonedClassRoom->course_id = $clonedCourse->id; // Associate with the cloned course
+                $clonedClassRoom->save();
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Redirect back with a success message
+            return redirect()->back()->with('success', trans('course.clone_success'));
+        } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+
+            // Log the error for debugging
+            // Log::error('Error cloning course: ' . $e->getMessage());
+
+            // Redirect back with an error message
+            return redirect()->back()->withErrors(['error' => trans('course.clone_failed')]);
         }
-
-        // Redirect back with a success message
-        // return redirect()->back()->with('success', 'Course cloned successfully!');
     }
 }
