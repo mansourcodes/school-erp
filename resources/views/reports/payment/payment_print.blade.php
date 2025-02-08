@@ -8,15 +8,13 @@
             {!! Setting::get('payment_print.pre') !!}
 
 
+
+            @if (Setting::get('print_header'))
+                <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
+            @endif
+
             <table class="table table-no-border ">
                 <tbody>
-                    <tr>
-                        <td colspan="3">
-                            @if (Setting::get('print_header'))
-                                <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
-                            @endif
-                        </td>
-                    </tr>
                     <tr>
                         <td></td>
                         <td>
@@ -48,8 +46,8 @@
                     </tr>
                 </tbody>
             </table>
-            <hr>
-            <hr>
+
+
 
             {!! Setting::get('payment_print.pro') !!}
         @endfor

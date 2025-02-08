@@ -22,6 +22,10 @@
 
 
         <style>
+            @page {
+                size: auto;
+            }
+
             @media print {
                 .noPrint {
                     display: none;
@@ -55,6 +59,7 @@
 
             table.table td,
             table.table th {
+                padding: 5px;
                 border: 1px solid black !important;
             }
 
@@ -78,10 +83,10 @@
 
             h1.title {
                 /* position: absolute;
-                top: 60px;
-                left: 50%;
-                margin-left: -200px;
-                width: 400px; */
+        top: 60px;
+        left: 50%;
+        margin-left: -200px;
+        width: 400px; */
                 font-size: 2rem;
 
             }

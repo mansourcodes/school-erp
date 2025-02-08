@@ -38,17 +38,17 @@
                             <th width="1%">#</th>
                             <th width="20%">اسم الطالب</th>
                             <th>الهاتف</th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
-                            <th> / / </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
                         </tr>
                     </thead>
                     <tbody>
