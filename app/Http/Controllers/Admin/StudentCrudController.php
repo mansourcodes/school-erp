@@ -9,6 +9,8 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
+
 
 /**
  * Class StudentCrudController
