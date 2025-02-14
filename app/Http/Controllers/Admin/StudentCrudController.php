@@ -138,7 +138,11 @@ class StudentCrudController extends CrudController
             'label' => trans('student.email'),
             'wrapper'   => [
                 'class'      => 'form-group col-md-6'
+
             ],
+            'attributes' => [
+                'autocomplete' => 'off'
+            ]
         ]);
 
 
@@ -400,6 +404,9 @@ class StudentCrudController extends CrudController
                     'label' => trans('backpack::permissionmanager.password'),
                     'type'  => 'password',
                     'tab'   => 'password',
+                    'attributes' => [
+                        'autocomplete' => 'off'
+                    ]
 
                 ],
                 [
@@ -407,6 +414,9 @@ class StudentCrudController extends CrudController
                     'label' => trans('backpack::permissionmanager.password_confirmation'),
                     'type'  => 'password',
                     'tab'   => 'password',
+                    'attributes' => [
+                        'autocomplete' => 'off'
+                    ]
                 ],
             ]);
         }
