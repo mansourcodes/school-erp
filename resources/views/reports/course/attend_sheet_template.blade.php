@@ -36,8 +36,8 @@
                     <thead>
                         <tr>
                             <th width="1%">#</th>
-                            <th width="20%">اسم الطالب</th>
-                            <th>الهاتف</th>
+                            <th width="22%">اسم الطالب</th>
+                            <th width="15%">الهاتف</th>
                             <th> </th>
                             <th> </th>
                             <th> </th>
