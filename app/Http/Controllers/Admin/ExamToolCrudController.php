@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ExamToolRequest;
+use App\Models\Curriculum;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
@@ -115,6 +116,23 @@ class ExamToolCrudController extends CrudController
                     'class'      => 'form-group col-6'
                 ],
             ],
+        );
+
+        $curricula_list = Curriculum::all()->pluck('long_name', 'id')->toArray();
+
+        // CRUD::field('file');
+        CRUD::addField(
+            [
+                'name'        => 'curriculum_id',
+                'label'       => trans('curriculum.curriculum_name'),
+                'type'        => 'select_from_array',
+                'options'     => $curricula_list,
+                'allows_null' => false,
+                // 'default'     => '',
+                'wrapper' => ['class' => 'form-group col-md-6'],
+                'hint' => __('localize.hint_duplicated_curriculum'),
+
+            ]
         );
 
 

@@ -18,6 +18,7 @@ class ExamTool extends Model
     protected $fillable = [
         'subject',
         'course_id',
+        'curriculum_id',
         'file',
         'status',
         'zip_file_path',
@@ -33,6 +34,7 @@ class ExamTool extends Model
     protected $casts = [
         'id' => 'integer',
         'course_id' => 'integer',
+        'curriculum_id' => 'integer',
     ];
 
 
