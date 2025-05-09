@@ -21,6 +21,7 @@ Route::group([
 
 
     Route::get('reports', 'AcademiaReportsController@print');
+    Route::get('examReports', [App\Http\Controllers\Report\ExamController::class, 'print']);
     Route::get('courseReports', [App\Http\Controllers\Report\CourseController::class, 'print']);
     Route::get('accountReports', [App\Http\Controllers\Report\AccountController::class, 'print']);
     Route::get('statisticReports', [App\Http\Controllers\Report\StatisticController::class, 'print']);

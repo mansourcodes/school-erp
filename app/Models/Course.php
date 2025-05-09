@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\HtmlHelper;
 use App\Http\Controllers\Report\AccountController;
 use App\Http\Controllers\Report\CourseController;
+use App\Http\Controllers\Report\ExamController;
 use App\Http\Controllers\Report\StatisticController;
 use App\Http\Controllers\Report\StudentController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -119,6 +120,10 @@ class Course extends Model
             [
                 'label' => trans('reports.statistic'),
                 'url' => getReportClassFunctions(StatisticController::class, 'statisticReports', $this->id)
+            ],
+            [
+                'label' => __('localize.exam'),
+                'url' => getReportClassFunctions(ExamController::class, 'examReports', $this->id)
             ],
         ];
 

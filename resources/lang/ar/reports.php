@@ -45,6 +45,7 @@ return [
     'registration_form' => 'استمارة تسجيل',
     'teacher_file_label' => 'ملصقات ملفات المعلمين',
     'students_marks'         => 'كشف الدرجات',
+    'reading_exams_template'         => 'الامتحان الشفوي',
 
 
     'account' => 'المحاسبة',
