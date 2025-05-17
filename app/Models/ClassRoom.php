@@ -165,6 +165,10 @@ class ClassRoom extends Model
                 'url' => backpack_url('reports?view=transcript&classroom=' . $this->id),
             ],
             [
+                'label' => trans('reports.certificate'),
+                'url' => backpack_url('reports?view=certificate&classroom=' . $this->id),
+            ],
+            [
                 'label' => trans('reports.student_edu_statement'),
                 'url' => backpack_url('reports?view=student_edu_statement&classroom=' . $this->id),
             ],

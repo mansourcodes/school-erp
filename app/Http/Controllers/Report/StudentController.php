@@ -201,4 +201,8 @@ class StudentController extends Controller
     {
         return $this->transcript_($request);
     }
+    public function certificate_(Request $request)
+    {
+        return $this->transcript_($request);
+    }
 }

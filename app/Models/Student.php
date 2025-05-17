@@ -184,6 +184,10 @@ class Student extends Authenticatable
                         'url' => backpack_url('studentReports?view=transcript&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
                     ],
                     [
+                        'label' => trans('reports.certificate'),
+                        'url' => backpack_url('studentReports?view=certificate&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
+                    ],
+                    [
                         'label' => trans('reports.student_edu_statement'),
                         'url' => backpack_url('studentReports?view=student_edu_statement&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
                     ],

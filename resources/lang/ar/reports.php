@@ -3,6 +3,7 @@
 return [
 
     'transcript'         => 'كشف الدرجات',
+    'certificate' => 'الشهادة',
     'student_edu_statement'         => 'إفادة تعليمية',
     'student_courses_transcript'         => 'النتائج الكاملة للامتحانات السنوية',
     'scoring_sheet'         => 'ورقة رصد الدرجات',

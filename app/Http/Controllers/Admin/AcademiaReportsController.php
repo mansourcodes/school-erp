@@ -121,6 +121,85 @@ class AcademiaReportsController extends Controller
     }
 
 
+    private function reportCertificate(Request $request)
+    {
+
+        $studentmarks_id = $request->input('studentmarks');
+        $classroom_id = $request->input('classroom');
+        $course_id = $request->input('course');
+        $counter = 0;
+        if ($studentmarks_id) {
+
+            $data['studentmarks'][$counter] = StudentMarks::find($studentmarks_id);
+
+            if ($data['studentmarks'][$counter]->marks) {
+                foreach ($data['studentmarks'][$counter]->marks as $mark_key => $mark) {
+                    if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
+                    }
+                }
+            }
+        } elseif ($classroom_id) {
+
+
+            $classroom = ClassRoom::find($classroom_id);
+
+            $student_ids_array = $classroom->students->pluck('id')->toArray();
+            $data['studentmarks'] = StudentMarks::whereIn('student_id', $student_ids_array)->where('course_id', $classroom->course->id)->get();
+
+            $data['curriculums'] = [];
+
+            foreach ($data['studentmarks'] as $studentmark) {
+                if ($studentmark->marks === null) {
+                    $studentmark->marks = [];
+                }
+
+                foreach ($studentmark->marks as $mark_key => $mark) {
+                    if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                        $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
+                    }
+                }
+            }
+        } elseif ($course_id) {
+
+            $course = Course::find($course_id);
+
+
+            $classroom_ids_array = $course->classRooms->pluck('id')->toArray();
+            $data['classrooms'] = ClassRoom::whereIn('id', $classroom_ids_array)->get();
+            $data['curriculums'] = [];
+            $data['studentmarks'] = [];
+            foreach ($data['classrooms'] as $classroom) {
+
+                $student_ids_array = $classroom->students->pluck('id')->toArray();
+                $studentmarks = StudentMarks::whereIn('student_id', $student_ids_array)
+                    ->where(
+                        'course_id',
+                        $classroom->course->id
+                    )->get();
+
+
+
+                foreach ($studentmarks as $studentmark) {
+                    if ($studentmark->marks === null) {
+                        $studentmark->marks = [];
+                    }
+
+                    foreach ($studentmark->marks as $mark_key => $mark) {
+                        if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
+                            $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
+                        }
+                    }
+                    $data['studentmarks'][] = $studentmark;
+                }
+            }
+        }
+
+
+        return $data;
+    }
+
+
 
     function reportStudentEduStatement(Request $request)
     {
