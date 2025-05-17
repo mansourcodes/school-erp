@@ -53,12 +53,13 @@ class AcademiaReportsController extends Controller
 
             $data['studentmarks'][$counter] = StudentMarks::find($studentmarks_id);
 
-            if ($data['studentmarks'][$counter]->marks)
+            if ($data['studentmarks'][$counter]->marks) {
                 foreach ($data['studentmarks'][$counter]->marks as $mark_key => $mark) {
                     if (!isset($data['curriculums'][(int)$mark['curriculum_id']])) {
                         $data['curriculums'][(int)$mark['curriculum_id']]  = Curriculum::find((int)$mark['curriculum_id']);
                     }
                 }
+            }
         } elseif ($classroom_id) {
 
 
