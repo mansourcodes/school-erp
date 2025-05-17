@@ -179,6 +179,18 @@ class Student extends Authenticatable
                         'label' => trans('reports.update_students_info'),
                         'url' => backpack_url('studentReports/SingleUpdateStudentsInfo' . '?course=' . $classRoom->course->id . '&student=' . $this->id),
                     ],
+                    [
+                        'label' => trans('reports.transcript'),
+                        'url' => backpack_url('studentReports?view=transcript&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
+                    ],
+                    [
+                        'label' => trans('reports.student_edu_statement'),
+                        'url' => backpack_url('studentReports?view=student_edu_statement&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
+                    ],
+                    [
+                        'label' => trans('reports.student_courses_transcript'),
+                        'url' => backpack_url('studentReports?view=student_courses_transcript&course=' . $classRoom->course->id . '&student=' . $this->id . '&print=redirect'),
+                    ],
                 ]
 
             ];

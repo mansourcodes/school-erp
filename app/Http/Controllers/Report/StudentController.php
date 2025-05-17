@@ -7,8 +7,10 @@ use App\Models\Account\Payment;
 use App\Models\ClassRoom;
 use App\Models\Course;
 use App\Models\Student;
+use App\Models\StudentMarks;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
 /**
@@ -36,6 +38,8 @@ class StudentController extends Controller
             $data['print'] = 'pdf';
             // $pdf = PDF::loadView('reports.' . $view, $data);
             // return $pdf->stream();
+        } elseif ($print == 'redirect') {
+            return redirect($data['url']);
         }
 
         $data['print'] = 'print';
@@ -167,5 +171,34 @@ class StudentController extends Controller
 
         $data['print'] = 'print';
         return view('reports.student.single_update_student_info', $data);
+    }
+
+
+    public function transcript_(Request $request)
+    {
+        $course = Course::findOrFail($request->course);
+        $student = Student::findOrFail($request->student);
+
+        // find $student_marks 
+        $student_marks = StudentMarks::where('student_id', $student->id)->where('course_id', $course->id)->first();
+
+        if (!$student_marks) {
+            abort(404, __('localize.student_marks_not_found'));
+        }
+
+        //redirect to 
+        $url = backpack_url('reports?view=' . $request->view . '&studentmarks=' . $student_marks->id);
+        return [
+            'url' => $url
+        ];
+    }
+
+    public function studentEduStatement_(Request $request)
+    {
+        return $this->transcript_($request);
+    }
+    public function studentCoursesTranscript_(Request $request)
+    {
+        return $this->transcript_($request);
     }
 }
