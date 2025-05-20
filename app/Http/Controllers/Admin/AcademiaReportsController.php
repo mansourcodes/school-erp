@@ -195,7 +195,6 @@ class AcademiaReportsController extends Controller
             }
         }
 
-
         return $data;
     }
 

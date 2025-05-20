@@ -37,6 +37,12 @@ class StudentMarks extends Model
         'total_mark' => 'float',
     ];
 
+    protected $appends = [
+        'brief_marks',
+        'curriculum',
+
+    ];
+
 
     public function Student()
     {
@@ -48,6 +54,92 @@ class StudentMarks extends Model
     {
         return $this->belongsTo(\App\Models\Course::class);
         // return $this->hasOne(\App\Models\Course::class);
+    }
+
+    public function getBriefMarksAttribute()
+    {
+
+        $standard_marks_composer = [
+            'finalexam_mark_details'         => 'Single',
+            'project_marks_details'         => 'None',
+            'midexam_marks_details'         => 'SumMerge',
+            'practice_mark_details'         => 'Single',
+            'memorize_mark_details'         => 'AvgMerge',
+            'class_mark_details'         => 'None',
+            'attend_mark_details'         => 'None',
+            'marks_details'         => 'None',
+        ];
+
+
+
+
+
+        function getBriefMark($detailed_mark)
+        {
+            $brief_marks = [];
+            foreach ($detailed_mark as $key => $mark) {
+                if ($mark === null || $mark == '') {
+                    continue;
+                } elseif (is_numeric($mark)) {
+                    continue;
+                } elseif (
+                    $key == 'finalexam_mark_details' || $key == 'practice_mark_details'
+                    // || $key == 'class_mark_details' || $key == 'marks_details' || $key == 'project_marks_details' || $key == 'practice_mark_details' || $key == 'memorize_mark_details'
+                ) {
+                    $arrayOfArrays = array_map(function ($item) {
+                        return (array) $item;
+                    }, $mark);
+                    $brief_marks = [...array_values($brief_marks), ...$arrayOfArrays];
+                } else {
+                    $data = collect($mark);
+                    $total = $data->sum('mark');
+                    $brief_marks[$key] = [
+                        'label' => $key,
+                        'mark' => $total
+                    ];
+                }
+            }
+            return $brief_marks;
+        }
+
+
+        // add max marks
+
+        $marks_labels = getBriefMark($this->curriculum->marks_labels);
+        $brief_marks = getBriefMark($this->marks[0]);
+
+        dd($marks_labels, $brief_marks);
+
+        foreach ($brief_marks as $key => $mark) {
+            dd($key, $mark);
+            if (isset($marks_labels[$key])) {
+                dd($key);
+                if (
+                    $key == 'memorize_mark_details'
+                    // $key == 'finalexam_mark_details' || $key == 'practice_mark_details'
+                    // || $key == 'class_mark_details' || $key == 'marks_details' || $key == 'project_marks_details' || $key == 'practice_mark_details' || $key == 'memorize_mark_details'
+                ) {
+                    dd($marks_labels[$key]);
+                    $brief_marks[$key]['max'] = 10;
+                    // $brief_marks[$key]['max'] = $marks_labels[$key]['mark'];
+                } else {
+                    $brief_marks[$key]['max'] = $marks_labels[$key]['mark'];
+                }
+            }
+        }
+
+        // sort by max marks
+        // usort($brief_marks, function ($a, $b) {
+        //     return $b['max'] <=> $a['max']; // Descending order
+        // });
+
+        return $brief_marks;
+    }
+
+    public function getCurriculumAttribute()
+    {
+        $curriculum_id = $this->marks[0]['curriculum_id'];
+        return Curriculum::find($curriculum_id);
     }
 
 

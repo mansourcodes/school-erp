@@ -68,3 +68,9 @@ function encodeArabicForJsonSqlSearch($word)
 
     return $str_encoded;
 }
+
+
+function isArabic($word) {
+    // Arabic Unicode range: \u0600-\u06FF
+    return preg_match('/[\x{0600}-\x{06FF}]/u', $word) === 1;
+}

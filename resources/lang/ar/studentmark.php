@@ -21,7 +21,7 @@ return [
 
     'finalexam_mark_details'         => 'درجة النهائي',
     'project_marks_details'         => 'درجات المشاريع/البحوث',
-    'midexam_marks_details'         => 'درجات المنتصف',
+    'midexam_marks_details'         => 'الوقفات التقويمة',
     'practice_mark_details'         => 'درجة العملي/الشفوي',
     'memorize_mark_details'         => 'درجة الحفظ',
     'class_mark_details'         => 'درجة الاعمال',
