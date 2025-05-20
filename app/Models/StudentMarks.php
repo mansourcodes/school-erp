@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Helpers\HtmlHelper;
+use App\Helpers\BriefMarkHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\MarksDetailsCast;
-
+use Mpdf\Tag\Br;
 
 class StudentMarks extends Model
 {
@@ -70,69 +70,26 @@ class StudentMarks extends Model
             'marks_details'         => 'None',
         ];
 
+        $brief_marks = [];
+        foreach ($standard_marks_composer as $key => $compress_type) {
+            $curriculum_mark_template = $this->curriculum->marks_labels[$key];
+            $student_mark = $this->marks[0][$key];
 
-
-
-
-        function getBriefMark($detailed_mark)
-        {
-            $brief_marks = [];
-            foreach ($detailed_mark as $key => $mark) {
-                if ($mark === null || $mark == '') {
-                    continue;
-                } elseif (is_numeric($mark)) {
-                    continue;
-                } elseif (
-                    $key == 'finalexam_mark_details' || $key == 'practice_mark_details'
-                    // || $key == 'class_mark_details' || $key == 'marks_details' || $key == 'project_marks_details' || $key == 'practice_mark_details' || $key == 'memorize_mark_details'
-                ) {
-                    $arrayOfArrays = array_map(function ($item) {
-                        return (array) $item;
-                    }, $mark);
-                    $brief_marks = [...array_values($brief_marks), ...$arrayOfArrays];
-                } else {
-                    $data = collect($mark);
-                    $total = $data->sum('mark');
-                    $brief_marks[$key] = [
-                        'label' => $key,
-                        'mark' => $total
-                    ];
-                }
-            }
-            return $brief_marks;
-        }
-
-
-        // add max marks
-
-        $marks_labels = getBriefMark($this->curriculum->marks_labels);
-        $brief_marks = getBriefMark($this->marks[0]);
-
-        dd($marks_labels, $brief_marks);
-
-        foreach ($brief_marks as $key => $mark) {
-            dd($key, $mark);
-            if (isset($marks_labels[$key])) {
-                dd($key);
-                if (
-                    $key == 'memorize_mark_details'
-                    // $key == 'finalexam_mark_details' || $key == 'practice_mark_details'
-                    // || $key == 'class_mark_details' || $key == 'marks_details' || $key == 'project_marks_details' || $key == 'practice_mark_details' || $key == 'memorize_mark_details'
-                ) {
-                    dd($marks_labels[$key]);
-                    $brief_marks[$key]['max'] = 10;
-                    // $brief_marks[$key]['max'] = $marks_labels[$key]['mark'];
-                } else {
-                    $brief_marks[$key]['max'] = $marks_labels[$key]['mark'];
-                }
+            if ($compress_type == 'None') {
+                //
+            } elseif ($compress_type == 'Single') {
+                $brief_marks = [...array_values($brief_marks), ...BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key)];
+            } else {
+                $brief_marks[$key] = BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key);
             }
         }
 
         // sort by max marks
-        // usort($brief_marks, function ($a, $b) {
-        //     return $b['max'] <=> $a['max']; // Descending order
-        // });
+        usort($brief_marks, function ($a, $b) {
+            return $b->max <=> $a->max; // Descending order
+        });
 
+        // dd($brief_marks);
         return $brief_marks;
     }
 

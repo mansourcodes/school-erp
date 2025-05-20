@@ -3,25 +3,28 @@
 
 @section('content')
     @foreach ($studentmarks as $studentmark)
-        <div class="page">
+        <div class="page certificate-frame">
 
-            @if (Setting::get('print_header'))
-                <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
-            @endif
+            <div class="w-100 text-center ">
+                <img src="{{ asset('img/alghadeerquran_logo.jpg') }}" alt="Logo">
+            </div>
+            <div class="w-100 text-center"> {{ $studentmark->course->long_name }} </div>
+
+
 
             <h1 class="title text-center">
                 {{ Setting::get('certificate.title') == '' ? __('reports.certificate') : Setting::get('certificate.title') }}
             </h1>
-
-            {!! Setting::get('certificate.pre') !!}
+            <hr>
             <h3 class="text-center">
                 {{ $studentmark->student->name }}
             </h3>
 
+            {!! Setting::get('certificate.pre') !!}
             <table class="table table-no-border" style="width: 50%">
                 <tr>
                     <th> الرقم الشخصي:</th>
-                    <td> {{ $studentmark->student->cpr > 9 ? '-' : $studentmark->student->cpr }}
+                    <td> {{ $studentmark->student->cpr > 9 ? 'لايوجد' : $studentmark->student->cpr }}
                     </td>
                 </tr>
                 <tr>
@@ -29,11 +32,7 @@
                     <td> {{ $studentmark->student->student_id }}</td>
                 </tr>
                 <tr>
-                    <th> الدورة:</th>
-                    <td> {{ $studentmark->course->long_name }}</td>
-                </tr>
-                <tr>
-                    <th> المستوى:</th>
+                    <th> المنهج:</th>
                     <td> {{ $studentmark->curriculum->curriculum_name }}</td>
                 </tr>
                 <tr>
@@ -56,19 +55,20 @@
                     </th>
                 </tr>
                 @foreach ($studentmark->brief_marks as $mark)
+                    {{-- @dd($mark) --}}
                     <tr>
                         <td class="text-center">
-                            @if (isArabic($mark['label']))
-                                {{ $mark['label'] }}
+                            @if (isArabic($mark->label))
+                                {{ $mark->label }}
                             @else
-                                {{ __('studentmark.' . $mark['label']) }}
+                                {{ __('studentmark.' . $mark->label) }}
                             @endif
                         </td>
                         <td class="text-center">
-                            {{ $mark['max'] }}
+                            {{ $mark->max }}
                         </td>
                         <td class="text-center">
-                            {{ $mark['mark'] }}
+                            {{ $mark->mark }}
                         </td>
                     </tr>
                 @endforeach
