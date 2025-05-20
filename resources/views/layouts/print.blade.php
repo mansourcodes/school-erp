@@ -96,10 +96,10 @@
                 border-image-width: 42px 42px 42px 42px;
                 border-image-outset: 0px 0px 0px 0px;
                 border-image-repeat: round round;
-                border-image-source: url({{ asset('img/certificate-border.svg') }});
                 padding: 5% 100px 0 100px;
                 margin: 10px 10px 0;
-                height: 95%;
+                height: 1400px;
+                border-image-source: url({{ asset('img/certificate-border.svg') }});
             }
         </style>
 

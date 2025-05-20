@@ -171,8 +171,16 @@ class ClassRoomMarksController extends Controller
                 foreach ($valueArray as $k => $value) {
                     $value->mark = $new_marks_data[$counter++];
                     $newMarksResult['total_mark'] += $value->mark;
-                    if ($newMarksResult['total_mark'] >= 50) {
-                        $newMarksResult['final_grade'] = "PASS";
+
+
+                    if ($newMarksResult['total_mark'] >= 90) {
+                        $newMarksResult['final_grade'] = "ممتاز";
+                    } elseif ($newMarksResult['total_mark'] >= 80) {
+                        $newMarksResult['final_grade'] = "جيد جدا";
+                    } elseif ($newMarksResult['total_mark'] >= 70) {
+                        $newMarksResult['final_grade'] = "جيد";
+                    } else {
+                        $newMarksResult['final_grade'] = "غير مجتاز";
                     }
                 }
             }

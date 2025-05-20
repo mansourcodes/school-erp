@@ -86,20 +86,45 @@
 
             </table>
 
+            <br />
 
             <table class="table table-no-border" style="width: 50%">
                 <tr>
                     <th> التقدير العام:</th>
                     <td> {{ $studentmark->final_grade }}</td>
                 </tr>
+
+            </table>
+
+            <br />
+
+            {!! Setting::get('certificate.pro') !!}
+            <br />
+
+            <table class="table table-no-border" style="width: 100%">
                 <tr>
-                    <th> النتيجة النهائية:</th>
-                    <td> {{ $studentmark->final_grade }}</td>
+                    <th> اعتمدها رئيس المركز</th>
+                    <th class="text-left"> ختم المركز</th>
+                </tr>
+                <tr>
+                    <td>
+                        {!! Setting::get('ceo_name') !!}
+                    </td>
+                    <td class="text-left">
+                        حررت في
+                        {{ $studentmark->created_at->format('Y-m-d') }} م
+                    </td>
                 </tr>
 
             </table>
 
-            {!! Setting::get('certificate.pro') !!}
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
 
         </div>
         <div class="new-page"></div>
