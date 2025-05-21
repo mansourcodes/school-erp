@@ -47,8 +47,8 @@ class StudentMarks extends Model
     static $standard_marks_composer = [
         'finalexam_mark_details'         => 'Single',
         'project_marks_details'         => 'None',
-        'midexam_marks_details'         => 'SumMerge',
-        'practice_mark_details'         => 'Single',
+        'midexam_marks_details'         => 'None',
+        'practice_mark_details'         => 'None',
         'memorize_mark_details'         => 'None',
         'class_mark_details'         => 'None',
         'attend_mark_details'         => 'None',

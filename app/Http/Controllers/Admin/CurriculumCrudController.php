@@ -197,7 +197,7 @@ class CurriculumCrudController extends CrudController
                         'label'  => trans('studentmark.marks_details_label'),
                         'mark'  => trans('curriculum.full_mark'),
                     ],
-                    'max' => 2, // maximum rows allowed in the table
+                    'max' => 20, // maximum rows allowed in the table
                     'min' => 0, // minimum rows allowed in the table
                 ],
 

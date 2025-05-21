@@ -166,8 +166,8 @@ class ClassRoomMarksController extends Controller
 
         // create new marks array from by merge the template with new data
         $counter = 0;
-        foreach ($newMarksResult as  $valueArray) {
-            if (is_array($valueArray)) {
+        foreach ($newMarksResult as $key => $valueArray) {
+            if (is_array($valueArray) && StudentMarks::$standard_marks_composer[$key] == 'Single') {
                 foreach ($valueArray as $k => $value) {
                     $value->mark = $new_marks_data[$counter++];
                     $newMarksResult['total_mark'] += $value->mark;

@@ -96,10 +96,36 @@
                 border-image-width: 42px 42px 42px 42px;
                 border-image-outset: 0px 0px 0px 0px;
                 border-image-repeat: round round;
-                padding: 5% 100px 0 100px;
+                padding: 10% 100px;
                 margin: 10px 10px 0;
                 height: 1400px;
                 border-image-source: url({{ asset('img/certificate-border.svg') }});
+            }
+
+
+
+            .flex-column-space-between {
+
+                display: flex;
+
+                justify-content: space-between;
+                align-items: center;
+                /* flex-flow: column; */
+                flex-direction: column;
+
+                /* background-color: #bbdefb; */
+                /* height: 100%; */
+                /* padding: 15px; */
+                gap: 5px;
+
+            }
+
+            .flex-container>div,
+            .flex-container>table {
+                /* background: #ffecb3; */
+                /* border: 3px solid #ffcc80; */
+                /* border-radius: 5px; */
+                /* padding: 8px; */
             }
         </style>
 
