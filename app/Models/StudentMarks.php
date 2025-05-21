@@ -44,6 +44,18 @@ class StudentMarks extends Model
     ];
 
 
+    static $standard_marks_composer = [
+        'finalexam_mark_details'         => 'Single',
+        'project_marks_details'         => 'None',
+        'midexam_marks_details'         => 'SumMerge',
+        'practice_mark_details'         => 'Single',
+        'memorize_mark_details'         => 'None',
+        'class_mark_details'         => 'None',
+        'attend_mark_details'         => 'None',
+        'marks_details'         => 'None',
+    ];
+
+
     public function Student()
     {
         return $this->belongsTo(\App\Models\Student::class);
@@ -59,19 +71,10 @@ class StudentMarks extends Model
     public function getBriefMarksAttribute()
     {
 
-        $standard_marks_composer = [
-            'finalexam_mark_details'         => 'Single',
-            'project_marks_details'         => 'None',
-            'midexam_marks_details'         => 'SumMerge',
-            'practice_mark_details'         => 'Single',
-            'memorize_mark_details'         => 'AvgMerge',
-            'class_mark_details'         => 'None',
-            'attend_mark_details'         => 'None',
-            'marks_details'         => 'None',
-        ];
+
 
         $brief_marks = [];
-        foreach ($standard_marks_composer as $key => $compress_type) {
+        foreach (StudentMarks::$standard_marks_composer as $key => $compress_type) {
             $curriculum_mark_template = $this->curriculum->marks_labels[$key];
             $student_mark = $this->marks[0][$key];
 

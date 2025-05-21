@@ -66,7 +66,7 @@ class Curriculum extends Model
     {
         $flat_array = array();
         foreach ($this->marks_labels as $key => $value_array) {
-            if ($value_array)
+            if ($value_array && StudentMarks::$standard_marks_composer[$key] == 'Single')
                 foreach ($value_array as $key => $value) {
                     $tmp_label = '';
                     $tmp_label .= $value->label ?? 'لا يوجد عنوان';
