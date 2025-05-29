@@ -63,11 +63,13 @@ class BriefMarkHelper
 
   private static function processAsSingle($curriculum_mark_template, $student_mark, $key)
   {
+
+
     $result = [];
-    foreach ($curriculum_mark_template as $key => $max_mark) {
-      $result[$key] = (object)[
+    foreach ($curriculum_mark_template as $_key => $max_mark) {
+      $result[$_key] = (object)[
         'max' => $max_mark->mark,
-        'mark' => $student_mark[$key]->mark,
+        'mark' => $student_mark[$_key]->mark,
         'label' => $max_mark->label
       ];
     }

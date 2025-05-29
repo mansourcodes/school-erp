@@ -236,4 +236,20 @@ class Student extends Authenticatable
 
         return view('vendor.backpack.crud.buttons.multilevel_dropdown', $data);
     }
+
+
+    public function getMarksByCourse($course_id)
+    {
+        $student_marks = StudentMarks::where('student_id', $this->id)
+            ->where('course_id', $course_id)
+            // ->with(['curriculum', 'classRoom'])
+            ->get()->first();
+
+
+        if ($student_marks) {
+            return $student_marks;
+        } else {
+            return [];
+        }
+    }
 }

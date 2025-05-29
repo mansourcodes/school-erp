@@ -67,6 +67,7 @@ return [
     'student_detection_statistics_in_classes' => 'إحصائيات الكشف عن الطلاب في الفصول الدراسية',
     'study_group_data_disclosure_statistics' => 'كشف بيانات المجموعات الدراسية',
     'students_names_sheet' => 'قائمة الطلبة لكل صف',
+    'students_marks_sheet' => 'قائمة درجات الطلاب',
 
 
 ];
