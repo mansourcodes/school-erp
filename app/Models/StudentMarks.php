@@ -70,9 +70,6 @@ class StudentMarks extends Model
 
     public function getBriefMarksAttribute()
     {
-
-
-
         $brief_marks = [];
         foreach (StudentMarks::$standard_marks_composer as $key => $compress_type) {
             $curriculum_mark_template = $this->curriculum->marks_labels[$key];
@@ -81,6 +78,10 @@ class StudentMarks extends Model
             if ($compress_type == 'None') {
                 //
             } elseif ($compress_type == 'Single') {
+
+                if ($this->student->id == 6552):
+                    dd($brief_marks, $this->student->id, $this->student->name, $curriculum_mark_template, $student_mark, $compress_type, $this);
+                endif;
                 $brief_marks = [...array_values($brief_marks), ...BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key)];
             } else {
                 $brief_marks[$key] = BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key);
@@ -90,6 +91,7 @@ class StudentMarks extends Model
         usort($brief_marks, function ($a, $b) {
             return $b->max <=> $a->max; // Descending order
         });
+
 
         // dd($brief_marks);
         return $brief_marks;

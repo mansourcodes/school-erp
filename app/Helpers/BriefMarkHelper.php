@@ -67,12 +67,18 @@ class BriefMarkHelper
 
     $result = [];
     foreach ($curriculum_mark_template as $_key => $max_mark) {
-      $result[$_key] = (object)[
+
+
+      // get mark where label is equal to max_mark label
+      $gain_mark = collect($student_mark)->where('label', $max_mark->label)->first();
+
+      $result[] = (object)[
         'max' => $max_mark->mark,
-        'mark' => $student_mark[$_key]->mark,
+        'mark' => $gain_mark->mark,
         'label' => $max_mark->label
       ];
     }
+
     return $result;
   }
 }

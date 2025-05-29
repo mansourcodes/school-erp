@@ -48,11 +48,11 @@
                                     $student_marks = $student->getMarksByCourse($course->id);
                                 @endphp
                                 @if ($student_marks)
-                                    {{-- @dd($student_marks) --}}
                                     @foreach ($student_marks->brief_marks as $mark)
                                         <td>
                                             {{ $mark->label }}
-                                            {{ $mark->mark }}
+                                            {{ $mark->mark }} of
+                                            {{ $mark->max }}
                                         </td>
                                     @endforeach
                                     <td>
