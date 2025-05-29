@@ -71,5 +71,4 @@
         {!! Setting::get('balance_statement_report.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

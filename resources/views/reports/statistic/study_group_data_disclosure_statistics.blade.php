@@ -81,5 +81,4 @@
         {!! Setting::get('study_group_data_disclosure_statistics.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

@@ -79,7 +79,10 @@
                 {!! Setting::get('classroom_list.pro') !!}
 
             </div>
-            <div class="new-page"></div>
+
+            @if (!$loop->parent->last)
+                <div class="new-page"></div>
+            @endif
         @endforeach
     @endforeach
 @endsection

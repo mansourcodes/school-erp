@@ -80,7 +80,10 @@
                 {!! Setting::get('remember_marks_template.pro') !!}
 
             </div>
-            <div class="new-page"></div>
+
+            @if (!$loop->parent->last)
+                <div class="new-page"></div>
+            @endif
         @endforeach
     @endforeach
 @endsection

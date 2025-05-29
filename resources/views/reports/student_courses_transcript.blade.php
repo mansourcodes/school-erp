@@ -149,6 +149,9 @@
             {!! Setting::get('student_courses_transcript.pro') !!}
 
         </div>
-        <div class="new-page"></div>
+
+        @if (!$loop->last)
+            <div class="new-page"></div>
+        @endif
     @endforeach
 @endsection

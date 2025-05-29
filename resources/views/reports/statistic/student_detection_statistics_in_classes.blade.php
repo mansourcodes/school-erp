@@ -100,5 +100,4 @@
         {!! Setting::get('student_detection_statistics_in_classes.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

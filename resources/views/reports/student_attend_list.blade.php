@@ -120,6 +120,8 @@
             {!! Setting::get('student_attend_list.pro') !!}
 
         </div>
-        <div class="new-page"></div>
+        @if (!$loop->last)
+            <div class="new-page"></div>
+        @endif
     @endforeach
 @endsection

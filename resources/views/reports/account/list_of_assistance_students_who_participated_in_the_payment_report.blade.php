@@ -60,5 +60,4 @@
         {!! Setting::get('list_of_assistance_students_who_participated_in_the_payment_report.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

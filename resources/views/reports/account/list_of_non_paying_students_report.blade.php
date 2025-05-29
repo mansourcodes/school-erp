@@ -47,5 +47,4 @@
         {!! Setting::get('list_of_non_paying_students_report.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

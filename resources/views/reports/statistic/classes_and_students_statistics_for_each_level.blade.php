@@ -54,5 +54,4 @@
         {!! Setting::get('classes_and_students_statistics_for_each_level.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection

@@ -108,8 +108,14 @@
                                     @foreach ($section as $key => $mark_design)
                                         <td>
                                             @php
-                                                if (isset($marks[$curriculum->id][$student->id]->{$section_key}[$key]->mark)) {
-                                                    echo $marks[$curriculum->id][$student->id]->{$section_key}[$key]->mark;
+                                                if (
+                                                    isset(
+                                                        $marks[$curriculum->id][$student->id]->{$section_key}[$key]
+                                                            ->mark,
+                                                    )
+                                                ) {
+                                                    echo $marks[$curriculum->id][$student->id]->{$section_key}[$key]
+                                                        ->mark;
                                                 }
                                             @endphp
                                         </td>
@@ -129,6 +135,8 @@
             {!! $settings['scoring_sheet.pro']['value'] ?? '' !!}
 
         </div>
-        <div class="new-page"></div>
+        @if (!$loop->last)
+            <div class="new-page"></div>
+        @endif
     @endforeach
 @endsection

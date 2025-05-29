@@ -56,5 +56,4 @@
         {!! Setting::get('detecting_helpers_report.pro') !!}
 
     </div>
-    <div class="new-page"></div>
 @endsection
