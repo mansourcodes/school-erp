@@ -76,15 +76,6 @@ class Curriculum extends Model
                 }
         }
 
-        //sort array by marks
-        usort($flat_array, function ($a, $b) {
-            preg_match('/\((\d+)\)/', $a, $matchesA);
-            preg_match('/\((\d+)\)/', $b, $matchesB);
-            $markA = isset($matchesA[1]) ? (int)$matchesA[1] : 0;
-            $markB = isset($matchesB[1]) ? (int)$matchesB[1] : 0;
-            return $markB <=> $markA; // Sort in descending order
-        });
-
         return $flat_array;
     }
 }

@@ -79,19 +79,18 @@ class StudentMarks extends Model
                 //
             } elseif ($compress_type == 'Single') {
 
-                if ($this->student->id == 6552):
-                    dd($brief_marks, $this->student->id, $this->student->name, $curriculum_mark_template, $student_mark, $compress_type, $this);
-                endif;
+                // if ($this->student->id == 6552):
+                //     dd($brief_marks, $this->student->id, $this->student->name, $curriculum_mark_template, $student_mark, $compress_type, $this);
+                // endif;
                 $brief_marks = [...array_values($brief_marks), ...BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key)];
             } else {
                 $brief_marks[$key] = BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key);
             }
         }
         // sort by max marks
-        usort($brief_marks, function ($a, $b) {
-            return $b->max <=> $a->max; // Descending order
-        });
-
+        // usort($brief_marks, function ($a, $b) {
+        //     return $b->max <=> $a->max; // Descending order
+        // });
 
         // dd($brief_marks);
         return $brief_marks;
