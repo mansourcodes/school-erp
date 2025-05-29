@@ -87,10 +87,15 @@ class StudentMarks extends Model
                 $brief_marks[$key] = BriefMarkHelper::composeMark($curriculum_mark_template, $student_mark, $compress_type, $key);
             }
         }
-        // sort by max marks
-        // usort($brief_marks, function ($a, $b) {
-        //     return $b->max <=> $a->max; // Descending order
-        // });
+
+        // show the sort if today us less than 2025-08-08
+        if (now() < '2025-08-08') {
+            // sort by max marks
+            usort($brief_marks, function ($a, $b) {
+                return $b->max <=> $a->max; // Descending order
+            });
+        }
+
 
         // dd($brief_marks);
         return $brief_marks;
