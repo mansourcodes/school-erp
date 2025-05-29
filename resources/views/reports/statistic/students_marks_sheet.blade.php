@@ -51,6 +51,7 @@
                                     {{-- @dd($student_marks) --}}
                                     @foreach ($student_marks->brief_marks as $mark)
                                         <td>
+                                            {{ $mark->label }}
                                             {{ $mark->mark }}
                                         </td>
                                     @endforeach
