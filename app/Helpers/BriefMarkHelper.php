@@ -71,12 +71,21 @@ class BriefMarkHelper
 
       // get mark where label is equal to max_mark label
       $gain_mark = collect($student_mark)->where('label', $max_mark->label)->first();
+      if ($gain_mark === null) {
+        // if no gain mark found, set it to 'n/a'
+        $result[] = (object)[
+          'max' => $max_mark->mark,
+          'mark' => 'n/a',
+          'label' => $max_mark->label
+        ];
+      } else {
 
-      $result[] = (object)[
-        'max' => $max_mark->mark,
-        'mark' => $gain_mark->mark,
-        'label' => $max_mark->label
-      ];
+        $result[] = (object)[
+          'max' => $max_mark->mark,
+          'mark' => $gain_mark->mark,
+          'label' => $max_mark->label
+        ];
+      }
     }
 
     return $result;
