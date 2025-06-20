@@ -103,7 +103,7 @@
             @php
                 $row_count = 0;
             @endphp
-            @foreach ($classRoomCurriculumsStatistics as $curriculumStatistics)
+            @foreach ($classRoomCurriculumsStatistics->sortBy('name') as $curriculumStatistics)
                 <tr>
                     <td>
                         {{ ++$row_count }}
