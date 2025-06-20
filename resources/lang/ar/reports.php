@@ -68,6 +68,6 @@ return [
     'study_group_data_disclosure_statistics' => 'كشف بيانات المجموعات الدراسية',
     'students_names_sheet' => 'قائمة الطلبة لكل صف',
     'students_marks_sheet' => 'قائمة درجات الطلاب',
-
+    'perfection_marks_by_class_sheet' => 'كشف درجات الاتقان لكل صف',
 
 ];
