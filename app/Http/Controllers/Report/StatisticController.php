@@ -264,8 +264,8 @@ class StatisticController extends Controller
                 $classRoomCurriculum['more_than_80_per'] = '-';
             } else {
                 $classRoomCurriculum['less_than_70_per'] = number_format($classRoomCurriculum['marks']->where('total_mark', '<', 70)->count() / $classRoomCurriculum['count'] * 100, 2);
-                $classRoomCurriculum['more_than_70_per'] = number_format($classRoomCurriculum['marks']->where('total_mark', '>', 70)->count() / $classRoomCurriculum['count'] * 100, 2);
-                $classRoomCurriculum['more_than_80_per'] = number_format($classRoomCurriculum['marks']->where('total_mark', '>', 80)->count() / $classRoomCurriculum['count'] * 100, 2);
+                $classRoomCurriculum['more_than_70_per'] = number_format($classRoomCurriculum['marks']->where('total_mark', '>=', 70)->count() / $classRoomCurriculum['count'] * 100, 2);
+                $classRoomCurriculum['more_than_80_per'] = number_format($classRoomCurriculum['marks']->where('total_mark', '>=', 80)->count() / $classRoomCurriculum['count'] * 100, 2);
             }
 
             $classRoomCurriculumsStatistics[$key] = $classRoomCurriculum;
@@ -275,8 +275,8 @@ class StatisticController extends Controller
         $courseStatistics['count'] = $courseStatistics->count();
         $courseStatistics['average'] = number_format($courseStatistics->avg('total_mark') ?? 0, 2);
         $courseStatistics['less_than_70_per'] = number_format($courseStatistics->where('total_mark', '<', 70)->count() / $courseStatistics['count'] * 100, 2);
-        $courseStatistics['more_than_70_per'] = number_format($courseStatistics->where('total_mark', '>', 70)->count() / $courseStatistics['count'] * 100, 2);
-        $courseStatistics['more_than_80_per'] = number_format($courseStatistics->where('total_mark', '>', 80)->count() / $courseStatistics['count'] * 100, 2);
+        $courseStatistics['more_than_70_per'] = number_format($courseStatistics->where('total_mark', '>=', 70)->count() / $courseStatistics['count'] * 100, 2);
+        $courseStatistics['more_than_80_per'] = number_format($courseStatistics->where('total_mark', '>=', 80)->count() / $courseStatistics['count'] * 100, 2);
 
         // prepare the return data
         $return['classRoomCurriculumsStatistics'] = $classRoomCurriculumsStatistics;
