@@ -82,7 +82,7 @@ class BriefMarkHelper
         try {
           $result[] = (object)[
             'max' => $max_mark->mark,
-            'mark' => $gain_mark->mark,
+            'mark' => $gain_mark->mark ?? 'n/a',
             'label' => $max_mark->label
           ];
         } catch (\Throwable $th) {
