@@ -87,7 +87,7 @@ class BriefMarkHelper
           ];
         } catch (\Throwable $th) {
           //throw $th;
-          dd($gain_mark, $student_mark);
+          dd($gain_mark, $student_mark, $gain_mark->mark ?? 'n/a');
         }
       }
     }
