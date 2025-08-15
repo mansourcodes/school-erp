@@ -79,12 +79,16 @@ class BriefMarkHelper
           'label' => $max_mark->label
         ];
       } else {
-
-        $result[] = (object)[
-          'max' => $max_mark->mark,
-          'mark' => $gain_mark->mark,
-          'label' => $max_mark->label
-        ];
+        try {
+          $result[] = (object)[
+            'max' => $max_mark->mark,
+            'mark' => $gain_mark->mark,
+            'label' => $max_mark->label
+          ];
+        } catch (\Throwable $th) {
+          //throw $th;
+          dd($gain_mark);
+        }
       }
     }
 
