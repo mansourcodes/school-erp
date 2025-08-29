@@ -96,38 +96,43 @@ class ClassRoom extends Model
     public function getCurriculumsAttribute()
     {
         $curriculums = [];
-        foreach ($this->teachers as $teachers) {
+        if ($this->teachers) {
+            foreach ($this->teachers as $teachers) {
 
-            if (!isset($teachers['curriculum_id'])) {
-                continue;
-            }
+                if (!isset($teachers['curriculum_id'])) {
+                    continue;
+                }
 
-            $id = $teachers['curriculum_id'];
-            $curriculums[$id]['teacher_name'] = $teachers['teacher_name'];
-        }
-        foreach ($this->attend_table as $attend_table) {
-
-            if (!isset($attend_table['curriculum_id'])) {
-                continue;
-            }
-
-            $id = $attend_table['curriculum_id'];
-            $curriculums[$id]['days'][] = $attend_table['day'];
-            $curriculums[$id]['attend_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['start_time']);
-
-            if (isset($attend_table['end_time'])) {
-                $curriculums[$id]['end_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['end_time']);
-            } else {
-                $curriculums[$id]['end_table'][$attend_table['day']] = $this->findEndTime($attend_table['start_time']);
+                $id = $teachers['curriculum_id'];
+                $curriculums[$id]['teacher_name'] = $teachers['teacher_name'];
             }
         }
-        foreach ($curriculums as $curriculumId => $value) {
-            $curriculums[$curriculumId]['id'] = $curriculumId;
-            $curriculums[$curriculumId]['curriculum'] = Curriculum::find($curriculumId);
-            $curriculums[$curriculumId]['curriculum_name'] = Curriculum::find($curriculumId)->curriculum_name;
-            $curriculums[$curriculumId]['short_name'] = Curriculum::find($curriculumId)->short_name;
-        }
+        if ($this->attend_table) {
+            foreach ($this->attend_table as $attend_table) {
 
+                if (!isset($attend_table['curriculum_id'])) {
+                    continue;
+                }
+
+                $id = $attend_table['curriculum_id'];
+                $curriculums[$id]['days'][] = $attend_table['day'];
+                $curriculums[$id]['attend_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['start_time']);
+
+                if (isset($attend_table['end_time'])) {
+                    $curriculums[$id]['end_table'][$attend_table['day']] = $this->formatToHumanTime($attend_table['end_time']);
+                } else {
+                    $curriculums[$id]['end_table'][$attend_table['day']] = $this->findEndTime($attend_table['start_time']);
+                }
+            }
+        }
+        if ($curriculums) {
+            foreach ($curriculums as $curriculumId => $value) {
+                $curriculums[$curriculumId]['id'] = $curriculumId;
+                $curriculums[$curriculumId]['curriculum'] = Curriculum::find($curriculumId);
+                $curriculums[$curriculumId]['curriculum_name'] = Curriculum::find($curriculumId)->curriculum_name;
+                $curriculums[$curriculumId]['short_name'] = Curriculum::find($curriculumId)->short_name;
+            }
+        }
         return $curriculums;
     }
 
