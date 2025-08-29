@@ -38,35 +38,33 @@
             </thead>
             <tbody>
                 @foreach ($classRooms as $key => $classRoom)
-                    @foreach ($classRoom->students as $student)
-                        @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
-                            <tr>
-                                <td>
-                                    {{ $classRoom->long_name[$curriculum_id] ?? '' }}
-                                </td>
+                    @foreach ($classRoom->curriculums as $curriculum_id => $curriculum)
+                        <tr>
+                            <td>
+                                {{ $classRoom->long_name[$curriculum_id] ?? '' }}
+                            </td>
 
-                                <td> {{ $curriculum['short_name'] ?? '' }} </td>
-                                <td> {{ $curriculum['teacher_name'] ?? '' }} </td>
-                                <td>{{ $classRoom->class_room_number }}</td>
-                                <td>{{ $classRoom->class_room_name }}</td>
-                                <td>{{ $course->start_date->format('d-m-Y') }}</td>
-                                <td>
-                                    @isset($curriculum['days'])
-                                        @foreach ($curriculum['days'] as $day)
-                                            {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} -
-                                        @endforeach
-                                    @endisset
+                            <td> {{ $curriculum['short_name'] ?? '' }} </td>
+                            <td> {{ $curriculum['teacher_name'] ?? '' }} </td>
+                            <td>{{ $classRoom->class_room_number }}</td>
+                            <td>{{ $classRoom->class_room_name }}</td>
+                            <td>{{ $course->start_date->format('d-m-Y') }}</td>
+                            <td>
+                                @isset($curriculum['days'])
+                                    @foreach ($curriculum['days'] as $day)
+                                        {{ $weekDays[$day] ?? '' }} {{ $curriculum['attend_table'][$day] ?? '' }} -
+                                    @endforeach
+                                @endisset
 
-                                </td>
-                                <td>{{ $course->end_date->format('d-m-Y') }}</td>
+                            </td>
+                            <td>{{ $course->end_date->format('d-m-Y') }}</td>
 
-                                <td>
+                            <td>
 
-                                    {{ $classRoom->students->count() }}
+                                {{ $classRoom->students->count() }}
 
-                                </td>
-                            </tr>
-                        @endforeach
+                            </td>
+                        </tr>
                     @endforeach
                 @endforeach
 
