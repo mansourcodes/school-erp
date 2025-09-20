@@ -14,12 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
+Route::get('/login', [\App\Http\Controllers\StudentPanel\StudentAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\StudentPanel\StudentAuthController::class, 'login']);
+Route::post('/logout', [\App\Http\Controllers\StudentPanel\StudentAuthController::class, 'logout'])->name('logout');
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/login/student',  [App\Http\Controllers\Auth\StudentLoginController::class, 'showStudentLoginForm']);
-Route::post('/login/student', [App\Http\Controllers\Auth\StudentLoginController::class, 'studentLogin']);
-
-Route::view('/home', 'home')->middleware('auth');
-Route::view('/student', 'student')->middleware('auth');
+Route::middleware('auth:student')->group(function () {
+    Route::get('/', [\App\Http\Controllers\StudentPanel\StudentPanelController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\StudentPanel\StudentPanelController::class, 'dashboard'])->name('dashboard');
+});
