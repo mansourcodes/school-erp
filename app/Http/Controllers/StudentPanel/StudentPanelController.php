@@ -24,6 +24,6 @@ class StudentPanelController extends Controller
      */
     public function dashboard()
     {
-        return view('home');
+        return view('student.dashboard');
     }
 }
