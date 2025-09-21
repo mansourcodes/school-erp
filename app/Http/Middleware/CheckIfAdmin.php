@@ -28,7 +28,9 @@ class CheckIfAdmin
      */
     private function checkIfUserIsAdmin($user)
     {
-        // return ($user->is_admin == 1);
+        if (! $user->hasAnyRole(['Superadmin', 'Teacher'])) {
+            return false;
+        }
         return true;
     }
 

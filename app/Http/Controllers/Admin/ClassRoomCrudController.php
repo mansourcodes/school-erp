@@ -89,6 +89,10 @@ class ClassRoomCrudController extends CrudController
 
         ],);
 
+
+
+
+
         // CRUD::addColumn([
         //     // any type of relationship
         //     'name'         => 'students', // name of relationship method in the model
@@ -138,8 +142,7 @@ class ClassRoomCrudController extends CrudController
             return [
                 1 => trans('base.show_all'),
             ];
-        }, function ($value) {
-        });
+        }, function ($value) {});
 
         $is_filter_active = false;
         $filters = $this->crud->filters();
@@ -239,6 +242,8 @@ class ClassRoomCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        $this->crud->setCreateContentClass('col-md-10 bold-labels p-0');
+        $this->crud->setEditContentClass('col-md-10 bold-labels p-0');
 
         $curricula_list = [];
         $currentClassRoom = \App\Models\ClassRoom::find($this->crud->getCurrentEntryId());
@@ -268,7 +273,7 @@ class ClassRoomCrudController extends CrudController
                     'options'     => $curricula_list,
                     'allows_null' => false,
                     // 'default'     => '',
-                    'wrapper' => ['class' => 'form-group col-md-6'],
+                    'wrapper' => ['class' => 'form-group col-md-4'],
                     'hint' => trans('studentmark.curriculum_hint'),
 
                 ],
@@ -276,10 +281,39 @@ class ClassRoomCrudController extends CrudController
                     'name'    => 'teacher_name',
                     'type'    => 'text',
                     'label'   => trans('classroom.teacher_name'),
-                    'wrapper' => ['class' => 'form-group col-md-6'],
+                    'wrapper' => ['class' => 'form-group col-md-4'],
                 ],
+                // [
+                //     'label'     => 'Teachers',
+                //     'type'      => 'select2_multiple',
+                //     'name'      => 'teachers', // relationship method on the ClassRoom model
+                //     'entity'    => 'teachers',
+                //     'attribute' => 'name', // field to show in the dropdown
+                //     'model'     => \App\Models\User::class,
+                //     'pivot'     => true, // because it's a many-to-many relationship
+                //     'options'   => (function ($query) {
+                //         return $query->role('Teacher')->get(); // only users with Teacher role
+                //     }),
+                //     'wrapper' => ['class' => 'form-group col-md-4'],
+
+                // ]
             ],
         ]);
+
+        CRUD::addField([
+            'label'     => __('localize.class_teachers'),
+            'type'      => 'select2_multiple',
+            'name'      => 'classTeachers',   // 👈 matches relationship method
+            'entity'    => 'classTeachers',
+            'attribute' => 'name',
+            'model'     => \App\Models\User::class,
+            'pivot'     => true,
+            'options'   => function ($query) {
+                return $query->role('Teacher')->get();
+            },
+        ]);
+
+
 
 
         $week_days = [

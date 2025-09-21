@@ -53,6 +53,16 @@ class ClassRoom extends Model
         // return $this->hasOne(\App\Models\Course::class);
     }
 
+    public function classTeachers()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'class_room_teacher', 'class_room_id', 'user_id')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Teacher');
+            });
+    }
+
+
+
     public function students()
     {
         // sort alphabetically
@@ -194,10 +204,27 @@ class ClassRoom extends Model
 
     public static function getByDate($date, $activeCourse = true)
     {
+
+
+
         $day_number = $date->format('N');
-        $classrooms =  ClassRoom::where('attend_table', 'like', '%"day":"' . $day_number . '",%')
-            ->orWhere('attend_table', 'like', '%"day":' . $day_number . ',%')
-            ->get();
+
+        $query = ClassRoom::where(function ($q) use ($day_number) {
+            $q->where('attend_table', 'like', '%"day":"' . $day_number . '",%')
+                ->orWhere('attend_table', 'like', '%"day":' . $day_number . ',%');
+        });
+
+        // 🔒 If auth is a Teacher, only fetch their classrooms
+        if (auth()->check() && auth()->user()->hasRole('Teacher')) {
+            $query->whereHas('classTeachers', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        $classrooms = $query->get();
+
+
+
         $attends =  Attends::where('date', $date->format('Y-m-d'))->get()->pluck('code')->toArray();
 
 

@@ -19,4 +19,5 @@
 	'view_course_details' => 'جدول الطالب',
 	'no_payment_found' => 'لا يوجد مبالغ مدفوعه',
 	'old_courses' => 'الدورات السابقة',
+	'class_teachers' => 'مسؤولي الصف',
 ];

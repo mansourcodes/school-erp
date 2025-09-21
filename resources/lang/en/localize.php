@@ -19,4 +19,5 @@
 	'view_course_details' => 'view course Details',
 	'no_payment_found' => 'No payment found',
 	'old_courses' => 'old courses',
+	'class_teachers' => 'class_Teachers',
 ];

@@ -44,4 +44,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function classRooms()
+    {
+        return $this->belongsToMany(ClassRoom::class, 'class_room_teacher');
+    }
+
+
+
+    public function getAvatarUrlAttribute()
+    {
+
+        return "https://api.dicebear.com/7.x/shapes/svg?seed=" . urlencode($this->username);
+        // return "https://api.dicebear.com/7.x/thumbs/svg?seed=" . urlencode($this->username);
+        // return "https://api.dicebear.com/7.x/initials/svg?seed=" . urlencode($this->username);
+    }
 }
