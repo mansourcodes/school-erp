@@ -7,14 +7,14 @@
                 <div class="card">
 
                     <div class="card-header">
-                        Student Login
+                        {{ __('localize.student_login') }}
                     </div>
 
                     <form method="POST" action="{{ url('/login') }}" class="w-100 mx-auto my-5" style="max-width: 400px;">
                         @csrf
 
                         <div class="mb-3">
-                            <label for="cpr" class="form-label">CPR</label>
+                            <label for="cpr" class="form-label">{{ __('localize.cpr') }}</label>
                             <input type="text" name="cpr" id="cpr" value="{{ old('cpr') }}"
                                 class="form-control @error('cpr') is-invalid @enderror">
                             @error('cpr')
@@ -25,7 +25,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">{{ __('localize.password') }}</label>
                             <input type="password" name="password" id="password"
                                 class="form-control @error('password') is-invalid @enderror">
                             @error('password')
@@ -35,7 +35,7 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <button type="submit" class="btn btn-primary w-100">{{ __('localize.login') }}</button>
                     </form>
 
 

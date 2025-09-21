@@ -4,6 +4,7 @@ namespace App\Http\Controllers\StudentPanel;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentPanelController extends Controller
 {
@@ -24,6 +25,9 @@ class StudentPanelController extends Controller
      */
     public function dashboard()
     {
-        return view('student.dashboard');
+
+        $student = Auth::guard('student')->user();
+        $payments = $student->payments;
+        return view('student.dashboard', compact('student', 'payments'));
     }
 }

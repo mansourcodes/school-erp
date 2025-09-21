@@ -1,5 +1,6 @@
 <?php
 
+use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -70,7 +71,23 @@ function encodeArabicForJsonSqlSearch($word)
 }
 
 
-function isArabic($word) {
+function isArabic($word)
+{
     // Arabic Unicode range: \u0600-\u06FF
     return preg_match('/[\x{0600}-\x{06FF}]/u', $word) === 1;
+}
+
+
+if (!function_exists('money')) {
+    function money($amount)
+    {
+        $currency = 'دب';
+        $decimal = 2;
+
+        $decimalSeparator = '.';
+        $thousandsSeparator = ',';
+
+
+        return  number_format($amount, (int)$decimal, $decimalSeparator, $thousandsSeparator) . ' ' . $currency;
+    }
 }
