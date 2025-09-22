@@ -309,7 +309,7 @@ class ClassRoomCrudController extends CrudController
             'model'     => \App\Models\User::class,
             'pivot'     => true,
             'options'   => function ($query) {
-                return $query->role('teacher')->get();
+                return $query->role('Teacher')->get();
             },
         ]);
 
