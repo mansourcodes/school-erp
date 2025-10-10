@@ -101,12 +101,14 @@ class Student extends Authenticatable
         }
         return $array;
     }
-
     public function classRooms()
     {
-        // return $this->hasMany(\App\Models\ClassRoom::class);
-        return $this->belongsToMany(\App\Models\ClassRoom::class);
+        return $this->belongsToMany(\App\Models\ClassRoom::class)
+            ->join('courses', 'courses.id', '=', 'class_rooms.course_id')
+            ->orderBy('courses.start_date', 'desc')
+            ->select('class_rooms.*'); // ensure you only get classroom columns
     }
+
 
     public function payments()
     {

@@ -94,12 +94,12 @@ class CourseCrudController extends CrudController
             'label' => trans('course.semester'),
         ]);
 
-        // CRUD::addColumn([
-        //     'name' => 'start_date',
-        //     'label' => trans('course.start_date'),
-        //     'type'        => 'date',
+        CRUD::addColumn([
+            'name' => 'start_date',
+            'label' => trans('course.start_date'),
+            'type'        => 'date',
+        ]);
 
-        // ]);
         // CRUD::addColumn([
         //     'name' => 'end_date',
         //     'label' => trans('course.end_date'),

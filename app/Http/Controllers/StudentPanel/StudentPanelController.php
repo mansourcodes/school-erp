@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\StudentPanel;
 
 use App\Http\Controllers\Controller;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
