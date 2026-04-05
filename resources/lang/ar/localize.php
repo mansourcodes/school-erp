@@ -20,4 +20,5 @@
 	'no_payment_found' => 'لا يوجد مبالغ مدفوعه',
 	'old_courses' => 'الدورات السابقة',
 	'class_teachers' => 'مسؤولي الصف',
+	'no_certificate_found'=> 'لم تصدر الشهاده'
 ];
