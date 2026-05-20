@@ -1,13 +1,12 @@
-# Feature Plan: Student Frontend — React PWA
+# Feature Plan: Student Frontend — Laravel Blade
 
 ## Overview
 
-Replace the current Blade/Bootstrap 5 student portal with a mobile-first React
-Progressive Web App (PWA) that lets students view their profile, marks,
-attendance calendar, payments, and certificate table. Styled with **DaisyUI
-(fantasy theme)** on top of Tailwind CSS — no Bootstrap in the React app.
-The Laravel backend remains unchanged except for new JSON API endpoints added
-under `/api/student/*`.
+Build a mobile-first student portal using **Laravel Blade** templates styled
+with **DaisyUI (fantasy theme)** on Tailwind CSS. Students can view their
+profile, marks, attendance calendar, payments, and certificates. All pages are
+server-rendered — no React, no SPA, no TypeScript. Alpine.js handles lightweight
+interactivity (dropdowns, tabs, collapsibles). No Bootstrap in the student portal.
 
 ---
 
@@ -20,7 +19,7 @@ under `/api/student/*`.
 | Component lib   | DaisyUI v4 (fantasy theme) on Tailwind CSS v3               |
 | Direction       | RTL Arabic-first (same as existing portal)                  |
 | Navigation      | Fixed bottom tab bar (5 tabs)                               |
-| Offline         | PWA install-only; no service-worker caching                 |
+| Rendering       | Server-rendered Blade; Alpine.js for UI interactivity only  |
 | Sections        | Profile, Marks & grades, Payments, Certificates, Attendance |
 
 ### Color Palette
@@ -51,61 +50,50 @@ to give the rich branded feel.
 
 ## Backend Changes
 
-### 1. New API Controller
+### 1. Student Portal Controller
 
-**File**: `app/Http/Controllers/Api/StudentPortalController.php`
+**File**: `app/Http/Controllers/Frontend/Student/StudentPortalController.php`
 
-Endpoints (all guarded by `auth:student`):
+All methods guarded by `auth:student` middleware (except login/logout).
+Each method fetches data from the database and returns a Blade view.
 
-| Method | Path                                   | Returns                                             |
-| ------ | -------------------------------------- | --------------------------------------------------- |
-| `GET`  | `/api/student/profile`                 | Student model fields + `student_id`                 |
-| `GET`  | `/api/student/classrooms`              | Classrooms with nested `course`, ordered newest-first |
-| `GET`  | `/api/student/classrooms/{id}/marks`   | `StudentMarks.brief_marks` for this classroom's course |
-| `GET`  | `/api/student/classrooms/{id}/payments`| Payments filtered to this classroom's course        |
-| `GET`  | `/api/student/classrooms/{id}/attendance`| `Attends` records for this student + classroom     |
-| `POST` | `/api/student/auth/login`              | Issue session cookie (CPR + password)               |
-| `POST` | `/api/student/auth/logout`             | Invalidate session                                  |
+| Method | Route                                   | Returns                                          |
+| ------ | --------------------------------------- | ------------------------------------------------ |
+| `GET`  | `/student/login`                        | Login form view                                  |
+| `POST` | `/student/login`                        | Authenticate + redirect to home                  |
+| `POST` | `/student/logout`                       | Invalidate session + redirect to login           |
+| `GET`  | `/student`                              | Home view (profile + quick stats)                |
+| `GET`  | `/student/courses`                      | Courses list view                                |
+| `GET`  | `/student/courses/{id}`                 | Course detail view (marks + certificate tab)     |
+| `GET`  | `/student/payments`                     | Payments grouped by course                       |
+| `GET`  | `/student/attendance`                   | Attendance calendar (course picker)              |
+| `GET`  | `/student/profile`                      | Full profile view + logout button                |
 
 ### 2. Route Registration
 
-Add a new route file `routes/student-api.php` registered in
-`RouteServiceProvider` (or inline in `routes/api.php`):
+Add to `routes/web.php` (or a separate `routes/student.php` included from web.php):
 
 ```php
-Route::prefix('student')->group(function () {
-    Route::post('auth/login',  [StudentPortalController::class, 'login']);
-    Route::post('auth/logout', [StudentPortalController::class, 'logout']);
+Route::prefix('student')->name('student.')->group(function () {
+    Route::get('login',  [StudentPortalController::class, 'loginForm'])->name('login');
+    Route::post('login', [StudentPortalController::class, 'login']);
+    Route::post('logout',[StudentPortalController::class, 'logout'])->name('logout');
 
     Route::middleware('auth:student')->group(function () {
-        Route::get('profile',                      [StudentPortalController::class, 'profile']);
-        Route::get('classrooms',                   [StudentPortalController::class, 'classrooms']);
-        Route::get('classrooms/{id}/marks',        [StudentPortalController::class, 'marks']);
-        Route::get('classrooms/{id}/payments',     [StudentPortalController::class, 'payments']);
-        Route::get('classrooms/{id}/attendance',   [StudentPortalController::class, 'attendance']);
+        Route::get('/',              [StudentPortalController::class, 'home'])->name('home');
+        Route::get('courses',        [StudentPortalController::class, 'courses'])->name('courses');
+        Route::get('courses/{id}',   [StudentPortalController::class, 'courseDetail'])->name('courses.show');
+        Route::get('payments',       [StudentPortalController::class, 'payments'])->name('payments');
+        Route::get('attendance',     [StudentPortalController::class, 'attendance'])->name('attendance');
+        Route::get('profile',        [StudentPortalController::class, 'profile'])->name('profile');
     });
 });
 ```
 
-### 3. CSRF / Session Auth for the SPA
+### 3. Auth Guard
 
-Use **Laravel Sanctum SPA mode** (cookie-based, no tokens needed):
-
-1. Add `sanctum` guard to `config/auth.php` student guard definition (or use
-   `EnsureFrontendRequestsAreStateful` middleware).
-2. The React app calls `GET /sanctum/csrf-cookie` once on load, then all
-   subsequent `axios` requests include `withCredentials: true`.
-3. No changes to the existing `auth:student` guard logic — Sanctum wraps it.
-
-### 4. API Resource Classes
-
-Create lean resource classes to shape JSON output:
-
-- `StudentResource` — profile fields only (exclude password, remember_token)
-- `ClassroomResource` — classroom + nested course name, hijri year, semester
-- `MarksResource` — wraps `brief_marks` accessor output
-- `PaymentResource` — amount, type, source, created_at
-- `AttendResource` — date, curriculum name, status (present/absent)
+The existing `auth:student` guard is used as-is. No Sanctum SPA mode needed —
+standard session-cookie auth with Blade forms and CSRF tokens via `@csrf`.
 
 ---
 
@@ -113,232 +101,205 @@ Create lean resource classes to shape JSON output:
 
 ### Stack
 
-| Concern           | Library / Tool                         | Why                                          |
-| ----------------- | -------------------------------------- | -------------------------------------------- |
-| Framework         | React 18 + TypeScript                  | Component model; TS catches shape mismatches |
-| Build             | Vite 5 (Laravel Vite plugin)           | Fast HMR; integrates with existing `vite.config.js` |
-| Routing           | React Router DOM v6                    | File-like nested routes, history API         |
-| Data fetching     | TanStack Query v5                      | Caching, stale-while-revalidate, loading states |
-| HTTP client       | Axios (already in `package.json`)      | Interceptors for CSRF; `withCredentials`     |
-| Styling           | Tailwind CSS v3 + **DaisyUI v4** (fantasy theme) | Pre-built RTL-compatible components; replaces Bootstrap |
-| Icons             | Lucide React                           | Consistent SVG icon set; tree-shakeable      |
-| PWA               | `vite-plugin-pwa`                      | Generates manifest + install prompt          |
-| Date display      | `date-fns`                             | Gregorian date formatting for attendance calendar |
+| Concern      | Tool                                       | Why                                        |
+| ------------ | ------------------------------------------ | ------------------------------------------ |
+| Templates    | Laravel Blade                              | Server-rendered; no build step for views   |
+| Styling      | Tailwind CSS v3 + **DaisyUI v4** (fantasy) | Pre-built RTL-compatible components        |
+| JS           | Alpine.js v3                               | Tabs, collapsibles, dropdown — no full SPA |
+| Build        | Vite (existing `vite.config.js`)           | Compiles Tailwind + any JS                 |
+| Icons        | Lucide (via CDN or inline SVG)             | Consistent SVG icons                       |
+| Date display | PHP `Carbon` / Blade                       | Gregorian date formatting server-side      |
 
 ### Directory Structure
 
 ```
-resources/js/student-app/
-├── main.tsx                  # React root mount
-├── App.tsx                   # Router + QueryClientProvider + auth gate
-├── router.tsx                # Route definitions
+resources/views/frontend-student/
+├── layouts/
+│   └── app.blade.php          # Shell: <html dir="rtl">, bottom nav, @yield('content')
 │
-├── lib/
-│   ├── axios.ts              # Axios instance (baseURL, CSRF, withCredentials)
-│   ├── api.ts                # Typed API functions (one per endpoint)
-│   └── types.ts              # TypeScript interfaces matching API resources
+├── auth/
+│   └── login.blade.php        # CPR + password login form
 │
-├── hooks/
-│   ├── useAuth.ts            # Login, logout, current student
-│   ├── useClassrooms.ts      # Classrooms list query
-│   ├── useMarks.ts           # Marks for a classroom
-│   ├── usePayments.ts        # Payments for a classroom
-│   └── useAttendance.ts      # Attendance for a classroom
-│
-├── components/
-│   ├── layout/
-│   │   ├── AppShell.tsx      # Bottom nav + page outlet
-│   │   └── BottomNav.tsx     # 5-tab fixed bottom bar
-│   ├── ui/
-│   │   ├── Spinner.tsx       # DaisyUI `loading loading-spinner`
-│   │   └── EmptyState.tsx    # Illustration + Arabic label
-│   ├── ProfileHeader.tsx     # Gradient header with avatar, name, ID
-│   ├── CourseCard.tsx        # Collapsible course summary card
-│   ├── MarksTable.tsx        # Marks breakdown table (mid/final/project etc)
-│   ├── AttendanceCalendar.tsx# Monthly grid, green=present red=absent
-│   └── PaymentRow.tsx        # Single payment line item
-│
-└── pages/
-    ├── Login.tsx             # CPR + password, branded splash
-    ├── Home.tsx              # Profile card + quick stats (current courses)
-    ├── Courses.tsx           # List of all classrooms
-    ├── CourseDetail.tsx      # Marks table + certificate for one course
-    ├── Payments.tsx          # All payments grouped by course
-    ├── Attendance.tsx        # Course picker + attendance calendar
-    └── Profile.tsx           # Full student profile fields
+├── home.blade.php             # Profile header + quick stats + current courses
+├── courses/
+│   ├── index.blade.php        # All classrooms list
+│   └── show.blade.php         # Marks + certificate tabs for one course
+├── payments.blade.php         # Payments grouped by course
+├── attendance.blade.php       # Course picker + monthly calendar grid
+└── profile.blade.php          # Read-only profile fields + logout button
+
+resources/views/frontend-student/components/
+├── bottom-nav.blade.php       # 5-tab fixed bottom bar
+├── profile-header.blade.php   # Gradient hero with avatar, name, student ID badge
+├── course-card.blade.php      # Collapsible course summary (Alpine.js)
+├── marks-table.blade.php      # Marks breakdown table (mid/final/project etc)
+├── attendance-calendar.blade.php  # Monthly grid, green=present red=absent
+├── payment-row.blade.php      # Single payment line item
+├── spinner.blade.php          # DaisyUI loading spinner (for Alpine x-show)
+└── empty-state.blade.php      # Illustration + Arabic label
 ```
 
 ### Build Integration
 
-`vite.config.js` — add a second input entry for the student app:
+No new Vite entry point needed. The existing `resources/js/app.js` (or a new
+`resources/js/student.js`) imports Tailwind and Alpine:
+
+```js
+// resources/js/student.js
+import Alpine from 'alpinejs'
+window.Alpine = Alpine
+Alpine.start()
+```
+
+`vite.config.js` — add student JS entry if separating from admin bundle:
 
 ```js
 input: {
-  app:         'resources/js/app.js',        // existing admin/other
-  studentApp:  'resources/js/student-app/main.tsx',
+  app:     'resources/js/app.js',
+  student: 'resources/js/student.js',
 }
 ```
 
-Compiled assets output to `public/build/` via Laravel Vite manifest.
-
-### Laravel Blade Shell
-
-The existing `resources/views/frontend-student/layouts/app.blade.php` becomes
-a minimal SPA shell:
+### Layout Shell (`layouts/app.blade.php`)
 
 ```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="fantasy">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ config('app.name') }}</title>
-  @vite(['resources/js/student-app/main.tsx'])
+  <title>{{ config('app.name') }} — بوابة الطالب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Noto+Naskh+Arabic&display=swap" rel="stylesheet">
+  @vite(['resources/css/app.css', 'resources/js/student.js'])
 </head>
-<body>
-  <div id="student-root"></div>
+<body class="bg-base-200 font-arabic">
+  <main class="pb-20 min-h-screen">
+    @yield('content')
+  </main>
+  @include('frontend-student.components.bottom-nav')
 </body>
 </html>
 ```
-
-The existing web routes (`/`, `/dashboard`, `/login`) continue to serve this
-shell. React Router handles all in-app navigation client-side.
-
-### PWA Manifest (`vite-plugin-pwa` config)
-
-```js
-{
-  name: 'بوابة الطالب',
-  short_name: 'الطالب',
-  theme_color: '#1b3a5c',
-  background_color: '#f5f7fa',
-  display: 'standalone',
-  orientation: 'portrait',
-  icons: [ 192px, 512px PNGs derived from provided school logo ],
-  workbox: { globPatterns: [] }   // no offline caching
-}
-```
-
-**Logo**: Already exists at `public/img/logo.svg`. Reference directly via
-`/img/logo.svg` in the React app (no copy needed). Use in:
-- Login page branded header
-- PWA icon generation (resize to 192×192 and 512×512 PNGs at build time)
-- Home profile header (small 32px white version)
 
 ---
 
 ## Screen Inventory
 
-### 1. Login (`/login`)
+### 1. Login (`/student/login`)
 
-- Full-screen branded splash: school logo (`/img/logo.svg`) + gradient
-  background using fantasy `primary → secondary`
+- Full-screen branded splash: school logo (`/img/logo.svg`) + gradient background
 - Arabic heading: "بوابة الطالب"
+- `@csrf` hidden input
 - DaisyUI `input input-bordered` for CPR + password (RTL)
 - DaisyUI `btn btn-primary btn-block` for "دخول"
-- DaisyUI `alert alert-error` for inline error message
+- `@if($errors->any())` → DaisyUI `alert alert-error`
 
-### 2. Home (`/`)
+### 2. Home (`/student`)
 
-- **Profile header**: `hero` component with gradient bg (fantasy primary →
-  secondary), circle avatar via `avatar placeholder`, student name, `badge
-  badge-accent` for student ID
-- **Quick stats row**: 3 DaisyUI `stat` cards inside a `stats stats-horizontal`
-  — current courses count, total payments, attendance %
-- **Current courses section**: `collapse collapse-arrow` DaisyUI cards list
+- **Profile header**: `hero` with gradient bg (fantasy primary → secondary),
+  circle avatar via `avatar placeholder`, student name, `badge badge-accent`
+  for student ID
+- **Quick stats row**: 3 DaisyUI `stat` cards — current courses count,
+  total payments, attendance %
+- **Current courses**: list of `course-card` components (Alpine `x-data` for
+  open/close)
 
-### 3. Courses (`/courses`)
+### 3. Courses (`/student/courses`)
 
-- List of all classrooms newest-first; `divider` between current and past
-- Each `CourseCard` uses `collapse collapse-arrow card bg-base-100 shadow`
-- "لا توجد مواد مسجلة" empty state (`EmptyState` component)
+- All classrooms newest-first; `divider` between current and past
+- Each `course-card` uses `collapse collapse-arrow card bg-base-100 shadow`
+- "لا توجد مواد مسجلة" empty-state component
 
-### 4. Course Detail (`/courses/:classroomId`)
+### 4. Course Detail (`/student/courses/{id}`)
 
 - Course long name as `navbar` page title
-- DaisyUI `tabs tabs-boxed` switcher: Marks | Certificate
+- DaisyUI `tabs tabs-boxed` switcher powered by Alpine (`x-data="{ tab: 'marks' }"`)
 - **Marks tab**: `table table-zebra` — rows per curriculum, columns per mark
   type (midexam, finalexam, project, practice, memorise, class, attend)
-- **Certificate tab**: same mark data in `table` + `btn btn-outline btn-primary`
-  "تحميل الشهادة PDF" that opens the existing PDF route in a new tab
+- **Certificate tab**: marks table + `<a>` styled as `btn btn-outline btn-primary`
+  "تحميل الشهادة PDF" pointing to existing PDF route (opens in new tab)
 
-### 5. Payments (`/payments`)
+### 5. Payments (`/student/payments`)
 
-- Grouped by course using `collapse collapse-arrow`
+- Grouped by course using `collapse collapse-arrow` (Alpine)
 - Each row in a `table`: amount, `badge` for type (color-coded), date, source
 - Total per course shown in `collapse-title`
 - "لا توجد مدفوعات" empty state
 
-### 6. Attendance (`/attendance`)
+### 6. Attendance (`/student/attendance`)
 
-- Course picker dropdown (defaults to most recent classroom)
-- Monthly calendar grid:
+- Course picker `<select>` (standard form GET with `?classroom_id=X`)
+- Monthly calendar grid rendered in Blade:
   - Green cell = present, Red cell = absent, Grey = no session
-  - **Gregorian dates only** in cells; Gregorian month name in header
-  - No Hijri display needed
+  - Gregorian dates in cells; Gregorian month name in header
 - Summary bar: present count / total sessions, percentage
 
-### 7. Profile (`/profile`)
+### 7. Profile (`/student/profile`)
 
-- `card bg-base-100 shadow` with read-only student fields displayed as
-  `kbd` / label pairs: CPR, DOB, age, mobile, mobile2, address,
-  financial state, hawza history
-- `btn btn-error btn-outline btn-block` "تسجيل الخروج" at bottom
+- `card bg-base-100 shadow` with read-only student fields as label–value pairs:
+  CPR, DOB, age, mobile, mobile2, address, financial state, hawza history
+- `<form method="POST" action="{{ route('student.logout') }}">` with `@csrf`
+  + `btn btn-error btn-outline btn-block` "تسجيل الخروج"
 
-### Bottom Navigation
+### Bottom Navigation (`components/bottom-nav.blade.php`)
 
-| Tab        | Icon (Lucide)  | Route         |
-| ---------- | -------------- | ------------- |
-| الرئيسية   | `Home`         | `/`           |
-| المواد     | `BookOpen`     | `/courses`    |
-| المدفوعات  | `CreditCard`   | `/payments`   |
-| الحضور     | `CalendarDays` | `/attendance` |
-| الملف      | `User`         | `/profile`    |
+| Tab        | Icon (Lucide inline SVG) | Route                   | Active check                          |
+| ---------- | ------------------------ | ----------------------- | ------------------------------------- |
+| الرئيسية   | Home                     | `student.home`          | `request()->routeIs('student.home')`  |
+| المواد     | BookOpen                 | `student.courses`       | `request()->routeIs('student.courses*')` |
+| المدفوعات  | CreditCard               | `student.payments`      | `request()->routeIs('student.payments')` |
+| الحضور     | CalendarDays             | `student.attendance`    | `request()->routeIs('student.attendance')` |
+| الملف      | User                     | `student.profile`       | `request()->routeIs('student.profile')` |
+
+Active tab uses `text-primary` (fantasy `#6e0b75`); inactive uses `text-base-content/50`.
 
 ---
 
 ## Implementation Phases
 
-### Phase 1 — Backend API (no frontend yet)
+### Phase 1 — Layout & Auth
 
-1. Add `StudentPortalController` with all 7 endpoints
-2. Register routes in `routes/api.php`
-3. Configure Sanctum SPA stateful domains
-4. Add `StudentResource`, `ClassroomResource`, `MarksResource`,
-   `PaymentResource`, `AttendResource`
-5. Verify all endpoints return correct JSON with Postman / `php artisan tinker`
+1. Create `layouts/app.blade.php` shell (RTL, DaisyUI fantasy theme, bottom nav)
+2. Create `components/bottom-nav.blade.php` with active-state logic
+3. Create `StudentPortalController` with `loginForm`, `login`, `logout`
+4. Create `auth/login.blade.php`
+5. Register routes in `routes/web.php`
+6. Verify login → redirect to home → logout flow
 
-### Phase 2 — React scaffold + Auth
+### Phase 2 — Home & Profile
 
-1. Install dependencies: `react`, `react-dom`, `react-router-dom`,
-   `@tanstack/react-query`, `lucide-react`, `tailwindcss`, `daisyui`,
-   `vite-plugin-pwa`, `date-fns`
-2. Configure Vite, Tailwind + DaisyUI plugin (fantasy theme, RTL via `dir="rtl"` on `<html>`)
-3. `App.tsx` with `QueryClientProvider`, `RouterProvider`
-4. Login page + `useAuth` hook (CSRF fetch → POST login → redirect)
-5. Auth-guarded route wrapper (redirect to `/login` if no session)
-6. `AppShell` with `BottomNav`
+1. `home` controller method + `home.blade.php`
+2. `profile-header` component (gradient hero)
+3. Quick stats computed in controller (course count, payment total, attendance %)
+4. `profile` controller method + `profile.blade.php`
 
-### Phase 3 — Core screens
+### Phase 3 — Courses & Marks
 
-1. Home page (profile header + quick stats + current courses)
-2. Courses list + CourseDetail (marks + certificate tabs)
-3. Payments page
+1. `courses` controller method + `courses/index.blade.php`
+2. `course-card` component (Alpine collapsible)
+3. `courseDetail` controller method + `courses/show.blade.php`
+4. `marks-table` component (DaisyUI `table table-zebra`)
+5. Certificate tab with PDF link to existing route
 
-### Phase 4 — Attendance calendar
+### Phase 4 — Payments
 
-1. `useAttendance` hook
-2. `AttendanceCalendar` component (monthly grid, Hijri month labels)
-3. Course picker
+1. `payments` controller method (group by course in PHP)
+2. `payments.blade.php` with Alpine collapsible groups
+3. `payment-row` component
 
-### Phase 5 — PWA + polish
+### Phase 5 — Attendance
 
-1. `vite-plugin-pwa` config (manifest, icons)
-2. Install prompt banner
-3. Pull-to-refresh on Home, Courses, Payments
-4. Loading skeletons for all data queries
-5. RTL audit, Arabic font loading
-6. Viewport meta, safe-area insets for notched phones
+1. `attendance` controller method (course picker + calendar data)
+2. `attendance-calendar` component (monthly grid, Carbon date helpers)
+3. GET form for classroom switching
+
+### Phase 6 — Polish
+
+1. `empty-state` component (Arabic label, neutral illustration)
+2. RTL audit across all screens
+3. Mobile safe-area insets (`pb-safe`, viewport meta)
+4. Arabic font loading verification
+5. Active tab highlighting in bottom nav
 
 ---
 
@@ -347,21 +308,19 @@ shell. React Router handles all in-app navigation client-side.
 - All admin/Backpack CRUD — untouched
 - `auth:student` guard and `Student` model — no changes
 - PDF report generation (mPDF) — report routes still work for admin use
-- Existing web routes `/`, `/login`, `/dashboard` — now serve the React shell
-- `resources/lang/ar/localize.php` — strings referenced from API JSON responses
+- `resources/lang/ar/localize.php` — strings referenced from Blade views
 
 ---
 
 ## Resolved Decisions
 
-| Question                        | Decision                                                         |
-| ------------------------------- | ---------------------------------------------------------------- |
-| School logo                     | `public/img/logo.svg` — reference as `/img/logo.svg` in React   |
-| Attendance calendar dates       | Gregorian only (no Hijri display)                                |
-| Certificate tab behavior        | Show table + "تحميل الشهادة PDF" button linking to existing PDF route |
-| Language support                | Arabic-only (RTL throughout, no language toggle)                 |
-
-| Component library              | DaisyUI v4 (fantasy theme) — replaces Bootstrap entirely         |
-
-> `date-fns-jalali` and `tailwindcss-rtl` are not needed — dropped from dependencies.
-> RTL handled by `dir="rtl"` on `<html>` + Tailwind's built-in `rtl:` variant.
+| Question                        | Decision                                                              |
+| ------------------------------- | --------------------------------------------------------------------- |
+| Rendering approach              | Server-rendered Blade — no React, no SPA                              |
+| School logo                     | `public/img/logo.svg` — referenced via `asset('img/logo.svg')`        |
+| Attendance calendar dates       | Gregorian only (no Hijri display), rendered in Blade with Carbon      |
+| Certificate tab behavior        | Marks table + "تحميل الشهادة PDF" anchor to existing PDF route        |
+| Language support                | Arabic-only (RTL throughout, no language toggle)                      |
+| Component library               | DaisyUI v4 (fantasy theme) — no Bootstrap                             |
+| JS interactivity                | Alpine.js v3 — tabs, collapsibles, dropdowns only                     |
+| PWA                             | Not included — standard browser experience                            |
