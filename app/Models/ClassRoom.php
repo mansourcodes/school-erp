@@ -214,10 +214,14 @@ class ClassRoom extends Model
                 ->orWhere('attend_table', 'like', '%"day":' . $day_number . ',%');
         });
 
-        // 🔒 If auth is a Teacher, only fetch their classrooms
+        // If auth is a Teacher, only fetch classrooms where their user_id is in the teachers JSON.
+        // user_id is stored as a string by Backpack's repeatable/select_from_array: "user_id":"5"
         if (auth()->check() && auth()->user()->hasRole('Teacher')) {
-            $query->whereHas('classTeachers', function ($q) {
-                $q->where('user_id', auth()->id());
+            $userId = auth()->id();
+            $query->where(function ($q) use ($userId) {
+                $q->where('teachers', 'like', '%"user_id":"' . $userId . '"%')
+                  ->orWhere('teachers', 'like', '%"user_id":' . $userId . ',%')
+                  ->orWhere('teachers', 'like', '%"user_id":' . $userId . '}%');
             });
         }
 

@@ -6,6 +6,17 @@ Update this file after every meaningful implementation change.
 
 - None.
 
+## Completed Recently
+
+- Feature 02: Teacher role + attendance access (2026-05-20)
+  - `ClassRoom.teachers` JSON now includes `user_id` per entry
+  - `ClassRoom::getByDate()` filters by JSON `user_id` instead of pivot table
+  - `ClassRoomCrudController` teachers repeatable adds `user_id` dropdown (Teacher users only)
+  - `RedirectTeacherToAttendance` middleware added to Backpack `middleware_class`
+  - Teachers auto-redirected to `/admin/add_attend_by_date` from any other admin page
+  - Sidebar dashboard link hidden for Teacher role
+  - `api/teacher` endpoint added
+
 ## Next Up
 
 - TBD — awaiting direction from user

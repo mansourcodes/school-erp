@@ -252,18 +252,18 @@ class ClassRoomCrudController extends CrudController
         }
 
 
+        $teachers_user_list =  \App\Models\User::role('Teacher')->pluck('name', 'id')->toArray();
+
         CRUD::addField([   // repeatable
             'name'  => 'teachers',
             'label' => trans('classroom.teachers'),
             'type'  => 'repeatable',
             'tab'   => trans('classroom.teachers'),
 
-
-            // optional
-            'new_item_label'  => trans('classroom.teacher'), // customize the text of the button
-            'init_rows' => 0, // number of empty rows to be initialized, by default 1
-            'min_rows' => 0, // minimum rows allowed, when reached the "delete" buttons will be hidden
-            'max_rows' => 50, // maximum rows allowed, when reached the "new item" button will be hidden
+            'new_item_label'  => trans('classroom.teacher'),
+            'init_rows' => 0,
+            'min_rows' => 0,
+            'max_rows' => 50,
 
             'fields' => [
                 [
@@ -272,10 +272,8 @@ class ClassRoomCrudController extends CrudController
                     'type'        => 'select_from_array',
                     'options'     => $curricula_list,
                     'allows_null' => false,
-                    // 'default'     => '',
                     'wrapper' => ['class' => 'form-group col-md-4'],
                     'hint' => trans('studentmark.curriculum_hint'),
-
                 ],
                 [
                     'name'    => 'teacher_name',
@@ -283,36 +281,15 @@ class ClassRoomCrudController extends CrudController
                     'label'   => trans('classroom.teacher_name'),
                     'wrapper' => ['class' => 'form-group col-md-4'],
                 ],
-                // [
-                //     'label'     => 'Teachers',
-                //     'type'      => 'select2_multiple',
-                //     'name'      => 'teachers', // relationship method on the ClassRoom model
-                //     'entity'    => 'teachers',
-                //     'attribute' => 'name', // field to show in the dropdown
-                //     'model'     => \App\Models\User::class,
-                //     'pivot'     => true, // because it's a many-to-many relationship
-                //     'options'   => (function ($query) {
-                //         return $query->role('Teacher')->get(); // only users with Teacher role
-                //     }),
-                //     'wrapper' => ['class' => 'form-group col-md-4'],
-
-                // ]
+                [
+                    'name'        => 'user_id',
+                    'label'       => trans('classroom.teacher'),
+                    'type'        => 'select_from_array',
+                    'options'     => $teachers_user_list,
+                    'allows_null' => true,
+                    'wrapper' => ['class' => 'form-group col-md-4'],
+                ],
             ],
-        ]);
-
-        CRUD::addField([
-            'label'     => __('localize.class_teachers'),
-            'type'      => 'select2_multiple',
-            'name'      => 'classTeachers',   // 👈 matches relationship method
-            'entity'    => 'classTeachers',
-            'attribute' => 'name',
-            'model'     => \App\Models\User::class,
-            'pivot'     => true,
-            'options'   => function ($query) {
-                return $query->whereHas('roles', function ($q) {
-                    $q->where('name', 'Teacher');
-                })->get();
-            },
         ]);
 
 

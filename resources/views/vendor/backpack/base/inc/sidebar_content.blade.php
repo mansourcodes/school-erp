@@ -1,6 +1,8 @@
 <!-- This file is used to store sidebar items, starting with Backpack\Base 0.9.0 -->
+@if(!backpack_user()->hasRole('Teacher'))
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i>
         {{ trans('backpack::base.dashboard') }}</a></li>
+@endif
 
 <!-- <li class="nav-title">{{ __('attend.attend_and_d') }}</li> -->
 
