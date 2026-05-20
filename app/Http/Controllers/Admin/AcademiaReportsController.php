@@ -38,7 +38,7 @@ class AcademiaReportsController extends Controller
         }
 
         $data['print'] = 'print';
-        return view('reports.' . $view, $data);
+        return view('backend.reports.' . $view, $data);
     }
 
 

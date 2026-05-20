@@ -79,7 +79,7 @@ class ClassRoomMarksController extends Controller
         $data['classRoom'] = $classRoom;
         $data['classMarks'] = $classMarks;
 
-        return view('marks.add_marks_by_class', $data);
+        return view('backend.marks.add_marks_by_class', $data);
     }
 
 

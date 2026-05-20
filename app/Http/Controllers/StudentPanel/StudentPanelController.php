@@ -45,6 +45,6 @@ class StudentPanelController extends Controller
         // }
 
 
-        return view('student.dashboard', compact('student', 'payments', 'studentmarks'));
+        return view('frontend-student.dashboard', compact('student', 'payments', 'studentmarks'));
     }
 }

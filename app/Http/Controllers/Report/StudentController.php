@@ -44,7 +44,7 @@ class StudentController extends Controller
 
         $data['print'] = 'print';
         $data['title'] = trans('reports.' . Str::of(substr($function, 0, -1))->snake());
-        return view('reports.student.' . Str::snake($view), $data);
+        return view('backend.reports.student.' . Str::snake($view), $data);
     }
 
     /**
@@ -134,7 +134,7 @@ class StudentController extends Controller
         ];
 
         $data['print'] = 'print';
-        return view('reports.student.single_student_table', $data);
+        return view('backend.reports.student.single_student_table', $data);
     }
 
     /**
@@ -170,7 +170,7 @@ class StudentController extends Controller
         ];
 
         $data['print'] = 'print';
-        return view('reports.student.single_update_student_info', $data);
+        return view('backend.reports.student.single_update_student_info', $data);
     }
 
 

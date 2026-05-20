@@ -491,7 +491,7 @@ class StudentCrudController extends CrudController
                 'class'   => 'card card-toggle border-success  ', // optional
                 'content'    => [
                     'header' => $classRoom->course->long_name, // optional
-                    'body'   => view('reports.student.components.widget_classroom_info', $data)
+                    'body'   => view('backend.reports.student.components.widget_classroom_info', $data)
                 ]
             ];
         }

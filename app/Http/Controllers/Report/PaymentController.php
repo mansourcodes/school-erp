@@ -40,7 +40,7 @@ class PaymentController extends Controller
 
         $data['print'] = 'print';
         $data['title'] = trans('reports.' . Str::of(substr($function, 0, -1))->snake());
-        return view('reports.payment.' . Str::snake($view), $data);
+        return view('backend.reports.payment.' . Str::snake($view), $data);
     }
 
 

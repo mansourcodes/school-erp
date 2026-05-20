@@ -1,0 +1,67 @@
+﻿@extends('backend.layouts.' . $print)
+
+
+@section('content')
+    @foreach ($classRooms as $classRoom)
+        @foreach ($classRoom->long_name as $class_room_long_name)
+            <div class="page">
+
+                @if (Setting::get('print_header'))
+                    <img class="w-100" src="{{ URL::asset(Setting::get('print_header')) }}" />
+                @endif
+
+                <h1 class="title text-center">
+                    {{ $course->long_name }}
+                </h1>
+
+                <h3 class="title text-center">
+                    {{ empty(Setting::get('attendance_marks_template.title')) ? __('reports.attendance_marks_template') : Setting::get('attendance_marks_template.title') }}
+                </h3>
+
+
+                {!! Setting::get('attendance_marks_template.pre') !!}
+
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>
+                                {{ $class_room_long_name }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-striped table-bordered" style="">
+                    <thead>
+                        <tr>
+                            <th>Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨</th>
+                            <th>Ø§Ù„Ø­ÙØ¸ (5 Ø¯Ø±Ø¬Ø§Øª)</th>
+                            <th>Ø§Ù„Ø³Ù„ÙˆÙƒ (5 Ø¯Ø±Ø¬Ø§Øª)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($classRoom->students as $student)
+                            <tr>
+                                <td>
+                                    {{ $student->name }}
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
+
+
+                {!! Setting::get('attendance_marks_template.pro') !!}
+
+            </div>
+
+            @if (!$loop->parent->last)
+                <div class="new-page"></div>
+            @endif
+        @endforeach
+    @endforeach
+@endsection

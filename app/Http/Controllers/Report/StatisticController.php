@@ -37,7 +37,7 @@ class StatisticController extends Controller
 
         $data['print'] = 'print';
         $data['title'] = trans('reports.' . Str::of(substr($function, 0, -1))->snake());
-        return view('reports.statistic.' . Str::snake($view), $data);
+        return view('backend.reports.statistic.' . Str::snake($view), $data);
     }
 
 

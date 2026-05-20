@@ -16,7 +16,7 @@ class StudentAuthController extends Controller
 
     public function showLoginForm()
     {
-        return view('auth.student-login');
+        return view('frontend-student.auth.login');
     }
 
     public function login(Request $request)
@@ -46,6 +46,6 @@ class StudentAuthController extends Controller
 
     public function dashboard()
     {
-        return view('students.dashboard'); // Make a dashboard view
+        return view('frontend-student.dashboard');
     }
 }

@@ -531,7 +531,7 @@ class AttendsCrudController extends CrudController
         // }
         // dd(1);
 
-        return view('attend.attend_list', $data);
+        return view('backend.attend.attend_list', $data);
     }
 
 
@@ -552,7 +552,7 @@ class AttendsCrudController extends CrudController
             'curriculum' => Curriculum::find($curriculum_id),
         ];
 
-        return view('attend.add_attend_easy_form', $data);
+        return view('backend.attend.add_attend_easy_form', $data);
     }
 
 
