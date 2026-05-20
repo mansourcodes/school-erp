@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir C:\\\\Users\\\\mansour\\\\OneDrive\\\\Dokumente\\\\GitHub\\\\school-erp /B)",
+      "Bash(xargs head -5)",
+      "Bash(xargs ls)"
+    ]
+  }
+}
