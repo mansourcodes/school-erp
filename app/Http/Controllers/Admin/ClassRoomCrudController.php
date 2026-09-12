@@ -252,12 +252,8 @@ class ClassRoomCrudController extends CrudController
         }
 
 
-        // $teachers_user_list =  \App\Models\User::role('Teacher')->pluck('name', 'id')->toArray();
+        $teachers_user_list =  \App\Models\User::role('Teacher')->pluck('name', 'id')->toArray();
 
-
-          dd(['auth_guards' => config('auth.guards'), 'auth_providers' =>
-  config('auth.providers'), 'auth_default' => config('auth.defaults.guard'), 'auth_facade_default'
-  => auth()->getDefaultDriver()]);
 
         CRUD::addField([   // repeatable
             'name'  => 'teachers',

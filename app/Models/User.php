@@ -16,6 +16,20 @@ class User extends Authenticatable
     use HasRoles; // <------ and this
 
     /**
+     * Pins Spatie role/permission lookups to the 'web' guard.
+     *
+     * This model is the provider for three guards (web, api, backpack),
+     * and Backpack's admin middleware switches the app's default guard to
+     * 'backpack' for admin requests. Without this, Spatie's guard
+     * resolution picks whichever of those guards is currently active,
+     * so role checks silently look for roles under the wrong guard_name
+     * depending on where in the app the check runs.
+     *
+     * @var string
+     */
+    protected $guard_name = 'web';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
