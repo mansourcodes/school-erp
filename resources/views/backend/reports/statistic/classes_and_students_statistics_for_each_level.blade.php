@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -25,9 +25,9 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>Ø§Ù„Ù…Ø³ØªÙˆÙ‰</th>
-                    <th>Ø¹Ø¯Ø¯ Ø§Ù„ØµÙÙˆÙ</th>
-                    <th>Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨</th>
+                    <th>المستوى</th>
+                    <th>عدد الصفوف</th>
+                    <th>عدد الطلاب</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +39,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td> --------------------- Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹</td>
+                    <td> --------------------- المجموع</td>
                     <td>{{ $total['count_class_rooms'] }}</td>
                     <td>{{ $total['count_students'] }}</td>
                 </tr>

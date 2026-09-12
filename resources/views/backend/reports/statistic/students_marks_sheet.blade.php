@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -28,11 +28,11 @@
                     <thead>
                         <tr>
                             <th width="1%">#</th>
-                            <th>Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨</th>
+                            <th>اسم الطالب</th>
                             @foreach ($curriculum['curriculum']->marks_labels_flat as $marks_label)
                                 <th>{{ $marks_label }}</th>
                             @endforeach
-                            <th>Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹</th>
+                            <th>المجموع</th>
 
                         </tr>
                     </thead>

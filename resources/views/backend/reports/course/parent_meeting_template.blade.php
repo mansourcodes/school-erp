@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -26,15 +26,15 @@
                     <table class="table table-striped table-bordered">
                         <tbody>
                             <tr>
-                                <td>Ø§Ù„Ø§Ø³Ù…</td>
+                                <td>الاسم</td>
                                 <th> {{ $student->name }}</th>
                             </tr>
                             <tr>
-                                <td>Ø§Ø³Ù… Ø§Ù„Ù…Ø¯Ø±Ø³</td>
+                                <td>اسم المدرس</td>
                                 <td>{{ $curriculum['teacher_name'] ?? '' }}</td>
                             </tr>
                             <tr>
-                                <td>Ø§Ù„Ù…Ù†Ù‡Ø¬</td>
+                                <td>المنهج</td>
                                 <td>{{ $curriculum['curriculum_name'] ?? '' }}</td>
                             </tr>
                         </tbody>
@@ -49,26 +49,18 @@
                         <tbody>
                             <tr>
                                 <td></td>
-                                <td colspan="5">Ø¯Ø±Ø¬Ø© Ø§Ù„ØªÙ‚ÙŠÙŠÙ…</td>
+                                <td colspan="5">درجة التقييم</td>
                             </tr>
                             <tr>
-                                <td style="width: 16%">Ø¬ÙˆØ§Ù†Ø¨ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…</td>
-                                <td style="width: 16%">Ù…Ù…ØªØ§Ø²</td>
-                                <td style="width: 16%">Ø¬ÙŠØ¯ Ø¬Ø¯Ø§</td>
-                                <td style="width: 16%">Ø¬ÙŠØ¯</td>
-                                <td style="width: 16%">Ù…ØªÙˆØ³Ø·</td>
-                                <td style="width: 16%">Ø¶Ø¹ÙŠÙ</td>
+                                <td style="width: 16%">جوانب التقييم</td>
+                                <td style="width: 16%">ممتاز</td>
+                                <td style="width: 16%">جيد جدا</td>
+                                <td style="width: 16%">جيد</td>
+                                <td style="width: 16%">متوسط</td>
+                                <td style="width: 16%">ضعيف</td>
                             </tr>
                             <tr>
-                                <td>Ø§Ù„Ù‚Ø±Ø§Ø¡Ø©</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Ø§Ù„ØªØ¬ÙˆÙŠØ¯</td>
+                                <td>القراءة</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -76,7 +68,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Ø§Ù„Ø­ÙØ¸</td>
+                                <td>التجويد</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -84,7 +76,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Ø§Ù„Ø³Ù„ÙˆÙƒ</td>
+                                <td>الحفظ</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -92,7 +84,15 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Ø§Ù„Ø­Ø¶ÙˆØ±</td>
+                                <td>السلوك</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>الحضور</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -106,7 +106,7 @@
                     <table class="table table-striped table-bordered">
                         <tbody>
                             <tr>
-                                <td>Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ù…Ø¯Ø±Ø³</td>
+                                <td>ملاحظة المدرس</td>
                             </tr>
                             <tr>
                                 <td>
@@ -120,7 +120,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    Ø§Ø¹ØªÙ…Ø¯Ù‡Ø§ Ø±Ø¦ÙŠØ³ Ø§Ù„Ù…Ø±ÙƒØ² :
+                                    اعتمدها رئيس المركز :
 
                                     <b> {!! Setting::get('ceo_name') !!}</b>
                                 </td>

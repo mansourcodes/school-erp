@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -24,7 +24,7 @@
                         <tbody>
                             <tr>
                                 <td width="134">
-                                    <p dir="RTL">Ø¨Ø¯Ø§ÙŠØ© Ø§Ù„Ø¯ÙˆØ±Ø©</p>
+                                    <p dir="RTL">بداية الدورة</p>
                                 </td>
                                 <td width="260">
                                     <p dir="RTL">
@@ -34,19 +34,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Ø¹Ø¯Ø¯ Ø³Ø§Ø¹Ø§Øª Ø§Ù„Ù…Ù‚Ø±Ø±Ø©</td>
+                                <td>عدد ساعات المقررة</td>
                                 <td>{{ $course->duration }}</td>
                             </tr>
                             <tr>
                                 <td width="134">
-                                    <p dir="RTL">Ø§Ù„Ø±Ø³ÙˆÙ…</p>
+                                    <p dir="RTL">الرسوم</p>
                                 </td>
                                 <td width="260">
-                                    <p dir="RTL">20 Ø¯ÙŠÙ†Ø§Ø±Ø§ Ù„Ù„ÙØµÙ„ Ø§Ù„Ø§ÙˆÙ„</p>
+                                    <p dir="RTL">20 دينارا للفصل الاول</p>
                                 </td>
                             </tr>
                             <tr>
-                                <td>ÙˆÙ‚Øª Ø§Ù„Ø¯Ø±Ø§Ø³Ø©</td>
+                                <td>وقت الدراسة</td>
                                 <td>
                                     @isset($curriculum['days'])
                                         @foreach ($curriculum['days'] as $day)
@@ -101,7 +101,7 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td valign="top" width="125">
-                                                                        <p dir="RTL">Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ:</p>
+                                                                        <p dir="RTL">الرقم الشخصي:</p>
                                                                     </td>
                                                                     <td valign="top" width="426">
                                                                         <p dir="RTL">
@@ -111,7 +111,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td valign="top" width="125">
-                                                                        <p dir="RTL">Ø±Ù‚Ù… Ø§Ù„Ø·Ø§Ù„Ø¨ :</p>
+                                                                        <p dir="RTL">رقم الطالب :</p>
                                                                     </td>
                                                                     <td valign="top" width="426">
                                                                         <p dir="RTL">{{ $student->mobile }}</p>
@@ -119,7 +119,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td valign="top" width="125">
-                                                                        <p dir="RTL">Ø±Ù‚Ù… Ø§Ù„Ù†Ù‚Ø§Ù„:</p>
+                                                                        <p dir="RTL">رقم النقال:</p>
                                                                     </td>
                                                                     <td valign="top" width="426">
                                                                         <p dir="RTL">{{ $student->mobile2 }}</p>
@@ -145,21 +145,21 @@
                                             <tr>
                                                 <td valign="top" width="74">
                                                     <p dir="RTL" style="text-align: center;" align="right"><span
-                                                            style="font-size: 12.0pt; font-family: 'Wingdings 2'; mso-ascii-font-family: Arial; mso-ascii-theme-font: minor-bidi; mso-fareast-font-family: 'Times New Roman'; mso-hansi-font-family: Arial; mso-hansi-theme-font: minor-bidi; mso-bidi-font-family: Arial; mso-bidi-theme-font: minor-bidi; color: black; mso-themecolor: text1; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-BH; mso-char-type: symbol; mso-symbol-font-family: 'Wingdings 2';">Â£</span>
+                                                            style="font-size: 12.0pt; font-family: 'Wingdings 2'; mso-ascii-font-family: Arial; mso-ascii-theme-font: minor-bidi; mso-fareast-font-family: 'Times New Roman'; mso-hansi-font-family: Arial; mso-hansi-theme-font: minor-bidi; mso-bidi-font-family: Arial; mso-bidi-theme-font: minor-bidi; color: black; mso-themecolor: text1; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-BH; mso-char-type: symbol; mso-symbol-font-family: 'Wingdings 2';">£</span>
                                                     </p>
                                                 </td>
                                                 <td colspan="9" valign="top" width="668">
-                                                    <p dir="RTL"><strong>Ø£ÙˆØ§ÙÙ‚ Ø¹Ù„Ù‰ ØªØ³Ø¬ÙŠÙ„ Ø§Ø¨Ù†ÙŠ .</strong></p>
+                                                    <p dir="RTL"><strong>أوافق على تسجيل ابني .</strong></p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td valign="top" width="74">
                                                     <p dir="RTL" style="text-align: center;" align="right"><span
-                                                            style="font-size: 12.0pt; font-family: 'Wingdings 2'; mso-ascii-font-family: Arial; mso-ascii-theme-font: minor-bidi; mso-fareast-font-family: 'Times New Roman'; mso-hansi-font-family: Arial; mso-hansi-theme-font: minor-bidi; mso-bidi-font-family: Arial; mso-bidi-theme-font: minor-bidi; color: black; mso-themecolor: text1; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-BH; mso-char-type: symbol; mso-symbol-font-family: 'Wingdings 2';">Â£</span>
+                                                            style="font-size: 12.0pt; font-family: 'Wingdings 2'; mso-ascii-font-family: Arial; mso-ascii-theme-font: minor-bidi; mso-fareast-font-family: 'Times New Roman'; mso-hansi-font-family: Arial; mso-hansi-theme-font: minor-bidi; mso-bidi-font-family: Arial; mso-bidi-theme-font: minor-bidi; color: black; mso-themecolor: text1; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-BH; mso-char-type: symbol; mso-symbol-font-family: 'Wingdings 2';">£</span>
                                                     </p>
                                                 </td>
                                                 <td colspan="9" valign="top" width="668">
-                                                    <p dir="RTL"><strong>Ù„Ø§ Ø£ÙˆØ§ÙÙ‚ Ø¹Ù„Ù‰ ØªØ³Ø¬ÙŠÙ„ Ø§Ø¨Ù†ÙŠ .</strong></p>
+                                                    <p dir="RTL"><strong>لا أوافق على تسجيل ابني .</strong></p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -171,7 +171,7 @@
                                                 <td valign="top" width="74">&nbsp;</td>
                                                 <td valign="top" width="74">&nbsp;</td>
                                                 <td colspan="2" width="149">
-                                                    <p dir="RTL" align="center">ØªÙˆÙ‚ÙŠØ¹ ÙˆÙ„ÙŠ Ø§Ù„Ø£Ù…Ø±</p>
+                                                    <p dir="RTL" align="center">توقيع ولي الأمر</p>
                                                     <p dir="RTL" align="center">___________________</p>
                                                 </td>
                                                 <td valign="top" width="74">&nbsp;</td>

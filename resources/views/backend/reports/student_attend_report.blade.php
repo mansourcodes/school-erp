@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -26,7 +26,7 @@
             <tr>
                 <td>
                     <b>
-                        Ø§Ù„ØµÙ:
+                        الصف:
                     </b>
 
                     {{ $classroom->class_room_name }}
@@ -35,7 +35,7 @@
                 </td>
                 <td>
                     <b>
-                        Ø§Ù„Ù…Ø±Ø­Ù„Ø©:
+                        المرحلة:
                     </b>
 
                     {{ $classroom->course->academicPath->academic_path_name }}
@@ -44,18 +44,18 @@
                 </td>
                 <td>
                     <b>
-                        Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©:
+                        السنة الدراسية:
                     </b>
 
 
-                    {{ $classroom->course->hijri_year }} Ù‡_
+                    {{ $classroom->course->hijri_year }} ه_
 
-                    ({{ $classroom->course->course_year }} Ù…)
+                    ({{ $classroom->course->course_year }} م)
 
                 </td>
                 <td>
                     <b>
-                        Ø§Ù„ÙØµÙ„:
+                        الفصل:
                     </b>
                     {{ $classroom->course->semester }}
 
@@ -67,13 +67,13 @@
         <table class="table  table-ziped text-center">
             <tr>
                 <th>#</th>
-                <th>Ø§Ù„Ø§Ø³Ù…</th>
-                <th>Ø§Ù„Ø­Ø¶ÙˆØ±</th>
-                <th>Ø§Ù„ØºÙŠØ§Ø¨</th>
-                <th>Ø§Ù„ØºÙŠØ§Ø¨ Ø¨Ø¹Ø°Ø±</th>
-                <th>Ø§Ù„ØªØ£Ø®ÙŠØ±</th>
-                <th>Ø§Ù„ØªØ£Ø®ÙŠØ± Ø¨Ø¹Ø°Ø±</th>
-                <th>Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©</th>
+                <th>الاسم</th>
+                <th>الحضور</th>
+                <th>الغياب</th>
+                <th>الغياب بعذر</th>
+                <th>التأخير</th>
+                <th>التأخير بعذر</th>
+                <th>ملاحظات الإدارة</th>
 
             </tr>
             @foreach ($classroom->students as $key => $student)
@@ -101,7 +101,7 @@
         <table class="table">
             <tr>
                 <th class="align-middle">
-                    Ø¹Ø¯Ø¯ Ø£ÙŠØ§Ù… Ø§Ù„Ø¯Ø±Ø§Ø³Ø©
+                    عدد أيام الدراسة
                 </th>
                 <td class="align-middle">{{ $total_days }}</td>
 

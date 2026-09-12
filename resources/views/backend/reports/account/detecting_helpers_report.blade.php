@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -24,12 +24,12 @@
             <thead>
                 <tr>
                     <th># </th>
-                    <th>Ø±Ù‚Ù… Ø§Ù„Ø·Ø§Ù„Ø¨ </th>
-                    <th>Ø§Ù„Ø¥Ø³Ù…</th>
-                    <th>Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ</th>
-                    <th>Ø§Ù„Ù†Ù‚Ø§Ù„</th>
-                    <th>Ø§Ù„Ù…Ù†Ø·Ù‚Ø©</th>
-                    <th>Ø§Ù„ØµÙ</th>
+                    <th>رقم الطالب </th>
+                    <th>الإسم</th>
+                    <th>الرقم الشخصي</th>
+                    <th>النقال</th>
+                    <th>المنطقة</th>
+                    <th>الصف</th>
                 </tr>
             </thead>
             <tbody>

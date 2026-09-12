@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -25,13 +25,13 @@
                     <tbody>
                         <tr>
                             <td>
-                                Ø§Ù„ØµÙ
+                                الصف
                             </td>
                             <td>
                                 {{ $classRoom->long_name[$curriculum_id] }}
                             </td>
                             <td>
-                                Ø§Ù„ØªØ§Ø±ÙŠØ® :
+                                التاريخ :
                             </td>
                         </tr>
                     </tbody>
@@ -41,12 +41,12 @@
                 <table style="table-layout: auto;" class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>ØªØ¬ÙˆÙŠØ¯</th>
-                            <th>Ù‚Ø±Ø§Ø¡Ø©</th>
-                            <th width="40%">Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨</th>
-                            <th>Ø§Ù„Ø­Ø¶ÙˆØ±</th>
-                            <th>Ø§Ù„Ù‡Ø§ØªÙ</th>
-                            <th>Ø§Ù„Ù‡Ø§ØªÙÙ¢</th>
+                            <th>تجويد</th>
+                            <th>قراءة</th>
+                            <th width="40%">اسم الطالب</th>
+                            <th>الحضور</th>
+                            <th>الهاتف</th>
+                            <th>الهاتف٢</th>
 
 
                         </tr>
@@ -75,41 +75,41 @@
                     <tbody>
                         <tr>
                             <td width="25%">
-                                Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø§Ù‚Ø¨
+                                اسم المراقب
                             </td>
                             <td> </td>
                             <td width="25%">
-                                Ø§Ù„Ø¹Ø¯Ø¯ Ø§Ù„ÙƒÙ„ÙŠ
+                                العدد الكلي
                             </td>
                             <td> </td>
                         </tr>
                         <tr>
                             <td>
-                                Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ù‚Ø¯Ù…ÙŠÙ†
+                                عدد المقدمين
                             </td>
                             <td> </td>
                             <td>
-                                Ø¹Ø¯Ø¯ ØºÙŠØ± Ø§Ù„Ù…Ù‚Ø¯Ù…ÙŠÙ†
-                            </td>
-                            <td> </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø¨Ø© Ø§Ù„Ù†Ø§Ø¬Ø­ÙŠÙ†
-                            </td>
-                            <td> </td>
-                            <td>
-                                Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø¨Ø© Ø§Ù„Ø±Ø§Ø³Ø¨ÙŠÙ†
+                                عدد غير المقدمين
                             </td>
                             <td> </td>
                         </tr>
                         <tr>
                             <td>
-                                Ø§Ø³Ù… Ø§Ù„Ù…ØµØ­Ø­
+                                عدد الطلبة الناجحين
                             </td>
                             <td> </td>
                             <td>
-                                Ø§Ø³Ù… Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹
+                                عدد الطلبة الراسبين
+                            </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                اسم المصحح
+                            </td>
+                            <td> </td>
+                            <td>
+                                اسم المراجع
                             </td>
                             <td> </td>
                         </tr>

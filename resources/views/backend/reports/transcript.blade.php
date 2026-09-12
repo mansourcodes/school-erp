@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -19,13 +19,13 @@
             <table class="table table-no-border">
                 <tr>
                     <th>
-                        Ø§Ù„Ø§Ø³Ù…:
+                        الاسم:
                     </th>
                     <td colspan="3">
                         {{ $studentmark->student->name }}
                     </td>
                     <th>
-                        Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬:
+                        البرنامج:
                     </th>
                     <td>
                         {{ $studentmark->course->academicPath->academic_path_type }}
@@ -33,19 +33,19 @@
                 </tr>
                 <tr>
                     <th>
-                        Ø§Ù„Ù…Ø±Ø­Ù„Ø©:
+                        المرحلة:
                     </th>
                     <td>
                         {{ $studentmark->course->academicPath->academic_path_name }}
                     </td>
                     <th>
-                        Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©:
+                        السنة الدراسية:
                     </th>
                     <td>
-                        {{ $studentmark->course->hijri_year }} Ù‡_
+                        {{ $studentmark->course->hijri_year }} ه_
                     </td>
                     <th>
-                        Ø§Ù„ÙØµÙ„:
+                        الفصل:
                     </th>
                     <td>
                         {{ $studentmark->course->semester }}
@@ -57,13 +57,13 @@
             <table class="table">
                 <tr>
                     <th>
-                        Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©
+                        المادة الدراسية
                     </th>
                     <th>
-                        Ø§Ù„ÙƒØªØ§Ø¨
+                        الكتاب
                     </th>
                     <th>
-                        Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„ÙƒÙ„ÙŠØ©
+                        الدرجة الكلية
                     </th>
                 </tr>
                 @foreach ($studentmark->marks as $subject_mark)

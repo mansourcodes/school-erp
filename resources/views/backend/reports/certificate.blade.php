@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -29,16 +29,16 @@
 
                 <table class="table table-no-border" style="width: 50%; margin: 0 auto">
                     <tr>
-                        <th> Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ:</th>
-                        <td> {{ $studentmark->student->cpr > 9 ? 'Ù„Ø§ÙŠÙˆØ¬Ø¯' : $studentmark->student->cpr }}
+                        <th> الرقم الشخصي:</th>
+                        <td> {{ $studentmark->student->cpr > 9 ? 'لايوجد' : $studentmark->student->cpr }}
                         </td>
                     </tr>
                     <tr>
-                        <th> Ø±Ù‚Ù… Ø§Ù„Ø·Ø§Ù„Ø¨:</th>
+                        <th> رقم الطالب:</th>
                         <td> {{ $studentmark->student->student_id }}</td>
                     </tr>
                     <tr>
-                        <th> Ø§Ù„Ù…Ù†Ù‡Ø¬:</th>
+                        <th> المنهج:</th>
                         <td> {{ $studentmark->curriculum->curriculum_name }}</td>
                     </tr>
                 </table>
@@ -58,16 +58,16 @@
 
             <table class="table table-no-border" style="width: 100%">
                 <tr>
-                    <th> Ø§Ø¹ØªÙ…Ø¯Ù‡Ø§ Ø±Ø¦ÙŠØ³ Ø§Ù„Ù…Ø±ÙƒØ²</th>
-                    <th class="text-left"> Ø®ØªÙ… Ø§Ù„Ù…Ø±ÙƒØ²</th>
+                    <th> اعتمدها رئيس المركز</th>
+                    <th class="text-left"> ختم المركز</th>
                 </tr>
                 <tr>
                     <td>
                         {!! Setting::get('ceo_name') !!}
                     </td>
                     <td class="text-left">
-                        Ø­Ø±Ø±Øª ÙÙŠ
-                        {{ $studentmark->created_at->format('Y-m-d') }} Ù…
+                        حررت في
+                        {{ $studentmark->created_at->format('Y-m-d') }} م
                     </td>
                 </tr>
 

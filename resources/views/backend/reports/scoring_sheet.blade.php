@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -39,13 +39,13 @@
                         {{ $classroom->course->academicPath->academic_path_name }}
                     </td>
                     <th>
-                        Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©:
+                        السنة الدراسية:
                     </th>
                     <td>
-                        {{ $classroom->course->hijri_year }} Ù‡_
+                        {{ $classroom->course->hijri_year }} ه_
                     </td>
                     <th>
-                        Ø§Ù„ÙØµÙ„:
+                        الفصل:
                     </th>
                     <td>
                         {{ $classroom->course->semester }}
@@ -59,7 +59,7 @@
                         #
                     </th>
                     <th rowspan="2" class="align-middle">
-                        Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨
+                        اسم الطالب
                     </th>
                     @if ($curriculum->marks_labels)
                         @foreach (array_reverse($curriculum->marks_labels) as $section_key => $section)
@@ -74,7 +74,7 @@
                     @endif
 
                     <th>
-                        Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹
+                        المجموع
                     </th>
                 </tr>
                 <tr>

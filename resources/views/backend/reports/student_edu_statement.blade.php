@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -22,14 +22,14 @@
                 <tr>
                     <td>
                         <b>
-                            Ù†ÙÙŠØ¯ÙƒÙ… Ø¹Ù„Ù…Ø§Ù‹ Ø£Ù†Ù‘ Ø§Ù„Ø·Ø§Ù„Ø¨ /
+                            نفيدكم علماً أنّ الطالب /
                         </b>
 
                         {{ $studentmark->student->name }}
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ
+                            الرقم الشخصي
                         </b>
 
                         {{ $studentmark->student->cpr }}
@@ -38,14 +38,14 @@
                 <tr>
                     <td>
                         <b>
-                            Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ /
+                            الفصل الدراسي /
                         </b>
 
                         {{ $studentmark->course->academicPath->academic_path_name }}
 
-                        {{ $studentmark->course->hijri_year }} Ù‡_
+                        {{ $studentmark->course->hijri_year }} ه_
 
-                        ({{ $studentmark->course->course_year }} Ù…)
+                        ({{ $studentmark->course->course_year }} م)
                         {{ $studentmark->course->semester }}
                         -
                         {{ $studentmark->course->academicPath->academic_path_type }}
@@ -67,23 +67,23 @@
                     <th scope="row"></th>
 
                     <th>
-                        Ø§Ù„Ù…Ù‚Ø±Ø±
+                        المقرر
                     </th>
                     <th>
                         {{ __('curriculumcategory.curriculumcategory') }}
 
                     </th>
                     <th>
-                        Ø§Ù„Ù…Ø¯Ø±Ø³
+                        المدرس
                     </th>
                     <th>
-                        Ø§Ù„Ø³Ø§Ø¹Ø§Øª
+                        الساعات
                     </th>
                     <th>
-                        Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„ÙƒÙ„ÙŠØ© / 100
+                        الدرجة الكلية / 100
                     </th>
                     <th>
-                        Ø§Ù„Ø­Ø§Ù„Ø©
+                        الحالة
                     </th>
                 </tr>
                 <?php $counter = 0; ?>

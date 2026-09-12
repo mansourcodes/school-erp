@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -76,13 +76,13 @@
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„Ù…Ø¹Ù„Ù…:
+                            المعلم:
                         </b>
                         {{ @$teachers[$attend_curriculum_table['curriculum']->id] }}
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„ØµÙ:
+                            الصف:
                             {{ $classroom->first_long_name }}
 
                         </b>
@@ -96,7 +96,7 @@
             <table class="table  table-ziped text-center">
                 <tr>
                     <th style="width: 1%;" class="align-middle">#</th>
-                    <th class="align-middle">Ø§Ù„Ø§Ø³Ù…</th>
+                    <th class="align-middle">الاسم</th>
                     @foreach ($attend_curriculum_table['calander_days'] as $date)
                         <th class="rotate">
                             <p>{{ $date }}</p>

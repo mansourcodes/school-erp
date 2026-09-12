@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -11,7 +11,7 @@
                             {{ $session['long_name'] }}
                             {{-- {{ $session['curriculum']['teacher_name'] ?? '' }}
                             /
-                            ØµÙ {{ $session['class_room_number'] }}
+                            صف {{ $session['class_room_number'] }}
                              --}}
                         </td>
                         <td width="20%">

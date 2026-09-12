@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -25,15 +25,15 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>Ø§Ù„ØµÙ</th>
-                    <th>Ø§Ù„Ù…Ø³ØªÙˆÙ‰</th>
-                    <th>Ø§Ù„Ù…Ø¯Ø±Ø³</th>
-                    <th>Ø§Ù„ØºØ±ÙØ©</th>
-                    <th>Ø§Ù„Ù…ÙƒØ§Ù†</th>
-                    <th>ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø¡</th>
-                    <th>Ø§Ù„Ø§ÙŠØ§Ù…</th>
-                    <th>ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¥Ù†ØªÙ‡Ø§Ø¡</th>
-                    <th>Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨</th>
+                    <th>الصف</th>
+                    <th>المستوى</th>
+                    <th>المدرس</th>
+                    <th>الغرفة</th>
+                    <th>المكان</th>
+                    <th>تاريخ البدء</th>
+                    <th>الايام</th>
+                    <th>تاريخ الإنتهاء</th>
+                    <th>عدد الطلاب</th>
                 </tr>
             </thead>
             <tbody>

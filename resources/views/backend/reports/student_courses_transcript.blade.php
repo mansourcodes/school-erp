@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -21,14 +21,14 @@
                 <tr>
                     <td>
                         <b>
-                            Ù†ÙÙŠØ¯ÙƒÙ… Ø¹Ù„Ù…Ø§Ù‹ Ø£Ù†Ù‘ Ø§Ù„Ø·Ø§Ù„Ø¨ /
+                            نفيدكم علماً أنّ الطالب /
                         </b>
 
                         {{ $student_data['studentmarks']->student->name }}
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ
+                            الرقم الشخصي
                         </b>
 
                         {{ $student_data['studentmarks']->student->cpr }}
@@ -37,14 +37,14 @@
                 <tr>
                     <td>
                         <b>
-                            Ø§Ù„ÙØµÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ /
+                            الفصل الدراسي /
                         </b>
 
                         {{ $student_data['studentmarks']->course->academicPath->academic_path_name }}
 
-                        {{ $student_data['studentmarks']->course->hijri_year }} Ù‡_
+                        {{ $student_data['studentmarks']->course->hijri_year }} ه_
 
-                        ({{ $student_data['studentmarks']->course->course_year }} Ù…)
+                        ({{ $student_data['studentmarks']->course->course_year }} م)
                         {{ $student_data['studentmarks']->course->semester }}
                         -
                         {{ $student_data['studentmarks']->course->academicPath->academic_path_type }}
@@ -66,34 +66,34 @@
                     <th scope="row"></th>
 
                     <th>
-                        Ø§Ù„Ù…Ù‚Ø±Ø±
+                        المقرر
                     </th>
                     <th>
                         {{ __('curriculumcategory.curriculumcategory') }}
                     </th>
                     <th>
-                        Ø§Ù„Ù…Ø¯Ø±Ø³
+                        المدرس
                     </th>
                     <th>
-                        Ø§Ù„Ø³Ø§Ø¹Ø§Øª
+                        الساعات
                     </th>
                     <th>
-                        Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø§Ø¹Ù…Ø§Ù„
+                        مجموع الاعمال
                     </th>
                     <th>
-                        Ø¥Ø®ØªØ¨Ø§Ø± Ø§Ù„Ù…Ù†ØªØµÙ
+                        إختبار المنتصف
                     </th>
                     <th>
-                        Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø± Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ
+                        الاختبار النهائي
                     </th>
                     <th>
-                        Ø§Ù„Ø­Ø¶ÙˆØ± ÙˆØ§Ù„Ø§Ù†Ø¶Ø¨Ø§Ø·
+                        الحضور والانضباط
                     </th>
                     <th>
-                        Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„ÙƒÙ„ÙŠØ© / 100
+                        الدرجة الكلية / 100
                     </th>
                     <th>
-                        Ø§Ù„Ø­Ø§Ù„Ø©
+                        الحالة
                     </th>
                 </tr>
                 <?php $counter = 0; ?>

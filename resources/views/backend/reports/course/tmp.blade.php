@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.'.$print)
+@extends('backend.layouts.'.$print)
 
 
 @section('content')
@@ -24,9 +24,9 @@
             <div class="card_c" >
                 {{$classRoom->long_name}}<br />
                 {{$student->name}}<br />
-                <b>Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø´Ø®ØµÙŠ: {{$student->cpr}}</b> 
-                <b>Ø±Ù‚Ù… Ø§Ù„Ø·Ø§Ù„Ø¨: {{$student->student_id}}</b> 
-                <b>Ø§Ù„Ù†Ù‚Ø§Ù„: {{$student->mobile}}  	</b> 
+                <b>الرقم الشخصي: {{$student->cpr}}</b> 
+                <b>رقم الطالب: {{$student->student_id}}</b> 
+                <b>النقال: {{$student->mobile}}  	</b> 
             </div>
 
 

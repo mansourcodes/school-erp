@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -36,8 +36,8 @@
                     <thead>
                         <tr>
                             <th width="1%">#</th>
-                            <th width="20%">Ø§Ø³Ù… Ø§Ù„Ø·Ø§Ù„Ø¨</th>
-                            <th>Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ©</th>
+                            <th width="20%">اسم الطالب</th>
+                            <th>الدرجة النهائية</th>
                             @if (isset($curriculum['curriculum']->marks_labels['memorize_mark_details']))
                                 @foreach ($curriculum['curriculum']->marks_labels['memorize_mark_details'] as $memorize_mark_details)
                                     <th>

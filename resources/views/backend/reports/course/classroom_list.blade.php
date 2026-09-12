@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -35,31 +35,31 @@
 
                     <tbody>
                         <tr>
-                            <td>Ø§Ø³Ù… Ø§Ù„Ù…Ø¯Ø±Ø³</td>
+                            <td>اسم المدرس</td>
                             <td>{{ $curriculum['teacher_name'] ?? '' }}</td>
                         </tr>
                         <tr>
-                            <td>Ø±Ù‚Ù… Ø§Ù„ØµÙ</td>
+                            <td>رقم الصف</td>
                             <td>{{ $classRoom->class_room_number }} {{ $classRoom->class_room_name }}</td>
                         </tr>
                         <tr>
-                            <td>Ù…ÙƒØ§Ù† Ø§Ù„Ø¯Ø±Ø§Ø³Ø©</td>
+                            <td>مكان الدراسة</td>
                             <td>{{ $classRoom->class_room_name }}</td>
                         </tr>
                         <tr>
-                            <td>ÙŠÙˆÙ… ÙˆØªØ§Ø±ÙŠØ® Ø¨Ø¯Ø¡ Ø§Ù„Ø¯Ø±Ø§Ø³Ø©</td>
+                            <td>يوم وتاريخ بدء الدراسة</td>
                             <td>{{ $course->start_date->format('d-m-Y') }}</td>
                         </tr>
                         <tr>
-                            <td>ÙŠÙˆÙ… ÙˆØªØ§Ø±ÙŠØ® Ù†Ù‡Ø§ÙŠØ© Ø§Ù„Ø¯Ø±Ø§Ø³Ø©</td>
+                            <td>يوم وتاريخ نهاية الدراسة</td>
                             <td>{{ $course->end_date->format('d-m-Y') }}</td>
                         </tr>
                         <tr>
-                            <td>Ø¹Ø¯Ø¯ Ø§Ù„Ø³Ø§Ø¹Ø§Øª Ø§Ù„Ù…Ù‚Ø±Ø±Ø©</td>
+                            <td>عدد الساعات المقررة</td>
                             <td>{{ $course->duration }}</td>
                         </tr>
                         <tr>
-                            <td>ÙˆÙ‚Øª Ø§Ù„Ø¯Ø±Ø§Ø³Ø©</td>
+                            <td>وقت الدراسة</td>
                             <td>
                                 @isset($curriculum['days'])
                                     @foreach ($curriculum['days'] as $day)

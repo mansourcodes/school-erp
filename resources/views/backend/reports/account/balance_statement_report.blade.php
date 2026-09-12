@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -16,7 +16,7 @@
             {{ empty(Setting::get('balance_statement_report.title')) ? __('reports.balance_statement_report') : Setting::get('balance_statement_report.title') }}
         </h3>
 
-        <p class=" text-center">Ù‡Ø°Ø§ Ø§Ù„ØªÙ‚Ø±ÙŠØ± ÙŠØ¸Ù‡Ø± Ø§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ø¯Ø§ÙØ¹ÙŠÙ† ÙˆØ§Ù„ØºÙŠØ± Ù…ÙØ±ÙˆØ²ÙŠÙ† Ø¨Ø§Ù„Ø¥Ø¶Ø§ÙØ© Ù„Ù„Ù…ÙØ±ÙˆØ²ÙŠÙ†</p>
+        <p class=" text-center">هذا التقرير يظهر الطلاب الدافعين والغير مفروزين بالإضافة للمفروزين</p>
 
 
         {!! Setting::get('balance_statement_report.pre') !!}
@@ -37,13 +37,13 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Ø±Ù‚Ù… Ø§Ù„Ø±ØµÙŠØ¯</th>
-                    <th>Ø§Ù„ØªØ¯Ù‚ÙŠÙ‚ </th>
-                    <th>Ø§Ù„Ø±Ù‚Ù… </th>
-                    <th>Ø§Ù„Ø¥Ø³Ù…</th>
-                    <th>Ø§Ù„Ø¯ÙˆØ±Ø©</th>
-                    <th>Ø§Ù„Ù†ÙˆØ¹</th>
-                    <th>Ø§Ù„Ù…Ø¨Ù„Øº</th>
+                    <th>رقم الرصيد</th>
+                    <th>التدقيق </th>
+                    <th>الرقم </th>
+                    <th>الإسم</th>
+                    <th>الدورة</th>
+                    <th>النوع</th>
+                    <th>المبلغ</th>
                 </tr>
             </thead>
             <tbody>

@@ -1,4 +1,4 @@
-﻿@extends('backend.layouts.' . $print)
+@extends('backend.layouts.' . $print)
 
 
 @section('content')
@@ -23,14 +23,14 @@
                 <tr>
                     <td colspan="2">
                         <b>
-                            Ø§Ù„Ø§Ø³Ù…:
+                            الاسم:
                         </b>
 
                         {{ $student->name }}
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬:
+                            البرنامج:
                         </b>
 
                         {{ $classroom->course->academicPath->academic_path_type }}
@@ -39,7 +39,7 @@
                 <tr>
                     <td>
                         <b>
-                            Ø§Ù„Ù…Ø±Ø­Ù„Ø©:
+                            المرحلة:
                         </b>
 
                         {{ $classroom->course->academicPath->academic_path_name }}
@@ -48,17 +48,17 @@
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©:
+                            السنة الدراسية:
                         </b>
 
 
-                        {{ $classroom->course->hijri_year }} Ù‡_
+                        {{ $classroom->course->hijri_year }} ه_
 
-                        ({{ $classroom->course->course_year }} Ù…)
+                        ({{ $classroom->course->course_year }} م)
                     </td>
                     <td>
                         <b>
-                            Ø§Ù„ÙØµÙ„:
+                            الفصل:
                         </b>
                         {{ $classroom->course->semester }}
 
@@ -71,30 +71,30 @@
             <table class="table text-center ">
                 <tr>
                     <th rowspan="2 " class="align-middle">
-                        Ø¹Ø¯Ø¯ Ø£ÙŠØ§Ù… Ø§Ù„Ø¯Ø±Ø§Ø³Ø©
+                        عدد أيام الدراسة
                     </th>
                     <th rowspan="2" class="align-middle">
-                        Ø§Ù„Ø­Ø¶ÙˆØ±
+                        الحضور
                     </th>
                     <th colspan="2">
-                        Ø¹Ø¯Ø¯ Ø£ÙŠØ§Ù… Ø§Ù„ØºÙŠØ§Ø¨
+                        عدد أيام الغياب
                     </th>
                     <th colspan="2">
-                        Ø¹Ø¯Ø¯ Ø£ÙŠØ§Ù… Ø§Ù„ØªØ£Ø®ÙŠØ±
+                        عدد أيام التأخير
                     </th>
                 </tr>
                 <tr>
                     <th>
-                        Ø¨Ø¹Ø°Ø±
+                        بعذر
                     </th>
                     <th>
-                        Ù…Ù† Ø¯ÙˆÙ† Ø¹Ø°Ø±
+                        من دون عذر
                     </th>
                     <th>
-                        Ø¨Ø¹Ø°Ø±
+                        بعذر
                     </th>
                     <th>
-                        Ù…Ù† Ø¯ÙˆÙ† Ø¹Ø°Ø±
+                        من دون عذر
                     </th>
                 </tr>
                 <tr>
