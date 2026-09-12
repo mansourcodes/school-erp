@@ -255,9 +255,9 @@ class ClassRoomCrudController extends CrudController
         // $teachers_user_list =  \App\Models\User::role('Teacher')->pluck('name', 'id')->toArray();
 
 
-          dd(['conn' => config('database.default'), 'db' => \DB::connection()->getDatabaseName(), 'guard' =>
-            \Spatie\Permission\Guard::getDefaultName(new \App\Models\User), 'roles' => \DB::table('roles')->get(['id','name','guard_name'])->toArray(),
-            'env' => app()->environment(), 'php_sapi' => php_sapi_name()]);
+          dd(['auth_guards' => config('auth.guards'), 'auth_providers' =>
+  config('auth.providers'), 'auth_default' => config('auth.defaults.guard'), 'auth_facade_default'
+  => auth()->getDefaultDriver()]);
 
         CRUD::addField([   // repeatable
             'name'  => 'teachers',
