@@ -8,6 +8,11 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Student `iqraa_id_account` field (2026-10-12)
+  - Migration `2026_10_12_000000_add_iqraa_id_account_to_students_table` (nullable string, after `email`)
+  - Added to `Student::$fillable`, `StudentRequest` (`nullable|string|max:255`), and Student CRUD create/update form
+  - `students_names_sheet` report (`statisticReports?view=studentsNamesSheet`) now shows Iqraa account + email columns
+
 - Feature 02: Teacher role + attendance access (2026-05-20)
   - `ClassRoom.teachers` JSON now includes `user_id` per entry
   - `ClassRoom::getByDate()` filters by JSON `user_id` instead of pivot table

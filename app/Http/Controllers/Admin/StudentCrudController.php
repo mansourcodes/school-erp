@@ -146,6 +146,17 @@ class StudentCrudController extends CrudController
                 'autocomplete' => 'off'
             ]
         ]);
+        CRUD::addField([
+            'name' => 'iqraa_id_account',
+            'label' => trans('student.iqraa_id_account'),
+            'type' => 'text',
+            'wrapper'   => [
+                'class'      => 'form-group col-md-6'
+            ],
+            'attributes' => [
+                'autocomplete' => 'off'
+            ]
+        ]);
 
 
         CRUD::addField([

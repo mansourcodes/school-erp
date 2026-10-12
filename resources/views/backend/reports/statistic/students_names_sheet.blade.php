@@ -37,8 +37,10 @@
                         <tr>
                             <th width="1%">#</th>
                             <th>اسم الطالب</th>
-                            <th width="20%">الهاتف</th>
-                            <th width="20%">الهاتف 2</th>
+                            <th width="15%">الهاتف</th>
+                            <th width="15%">الهاتف 2</th>
+                            <th width="15%">{{ __('student.iqraa_id_account') }}</th>
+                            <th width="20%">{{ __('student.email') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,6 +53,8 @@
                                 </td>
                                 <td>{{ $student->mobile }} </td>
                                 <td>{{ $student->mobile2 }}</td>
+                                <td>{{ $student->iqraa_id_account }}</td>
+                                <td>{{ $student->email }}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -15,6 +15,8 @@ return [
 
     'email'         => 'البريد الإلكتروني',
 
+    'iqraa_id_account'         => 'حساب اقرأ',
+
 
 
 

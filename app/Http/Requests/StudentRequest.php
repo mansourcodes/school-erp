@@ -32,6 +32,7 @@ class StudentRequest extends FormRequest
             'name' => 'required',
             'cpr' => 'required|numeric',
             // 'email',
+            'iqraa_id_account' => 'nullable|string|max:255',
             'mobile' => 'required|numeric',
             'mobile2' => 'nullable|numeric',
             // 'dob',

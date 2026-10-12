@@ -77,3 +77,8 @@ Update this file after every meaningful implementation change.
 ### Localisation
 - Arabic (`ar/`) and English (`en/`) translation files for all domains
 - RTL Bootstrap 5 CDN in student portal layout
+
+### Student Iqraa account (2026-10-12)
+- `students.iqraa_id_account` column (nullable string) + model fillable + request validation
+- Field shown in Student CRUD create/update form (next to email)
+- Students names sheet report displays Iqraa account and email per student

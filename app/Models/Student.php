@@ -29,6 +29,7 @@ class Student extends Authenticatable
         'cpr',
         'password',
         'email',
+        'iqraa_id_account',
         'mobile',
         'mobile2',
         'dob',
