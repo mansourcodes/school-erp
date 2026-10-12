@@ -34,7 +34,7 @@
                             </div>
                             <div class="form-group col-6 col-md-4">
                                 <label>{{ __('classroom.start_time') }} </label>
-                                <div class="form-control h-auto">{{ $start_time->format('H:m') }}
+                                <div class="form-control h-auto">{{ $start_time->format('H:i') }}
                                     {{ __('base.' . $start_time->format('a')) }}
                                 </div>
                             </div>
@@ -157,7 +157,7 @@
 
 
         <input type="hidden" name="date" value="{{ $date->format('Y-m-d') }}" />
-        <input type="hidden" name="start_time" value="{{ $start_time->format('H:m') }}" />
+        <input type="hidden" name="start_time" value="{{ $start_time->format('H:i') }}" />
         <input type="hidden" name="curriculum_id" value="{{ $curriculum->id }}" />
         <input type="hidden" name="class_room_id" value="{{ $classroom->id }}" />
         <input type="hidden" name="course_id" value="{{ $classroom->course->id }}" />

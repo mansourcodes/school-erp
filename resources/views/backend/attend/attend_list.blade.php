@@ -65,7 +65,7 @@
                         <tr>
                             <td>{{ $chosen_date_long }}</td>
                             <td>
-                                {{ $active_attend_table['start_time']->format('h:m') }}
+                                {{ $active_attend_table['start_time']->format('h:i') }}
                                 {{ __('base.' . $active_attend_table['start_time']->format('a')) }}
                             </td>
                             <td>{{ $active_attend_table['curriculum']->long_name ?? 'ERROR' }}</td>
@@ -79,7 +79,7 @@
 
                                         <input type="hidden" name="date" value="{{ $chosen_date }}" />
                                         <input type="hidden" name="start_time"
-                                            value="{{ $active_attend_table['start_time']->format('H:m') }}" />
+                                            value="{{ $active_attend_table['start_time']->format('H:i') }}" />
                                         <input type="hidden" name="curriculum_id"
                                             value="{{ $active_attend_table['curriculum']->id ?? 'ERROR' }}" />
                                         <input type="hidden" name="class_room_id" value="{{ $classroom->id }}" />

@@ -248,7 +248,7 @@ class ClassRoom extends Model
 
 
                         $date_string = (new Carbon($date))->format('Y-m-d');
-                        $start_time = (new Carbon($attend_table['start_time']))->format('H:m');
+                        $start_time = (new Carbon($attend_table['start_time']))->format('H:i');
                         $attend_table_code = $date_string . '#' . $start_time . '#' . $classroom->code . '#' . $attend_table['curriculum_id'];
 
 

@@ -39,6 +39,16 @@
         }
     </style>
 
+    @php
+        $state_marks = [
+            'attend' => ['mark' => '✓', 'class' => 'text-success'],
+            'late' => ['mark' => 'ت', 'class' => 'text-primary'],
+            'late_w_excuse' => ['mark' => 'تع', 'class' => 'text-primary'],
+            'absent' => ['mark' => '✗', 'class' => 'text-danger'],
+            'absent_w_excuse' => ['mark' => 'غع', 'class' => 'text-danger'],
+        ];
+    @endphp
+
     @foreach ($attend_table as $attend_curriculum_table)
         <div class="page">
 
@@ -71,8 +81,10 @@
                             {{ $attend_curriculum_table['day_name'] }}
                         </b>
 
-                        {{ $attend_curriculum_table['start_time']->format('h:m') }}
-                        {{ __('base.' . $attend_curriculum_table['start_time']->format('a')) }}
+                        @if ($attend_curriculum_table['start_time'])
+                            {{ $attend_curriculum_table['start_time']->format('h:i') }}
+                            {{ __('base.' . $attend_curriculum_table['start_time']->format('a')) }}
+                        @endif
                     </td>
                     <td>
                         <b>
@@ -103,18 +115,46 @@
                         </th>
                     @endforeach
                 </tr>
+                @php
+                    $curriculum_states = $attend_states[$attend_curriculum_table['curriculum']->id] ?? [];
+                    $slot_hour = $attend_curriculum_table['start_time'] ? $attend_curriculum_table['start_time']->format('H') : null;
+                @endphp
                 @foreach ($classroom->students as $key => $student)
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <th class="onlinecontent text-right">{{ $student->name }}</th>
                         @foreach ($attend_curriculum_table['calander_days'] as $date)
-                            <td></td>
+                            @php
+                                $state = $curriculum_states[$date][$slot_hour][$student->id]
+                                    ?? $curriculum_states[$date]['*'][$student->id]
+                                    ?? null;
+                                $from_other_classroom = false;
+                                if (!$state) {
+                                    $state = $curriculum_states[$date]['other'][$student->id]
+                                        ?? $course_states[$date][$student->id]
+                                        ?? null;
+                                    $from_other_classroom = (bool) $state;
+                                }
+                            @endphp
+                            <td class="align-middle {{ $state ? $state_marks[$state]['class'] : '' }}"
+                                title="{{ $state ? __('attend.student_' . ($state == 'attend' ? 'attended' : $state)) : '' }}{{ $from_other_classroom ? ' (صف آخر)' : '' }}">
+                                {{ $state ? $state_marks[$state]['mark'] : '' }}{{ $from_other_classroom ? '*' : '' }}
+                            </td>
                         @endforeach
 
                     </tr>
                 @endforeach
 
             </table>
+
+            <p class="small">
+                @foreach ($state_marks as $state => $state_mark)
+                    <span class="mr-3 ml-1 {{ $state_mark['class'] }}"><b>{{ $state_mark['mark'] }}</b></span>
+                    {{ __('attend.student_' . ($state == 'attend' ? 'attended' : $state)) }}
+                @endforeach
+                <span class="mr-3 ml-1"><b>*</b></span>
+                مسجل في صف آخر من نفس الدورة
+            </p>
 
 
             {!! Setting::get('student_attend_list.pro') !!}

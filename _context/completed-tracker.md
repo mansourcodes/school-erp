@@ -82,3 +82,11 @@ Update this file after every meaningful implementation change.
 - `students.iqraa_id_account` column (nullable string) + model fillable + request validation
 - Field shown in Student CRUD create/update form (next to email)
 - Students names sheet report displays Iqraa account and email per student
+
+### Attend list report with recorded attendance (2026-10-12)
+- `reports?view=student_attend_list` fills each student/date cell from the `Attends` records
+  (✓ attended, ت late, تع late w/ excuse, ✗ absent, غع absent w/ excuse) with a legend per page
+
+### Attend start_time fix (2026-10-12)
+- Attend times saved/compared as `H:i` (was `H:m`, month instead of minutes)
+- Data-repair migration restores existing `attends.start_time` from classroom timetables

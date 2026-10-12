@@ -81,7 +81,7 @@ class Attends extends Model
     public function getCodeAttribute()
     {
         $date = (new Carbon($this->date))->format('Y-m-d');
-        $start_time = (new Carbon($this->start_time))->format('H:m');
+        $start_time = (new Carbon($this->start_time))->format('H:i');
 
         return $date . "#" . $start_time . "#" . $this->course_id . "#" . $this->class_room_id . "#" . $this->curriculum_id;
     }

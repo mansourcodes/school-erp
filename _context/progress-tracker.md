@@ -8,6 +8,26 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- `student_attend_list` report shows recorded attendance (2026-10-12)
+  - `AcademiaReportsController::reportStudentAttendList` builds `attend_states[curriculum_id][date][hour][student_id]`
+    from `Attends` of the classroom (eager-loaded 5 state relations)
+  - Matched by hour only (tolerates legacy/unrepaired times), with a curriculum+date fallback
+    for timetable slots that have an empty `start_time` (form then records the time it was opened)
+  - Student status comes only from the teacher's toggles in `attend_easy_form`; `start_time` just
+    identifies the session
+  - Classroom membership changes: new student → empty row; removed student → not rendered (old
+    pivot rows ignored, no FKs on `class_room_student` / `attends_student_*`); moved student → cells
+    filled from records of other classrooms in the same course on that date (same curriculum
+    preferred, else any), marked `*`. A record in this classroom always wins (manual correction).
+  - Guarded null `attend_table` / `teachers` in `reportStudentAttendList`
+  - View renders ✓ / ت / تع / ✗ / غع per cell plus a legend
+
+- Fixed attend `start_time` minutes bug (2026-10-12)
+  - `'H:m'` (m = month) → `'H:i'` in attend forms, `Attends::code`, `ClassRoom::getByDate`, report header
+  - Migration `2026_10_12_100000_repair_attends_start_time_minutes` restores real times from the
+    classroom `attend_table` slot (same curriculum + week day + hour); logs repaired/skipped ids.
+    `down()` is a no-op. Run on production with a DB backup first.
+
 - Student `iqraa_id_account` field (2026-10-12)
   - Migration `2026_10_12_000000_add_iqraa_id_account_to_students_table` (nullable string, after `email`)
   - Added to `Student::$fillable`, `StudentRequest` (`nullable|string|max:255`), and Student CRUD create/update form
@@ -28,7 +48,9 @@ Update this file after every meaningful implementation change.
 
 ## Open Questions
 
-- None currently logged.
+- Some `ClassRoom.attend_table` slots have an empty `start_time` (e.g. classroom 897, curriculum 1).
+  `Carbon::parse('')` = now, so the attend form/list show and save the current time. Should start_time
+  be required in the ClassRoom CRUD timetable?
 
 ## Architecture Decisions
 
