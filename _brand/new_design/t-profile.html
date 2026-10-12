@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>حسابي · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+</head>
+<body data-page="t-profile" data-title="حسابي">
+<main class="space-y-4">
+  <section class="card-soft overflow-hidden">
+    <div class="hero-band bg-pattern h-24"></div>
+    <div class="px-5 pb-5 -mt-14 flex flex-col gap-3">
+      <div id="avatar"></div>
+      <div><h2 class="font-display text-xl" id="name"></h2><p class="text-sm opacity-70">مدرّس · لوحة المدرّس</p></div>
+    </div>
+  </section>
+
+  <div role="note" class="alert alert-soft alert-info"><i data-lucide="info" class="size-5"></i><span>لتعديل بياناتك أو تغيير كلمة المرور يرجى مراجعة <b>قسم إدارة المركز</b>.</span></div>
+
+  <section class="grid gap-4 lg:grid-cols-2">
+    <div class="card-soft p-5">
+      <h3 class="font-display text-lg mb-4 flex items-center gap-2"><i data-lucide="contact" class="size-5 text-primary"></i>بيانات الحساب</h3>
+      <dl class="kv grid gap-y-4">
+        <div><dt>البريد الإلكتروني (اسم الدخول)</dt><dd class="ltr" id="email"></dd></div>
+        <div><dt>الهاتف</dt><dd class="num ltr" id="mobile"></dd></div>
+      </dl>
+    </div>
+    <div class="card-soft p-5">
+      <h3 class="font-display text-lg mb-4 flex items-center gap-2"><i data-lucide="school" class="size-5 text-primary"></i>الصفوف المسندة</h3>
+      <ul class="space-y-2" id="rooms"></ul>
+      <p class="text-xs opacity-60 mt-3">تُسند الصفوف من قِبل الإدارة عبر بيانات الصف.</p>
+    </div>
+    <div class="card-soft p-5 space-y-4 lg:col-span-2">
+      <h3 class="font-display text-lg flex items-center gap-2"><i data-lucide="sun" class="size-5 text-primary"></i>المظهر</h3>
+      <div class="join w-full" role="group" aria-label="المظهر">
+        <button class="btn join-item flex-1" data-theme-set="system"><i data-lucide="monitor" class="size-4"></i>حسب الجهاز</button>
+        <button class="btn join-item flex-1" data-theme-set="light"><i data-lucide="sun" class="size-4"></i>فاتح</button>
+        <button class="btn join-item flex-1" data-theme-set="dark"><i data-lucide="moon" class="size-4"></i>داكن</button>
+      </div>
+      <a href="login.html" class="btn btn-outline btn-error btn-block btn-lg sm:btn-md"><i data-lucide="log-out" class="size-4"></i>تسجيل الخروج</a>
+    </div>
+  </section>
+</main>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, t = T.teacher;
+    document.getElementById("avatar").innerHTML = T.ui.teacherAvatar("w-24 h-32", "text-4xl");
+    document.getElementById("name").textContent = t.name;
+    document.getElementById("email").textContent = t.email;
+    document.getElementById("mobile").textContent = t.mobile;
+    document.getElementById("rooms").innerHTML = T.current.map(function (c) {
+      return '<li><a href="t-classroom.html?id=' + c.id + '" class="flex items-center justify-between gap-2 rounded-field bg-base-200 px-3 min-h-12 active:bg-base-300"><span>الصف <b class="num">' + c.number + "</b> · " + GH.esc(c.curriculum.name) + '</span><i data-lucide="chevron-left" class="size-4 opacity-50"></i></a></li>';
+    }).join("");
+    GH.icons();
+  });
+</script>
+</body>
+</html>

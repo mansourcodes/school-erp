@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>إحصائيات الصفوف · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+  <style>
+    .bar-track { height: .6rem; border-radius: 4px; background: var(--viz-grid); }
+    .bar-fill  { height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; background: var(--viz-1); }
+    .stack { display: flex; gap: 2px; height: 2.25rem; }
+    .stack > span { background-color: var(--c); min-width: 3px; }
+    .stack > span:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
+    .stack > span:last-child  { border-start-end-radius: 6px; border-end-end-radius: 6px; }
+  </style>
+</head>
+<body data-page="t-stats" data-title="إحصائيات الصفوف" data-states="ready:بيانات كاملة,loading:جارٍ التحميل">
+<main class="space-y-4">
+
+  <div class="rail" id="rooms" role="group" aria-label="الصف"></div>
+
+  <div data-state="ready" class="space-y-4">
+    <section class="grid gap-4 lg:grid-cols-[1.1fr_2fr]">
+      <div class="card-soft p-4 sm:p-6 bg-pattern bg-pattern-ink">
+        <p class="text-sm opacity-70" id="hero-label"></p>
+        <p class="text-5xl sm:text-6xl font-semibold mt-1 tracking-tight num" id="hero"></p>
+        <div class="bar-track mt-4" role="meter" aria-valuemin="0" aria-valuemax="100" aria-label="نسبة الحضور" id="hero-meter"><div class="bar-fill" id="hero-fill"></div></div>
+        <p class="text-sm opacity-70 mt-3" id="hero-sub"></p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 sm:gap-4" id="kpis"></div>
+    </section>
+
+    <section class="card-soft p-4 sm:p-6">
+      <h2 class="font-display text-lg">توزيع حالات الحضور</h2>
+      <p class="text-sm opacity-60 mb-4">من إجمالي سجلات الطلاب في الحصص المرصودة</p>
+      <div class="stack" id="stack" role="img"></div>
+      <ul class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-4" id="legend"></ul>
+    </section>
+
+    <!-- Students who need follow-up -->
+    <section class="card-soft p-4 sm:p-6">
+      <div class="flex items-baseline justify-between gap-3">
+        <h2 class="font-display text-lg flex items-center gap-2"><i data-lucide="circle-alert" class="size-5 text-error"></i>طلاب يحتاجون متابعة</h2>
+        <span class="text-sm opacity-60 num" id="risk-count"></span>
+      </div>
+      <p class="text-sm opacity-60 mb-3">حضور أقل من 80% أو 3 غيابات فأكثر</p>
+      <ul class="divide-y divide-base-300 -mx-2" id="risk"></ul>
+    </section>
+
+    <!-- Per classroom (only in "all" view) -->
+    <section class="card-soft p-4 sm:p-6" id="by-room-box">
+      <h2 class="font-display text-lg mb-4">نسبة الحضور حسب الصف</h2>
+      <ul class="space-y-4" id="by-room"></ul>
+    </section>
+
+    <details class="card-soft p-4 sm:p-6 group">
+      <summary class="list-none cursor-pointer flex items-center justify-between min-h-10">
+        <span class="font-display text-lg flex items-center gap-2"><i data-lucide="table-2" class="size-5 text-primary"></i>جميع الطلاب</span>
+        <i data-lucide="chevron-down" class="size-5 opacity-60 group-open:rotate-180 transition-transform"></i>
+      </summary>
+      <div class="overflow-x-auto mt-3" id="table"></div>
+    </details>
+  </div>
+
+  <div data-state="loading" class="space-y-4" aria-busy="true"><div class="skeleton h-40 w-full"></div><div class="skeleton h-32 w-full"></div><div class="skeleton h-64 w-full"></div></div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, S = GH.STATES, ORDER = GH.STATE_ORDER, sel = new URLSearchParams(location.search).get("room") || "all";
+    var railEl = document.getElementById("rooms");
+    railEl.innerHTML = [{ id: "all", label: "كل الصفوف" }].concat(T.current.map(function (c) { return { id: String(c.id), label: "الصف " + c.number }; }))
+      .map(function (o) { return '<button class="chip" data-room="' + o.id + '" aria-pressed="' + (o.id === sel) + '">' + o.label + "</button>"; }).join("");
+    railEl.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-room]"); if (!b) return; sel = b.getAttribute("data-room");
+      railEl.querySelectorAll("[data-room]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      render();
+    });
+
+    function render() {
+      var rooms = sel === "all" ? T.current : [T.roomById(sel)];
+      var per = rooms.map(function (c) { return { room: c, s: T.roomStats(c) }; });
+      var c0 = { present: 0, late: 0, late_excused: 0, absent: 0, absent_excused: 0, unrecorded: 0 }, rec = 0, att = 0, sessions = 0, pending = 0, students = [];
+      per.forEach(function (p) {
+        Object.keys(c0).forEach(function (k) { c0[k] += p.s.counts[k]; });
+        rec += p.s.recorded; att += p.s.attended; sessions += p.s.sessions; pending += p.s.pending.length;
+        p.s.students.forEach(function (x) { x.room = p.room; students.push(x); });
+      });
+      var rate = rec ? att / rec * 100 : 0, punctual = rec ? c0.present / rec * 100 : 0;
+
+      document.getElementById("hero-label").textContent = sel === "all" ? "نسبة الحضور في جميع صفوفك" : "نسبة الحضور في الصف " + rooms[0].number;
+      document.getElementById("hero").textContent = GH.pct(rate);
+      document.getElementById("hero-fill").style.width = rate + "%";
+      document.getElementById("hero-meter").setAttribute("aria-valuenow", Math.round(rate));
+      document.getElementById("hero-sub").innerHTML = "الحضور في الموعد <b class='num'>" + GH.pct(punctual) + "</b> · " + sessions + " حصة مرصودة" + (pending ? " · <span class='text-warning-content'>" + pending + " بانتظار الرصد</span>" : "");
+
+      function tile(icon, label, val, sub) { return '<div class="card-soft p-3.5 sm:p-4"><p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="' + icon + '" class="size-4 text-primary"></i>' + label + '</p><p class="text-2xl sm:text-3xl font-semibold mt-1.5 num">' + val + '</p><p class="text-xs opacity-60 mt-1">' + sub + "</p></div>"; }
+      document.getElementById("kpis").innerHTML =
+        tile("users-round", "الطلاب", students.length, rooms.length + (rooms.length === 1 ? " صف" : " صفوف")) +
+        tile("circle-check", "حضور في الموعد", c0.present, GH.pct(punctual) + " من السجلات") +
+        tile("clock", "تأخير", c0.late + c0.late_excused, "منها " + c0.late_excused + " بعذر") +
+        tile("circle-x", "غياب", c0.absent + c0.absent_excused, "منها " + c0.absent_excused + " بعذر");
+
+      var parts = ORDER.filter(function (k) { return c0[k]; });
+      var st = document.getElementById("stack");
+      st.setAttribute("aria-label", parts.map(function (k) { return S[k].label + " " + c0[k]; }).join("، "));
+      st.innerHTML = parts.map(function (k) { return '<span class="' + S[k].cls + (S[k].excused ? " hatch" : "") + '" style="flex:' + c0[k] + ' 1 0" title="' + S[k].label + " " + c0[k] + '"></span>'; }).join("");
+      document.getElementById("legend").innerHTML = ORDER.map(function (k) { return '<li class="flex items-center gap-2">' + GH.pip(k) + '<div class="leading-tight"><p class="text-sm">' + S[k].label + '</p><p class="text-xs opacity-60 num">' + c0[k] + " · " + GH.pct(rec ? c0[k] / rec * 100 : 0) + "</p></div></li>"; }).join("");
+
+      var risk = students.filter(function (x) { return x.recorded && (x.rate < 80 || x.absences >= 3); }).sort(function (a, b) { return a.rate - b.rate; });
+      document.getElementById("risk-count").textContent = risk.length + " طالب";
+      document.getElementById("risk").innerHTML = risk.length ? risk.map(function (x) {
+        return '<li><a href="t-classroom.html?id=' + x.room.id + '" class="min-h-16 px-2 py-2.5 flex items-center gap-3 rounded-field active:bg-base-200 hover:bg-base-200/60">' + T.ui.photo(x.student, "w-10 h-12") +
+          '<div class="min-w-0 flex-1"><p class="font-medium truncate">' + GH.esc(x.student.name) + '</p><p class="text-xs opacity-60">الصف <span class="num whitespace-nowrap">' + x.room.number + "</span> · غياب <b class=\"num\">" + x.absences + "</b> · تأخير <span class=\"num\">" + (x.counts.late + x.counts.late_excused) + "</span></p></div>" +
+          '<p class="font-semibold num text-error shrink-0">' + GH.pct(x.rate) + "</p></a></li>";
+      }).join("") : '<li class="py-6 text-center text-sm opacity-70">لا يوجد طلاب بحاجة إلى متابعة</li>';
+
+      var box = document.getElementById("by-room-box"); box.hidden = sel !== "all";
+      document.getElementById("by-room").innerHTML = per.map(function (p) {
+        return '<li class="grid grid-cols-[5.5rem_1fr_3.5rem] items-center gap-3"><a class="text-sm link link-hover" href="t-classroom.html?id=' + p.room.id + '">الصف <span class="num whitespace-nowrap">' + p.room.number + "</span></a>" +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + p.s.rate + '%"></div></div><span class="text-sm font-semibold num text-end">' + GH.pct(p.s.rate) + "</span></li>";
+      }).join("");
+
+      var rows = students.slice().sort(function (a, b) { return a.rate - b.rate; });
+      document.getElementById("table").innerHTML = '<table class="table table-sm"><thead><tr><th>الطالب</th>' + (sel === "all" ? "<th>الصف</th>" : "") + '<th class="text-end">حضور</th><th class="text-end">تأخير</th><th class="text-end">غياب</th><th class="text-end">النسبة</th></tr></thead><tbody>' +
+        rows.map(function (x) { return "<tr><td>" + GH.esc(x.student.name) + "</td>" + (sel === "all" ? '<td class="num">' + x.room.number + "</td>" : "") + '<td class="text-end num">' + x.attended + "/" + x.recorded + '</td><td class="text-end num">' + (x.counts.late + x.counts.late_excused) + '</td><td class="text-end num">' + x.absences + '</td><td class="text-end num font-semibold">' + GH.pct(x.rate) + "</td></tr>"; }).join("") + "</tbody></table>";
+      GH.icons();
+    }
+    render();
+  });
+</script>
+</body>
+</html>

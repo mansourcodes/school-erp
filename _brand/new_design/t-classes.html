@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>صفوفي · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+</head>
+<body data-page="t-classes" data-title="صفوفي" data-states="ready:بيانات كاملة,empty:لا صفوف مسندة,loading:جارٍ التحميل">
+<main class="space-y-4">
+  <p class="text-sm opacity-70 flex items-center gap-1.5" data-state="ready"><i data-lucide="book-open" class="size-4 text-primary"></i><span id="course"></span></p>
+  <div data-state="ready" class="grid gap-3 md:grid-cols-2 xl:grid-cols-3" id="list"></div>
+  <div data-state="empty" class="card-soft" id="empty"></div>
+  <div data-state="loading" class="space-y-3" aria-busy="true"><div class="skeleton h-36 w-full"></div><div class="skeleton h-36 w-full"></div></div>
+</main>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T;
+    document.getElementById("course").textContent = "الدورة الحالية: " + GH.DEMO.current.long_name;
+    document.getElementById("empty").innerHTML = GH.ui.empty("school", "لا توجد صفوف مسندة إليك", "عند إسنادك إلى صف من قِبل الإدارة سيظهر هنا.");
+    document.getElementById("list").innerHTML = T.current.map(function (c) {
+      var s = T.roomStats(c);
+      var days = c.slots.map(function (sl) { return GH.DAYS_SHORT[sl.day] + " " + GH.fmtTime(sl.start); }).join(" · ");
+      return '<a href="t-classroom.html?id=' + c.id + '" class="card-soft p-4 block active:bg-base-200 hover:border-primary/40 transition-colors">' +
+        '<div class="flex items-start gap-3"><div class="arch w-11 h-14 bg-primary/10 text-primary grid place-items-center shrink-0 font-display font-bold num">' + c.number + "</div>" +
+        '<div class="min-w-0 flex-1"><h2 class="font-display text-base leading-snug">الصف <span class="num whitespace-nowrap">' + c.number + "</span> · " + GH.esc(c.curriculum.name) + "</h2>" +
+        '<p class="text-xs opacity-70 truncate">' + GH.esc(c.place) + '</p><p class="text-xs opacity-70 mt-0.5 num">' + days + "</p></div>" +
+        '<i data-lucide="chevron-left" class="size-5 opacity-40 shrink-0 mt-1"></i></div>' +
+        '<div class="grid grid-cols-3 gap-2 mt-4 text-center">' +
+          '<div class="rounded-field bg-base-200 py-2"><p class="text-lg font-semibold num">' + c.students.length + '</p><p class="text-[11px] opacity-70">طالب</p></div>' +
+          '<div class="rounded-field bg-base-200 py-2"><p class="text-lg font-semibold num">' + GH.pct(s.rate) + '</p><p class="text-[11px] opacity-70">الحضور</p></div>' +
+          '<div class="rounded-field py-2 ' + (s.pending.length ? "bg-warning/20" : "bg-base-200") + '"><p class="text-lg font-semibold num">' + s.pending.length + '</p><p class="text-[11px] opacity-70">بانتظار الرصد</p></div>' +
+        "</div></a>";
+    }).join("");
+    GH.icons();
+  });
+</script>
+</body>
+</html>

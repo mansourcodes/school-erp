@@ -233,3 +233,6 @@ input, select, textarea { font-size: max(16px, 1em); }                          
 @media (min-width: 640px) { .sheet-grip { display: none; } }
 /* hover effects only where hover exists */
 @media (hover: none) { .hover-lift:hover { transform: none; } }
+
+/* divide colour (CDN daisyUI ships border-base-300 but not divide-base-300) */
+.divide-base-300 > :not(:last-child) { border-color: var(--color-base-300); }

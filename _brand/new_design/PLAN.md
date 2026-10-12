@@ -1,6 +1,6 @@
-# Al-Ghadeer Portal — Student Frontend Redesign Plan
+# Al-Ghadeer Portal — Student & Teacher Frontend Plan
 
-> Status: **Phase 1 (design) delivered** in this folder · 2026-10-12
+> Status: **Phase 1 (design) delivered** in this folder, student panel + teacher panel · 2026-10-12
 > Supersedes the Blade/Alpine approach in `_context/feature/01-frontend-student-react.md`.
 > Phase 2 is a React SPA that talks to Laravel only through a versioned JSON API.
 > **Rollout: the new panel launches as a beta at `/beta`, and the current student portal (`/login`, `/dashboard`) stays active and unchanged** until the centre decides to switch (§4 “Beta rollout”).
@@ -13,7 +13,7 @@
 |---|---|---|
 | **1 — Design** (now) | Static HTML + Tailwind 4 + DaisyUI 5 mockups, every screen + state | `_brand/new_design/*.html` |
 | **2 — Build** (next) | React + Redux Toolkit + RTK Query + DaisyUI SPA; Laravel JSON API under `/api/v1` | `frontend/` app + `app/Http/Controllers/Api/V1/*` |
-| **3 — Teacher** (future) | Same login, teacher role: attendance editing, classroom stats, student photos | New routes in the same SPA |
+| **3 — Teacher** (design done, build after student) | Same login, teacher role: attendance editing, classroom stats, student photos | `t-*.html` mockups; `/beta/teacher/*` routes in the same SPA |
 
 ### Student requirements → screens
 
@@ -28,6 +28,18 @@
 | Forgot/reset password → “visit the centre administration” | Login dialog + Profile note | `login.html`, `profile.html` |
 | Protect login from attacks and bots | Login states + §6 | `login.html` |
 | Shared error/empty/loading states | System states | `states.html` |
+
+### Teacher requirements → screens (§8)
+
+| Requirement | Screen | File |
+|---|---|---|
+| Teacher login (same login screen) | Login, “مدرّس” tab | `login.html?role=teacher` |
+| Add or edit attendance records | Today + attendance roster | `t-home.html`, `t-attendance.html` |
+| Read + edit the current course (active + latest + one) | My classes + classroom | `t-classes.html`, `t-classroom.html` |
+| Read-only archived courses | Classroom in locked mode (no archive list page; entry point open, §10) | `t-classroom.html?id=870` |
+| Classroom statistics | Classroom stats | `t-stats.html` |
+| Upload / delete student photos (own classrooms) | Classroom → student sheet | `t-classroom.html` |
+| Account, password notice, theme, logout | Profile | `t-profile.html` |
 
 Open `index.html` for the screen gallery and live token swatches. Every page has a **“حالات التصميم”** pill (mockup-only) that switches between ready / loading / empty / error states.
 
@@ -371,18 +383,74 @@ Envelope: `{ "data": …, "meta": { … } }`. Errors: `{ "message": "…", "erro
 
 ---
 
-## 8. Phase 3: teacher (same login)
+## 8. Teacher panel (same login, same SPA)
 
-| Capability | Rule | API sketch |
+Designed in this folder (`t-*.html`, data + components in `assets/teacher.js`). It uses the same design system, shell, and mobile-first rules as the student panel. The phone is again the main target, because teachers record attendance **in class, one-handed**.
+
+### Access rules (enforced by the API, reflected in the UI)
+| Rule | Detail |
+|---|---|
+| Who | `User` with the Spatie `Teacher` role, `web` guard via Sanctum (`sanctum.guard = ['student','web']`). `/me.role` decides which shell and nav render. |
+| Which classrooms | Only classrooms where `ClassRoom.teachers[].user_id = me` (the existing JSON filter in `ClassRoom::getByDate()`). A teacher never sees other teachers' classrooms. |
+| Current course | Active + latest + one only. **Read + edit**: attendance records and student photos. |
+| Archived courses | `is_active = 0`, **read only**. The UI shows lock badges and hides edit controls; the API answers writes with 403. |
+| Future sessions | Can be opened (to view the list) but not recorded until the session starts. **Proposed** (§10). |
+
+### Navigation (teacher dock / sidebar)
+| Tab | Label | Icon | Route (under `/beta/teacher`) |
+|---|---|---|---|
+| Today | اليوم | calendar-clock | `/` (+ `/attendance/:code` opened from here) |
+| Classes | صفوفي | school | `/classes`, `/classes/:id` |
+| Stats | إحصائيات | chart-pie | `/stats?room=` |
+| Profile | حسابي | user-round | `/profile` |
+
+The attendance roster is a **task screen**: a back arrow replaces the logo, the dock is hidden, and a sticky save bar sits at the bottom.
+
+### Screens
+1. **Login** (`login.html?role=teacher`): the “مدرّس” tab swaps the CPR field for **email** (`inputmode=email`, `autocomplete=username`) and keeps the same password field, bot check, lockout and generic errors (§6). Success goes to the teacher “اليوم” screen.
+2. **اليوم** (`t-home.html`):
+   - Greeting with Gregorian + Hijri date and the current course.
+   - A **warning card for past sessions that were never recorded**, each with “رصد الحضور الآن”.
+   - Today's sessions in time order: the session **in progress** is highlighted with a full-width “رصد الحضور” button; recorded sessions show their tally and “تعديل”; later sessions show “القائمة”.
+   - Tiles: classrooms, students, attendance rate, pending sessions. Then the next 3 upcoming sessions.
+3. **رصد الحضور** (`t-attendance.html?code=`):
+   - Header: the **date is the largest line** (weekday + day + month), then Hijri date and time, then classroom, subject, place, status badge, “last edited” time, and previous/next session buttons.
+   - Sticky toolbar: two quick actions, **“الكل حاضر”** and **“الكل غائب”**, which set every student at once (undo restores the saved state), plus a live tally per state and “بدون تحديد”. There is no search: a class roster is short enough to scroll.
+   - One card per student: a large arch photo (64×96) spanning both rows of the card, then name, ID and current state chip, then a **five-button segmented control** (✓ حاضر / ت متأخر / تع متأخر بعذر / ✗ غائب / غع غائب بعذر). Buttons are 48px high, use the status colours, hatch the excused states, and give haptic feedback where supported. Changed rows get an edge marker.
+   - Sticky save bar: “x من y تم تحديدهم”, a hint, **undo**, and **حفظ**. Saving is enabled only when every student has a state and something changed. Leaving with unsaved changes warns first.
+   - Read-only variants: archived course (lock banner, chips only) and not-started session (info banner, list only).
+4. **صفوفي** (`t-classes.html`): one card per current classroom with number, subject, place, weekly slots, students, attendance rate, and pending count (highlighted when above 0).
+5. **الصف** (`t-classroom.html?id=`): hero with classroom, subject, place, course and slots. Three tabs:
+   - **الطلاب:** search, then rows with photo / “بدون صورة” marker, ID, rate (red below 80%) and absences. Tapping a row opens the **student sheet**: big arch photo, rate / late / absent, **التقاط صورة** (`capture="environment"`, the rear camera, since the teacher photographs the student), **من المعرض**, and **حذف الصورة**, which asks for confirmation in a second in-page sheet (never `confirm()`).
+   - **الحصص:** pending first, then the next 2 upcoming, then recorded sessions newest-first. Each opens the roster.
+   - **معلومات:** classroom and course details.
+   - In an archived classroom, the photo actions are replaced by a lock note and sessions open read-only.
+6. **إحصائيات الصفوف** (`t-stats.html`): a classroom chip rail (كل الصفوف / each classroom), then:
+   - The headline rate with a meter.
+   - Tiles for students, on time, late, and absent.
+   - The status breakdown bar (status colours + hatch, same as the student stats).
+   - **طلاب يحتاجون متابعة**: rate < 80% or ≥ 3 absences, sorted worst first and linking to the classroom.
+   - Rate per classroom (in “all” view only, a single-series bar).
+   - A folded table of all students.
+7. **حسابي** (`t-profile.html`): name, email (login), phone, assigned classrooms, the “visit the administration” password note, theme, and logout.
+
+### Teacher API (v1)
+| Method | Path | Notes |
 |---|---|---|
-| Login | Teacher tab on the same screen; `User` with Spatie `Teacher` role, `web` guard via Sanctum (`sanctum.guard = ['student','web']`). `/me.role` drives which shell/nav renders. | `POST /auth/login {role:"teacher", email/username, password}` |
-| Current course | **Read + edit**: active + latest + one only, limited to classrooms where `ClassRoom.teachers[].user_id = me` (existing JSON filter in `ClassRoom::getByDate()`) | `GET /teacher/courses/current` |
-| Archived courses | **Read-only** (`is_active = 0`); the API rejects writes with 403 | `GET /teacher/courses?status=archived` |
-| Attendance | Add/edit records per session, current course only; reuses the `attend_easy_form` save logic and the `date#time#classroom#curriculum` code invariant | `GET/PUT /teacher/classrooms/{id}/sessions/{code}` |
-| Classroom stats | Per-classroom rate, per-student table, at-risk list (built from the same attendance service) | `GET /teacher/classrooms/{id}/stats` |
-| Student photos | Upload/delete for students **in the teacher's own current classrooms** only | `POST/DELETE /teacher/classrooms/{id}/students/{sid}/photo` |
+| GET | `/api/v1/teacher/today` | Today's sessions across my current classrooms + pending (unrecorded past) sessions |
+| GET | `/api/v1/teacher/classrooms?status=current\|archived` | My classrooms with counts and rate |
+| GET | `/api/v1/teacher/classrooms/{id}` | Classroom detail: slots, students (with `photo_url`, per-student summary), `readonly` |
+| GET | `/api/v1/teacher/classrooms/{id}/sessions` | Expected sessions from `attend_table` + recorded status |
+| GET | `/api/v1/teacher/sessions/{code}` | Roster + states for one session. `code` = `date#time#classroom#curriculum` (URL-encoded) |
+| PUT | `/api/v1/teacher/sessions/{code}` | `{ states: { student_id: state } }`, all students required. Writes `Attends` + the five `attends_student_*` pivots through the same service as `SaveAttendEasyForm`. Returns `updated_at`. 403 if archived or not started. |
+| GET | `/api/v1/teacher/stats?classroom_id=` | Same metrics as §7.4, plus `students[]` and `follow_up[]` |
+| POST | `/api/v1/teacher/classrooms/{id}/students/{sid}/photo` | Multipart upload, same validation and re-encode as the student upload (§5.8). 403 unless it's my current classroom. |
+| DELETE | `/api/v1/teacher/classrooms/{id}/students/{sid}/photo` | Removes the file + `photo_path`. Same scope check. |
 
-UI: the same `AppShell` with a different nav (اليوم / الحضور / صفوفي / الإحصائيات / حسابي). The design tokens and components (`StatusChip`, calendar, `StatusStack`) are reused. The attendance editor is a per-session roster with large segmented toggles (✓ / ت / تع / ✗ / غع), designed mobile-first for in-class use.
+`PUT` is idempotent (it is the attendance-sheet save), so a retry after a flaky connection is safe. RTK Query invalidates `Session`, `Today`, `Classroom` and `Stats` tags on save.
+
+### Audit
+Every teacher write (attendance save, photo upload/delete) is logged with user, classroom, session code and timestamp. The “last edited” line in the roster comes from this. **Proposed** (§10).
 
 ---
 
@@ -400,7 +468,8 @@ UI: the same `AppShell` with a different nav (اليوم / الحضور / صفو
 | P2.7 | **Beta launch at `/beta`** | SPA built into `public/beta`; `/beta/{path?}` fallback route + `PORTAL_BETA_ENABLED` flag; “تجريبي” badge + link back to the old portal; old `/login` and `/dashboard` verified unchanged; RTL + a11y audit (keyboard, contrast, screen reader on charts) |
 | P2.8 | Beta feedback | A beta period with real students (length set by the centre); bugs fixed; usage compared between old and new portal |
 | P2.9 | Promote to default | After the centre approves: `/` and `/login` point to the new panel; `/beta` kept as a redirect; old Blade portal retired later as its own change |
-| P3 | Teacher | §8 |
+| P3.1 | Teacher API | §8 endpoints + scope policy (own classrooms, current = write, archived = read) + feature tests for 403 cases |
+| P3.2 | Teacher SPA | Teacher shell + today, roster (save / undo / leave-guard), classes, classroom + photo sheet, stats, profile, under `/beta/teacher` |
 
 ---
 
@@ -414,3 +483,9 @@ UI: the same `AppShell` with a different nav (اليوم / الحضور / صفو
 6. **Turnstile:** is a Cloudflare dependency acceptable, or should we use only rate limiting + honeypot + a challenge after N failures?
 7. ~~**URL:** `/` or `/portal`?~~ **Decided:** beta at `/beta`, and the old portal stays active (§4). Still open: how long is the beta, and who approves promoting it to the default?
 8. **Add to Home Screen:** ship a web-app manifest + icons so the portal installs like an app on phones?
+9. **Teacher: future sessions:** block recording until the session starts (proposed), or allow it any time?
+10. **Teacher: edit window:** can a teacher edit any past session of the current course (proposed), or only within N days?
+11. **Teacher: photos:** should a teacher-uploaded student photo replace the student's own upload directly, or does the admin approve it? Should students be told?
+12. **Teacher: audit log:** keep a per-change log of attendance edits and photo actions (proposed)?
+13. **Admin vs teacher roles:** the current Backpack redirect sends teachers to `/admin/add_attend_by_date`. Once the teacher panel is live, should teacher logins be sent to `/beta/teacher` instead?
+14. **Teacher: archived courses:** the teacher archive page was removed. Archived classrooms still have a read-only view (`t-classroom.html?id=870`), but no screen links to it. Should they be reachable (e.g. a “سابقة” section in صفوفي), or are archived courses not needed for teachers?

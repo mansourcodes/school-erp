@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>رصد الحضور · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+  <style>
+    /* 5-state segmented control — status colours, hatch = excused, 48px targets */
+    .seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+    .seg button { min-height: 3rem; border-radius: .7rem; background: var(--color-base-200); display: flex; flex-direction: column;
+                  align-items: center; justify-content: center; gap: 1px; line-height: 1.1; font-size: .625rem; color: color-mix(in oklab, var(--color-base-content) 75%, transparent); }
+    .seg button b { font-size: .95rem; font-weight: 700; color: var(--color-base-content); }
+    .seg button[aria-pressed="true"] { background-color: var(--c); color: #111; box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--c) 70%, #000); }
+    .seg button[aria-pressed="true"] b { color: #111; }
+    .seg button.st-present[aria-pressed="true"], .seg button.st-present[aria-pressed="true"] b,
+    .seg button.st-absent[aria-pressed="true"], .seg button.st-absent[aria-pressed="true"] b,
+    .seg button.st-absent-excused[aria-pressed="true"], .seg button.st-absent-excused[aria-pressed="true"] b { color: #fff; }
+    .row-dirty { box-shadow: inset 3px 0 0 var(--color-primary); }
+    [dir="rtl"] .row-dirty { box-shadow: inset -3px 0 0 var(--color-primary); }
+  </style>
+</head>
+<body data-page="t-attendance" data-title="رصد الحضور" data-back="t-home.html" data-dock="none">
+<main class="space-y-3 !pb-36 lg:!pb-36">
+
+  <!-- Session header -->
+  <section class="card-soft p-4">
+    <div class="flex items-start gap-3">
+      <div class="min-w-0 flex-1">
+        <p class="font-display text-2xl sm:text-3xl leading-tight" id="h-date"></p>
+        <p class="text-sm opacity-75 mt-0.5" id="h-when"></p>
+        <div class="flex items-center gap-2 flex-wrap mt-3"><h2 class="font-display text-lg">الصف <span class="num whitespace-nowrap" id="h-room"></span></h2><span id="h-badge"></span></div>
+        <p class="text-sm opacity-80" id="h-cur"></p>
+      </div>
+      <div class="join shrink-0" aria-label="التنقل بين الحصص">
+        <a class="btn btn-square join-item" id="prev" aria-label="الحصة السابقة"><i data-lucide="chevron-right" class="size-5"></i></a>
+        <a class="btn btn-square join-item" id="next" aria-label="الحصة التالية"><i data-lucide="chevron-left" class="size-5"></i></a>
+      </div>
+    </div>
+    <p class="text-xs opacity-60 mt-2 flex items-center gap-1.5" id="h-saved" hidden><i data-lucide="history" class="size-3.5"></i><span></span></p>
+  </section>
+
+  <div id="ro-banner"></div>
+
+  <div class="space-y-3">
+    <!-- Toolbar: sticks under the top bar -->
+    <div class="sticky top-[calc(3.5rem+env(safe-area-inset-top))] lg:top-16 z-20 -mx-4 px-4 py-2 bg-base-200/95 backdrop-blur space-y-2">
+      <div class="grid grid-cols-2 gap-2" data-edit>
+        <button class="btn btn-lg border-0 text-white disabled:opacity-40" style="background:var(--st-present)" id="all-present"><i data-lucide="check-check" class="size-5"></i>الكل حاضر</button>
+        <button class="btn btn-lg border-0 text-white disabled:opacity-40" style="background:var(--st-absent)" id="all-absent"><i data-lucide="x" class="size-5"></i>الكل غائب</button>
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs" id="tally" aria-live="polite"></div>
+    </div>
+
+    <ul class="space-y-2" id="roster"></ul>
+  </div>
+
+</main>
+
+<!-- Sticky save bar (edit mode only) -->
+<div id="savebar" class="fixed inset-x-0 bottom-0 z-40 bg-base-100/95 backdrop-blur border-t border-base-300 pb-[env(safe-area-inset-bottom)] lg:ps-72" hidden>
+  <div class="max-w-6xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-3">
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-semibold"><span class="num" id="sb-set"></span> من <span class="num" id="sb-total"></span> تم تحديدهم</p>
+      <p class="text-xs opacity-70 truncate" id="sb-hint"></p>
+    </div>
+    <button class="btn btn-ghost btn-square" id="undo" aria-label="تراجع عن التغييرات" disabled><i data-lucide="undo-2" class="size-5"></i></button>
+    <button class="btn btn-primary btn-lg" id="save" disabled><i data-lucide="save" class="size-5"></i>حفظ</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, S = GH.STATES, ORDER = GH.STATE_ORDER;
+    var SHORT = { present: "حاضر", late: "متأخر", late_excused: "متأخر بعذر", absent: "غائب", absent_excused: "غائب بعذر" };
+    var q = new URLSearchParams(location.search).get("code");
+    if (!q) { var now = T.todaySessions().filter(function (x) { return x.session.when === "now"; })[0] || T.todaySessions()[0]; q = now.session.code; }
+    var ctx = T.bySession(q), c = ctx.room, s = ctx.session;
+    var rec = T.recordsFor(c, s);
+    var original = Object.assign({}, rec.states), states = Object.assign({}, rec.states);
+    var notStarted = s.when === "future" || s.when === "later";
+    var editable = !c.readonly && !notStarted;
+    var backHref = c.readonly ? "t-classroom.html?id=" + c.id : (new URLSearchParams(location.search).get("from") || "t-home.html");
+
+    // header
+    document.getElementById("h-room").textContent = c.number;
+    document.getElementById("h-cur").textContent = c.curriculum.name + " · " + c.place;
+    document.getElementById("h-date").textContent = GH.fmtDate(s.date, { weekday: "long", day: "numeric", month: "long" });
+    document.getElementById("h-when").innerHTML = GH.esc(GH.fmtHijri(s.date)) + ' · <span class="num whitespace-nowrap">' + GH.fmtTime(s.start) + " – " + GH.fmtTime(s.end) + "</span>";
+    function badge() {
+      var b = c.readonly ? '<span class="badge badge-ghost badge-sm gap-1"><i data-lucide="lock" class="size-3"></i>دورة مؤرشفة</span>'
+        : notStarted ? '<span class="badge badge-ghost badge-sm">لم تبدأ بعد</span>'
+        : rec.recorded ? '<span class="badge badge-success badge-soft badge-sm gap-1"><i data-lucide="check" class="size-3"></i>تم الرصد</span>'
+        : s.when === "now" ? '<span class="badge badge-primary badge-sm">جارية الآن</span>'
+        : '<span class="badge badge-warning badge-sm">لم تُرصد</span>';
+      document.getElementById("h-badge").innerHTML = b;
+      var hs = document.getElementById("h-saved");
+      if (rec.recorded && rec.updated_at) { hs.hidden = false; hs.querySelector("span").textContent = (rec.edited ? "آخر تعديل: " : "تم الرصد: ") + GH.fmtDate(rec.updated_at.slice(0, 10), { day: "numeric", month: "short" }) + " · " + GH.fmtTime(rec.updated_at.slice(11)); }
+    }
+    badge();
+    document.querySelectorAll('a[aria-label="رجوع"]').forEach(function (a) { a.href = backHref; });
+
+    // prev / next session in this classroom
+    var all = T.sessionsFor(c), i = all.indexOf(s);
+    function nav(id, target) { var a = document.getElementById(id); if (target) a.href = "t-attendance.html?code=" + encodeURIComponent(target.code) + "&from=" + encodeURIComponent(backHref); else a.classList.add("btn-disabled"); }
+    nav("prev", all[i - 1]); nav("next", all[i + 1]);
+
+    // read-only banner
+    document.getElementById("ro-banner").innerHTML = c.readonly
+      ? '<div role="note" class="alert alert-soft items-start"><i data-lucide="lock" class="size-5 mt-0.5"></i><span>هذه الحصة من دورة مؤرشفة — <b>للاطلاع فقط</b>، لا يمكن تعديل الحضور.</span></div>'
+      : notStarted ? '<div role="note" class="alert alert-soft alert-info items-start"><i data-lucide="info" class="size-5 mt-0.5"></i><span>لم تبدأ هذه الحصة بعد. يمكنك مراجعة القائمة، ويُتاح الرصد عند بدء الحصة.</span></div>' : "";
+    if (!editable) document.querySelectorAll("[data-edit]").forEach(function (b) { b.hidden = true; });
+
+    // roster
+    var ul = document.getElementById("roster");
+    function rowHTML(st) {
+      var v = states[st.id], dirty = original[st.id] !== v && editable;
+      var right = editable
+        ? '<div class="seg" role="radiogroup" aria-label="حالة ' + GH.esc(st.name) + '">' + ORDER.map(function (k) {
+            return '<button type="button" role="radio" class="' + S[k].cls + (v === k && S[k].excused ? " hatch" : "") + '" data-set="' + k + '" aria-pressed="' + (v === k) + '" aria-checked="' + (v === k) + '"><b>' + S[k].code + "</b>" + SHORT[k] + "</button>";
+          }).join("") + "</div>"
+        : "";
+      var label = v ? GH.chip(v) : '<span class="text-xs opacity-60">' + (editable ? "لم تُحدد" : notStarted ? "" : "لم يُرصد") + "</span>";
+      // grid: photo on the start side spanning both rows (name row + buttons row)
+      return '<li class="card-soft p-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2.5' + (dirty ? " row-dirty" : "") + '" data-sid="' + st.id + '">' +
+        T.ui.photo(st, editable ? "w-16 min-h-24 self-stretch row-span-2" : "w-14 h-[4.5rem]", { shrink: false, text: "text-xl" }) +
+        '<div class="min-w-0 flex items-start gap-2' + (editable ? "" : " self-center") + '"><div class="min-w-0 flex-1"><p class="font-medium leading-snug">' + GH.esc(st.name) + '</p><p class="text-xs opacity-60 num">' + st.student_id + "</p></div>" +
+        "<div data-label>" + label + "</div></div>" + right + "</li>";
+    }
+    function render() { ul.innerHTML = c.students.map(rowHTML).join(""); tally(); GH.icons(); }
+    function refreshRow(id) {
+      var st = c.students.filter(function (x) { return String(x.id) === String(id); })[0];
+      var li = ul.querySelector('[data-sid="' + id + '"]'); var tmp = document.createElement("ul"); tmp.innerHTML = rowHTML(st);
+      li.replaceWith(tmp.firstChild); GH.icons(); tally();
+    }
+    ul.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-set]"); if (!b || !editable) return;
+      var id = b.closest("[data-sid]").getAttribute("data-sid");
+      states[id] = b.getAttribute("data-set");
+      if (navigator.vibrate) try { navigator.vibrate(8); } catch (x) {}
+      refreshRow(id);
+    });
+
+    function tally() {
+      var cnt = T.count(states), set = c.students.filter(function (st) { return states[st.id]; }).length, total = c.students.length;
+      document.getElementById("tally").innerHTML = ORDER.map(function (k) { return '<span class="inline-flex items-center gap-1">' + GH.pip(k) + '<span class="num">' + (cnt[k] || 0) + "</span></span>"; }).join("") +
+        (editable ? '<span class="inline-flex items-center gap-1 opacity-70">بدون تحديد <b class="num">' + (total - set) + "</b></span>" : "");
+      var dirty = c.students.some(function (st) { return original[st.id] !== states[st.id]; });
+      document.getElementById("all-present").disabled = cnt.present === total;
+      document.getElementById("all-absent").disabled = cnt.absent === total;
+      if (!editable) return;
+      document.getElementById("savebar").hidden = false;
+      document.getElementById("sb-set").textContent = set; document.getElementById("sb-total").textContent = total;
+      document.getElementById("sb-hint").textContent = set < total ? "حدّد حالة جميع الطلاب لتفعيل الحفظ" : dirty ? "تغييرات غير محفوظة" : rec.recorded ? "لا توجد تغييرات" : "جاهز للحفظ";
+      document.getElementById("save").disabled = !(set === total && dirty);
+      document.getElementById("undo").disabled = !dirty;
+      window.onbeforeunload = dirty ? function () { return true; } : null;
+    }
+
+    // quick actions set everyone (undo restores the last saved state)
+    function setAll(v) { c.students.forEach(function (st) { states[st.id] = v; }); render(); }
+    document.getElementById("all-present").addEventListener("click", function () { setAll("present"); });
+    document.getElementById("all-absent").addEventListener("click", function () { setAll("absent"); });
+    document.getElementById("undo").addEventListener("click", function () { states = Object.assign({}, original); render(); });
+    document.getElementById("save").addEventListener("click", function () {
+      var btn = this; btn.disabled = true; btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span>جارٍ الحفظ';
+      setTimeout(function () {
+        T.saveRecords(s, states); rec = T.recordsFor(c, s); original = Object.assign({}, states);
+        btn.innerHTML = '<i data-lucide="save" class="size-5"></i>حفظ'; badge(); render();
+        GH.toast("تم حفظ حضور الصف " + c.number);
+      }, 600);
+    });
+
+    render();
+  });
+</script>
+</body>
+</html>

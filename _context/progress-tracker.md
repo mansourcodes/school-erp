@@ -9,6 +9,9 @@ Update this file after every meaningful implementation change.
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
   - Screens: login (bot/lockout states, forgot-password → visit administration), current course,
     archive, attendance log, attendance stats, profile (photo upload), system states
+  - Teacher panel design added (2026-10-12): `t-home`, `t-attendance` (5-state roster, save/undo),
+    `t-classes`, `t-classroom` (student photo upload/delete), `t-stats`, `t-profile` (teacher archive page removed);
+    teacher tab enabled on the shared login; spec + teacher API in PLAN.md §8
   - Rollout decision (2026-10-12): new panel launches as a **beta at `/beta`**; the current Blade
     portal (`/login`, `/dashboard`) stays active and unchanged until promotion (PLAN.md §4, §9)
   - Phase 2 = React + Redux Toolkit + RTK Query SPA over a Sanctum-authenticated `/api/v1`;

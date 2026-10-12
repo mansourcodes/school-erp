@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>الصف · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+</head>
+<body data-page="t-classroom" data-title="الصف" data-back="t-classes.html">
+<main class="space-y-4">
+
+  <!-- Header -->
+  <section class="hero-band bg-pattern rounded-box overflow-hidden">
+    <div class="p-4 sm:p-6">
+      <div class="flex items-center gap-2 flex-wrap mb-1" id="h-badges"></div>
+      <h2 class="font-display text-xl">الصف <span class="num" id="h-room"></span> · <span id="h-cur"></span></h2>
+      <p class="text-sm opacity-85" id="h-place"></p>
+      <p class="text-xs opacity-80 mt-1" id="h-course"></p>
+      <div class="flex flex-wrap gap-1.5 mt-3" id="h-slots"></div>
+    </div>
+  </section>
+
+  <section class="card-soft" id="details">
+    <div role="tablist" aria-label="تفاصيل الصف" class="sticky top-[calc(3.5rem+env(safe-area-inset-top))] lg:top-16 z-20 bg-base-100 rounded-t-box border-b border-base-300 grid grid-cols-3">
+      <button role="tab" class="tab h-13 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm" data-tab="students"><i data-lucide="users-round" class="size-4"></i>الطلاب</button>
+      <button role="tab" class="tab h-13 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm" data-tab="sessions"><i data-lucide="calendar-check" class="size-4"></i>الحصص</button>
+      <button role="tab" class="tab h-13 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm" data-tab="info"><i data-lucide="info" class="size-4"></i>معلومات</button>
+    </div>
+    <div class="p-4 sm:p-6">
+      <div role="tabpanel" id="p-students" class="space-y-3">
+        <div class="flex gap-2 items-center">
+          <label class="input flex-1 min-w-0"><i data-lucide="search" class="size-4 opacity-60"></i><input type="search" id="q" placeholder="بحث باسم الطالب…" aria-label="بحث"></label>
+        </div>
+        <p class="text-xs opacity-60" id="photo-note"></p>
+        <ul class="divide-y divide-base-300 -mx-2" id="students"></ul>
+      </div>
+      <div role="tabpanel" id="p-sessions" class="space-y-3" hidden></div>
+      <div role="tabpanel" id="p-info" hidden></div>
+    </div>
+  </section>
+</main>
+
+<!-- Student sheet -->
+<dialog id="sheet" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+    <div class="sheet-grip"></div>
+    <div class="flex flex-col items-center text-center">
+      <div id="sh-photo"></div>
+      <h3 class="font-display text-lg mt-3" id="sh-name"></h3>
+      <p class="text-xs opacity-60 num" id="sh-id"></p>
+    </div>
+    <div class="grid grid-cols-3 gap-2 mt-4 text-center">
+      <div class="rounded-field bg-base-200 py-2"><p class="text-lg font-semibold num" id="sh-rate"></p><p class="text-[11px] opacity-70">الحضور</p></div>
+      <div class="rounded-field bg-base-200 py-2"><p class="text-lg font-semibold num" id="sh-late"></p><p class="text-[11px] opacity-70">تأخير</p></div>
+      <div class="rounded-field bg-base-200 py-2"><p class="text-lg font-semibold num" id="sh-abs"></p><p class="text-[11px] opacity-70">غياب</p></div>
+    </div>
+
+    <div id="sh-actions" class="mt-5 space-y-2">
+      <p class="text-sm font-semibold">الصورة الشخصية</p>
+      <div class="grid grid-cols-2 gap-2">
+        <label for="f-cam" class="btn btn-primary h-auto py-3 flex-col gap-1"><i data-lucide="camera" class="size-5"></i>التقاط صورة</label>
+        <label for="f-gal" class="btn h-auto py-3 flex-col gap-1"><i data-lucide="image" class="size-5"></i>من المعرض</label>
+      </div>
+      <button class="btn btn-ghost btn-block text-error" id="sh-del"><i data-lucide="trash-2" class="size-4"></i>حذف الصورة</button>
+      <input id="f-cam" type="file" accept="image/*" capture="environment" class="sr-only">
+      <input id="f-gal" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+      <p class="text-xs opacity-60">JPG أو PNG أو WebP · حتى 2 ميجابايت · يُستخدم الكاميرا الخلفية لتصوير الطالب</p>
+    </div>
+    <p id="sh-ro" class="mt-5 text-sm opacity-70 flex items-center gap-2 justify-center" hidden><i data-lucide="lock" class="size-4"></i>دورة مؤرشفة — لا يمكن تعديل الصورة</p>
+
+    <form method="dialog" class="mt-4"><button class="btn btn-block">إغلاق</button></form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
+</dialog>
+
+<!-- Confirm delete (in-page, never a browser confirm()) -->
+<dialog id="confirm" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+    <div class="sheet-grip"></div>
+    <div class="flex gap-3 items-start">
+      <div class="size-10 rounded-full bg-error/10 text-error grid place-items-center shrink-0"><i data-lucide="trash-2" class="size-5"></i></div>
+      <div><h3 class="font-display text-lg">حذف صورة الطالب؟</h3><p class="text-sm opacity-70 mt-1">سيتم حذف صورة <b id="cf-name"></b> من سجلات المركز. يمكنك رفع صورة جديدة لاحقًا.</p></div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 mt-5">
+      <form method="dialog" class="contents"><button class="btn btn-lg">إلغاء</button></form>
+      <button class="btn btn-error btn-lg" id="cf-yes">حذف</button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, c = T.roomById(new URLSearchParams(location.search).get("id")), stats = T.roomStats(c);
+    if (c.readonly) document.querySelectorAll('a[aria-label="رجوع"]').forEach(function (a) { a.href = "t-classes.html"; });
+    document.querySelector("header h1").textContent = "الصف " + c.number;
+
+    // header
+    document.getElementById("h-room").textContent = c.number;
+    document.getElementById("h-cur").textContent = c.curriculum.name;
+    document.getElementById("h-place").textContent = c.place;
+    document.getElementById("h-course").textContent = c.course.long_name;
+    document.getElementById("h-badges").innerHTML = c.readonly
+      ? '<span class="badge badge-sm border-0 bg-white/20 text-white gap-1"><i data-lucide="lock" class="size-3"></i>مؤرشفة · للاطلاع فقط</span>'
+      : '<span class="badge badge-sm border-0 bg-white/20 text-white">الدورة الحالية</span>';
+    document.getElementById("h-slots").innerHTML = c.slots.map(function (sl) { return '<span class="badge border-0 bg-white/15 text-white num">' + GH.DAYS[sl.day] + " · " + GH.fmtTime(sl.start) + "</span>"; }).join("");
+
+    // students
+    var byId = {}; stats.students.forEach(function (x) { byId[x.student.id] = x; });
+    var ul = document.getElementById("students");
+    function renderStudents() {
+      var noPhoto = c.students.filter(function (s) { return !s.has_photo; }).length;
+      document.getElementById("photo-note").innerHTML = '<span class="num">' + c.students.length + "</span> طالب" + (noPhoto ? ' · <span class="text-warning-content/90">' + noPhoto + " بدون صورة</span>" : "");
+      ul.innerHTML = c.students.map(function (st) {
+        var x = byId[st.id], low = x.recorded && x.rate < 80;
+        return '<li data-name="' + GH.esc(st.name) + '"><button class="w-full min-h-16 px-2 py-2.5 flex items-center gap-3 text-start rounded-field active:bg-base-200 hover:bg-base-200/60" data-open="' + st.id + '">' +
+          T.ui.photo(st, "w-10 h-12") +
+          '<div class="min-w-0 flex-1"><p class="font-medium truncate">' + GH.esc(st.name) + '</p><p class="text-xs opacity-60"><span class="num">' + st.student_id + "</span>" + (st.has_photo ? "" : ' · <span class="inline-flex items-center gap-0.5"><i data-lucide="image-off" class="size-3"></i>بدون صورة</span>') + "</p></div>" +
+          '<div class="text-end shrink-0"><p class="font-semibold num ' + (low ? "text-error" : "") + '">' + GH.pct(x.rate) + '</p><p class="text-[11px] opacity-60">غياب <span class="num">' + x.absences + "</span></p></div>" +
+          '<i data-lucide="chevron-left" class="size-4 opacity-40 shrink-0"></i></button></li>';
+      }).join("");
+      GH.icons(); filter();
+    }
+    function filter() { var t = document.getElementById("q").value.trim(); ul.querySelectorAll("[data-name]").forEach(function (li) { li.hidden = t && li.getAttribute("data-name").indexOf(t) === -1; }); }
+    document.getElementById("q").addEventListener("input", filter);
+
+    // student sheet + photo actions
+    var cur = null;
+    function openSheet(id) {
+      cur = c.students.filter(function (s) { return String(s.id) === String(id); })[0]; var x = byId[cur.id];
+      document.getElementById("sh-photo").innerHTML = T.ui.photo(cur, "w-24 h-32", { text: "text-3xl" });
+      document.getElementById("sh-name").textContent = cur.name;
+      document.getElementById("sh-id").textContent = "رقم الطالب " + cur.student_id;
+      document.getElementById("sh-rate").textContent = GH.pct(x.rate);
+      document.getElementById("sh-late").textContent = x.counts.late + x.counts.late_excused;
+      document.getElementById("sh-abs").textContent = x.absences;
+      document.getElementById("sh-actions").hidden = c.readonly;
+      document.getElementById("sh-ro").hidden = !c.readonly;
+      document.getElementById("sh-del").hidden = !cur.has_photo;
+      GH.icons(); document.getElementById("sheet").showModal();
+    }
+    ul.addEventListener("click", function (e) { var b = e.target.closest("[data-open]"); if (b) openSheet(b.getAttribute("data-open")); });
+    function take(file) {
+      if (!file) return;
+      if (["image/jpeg", "image/png", "image/webp"].indexOf(file.type) === -1 && !/^image\//.test(file.type)) return GH.toast("صيغة الملف غير مدعومة", "error");
+      if (file.size > 2 * 1024 * 1024) return GH.toast("حجم الصورة أكبر من 2 ميجابايت", "error");
+      cur.photo_url = URL.createObjectURL(file); cur.has_photo = true;
+      document.getElementById("sh-photo").innerHTML = T.ui.photo(cur, "w-24 h-32");
+      document.getElementById("sh-del").hidden = false;
+      renderStudents(); GH.toast("تم تحديث صورة " + cur.name.split(" ")[0]);
+    }
+    document.getElementById("f-cam").addEventListener("change", function () { take(this.files[0]); this.value = ""; });
+    document.getElementById("f-gal").addEventListener("change", function () { take(this.files[0]); this.value = ""; });
+    document.getElementById("sh-del").addEventListener("click", function () { document.getElementById("cf-name").textContent = cur.name; document.getElementById("confirm").showModal(); });
+    document.getElementById("cf-yes").addEventListener("click", function () {
+      cur.has_photo = false; cur.photo_url = null;
+      document.getElementById("confirm").close();
+      document.getElementById("sh-photo").innerHTML = T.ui.photo(cur, "w-24 h-32", { text: "text-3xl" });
+      document.getElementById("sh-del").hidden = true;
+      renderStudents(); GH.toast("تم حذف الصورة");
+    });
+
+    // sessions: pending first, then recorded (newest first), then next 2 upcoming
+    var all = T.sessionsFor(c);
+    var past = all.filter(function (s) { return s.when === "past" || s.when === "now"; }).reverse();
+    var up = all.filter(function (s) { return s.when === "later" || s.when === "future"; }).slice(0, 2);
+    var pending = past.filter(function (s) { return !T.recordsFor(c, s).recorded; });
+    var done = past.filter(function (s) { return T.recordsFor(c, s).recorded; });
+    function group(title, list) { return list.length ? '<h3 class="text-sm font-semibold opacity-80 mt-2">' + title + '</h3><div class="space-y-2">' + list.map(function (s) { return T.ui.sessionCard(c, s, { dateLabel: true, from: "t-classroom.html?id=" + c.id }); }).join("") + "</div>" : ""; }
+    document.getElementById("p-sessions").innerHTML =
+      (c.readonly ? "" : group("بانتظار الرصد", pending)) + (c.readonly ? "" : group("القادمة", up)) + group(c.readonly ? "الحصص" : "تم رصدها", done.slice(0, 12)) +
+      (done.length > 12 ? '<p class="text-xs opacity-60 text-center">+ ' + (done.length - 12) + " حصة أقدم</p>" : "");
+
+    // info
+    document.getElementById("p-info").innerHTML = GH.ui.courseMeta(Object.assign({}, c.course, { class_room_number: c.number, class_room_name: c.place }));
+
+    // tabs
+    var tabs = document.querySelectorAll("[data-tab]");
+    function select(id) {
+      tabs.forEach(function (t) { var on = t.getAttribute("data-tab") === id; t.classList.toggle("tab-active", on); t.classList.toggle("text-primary", on); t.classList.toggle("font-semibold", on); t.setAttribute("aria-selected", on); document.getElementById("p-" + t.getAttribute("data-tab")).hidden = !on; });
+    }
+    tabs.forEach(function (t) { t.addEventListener("click", function () { select(t.getAttribute("data-tab")); }); });
+    select(pending.length && !c.readonly ? "sessions" : "students");
+    renderStudents();
+  });
+</script>
+</body>
+</html>

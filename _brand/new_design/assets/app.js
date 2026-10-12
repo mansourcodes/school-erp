@@ -345,36 +345,49 @@
     { id: "profile",    label: "الملف الشخصي",   short: "حسابي",     icon: "user-round",      href: "profile.html" }
   ];
 
+  // Role-aware shell. Student is the default; teacher.js sets GH.shellConfig before DOMContentLoaded.
+  //   <body data-page data-title data-crumb [data-back="url"] [data-dock="none"]>
   function shell() {
     var body = document.body, page = body.getAttribute("data-page");
     if (!page || body.getAttribute("data-shell") === "none") return;
     var main = document.querySelector("main");
     var st = DEMO.student;
+    var cfg = (window.GH && window.GH.shellConfig) || {};
+    var nav = cfg.nav || NAV;
+    var home = cfg.home || "home.html", profile = cfg.profile || "profile.html";
+    var avatar = cfg.avatar || ui.avatar;
+    var person = cfg.person || { first_name: st.first_name, sub: '<span class="num">رقم الطالب ' + st.student_id + "</span>" };
     var title = body.getAttribute("data-title") || "";
-    var crumb = body.getAttribute("data-crumb") || "بوابة الطالب";
+    var crumb = body.getAttribute("data-crumb") || (cfg.crumb || "بوابة الطالب");
+    var back = body.getAttribute("data-back");
+    var noDock = body.getAttribute("data-dock") === "none";
 
     var side = '<aside class="w-72 min-h-full bg-base-100 border-e border-base-300 flex flex-col">' +
-      '<a href="home.html" class="px-6 pt-6 pb-4 block" aria-label="الرئيسية"><img src="assets/img/logo-full.svg" alt="جمعية الغدير لعلوم القرآن" class="h-14 w-auto"></a>' +
-      '<div class="mx-4 mb-5 rounded-box hero-band bg-pattern p-4 flex items-center gap-3">' + ui.avatar("w-11 h-14") +
-      '<div class="min-w-0"><p class="text-xs opacity-80">مرحبًا،</p><p class="font-semibold truncate">' + esc(st.first_name) + '</p><p class="text-xs opacity-80 num">رقم الطالب ' + st.student_id + "</p></div></div>" +
+      '<a href="' + home + '" class="px-6 pt-6 pb-4 block" aria-label="الرئيسية"><img src="assets/img/logo-full.svg" alt="جمعية الغدير لعلوم القرآن" class="h-14 w-auto"></a>' +
+      '<div class="mx-4 mb-5 rounded-box hero-band bg-pattern p-4 flex items-center gap-3">' + avatar("w-11 h-14") +
+      '<div class="min-w-0"><p class="text-xs opacity-80">مرحبًا،</p><p class="font-semibold truncate">' + esc(person.first_name) + '</p><p class="text-xs opacity-80">' + person.sub + "</p></div></div>" +
       '<ul class="menu w-full px-3 gap-1 text-[0.95rem]">' +
-      NAV.map(function (n) {
-        return '<li><a href="' + n.href + '" class="py-2.5 ' + (n.id === page ? "menu-active" : "") + '"' + (n.id === page ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i>' + n.label + "</a></li>";
+      nav.map(function (n) {
+        var on = n.id === page || (n.match && n.match.indexOf(page) !== -1);
+        return '<li><a href="' + n.href + '" class="py-2.5 ' + (on ? "menu-active" : "") + '"' + (on ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i>' + n.label + "</a></li>";
       }).join("") +
       '</ul><div class="mt-auto p-4 space-y-3"><div class="join w-full" role="group" aria-label="المظهر">' +
       theme.modes.map(function (m) { return '<button class="btn btn-sm join-item flex-1" data-theme-set="' + m + '"><i data-lucide="' + theme.icons[m] + '" class="size-4"></i><span class="sr-only">' + theme.labels[m] + "</span></button>"; }).join("") +
       '</div><a href="login.html" class="btn btn-ghost btn-block justify-start text-error"><i data-lucide="log-out" class="size-5"></i>تسجيل الخروج</a></div></aside>';
 
+    var lead = back
+      ? '<a href="' + back + '" class="btn btn-ghost btn-circle -ms-2 shrink-0" aria-label="رجوع"><i data-lucide="arrow-right" class="size-5"></i></a>'
+      : '<a href="' + home + '" class="lg:hidden shrink-0" aria-label="الرئيسية"><img src="assets/img/logo-icon.svg" alt="" class="h-9 w-auto"></a>';
     var top = '<header class="sticky top-0 z-30 bg-base-100/90 backdrop-blur border-b border-base-300 pt-safe">' +
-      '<div class="flex items-center gap-3 px-4 lg:px-8 h-14 lg:h-16 max-w-6xl mx-auto w-full">' +
-      '<a href="home.html" class="lg:hidden shrink-0" aria-label="الرئيسية"><img src="assets/img/logo-icon.svg" alt="" class="h-9 w-auto"></a>' +
-      '<div class="flex-1 min-w-0"><p class="text-xs opacity-60 leading-none mb-1">' + esc(crumb) + '</p><h1 class="font-display text-base sm:text-lg leading-tight truncate">' + esc(title) + "</h1></div>" +
+      '<div class="flex items-center gap-3 px-4 lg:px-8 h-14 lg:h-16 max-w-6xl mx-auto w-full">' + lead +
+      '<div class="flex-1 min-w-0"><p class="text-xs opacity-60 leading-none mb-1 flex items-center gap-1.5">' + esc(crumb) +
+      ' <span class="badge badge-accent badge-xs">تجريبي</span></p><h1 class="font-display text-base sm:text-lg leading-tight truncate">' + esc(title) + "</h1></div>" +
       '<button class="btn btn-ghost btn-circle lg:hidden" data-theme-btn></button>' +
-      '<a href="profile.html" class="lg:hidden" aria-label="الملف الشخصي">' + ui.avatar("w-8 h-10") + "</a></div></header>";
+      '<a href="' + profile + '" class="lg:hidden" aria-label="الملف الشخصي">' + avatar("w-8 h-10") + "</a></div></header>";
 
-    var dock = '<nav class="dock dock-md bg-base-100/90 backdrop-blur border-t border-base-300 lg:hidden z-40" aria-label="التنقل الرئيسي">' +
-      NAV.map(function (n) {
-        var a = n.id === page;
+    var dock = noDock ? "" : '<nav class="dock dock-md bg-base-100/90 backdrop-blur border-t border-base-300 lg:hidden z-40" aria-label="التنقل الرئيسي">' +
+      nav.map(function (n) {
+        var a = n.id === page || (n.match && n.match.indexOf(page) !== -1);
         return '<a href="' + n.href + '" class="' + (a ? "dock-active text-primary" : "opacity-70") + '"' + (a ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i><span class="dock-label">' + n.short + "</span></a>";
       }).join("") + "</nav>";
 
@@ -384,7 +397,7 @@
       '<div class="drawer-content flex flex-col min-h-dvh">' + top + '<div data-slot="main" class="flex-1"></div>' + dock + "</div>" +
       '<div class="drawer-side z-40"><label for="gh-drawer" class="drawer-overlay" aria-label="إغلاق القائمة"></label>' + side + "</div>";
     body.insertBefore(wrap, body.firstChild);
-    main.classList.add("max-w-6xl", "mx-auto", "w-full", "px-4", "lg:px-8", "pt-4", "lg:pt-8", "pb-dock");
+    main.classList.add("max-w-6xl", "mx-auto", "w-full", "px-4", "lg:px-8", "pt-4", "lg:pt-8", noDock ? "pb-8" : "pb-dock");
     wrap.querySelector('[data-slot="main"]').appendChild(main);
   }
 

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>اليوم · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+</head>
+<body data-page="t-home" data-title="اليوم"
+      data-states="ready:يوم دراسي,none:لا حصص اليوم,loading:جارٍ التحميل">
+<main class="space-y-4 lg:space-y-6">
+
+  <!-- Hero -->
+  <section class="hero-band bg-pattern rounded-box overflow-hidden">
+    <div class="p-4 sm:p-7 flex gap-3 sm:gap-5 items-center">
+      <div id="hero-avatar"></div>
+      <div class="min-w-0">
+        <p class="text-sm opacity-85">مساء الخير،</p>
+        <h2 class="font-display text-lg sm:text-2xl leading-snug" id="t-name"></h2>
+        <p class="text-xs sm:text-sm opacity-85 mt-0.5" id="t-date"></p>
+        <span class="badge badge-sm border-0 bg-white/20 text-white mt-1.5 max-w-full truncate" id="t-course"></span>
+      </div>
+    </div>
+  </section>
+
+  <div data-state="ready none" id="pending"></div>
+
+  <!-- Today's sessions -->
+  <section data-state="ready" class="space-y-3">
+    <div class="flex items-baseline justify-between"><h2 class="font-display text-lg">حصص اليوم</h2><span class="text-sm opacity-60 num" id="today-count"></span></div>
+    <div class="space-y-3" id="today"></div>
+  </section>
+  <section data-state="none" class="card-soft">
+    <div class="flex flex-col items-center text-center py-10 px-6 gap-3">
+      <div class="arch w-16 h-20 bg-base-200 grid place-items-center text-primary"><i data-lucide="calendar-clock" class="size-7"></i></div>
+      <h2 class="font-display text-lg">لا توجد حصص لك اليوم</h2>
+      <p class="text-sm opacity-70">الحصة القادمة: <b id="next-any"></b></p>
+    </div>
+  </section>
+
+  <!-- Summary tiles -->
+  <section data-state="ready none" class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4" id="kpis" aria-label="ملخص"></section>
+
+  <!-- Upcoming -->
+  <section data-state="ready none" class="space-y-3">
+    <h2 class="font-display text-lg">الحصص القادمة</h2>
+    <div class="space-y-3" id="upcoming"></div>
+  </section>
+
+  <div data-state="loading" class="space-y-4" aria-busy="true">
+    <div class="skeleton h-28 w-full rounded-box"></div><div class="skeleton h-24 w-full rounded-box"></div><div class="skeleton h-24 w-full rounded-box"></div>
+  </div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, t = T.teacher, today = GH.DEMO.today;
+    document.getElementById("hero-avatar").innerHTML = T.ui.teacherAvatar("w-14 h-[4.5rem] sm:w-20 sm:h-24", "text-2xl sm:text-3xl");
+    document.getElementById("t-name").textContent = t.name;
+    document.getElementById("t-date").textContent = GH.fmtDate(today, { weekday: "long", day: "numeric", month: "long" }) + " · " + GH.fmtHijri(today);
+    document.getElementById("t-course").textContent = "الدورة الحالية: " + GH.DEMO.current.long_name;
+
+    // unrecorded past sessions (nudge)
+    var pend = T.pendingAll();
+    document.getElementById("pending").innerHTML = pend.length
+      ? '<div role="alert" class="alert alert-soft alert-warning items-start"><i data-lucide="triangle-alert" class="size-5 mt-0.5"></i><div class="flex-1 min-w-0">' +
+        '<p class="font-semibold">' + (pend.length === 1 ? "حصة لم يُرصد حضورها" : pend.length + " حصص لم يُرصد حضورها") + "</p>" +
+        pend.map(function (p) { return '<a class="flex items-center justify-between gap-2 mt-1.5 text-sm" href="t-attendance.html?code=' + encodeURIComponent(p.session.code) + '"><span>' + T.ui.whenLabel(p.session) + " · الصف <span class=\"num whitespace-nowrap\">" + p.room.number + "</span> · " + GH.fmtTime(p.session.start) + '</span><span class="btn btn-warning btn-xs">رصد الآن</span></a>'; }).join("") +
+        "</div></div>"
+      : "";
+
+    var list = T.todaySessions();
+    document.getElementById("today-count").textContent = list.length + " حصص";
+    document.getElementById("today").innerHTML = list.map(function (x) { return T.ui.sessionCard(x.room, x.session); }).join("");
+
+    // KPIs across current classrooms
+    var students = 0, att = [], sessions = 0;
+    T.current.forEach(function (c) { students += c.students.length; var s = T.roomStats(c); att.push(s); sessions += s.sessions; });
+    var attended = att.reduce(function (a, s) { return a + s.attended; }, 0), recorded = att.reduce(function (a, s) { return a + s.recorded; }, 0);
+    function tile(href, icon, label, val, sub) { return '<a href="' + href + '" class="card-soft p-3.5 sm:p-4 active:bg-base-200"><p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="' + icon + '" class="size-4 text-primary"></i>' + label + '</p><p class="text-2xl sm:text-3xl font-semibold mt-1.5 num">' + val + '</p><p class="text-xs opacity-60 mt-1">' + sub + "</p></a>"; }
+    document.getElementById("kpis").innerHTML =
+      tile("t-classes.html", "school", "صفوفي", T.current.length, "في الدورة الحالية") +
+      tile("t-classes.html", "users-round", "الطلاب", students, "في جميع الصفوف") +
+      tile("t-stats.html", "calendar-check", "نسبة الحضور", GH.pct(recorded ? attended / recorded * 100 : 0), sessions + " حصة مرصودة") +
+      tile("t-home.html#pending", "hourglass", "بانتظار الرصد", pend.length, pend.length ? "يرجى إكمالها" : "لا شيء متأخر");
+
+    // next 3 sessions after today
+    var up = [];
+    T.current.forEach(function (c) { T.sessionsFor(c).forEach(function (s) { if (s.date > today) up.push({ room: c, session: s }); }); });
+    up.sort(function (a, b) { return (a.session.date + a.session.start) < (b.session.date + b.session.start) ? -1 : 1; });
+    document.getElementById("upcoming").innerHTML = up.slice(0, 3).map(function (x) { return T.ui.sessionCard(x.room, x.session, { dateLabel: true }); }).join("");
+    if (up[0]) document.getElementById("next-any").textContent = T.ui.whenLabel(up[0].session) + " · " + GH.fmtTime(up[0].session.start) + " · الصف " + up[0].room.number;
+    GH.icons();
+  });
+</script>
+</body>
+</html>

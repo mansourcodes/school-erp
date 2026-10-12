@@ -22,12 +22,17 @@
       <button class="btn btn-ghost btn-circle text-white" data-theme-btn></button>
     </div>
     <div class="brand-rule w-24 mt-8 mb-5"></div>
-    <h1 class="font-display text-3xl lg:text-4xl">بوابة الطالب — التصميم الجديد</h1>
+    <h1 class="font-display text-3xl lg:text-4xl">بوابة الغدير — التصميم الجديد</h1>
     <p class="opacity-85 mt-2 max-w-2xl">المرحلة الأولى: نماذج HTML + Tailwind + DaisyUI. تمهيدًا للمرحلة الثانية (React + Redux Toolkit + RTK Query) المتصلة بواجهة Laravel البرمجية.</p>
   </div>
 </header>
 
 <main class="max-w-6xl mx-auto px-4 lg:px-8 py-8 space-y-10">
+
+  <div role="tablist" class="tabs tabs-box w-full sm:w-96 grid grid-cols-2" aria-label="اللوحة">
+    <button role="tab" class="tab h-11 tab-active" data-panel="student" aria-selected="true"><i data-lucide="graduation-cap" class="size-4 me-1.5"></i>لوحة الطالب</button>
+    <button role="tab" class="tab h-11" data-panel="teacher" aria-selected="false"><i data-lucide="users-round" class="size-4 me-1.5"></i>لوحة المدرّس</button>
+  </div>
 
   <section>
     <div class="flex items-baseline justify-between gap-3 mb-1">
@@ -85,18 +90,40 @@
       ["profile.html", "user-round", "الملف الشخصي", "رفع الصورة الشخصية بإطار المحراب، بيانات للاطلاع، المظهر، الخروج."],
       ["states.html", "triangle-alert", "حالات النظام", "401 / 403 / 404 / 429 / 5xx، انقطاع الاتصال، والإشعارات."]
     ];
+    var tscreens = [
+      ["login.html?role=teacher", "key-round", "دخول المدرّس", "نفس شاشة الدخول: تبويب «مدرّس» بالبريد الإلكتروني وكلمة المرور، بنفس الحماية."],
+      ["t-home.html", "calendar-clock", "اليوم", "حصص اليوم بالترتيب، الحصة الجارية مع زر «رصد الحضور»، تنبيه بالحصص غير المرصودة."],
+      ["t-attendance.html", "calendar-check", "رصد الحضور", "قائمة الطلاب بأزرار الحالات الخمس، «الكل حاضر»، عدّاد مباشر، حفظ وتراجع، وضع للاطلاع."],
+      ["t-classes.html", "school", "صفوفي", "صفوف الدورة الحالية المسندة للمدرّس مع الحضور والحصص بانتظار الرصد."],
+      ["t-classroom.html?id=915", "users-round", "تفاصيل الصف", "الطلاب (رفع/حذف الصورة)، الحصص، ومعلومات الصف."],
+      ["t-stats.html", "chart-pie", "إحصائيات الصفوف", "نسبة الحضور، توزيع الحالات، طلاب يحتاجون متابعة، وحسب الصف."],
+      ["t-profile.html", "user-round", "حسابي", "بيانات الحساب، الصفوف المسندة، المظهر، الخروج."]
+    ];
     // phone frames: real pages at 390px, scaled down
-    document.getElementById("phones").innerHTML = screens.filter(function (s) { return s[0] !== "states.html"; }).map(function (s) {
-      return '<figure class="w-[242px]"><a href="' + s[0] + '" class="block rounded-[2.25rem] border-[6px] border-neutral bg-neutral shadow-xl overflow-hidden relative" style="width:242px;height:516px" aria-label="' + s[2] + '">' +
-        '<iframe src="' + s[0] + '" loading="lazy" tabindex="-1" title="' + s[2] + '" style="width:390px;height:844px;border:0;transform:scale(.590);transform-origin:top right;position:absolute;top:0;right:0;pointer-events:none"></iframe></a>' +
-        '<figcaption class="text-center text-sm font-medium mt-2">' + s[2] + "</figcaption></figure>";
-    }).join("");
-    document.getElementById("screens").innerHTML = screens.map(function (s) {
-      return '<a href="' + s[0] + '" class="card-soft p-5 hover:border-primary/40 hover:-translate-y-0.5 transition-all group">' +
-        '<div class="flex items-center gap-3 mb-2"><div class="arch w-10 h-12 bg-primary/10 text-primary grid place-items-center"><i data-lucide="' + s[1] + '" class="size-5"></i></div>' +
-        '<h3 class="font-display text-lg flex-1">' + s[2] + '</h3><i data-lucide="chevron-left" class="size-5 opacity-40 group-hover:opacity-100"></i></div>' +
-        '<p class="text-sm opacity-70">' + s[3] + '</p><p class="text-xs opacity-40 mt-2 ltr">' + s[0] + "</p></a>";
-    }).join("");
+    function phones(list) {
+      return list.filter(function (s) { return s[0] !== "states.html"; }).map(function (s) {
+        return '<figure class="w-[242px]"><a href="' + s[0] + '" class="block rounded-[2.25rem] border-[6px] border-neutral bg-neutral shadow-xl overflow-hidden relative" style="width:242px;height:516px" aria-label="' + s[2] + '">' +
+          '<iframe src="' + s[0] + '" loading="lazy" tabindex="-1" title="' + s[2] + '" style="width:390px;height:844px;border:0;transform:scale(.590);transform-origin:top right;position:absolute;top:0;right:0;pointer-events:none"></iframe></a>' +
+          '<figcaption class="text-center text-sm font-medium mt-2">' + s[2] + "</figcaption></figure>";
+      }).join("");
+    }
+    function cards(list) {
+      return list.map(function (s) {
+        return '<a href="' + s[0] + '" class="card-soft p-5 hover:border-primary/40 hover:-translate-y-0.5 transition-all group">' +
+          '<div class="flex items-center gap-3 mb-2"><div class="arch w-10 h-12 bg-primary/10 text-primary grid place-items-center"><i data-lucide="' + s[1] + '" class="size-5"></i></div>' +
+          '<h3 class="font-display text-lg flex-1">' + s[2] + '</h3><i data-lucide="chevron-left" class="size-5 opacity-40 group-hover:opacity-100"></i></div>' +
+          '<p class="text-sm opacity-70">' + s[3] + '</p><p class="text-xs opacity-40 mt-2 ltr">' + s[0] + "</p></a>";
+      }).join("");
+    }
+    function showPanel(which) {
+      var list = which === "teacher" ? tscreens : screens;
+      document.getElementById("phones").innerHTML = phones(list);
+      document.getElementById("screens").innerHTML = cards(list);
+      document.querySelectorAll("[data-panel]").forEach(function (t) { var on = t.getAttribute("data-panel") === which; t.classList.toggle("tab-active", on); t.setAttribute("aria-selected", on); });
+      GH.icons();
+    }
+    document.querySelectorAll("[data-panel]").forEach(function (t) { t.addEventListener("click", function () { showPanel(t.getAttribute("data-panel")); }); });
+    showPanel(location.hash === "#teacher" ? "teacher" : "student");
     var sw = [["primary", "--color-primary"], ["secondary", "--color-secondary"], ["accent", "--color-accent"], ["base-100", "--color-base-100"], ["base-200", "--color-base-200"], ["base-300", "--color-base-300"],
               ["viz-1", "--viz-1"], ["present", "--st-present"], ["late", "--st-late"], ["absent", "--st-absent"], ["error", "--color-error"], ["info", "--color-info"]];
     function paint() {

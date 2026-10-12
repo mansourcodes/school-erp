@@ -47,19 +47,19 @@
 
           <header>
             <h1 class="font-display text-2xl">تسجيل الدخول</h1>
-            <p class="text-sm opacity-70 mt-1">أدخل الرقم الشخصي وكلمة المرور المسلّمة لك من إدارة المركز.</p>
+            <p class="text-sm opacity-70 mt-1" id="intro">أدخل الرقم الشخصي وكلمة المرور المسلّمة لك من إدارة المركز.</p>
           </header>
 
-          <!-- Role switch: teacher reuses this same screen in a later phase -->
-          <div role="tablist" class="tabs tabs-box tabs-sm w-full grid grid-cols-2" aria-label="نوع الحساب">
-            <button role="tab" class="tab tab-active" aria-selected="true"><i data-lucide="graduation-cap" class="size-4 me-1.5"></i>طالب</button>
-            <button role="tab" class="tab" aria-disabled="true" disabled title="قريبًا"><i data-lucide="users" class="size-4 me-1.5"></i>مدرّس <span class="badge badge-accent badge-xs ms-1.5">قريبًا</span></button>
+          <!-- Role switch: one login screen for students (CPR, student guard) and teachers (email, web guard) -->
+          <div role="tablist" class="tabs tabs-box w-full grid grid-cols-2" aria-label="نوع الحساب">
+            <button type="button" role="tab" class="tab h-11 tab-active" aria-selected="true" data-role="student"><i data-lucide="graduation-cap" class="size-4 me-1.5"></i>طالب</button>
+            <button type="button" role="tab" class="tab h-11" aria-selected="false" data-role="teacher"><i data-lucide="users-round" class="size-4 me-1.5"></i>مدرّس</button>
           </div>
 
           <!-- Alerts (one visible at a time) -->
           <div data-state="failed" role="alert" class="alert alert-soft alert-error">
             <i data-lucide="circle-x" class="size-5"></i>
-            <span>الرقم الشخصي أو كلمة المرور غير صحيحة. تبقّى لك <b class="num">2</b> محاولات قبل الإيقاف المؤقت.</span>
+            <span><span data-id-word>الرقم الشخصي</span> أو كلمة المرور غير صحيحة. تبقّى لك <b class="num">2</b> محاولات قبل الإيقاف المؤقت.</span>
           </div>
           <div data-state="locked" role="alert" class="alert alert-soft alert-warning items-start">
             <i data-lucide="shield-check" class="size-5 mt-0.5"></i>
@@ -74,7 +74,7 @@
           </div>
 
           <form id="login-form" class="flex flex-col gap-4" novalidate autocomplete="on">
-            <fieldset class="fieldset p-0">
+            <fieldset class="fieldset p-0" data-for="student">
               <label class="fieldset-legend text-sm pb-1" for="cpr">الرقم الشخصي (CPR)</label>
               <label class="input input-lg w-full" data-cpr-wrap>
                 <i data-lucide="id-card" class="size-5 opacity-60"></i>
@@ -84,6 +84,17 @@
               </label>
               <p id="cpr-hint" class="label text-xs">9 أرقام كما في البطاقة الذكية</p>
               <p data-state="invalid" class="label text-xs text-error"><i data-lucide="triangle-alert" class="size-3.5"></i>الرقم الشخصي يجب أن يتكون من 9 أرقام.</p>
+            </fieldset>
+
+            <fieldset class="fieldset p-0" data-for="teacher" hidden>
+              <label class="fieldset-legend text-sm pb-1" for="email">البريد الإلكتروني</label>
+              <label class="input input-lg w-full" data-email-wrap>
+                <i data-lucide="mail" class="size-5 opacity-60"></i>
+                <input id="email" name="email" type="email" inputmode="email" enterkeyhint="next" autocomplete="username" dir="ltr"
+                       class="text-start" placeholder="name@example.com" aria-describedby="email-hint">
+              </label>
+              <p id="email-hint" class="label text-xs">البريد المسجّل لدى إدارة المركز</p>
+              <p data-state="invalid" class="label text-xs text-error"><i data-lucide="triangle-alert" class="size-3.5"></i>يرجى إدخال بريد إلكتروني صحيح.</p>
             </fieldset>
 
             <fieldset class="fieldset p-0">
@@ -187,9 +198,10 @@
       var s = e.detail;
       clearInterval(timer);
       var locked = s === "locked", busy = s === "submitting";
-      [cpr, pwd].forEach(function (i) { i.disabled = locked || busy; });
+      [cpr, pwd, document.getElementById("email")].forEach(function (i) { i.disabled = locked || busy; });
       btn.disabled = locked || busy;
       form.querySelector("[data-cpr-wrap]").classList.toggle("input-error", s === "invalid");
+      form.querySelector("[data-email-wrap]").classList.toggle("input-error", s === "invalid");
       if (locked) {
         var left = 60, out = document.querySelector("[data-countdown]");
         timer = setInterval(function () {
@@ -199,11 +211,30 @@
       }
     });
 
+    // role switch (student ↔ teacher)
+    var role = new URLSearchParams(location.search).get("role") === "teacher" ? "teacher" : "student";
+    var email = document.getElementById("email");
+    function setRole(r) {
+      role = r;
+      document.querySelectorAll("[data-role]").forEach(function (t) { var on = t.getAttribute("data-role") === r; t.classList.toggle("tab-active", on); t.setAttribute("aria-selected", on); });
+      document.querySelectorAll("[data-for]").forEach(function (f) { f.hidden = f.getAttribute("data-for") !== r; });
+      document.getElementById("intro").textContent = r === "teacher"
+        ? "أدخل البريد الإلكتروني وكلمة المرور الخاصة بحساب المدرّس."
+        : "أدخل الرقم الشخصي وكلمة المرور المسلّمة لك من إدارة المركز.";
+      document.querySelectorAll("[data-id-word]").forEach(function (n) { n.textContent = r === "teacher" ? "البريد الإلكتروني" : "الرقم الشخصي"; });
+      cpr.required = r === "student"; email.required = r === "teacher";
+      if (GH.setState) GH.setState("idle");
+    }
+    document.querySelectorAll("[data-role]").forEach(function (t) { t.addEventListener("click", function () { setRole(t.getAttribute("data-role")); }); });
+    email.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); pwd.focus(); } });
+    setRole(role);
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (!/^\d{9}$/.test(cpr.value)) { GH.setState("invalid"); cpr.focus(); return; }
+      if (role === "student" && !/^\d{9}$/.test(cpr.value)) { GH.setState("invalid"); cpr.focus(); return; }
+      if (role === "teacher" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value)) { GH.setState("invalid"); email.focus(); return; }
       GH.setState("submitting");
-      setTimeout(function () { location.href = "home.html"; }, 900);
+      setTimeout(function () { location.href = role === "teacher" ? "t-home.html" : "home.html"; }, 900);
     });
   })();
 </script>
