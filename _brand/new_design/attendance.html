@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>سجل الحضور · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="attendance" data-title="سجل الحضور" data-crumb="الحضور"
+      data-states="ready:بيانات كاملة,loading:جارٍ التحميل,empty:لا توجد سجلات بعد">
+<main class="space-y-4">
+
+  <!-- Course: native select = the phone's own picker -->
+  <label class="select w-full lg:max-w-md">
+    <span class="label"><i data-lucide="book-open" class="size-4"></i></span>
+    <select id="f-course" aria-label="الدورة"></select>
+  </label>
+
+  <!-- Subjects: swipeable chip rail (one thumb, no dropdown) -->
+  <div class="rail" id="f-cur" role="group" aria-label="المادة"></div>
+
+  <div data-state="ready" class="space-y-4">
+    <!-- Summary + view switch -->
+    <section class="card-soft p-4">
+      <div class="flex items-center gap-3">
+        <div class="radial-progress text-primary text-sm font-semibold num shrink-0" id="ring" role="progressbar" aria-label="نسبة الحضور" style="--size:3.5rem;--thickness:5px"></div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs opacity-70">نسبة الحضور</p>
+          <p class="font-semibold text-sm sm:text-base"><span class="num" id="s-att"></span> من <span class="num" id="s-rec"></span> حصة</p>
+        </div>
+        <div class="join shrink-0" role="group" aria-label="طريقة العرض">
+          <button class="btn join-item btn-square btn-active" data-view="calendar" aria-pressed="true" aria-label="تقويم"><i data-lucide="calendar" class="size-5"></i></button>
+          <button class="btn join-item btn-square" data-view="list" aria-pressed="false" aria-label="قائمة"><i data-lucide="list" class="size-5"></i></button>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-2 mt-3 pt-3 border-t border-base-300" id="legend" aria-label="دليل الرموز"></div>
+    </section>
+
+    <!-- Calendar view -->
+    <section id="v-calendar" class="grid gap-4 lg:grid-cols-[1fr_20rem]">
+      <div class="card-soft p-2.5 sm:p-5">
+        <header class="flex items-center justify-between mb-2">
+          <button class="btn btn-ghost btn-circle" id="m-prev" aria-label="الشهر السابق"><i data-lucide="chevron-right" class="size-5"></i></button>
+          <h2 class="font-display text-base sm:text-lg" id="m-title" aria-live="polite"></h2>
+          <button class="btn btn-ghost btn-circle" id="m-next" aria-label="الشهر التالي"><i data-lucide="chevron-left" class="size-5"></i></button>
+        </header>
+        <div class="grid grid-cols-7 text-center text-[11px] sm:text-xs opacity-60 mb-1" id="m-head"></div>
+        <div class="grid grid-cols-7 gap-1 sm:gap-1.5" id="m-grid" role="grid"></div>
+        <p class="text-xs opacity-60 text-center mt-3 lg:hidden">اضغط على أي يوم لعرض حصصه</p>
+      </div>
+      <!-- desktop: side panel; phones use the bottom sheet below -->
+      <aside class="card-soft p-5 hidden lg:block" aria-live="polite">
+        <h3 class="font-display text-base mb-1" data-d="title">اختر يومًا</h3>
+        <p class="text-xs opacity-60 mb-3" data-d="sub"></p>
+        <ul class="space-y-3" data-d="list"></ul>
+      </aside>
+    </section>
+
+    <!-- List view -->
+    <section id="v-list" hidden class="space-y-3">
+      <div class="rail" id="state-filter" role="group" aria-label="تصفية حسب الحالة"></div>
+      <div class="card-soft overflow-hidden" id="l-body"></div>
+    </section>
+  </div>
+
+  <div data-state="loading" class="space-y-4" aria-busy="true">
+    <div class="skeleton h-28 w-full rounded-box"></div>
+    <div class="skeleton h-80 w-full rounded-box"></div>
+  </div>
+  <div data-state="empty" class="card-soft" id="empty"></div>
+</main>
+
+<!-- Day details: bottom sheet on phones -->
+<dialog id="day-sheet" class="modal modal-bottom">
+  <div class="modal-box pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+    <div class="sheet-grip"></div>
+    <h3 class="font-display text-lg" data-d="title"></h3>
+    <p class="text-xs opacity-60 mb-4" data-d="sub"></p>
+    <ul class="space-y-4" data-d="list"></ul>
+    <form method="dialog" class="mt-6"><button class="btn btn-block btn-lg">إغلاق</button></form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var D = GH.DEMO, S = GH.STATES;
+    var q = new URLSearchParams(location.search);
+    var course = GH.courseById(q.get("course") || D.current.id);
+    var cur = "", stateOn = {}, month, selected;
+    var wide = matchMedia("(min-width: 1024px)");
+    document.getElementById("empty").innerHTML = GH.ui.empty("calendar-check", "لا توجد سجلات حضور بعد", "تظهر السجلات هنا بعد أن يرصد المدرّس الحضور لأول حصة.");
+
+    // course select
+    var fc = document.getElementById("f-course");
+    D.courses.forEach(function (c) { fc.insertAdjacentHTML("beforeend", '<option value="' + c.id + '"' + (c.id === course.id ? " selected" : "") + ">" + (c.status === "active" ? "● " : "") + GH.esc(c.long_name) + "</option>"); });
+    fc.addEventListener("change", function () { course = GH.courseById(fc.value); cur = ""; fillCur(); month = null; selected = null; render(); });
+
+    // subject chips
+    var fcur = document.getElementById("f-cur");
+    function fillCur() {
+      fcur.innerHTML = [{ id: "", name: "كل المواد" }].concat(course.curricula).map(function (c) {
+        return '<button class="chip" data-cur="' + c.id + '" aria-pressed="' + (String(c.id) === cur) + '">' + GH.esc(c.name) + "</button>";
+      }).join("");
+    }
+    fcur.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-cur]"); if (!b) return;
+      cur = b.getAttribute("data-cur");
+      fcur.querySelectorAll("[data-cur]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      selected = null; render();
+    });
+    fillCur();
+
+    // legend + state chips (list view)
+    var order = GH.STATE_ORDER.concat(["unrecorded"]);
+    document.getElementById("legend").innerHTML = order.map(function (k) { return '<span class="inline-flex items-center gap-1.5 text-xs">' + GH.pip(k) + S[k].label + "</span>"; }).join("");
+    order.forEach(function (k) { stateOn[k] = true; });
+    var sf = document.getElementById("state-filter");
+    sf.innerHTML = order.map(function (k) { return '<button class="chip" data-sf="' + k + '" aria-pressed="true">' + GH.pip(k) + S[k].label + "</button>"; }).join("");
+    sf.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-sf]"); if (!b) return;
+      var k = b.getAttribute("data-sf"); stateOn[k] = !stateOn[k];
+      b.setAttribute("aria-pressed", stateOn[k]);
+      renderList();
+    });
+
+    // view toggle
+    document.querySelectorAll("[data-view]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var view = b.getAttribute("data-view");
+        document.querySelectorAll("[data-view]").forEach(function (x) { var on = x === b; x.classList.toggle("btn-active", on); x.setAttribute("aria-pressed", on); });
+        document.getElementById("v-calendar").hidden = view !== "calendar";
+        document.getElementById("v-list").hidden = view !== "list";
+      });
+    });
+
+    function sessions() { return GH.sessionsFor(course).filter(function (s) { return !cur || String(s.curriculum_id) === cur; }); }
+
+    function render() {
+      var ss = sessions(), sum = GH.summarize(ss);
+      var ring = document.getElementById("ring");
+      ring.style.setProperty("--value", Math.round(sum.rate)); ring.setAttribute("aria-valuenow", Math.round(sum.rate)); ring.textContent = Math.round(sum.rate) + "%";
+      document.getElementById("s-att").textContent = sum.attended;
+      document.getElementById("s-rec").textContent = sum.recorded;
+      if (!month) { var last = ss.length ? GH.parse(ss[ss.length - 1].date) : GH.parse(course.start_date); month = new Date(last.getFullYear(), last.getMonth(), 1); }
+      renderMonth(); renderList(); GH.icons();
+    }
+
+    // ---- calendar
+    document.getElementById("m-head").innerHTML = GH.DAYS_SHORT.map(function (h) { return "<div>" + h + "</div>"; }).join("");
+    document.getElementById("m-prev").onclick = function () { month = new Date(month.getFullYear(), month.getMonth() - 1, 1); selected = null; renderMonth(); GH.icons(); };
+    document.getElementById("m-next").onclick = function () { month = new Date(month.getFullYear(), month.getMonth() + 1, 1); selected = null; renderMonth(); GH.icons(); };
+
+    var byDate = {};
+    function renderMonth() {
+      var ss = sessions(); byDate = {};
+      ss.forEach(function (s) { (byDate[s.date] = byDate[s.date] || []).push(s); });
+      document.getElementById("m-title").textContent = GH.fmtDate(GH.iso(month), { month: "long", year: "numeric" });
+      var cs = GH.parse(course.start_date), ce = GH.parse(course.end_date), lastMonth = ce < GH.TODAY ? ce : GH.TODAY;
+      document.getElementById("m-prev").disabled = month <= new Date(cs.getFullYear(), cs.getMonth(), 1);
+      document.getElementById("m-next").disabled = month >= new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+      var html = "", first = month.getDay(), days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+      for (var i = 0; i < first; i++) html += "<div></div>";
+      for (var d = 1; d <= days; d++) {
+        var dt = new Date(month.getFullYear(), month.getMonth(), d), k = GH.iso(dt), list = byDate[k] || [];
+        var weekend = dt.getDay() === 5 || dt.getDay() === 6, today = k === GH.DEMO.today;
+        // phones: ≥44px square cells; pips stack under the date
+        var cls = "min-h-12 aspect-square sm:aspect-auto sm:h-20 rounded-lg p-1 sm:p-1.5 flex flex-col items-center sm:items-stretch gap-0.5 sm:gap-1 text-sm transition-colors ";
+        cls += list.length ? "bg-base-200/70 active:bg-base-300 hover:bg-base-300/80 cursor-pointer " : weekend ? "opacity-40 " : "opacity-70 ";
+        if (today) cls += "is-today ";
+        if (k === selected && wide.matches) cls += "outline-2 outline-primary ";
+        html += '<button role="gridcell" class="' + cls + '"' + (list.length ? ' data-day="' + k + '" aria-label="' + GH.fmtDate(k, { weekday: "long", day: "numeric", month: "long" }) + "، " + list.length + ' حصص"' : " disabled") + ">" +
+          '<span class="num text-xs sm:text-sm ' + (today ? "font-bold text-primary" : "") + '">' + d + "</span>" +
+          '<span class="flex flex-wrap justify-center sm:justify-start gap-0.5 sm:gap-1">' + list.map(function (s) { return GH.pip(s.state); }).join("") + "</span></button>";
+      }
+      var grid = document.getElementById("m-grid");
+      grid.innerHTML = html;
+      grid.querySelectorAll("[data-day]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          selected = b.getAttribute("data-day");
+          fillDay(selected);
+          if (wide.matches) renderMonth(); else document.getElementById("day-sheet").showModal();
+        });
+      });
+      // desktop panel defaults to the latest day with sessions this month
+      if (!selected) { var keys = Object.keys(byDate).filter(function (k) { return k.slice(0, 7) === GH.iso(month).slice(0, 7); }); if (keys.length) selected = keys[keys.length - 1]; }
+      if (selected && byDate[selected]) fillDay(selected);
+      GH.icons();
+    }
+    function row(s, withDate) {
+      return '<li class="flex gap-3 items-start">' +
+        '<div class="flex-1 min-w-0"><p class="font-medium leading-snug">' + GH.esc(s.curriculum) + "</p>" +
+        '<p class="text-xs opacity-70">' + (withDate ? GH.fmtDate(s.date, { weekday: "short", day: "numeric", month: "short" }) + " · " : "") +
+        '<span class="num">' + GH.fmtTime(s.start) + "</span> · " + GH.esc(s.teacher) + "</p></div>" + GH.chip(s.state) + "</li>";
+    }
+    function fillDay(k) {
+      var list = byDate[k] || [];
+      document.querySelectorAll('[data-d="title"]').forEach(function (n) { n.textContent = GH.fmtDate(k, { weekday: "long", day: "numeric", month: "long" }); });
+      document.querySelectorAll('[data-d="sub"]').forEach(function (n) { n.textContent = GH.fmtHijri(k); });
+      document.querySelectorAll('[data-d="list"]').forEach(function (n) { n.innerHTML = list.map(function (s) { return row(s, false); }).join(""); });
+      GH.icons();
+    }
+
+    // ---- list (grouped by week, newest first)
+    function renderList() {
+      var ss = sessions().filter(function (s) { return stateOn[s.state]; }).slice().reverse();
+      var body = document.getElementById("l-body");
+      if (!ss.length) { body.innerHTML = GH.ui.empty("search-x", "لا توجد حصص مطابقة", "عدّل عوامل التصفية لعرض المزيد."); GH.icons(); return; }
+      var groups = [], key = null;
+      ss.forEach(function (s) {
+        var d = GH.parse(s.date); d.setDate(d.getDate() - d.getDay()); var k = GH.iso(d);
+        if (k !== key) { groups.push({ k: k, items: [] }); key = k; }
+        groups[groups.length - 1].items.push(s);
+      });
+      body.innerHTML = groups.map(function (g) {
+        return '<div><h4 class="sticky top-[calc(3.5rem+env(safe-area-inset-top))] lg:top-16 z-10 bg-base-200/95 backdrop-blur px-4 py-2 text-xs font-semibold opacity-80">أسبوع ' + GH.fmtDate(g.k, { day: "numeric", month: "long" }) + '</h4><ul class="divide-y divide-base-300 px-4">' +
+          g.items.map(function (s) { return '<li class="py-3"><ul>' + row(s, true) + "</ul></li>"; }).join("") + "</ul></div>";
+      }).join("");
+      GH.icons();
+    }
+
+    render();
+  });
+</script>
+</body>
+</html>

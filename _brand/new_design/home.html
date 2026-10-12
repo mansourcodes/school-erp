@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>الدورة الحالية · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="home" data-title="الدورة الحالية" data-crumb="بوابة الطالب"
+      data-states="ready:بيانات كاملة,loading:جارٍ التحميل,none:لا توجد دورة نشطة,error:تعذّر الاتصال">
+<main>
+
+  <!-- ============ READY ============ -->
+  <div data-state="ready" class="space-y-4 lg:space-y-6">
+
+    <!-- Hero: compact on phones; next session is a strip, not a second card -->
+    <section class="hero-band bg-pattern rounded-box overflow-hidden">
+      <div class="p-4 sm:p-7 lg:grid lg:grid-cols-[1fr_auto] lg:gap-6 lg:items-center">
+        <div class="flex gap-3 sm:gap-5 items-center min-w-0">
+          <div id="hero-avatar"></div>
+          <div class="min-w-0">
+            <p class="text-sm opacity-85">أهلًا بك، <span data-bind="first_name"></span></p>
+            <span class="badge badge-sm border-0 bg-white/20 text-white gap-1.5 my-1"><span class="inline-grid *:[grid-area:1/1]"><span class="status status-success animate-ping"></span><span class="status status-success"></span></span>نشطة</span>
+            <h2 class="font-display text-lg sm:text-2xl leading-snug" data-bind="long_name"></h2>
+            <p class="text-xs sm:text-sm opacity-85 mt-0.5"><span data-bind="semester"></span> · <span data-bind="hijri"></span> · الصف <span class="num" data-bind="room"></span></p>
+          </div>
+        </div>
+        <!-- Next session -->
+        <div class="mt-4 lg:mt-0 rounded-field bg-white/10 border border-white/20 p-3 flex items-center gap-3 lg:w-72">
+          <div class="rounded-field bg-white text-neutral px-2.5 py-1.5 text-center leading-tight shrink-0">
+            <p class="text-[11px]" data-bind="next_when"></p>
+            <p class="font-bold num text-sm" data-bind="next_start"></p>
+          </div>
+          <div class="min-w-0">
+            <p class="text-[11px] opacity-80">الحصة القادمة</p>
+            <p class="font-semibold truncate" data-bind="next_curriculum"></p>
+            <p class="text-xs opacity-75 truncate" data-bind="next_teacher"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI tiles: 2×2 on phones, 4 across on desktop -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4" aria-label="ملخص الدورة">
+      <a href="stats.html" class="card-soft p-3.5 sm:p-4 active:bg-base-200">
+        <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="calendar-check" class="size-4 text-primary"></i>نسبة الحضور</p>
+        <p class="text-2xl sm:text-3xl font-semibold mt-1.5 num" data-bind="rate"></p>
+        <div class="h-1.5 rounded-full bg-base-200 mt-2.5 overflow-hidden"><div class="h-full rounded-full" style="background:var(--viz-1)" data-bind-width="rate"></div></div>
+      </a>
+      <a href="attendance.html" class="card-soft p-3.5 sm:p-4 active:bg-base-200">
+        <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="circle-check" class="size-4 text-primary"></i>الحصص المحضورة</p>
+        <p class="text-2xl sm:text-3xl font-semibold mt-1.5 num"><span data-bind="attended"></span><span class="text-sm opacity-50"> / <span data-bind="recorded"></span></span></p>
+        <p class="text-xs opacity-60 mt-1.5">غياب <span class="num" data-bind="absences"></span> · تأخير <span class="num" data-bind="lates"></span></p>
+      </a>
+      <button class="card-soft p-3.5 sm:p-4 text-start active:bg-base-200" data-goto-tab="payments">
+        <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="wallet" class="size-4 text-primary"></i>المدفوع</p>
+        <p class="text-xl sm:text-3xl font-semibold mt-1.5 num whitespace-nowrap" data-bind="paid"></p>
+        <p class="text-xs opacity-60 mt-1.5"><span class="num" data-bind="receipts"></span> إيصال</p>
+      </button>
+      <button class="card-soft p-3.5 sm:p-4 text-start active:bg-base-200" data-goto-tab="marks">
+        <p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="graduation-cap" class="size-4 text-primary"></i>الدرجات</p>
+        <p class="text-2xl sm:text-3xl font-semibold mt-1.5 num"><span data-bind="marks_sum"></span><span class="text-sm opacity-50"> / 100</span></p>
+        <p class="text-xs opacity-60 mt-1.5">قيد الرصد</p>
+      </button>
+    </section>
+
+    <!-- Tabs: full-width segmented bar, sticks under the top bar while scrolling -->
+    <section class="card-soft" id="details">
+      <div role="tablist" aria-label="تفاصيل الدورة"
+           class="sticky top-[calc(3.5rem+env(safe-area-inset-top))] lg:top-16 z-20 bg-base-100 rounded-t-box border-b border-base-300 grid grid-cols-3">
+        <button role="tab" class="tab h-13 sm:h-14 gap-1 sm:gap-1.5 px-1 flex-nowrap whitespace-nowrap text-sm sm:text-base" data-tab="timetable" aria-controls="p-timetable"><i data-lucide="calendar" class="size-4"></i>الجدول</button>
+        <button role="tab" class="tab h-13 sm:h-14 gap-1 sm:gap-1.5 px-1 flex-nowrap whitespace-nowrap text-sm sm:text-base" data-tab="payments" aria-controls="p-payments"><i data-lucide="receipt" class="size-4"></i>المدفوعات</button>
+        <button role="tab" class="tab h-13 sm:h-14 gap-1 sm:gap-1.5 px-1 flex-nowrap whitespace-nowrap text-sm sm:text-base" data-tab="marks" aria-controls="p-marks"><i data-lucide="award" class="size-4"></i>الدرجات</button>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div role="tabpanel" id="p-timetable" class="space-y-5">
+          <div id="timetable"></div>
+          <details class="group rounded-box bg-base-200/60 sm:bg-transparent" id="meta-box">
+            <summary class="list-none cursor-pointer flex items-center justify-between p-3 sm:p-0 sm:mb-3 font-display min-h-12">
+              <span class="flex items-center gap-2"><i data-lucide="info" class="size-4 text-primary"></i>معلومات الدورة</span>
+              <i data-lucide="chevron-down" class="size-4 opacity-60 sm:hidden group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <div class="px-3 pb-4 sm:p-0" id="course-meta"></div>
+          </details>
+        </div>
+        <div role="tabpanel" id="p-payments" hidden></div>
+        <div role="tabpanel" id="p-marks" hidden></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ LOADING (skeleton mirrors layout) ============ -->
+  <div data-state="loading" class="space-y-4" aria-busy="true" aria-live="polite">
+    <div class="skeleton h-40 w-full rounded-box"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div class="skeleton h-24"></div><div class="skeleton h-24"></div><div class="skeleton h-24"></div><div class="skeleton h-24"></div>
+    </div>
+    <div class="skeleton h-72 w-full rounded-box"></div>
+    <span class="sr-only">جارٍ تحميل بيانات الدورة…</span>
+  </div>
+
+  <!-- ============ NO ACTIVE COURSE ============ -->
+  <div data-state="none" class="card-soft">
+    <div class="flex flex-col items-center text-center py-12 px-6 gap-3">
+      <div class="arch w-20 h-24 bg-base-200 grid place-items-center text-primary"><i data-lucide="book-open" class="size-8"></i></div>
+      <h2 class="font-display text-xl">لا توجد دورة نشطة حاليًا</h2>
+      <p class="text-sm opacity-70 max-w-md">لم يتم تسجيلك في دورة نشطة بعد. عند تسجيلك من قِبل إدارة المركز ستظهر تفاصيل الدورة هنا.</p>
+      <a href="archive.html" class="btn btn-primary btn-outline btn-lg sm:btn-md w-full sm:w-auto mt-2"><i data-lucide="archive" class="size-4"></i>تصفّح الدورات السابقة</a>
+    </div>
+  </div>
+
+  <!-- ============ ERROR ============ -->
+  <div data-state="error" class="card-soft">
+    <div class="flex flex-col items-center text-center py-12 px-6 gap-3">
+      <div class="arch w-20 h-24 bg-error/10 grid place-items-center text-error"><i data-lucide="wifi-off" class="size-8"></i></div>
+      <h2 class="font-display text-xl">تعذّر تحميل البيانات</h2>
+      <p class="text-sm opacity-70 max-w-md">تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.</p>
+      <button class="btn btn-primary btn-lg sm:btn-md w-full sm:w-auto mt-2" onclick="GH.setState('ready')"><i data-lucide="refresh-cw" class="size-4"></i>إعادة المحاولة</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var D = GH.DEMO, c = D.current, st = D.student;
+    var sum = GH.summarize(GH.sessionsFor(c));
+    var nx = GH.nextSession(c);
+    var paid = c.payments.reduce(function (a, p) { return a + p.amount; }, 0);
+    var marksSum = c.marks.reduce(function (a, m) { return a + (m.mark || 0); }, 0);
+    var bind = {
+      first_name: st.first_name, long_name: c.long_name, semester: c.semester, hijri: c.hijri_year + "هـ", room: c.class_room_number,
+      next_curriculum: nx.curriculum, next_when: nx.when, next_start: GH.fmtTime(nx.start), next_teacher: nx.teacher,
+      rate: GH.pct(sum.rate), attended: sum.attended, recorded: sum.recorded, absences: sum.absences, lates: sum.counts.late + sum.counts.late_excused,
+      paid: GH.money(paid), receipts: c.payments.length, marks_sum: marksSum
+    };
+    document.querySelectorAll("[data-bind]").forEach(function (n) { n.textContent = bind[n.getAttribute("data-bind")]; });
+    document.querySelector('[data-bind-width="rate"]').style.width = sum.rate + "%";
+    document.getElementById("hero-avatar").innerHTML = GH.ui.avatar("w-14 h-[4.5rem] sm:w-20 sm:h-24", "text-2xl sm:text-3xl");
+    document.getElementById("course-meta").innerHTML = GH.ui.courseMeta(c);
+    document.getElementById("timetable").innerHTML = GH.ui.timetable(c);
+    document.getElementById("p-payments").innerHTML = GH.ui.payments(c);
+    document.getElementById("p-marks").innerHTML = GH.ui.marks(c);
+    // course info: collapsed on phones (secondary), open from sm up
+    if (matchMedia("(min-width: 640px)").matches) document.getElementById("meta-box").open = true;
+
+    // tabs (deep-linkable via #payments / #marks)
+    var tabs = document.querySelectorAll("[data-tab]");
+    function select(id) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute("data-tab") === id;
+        t.classList.toggle("tab-active", on); t.classList.toggle("text-primary", on); t.classList.toggle("font-semibold", on);
+        t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+        document.getElementById("p-" + t.getAttribute("data-tab")).hidden = !on;
+      });
+      history.replaceState(null, "", id === "timetable" ? location.pathname : "#" + id);
+    }
+    tabs.forEach(function (t) {
+      t.addEventListener("click", function () {
+        select(t.getAttribute("data-tab"));
+        var d = document.getElementById("details");
+        if (d.getBoundingClientRect().top < 0) d.scrollIntoView({ block: "start" });   // keep tab bar in view
+      });
+    });
+    document.querySelectorAll("[data-goto-tab]").forEach(function (b) {
+      b.addEventListener("click", function () { select(b.getAttribute("data-goto-tab")); document.getElementById("details").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    });
+    select((location.hash || "#timetable").slice(1));
+    GH.icons();
+  });
+</script>
+</body>
+</html>

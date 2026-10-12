@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>أرشيف الدورات · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="archive" data-title="أرشيف الدورات" data-crumb="الدورات السابقة · للاطلاع فقط"
+      data-states="ready:بيانات كاملة,loading:جارٍ التحميل,empty:لا توجد دورات سابقة">
+<main class="space-y-5">
+
+  <div data-state="ready" class="space-y-5">
+    <!-- Toolbar: one row of filters above the content -->
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center">
+      <label class="input w-full sm:max-w-xs">
+        <i data-lucide="search" class="size-4 opacity-60"></i>
+        <input type="search" placeholder="ابحث باسم الدورة…" data-search aria-label="بحث في الدورات">
+      </label>
+      <select class="select w-full sm:w-44" data-year aria-label="السنة">
+        <option value="">كل السنوات</option>
+      </select>
+      <p class="text-sm opacity-60 sm:ms-auto flex items-center gap-1.5"><i data-lucide="lock" class="size-4"></i>الدورات المؤرشفة للاطلاع فقط</p>
+    </div>
+
+    <div id="list" class="space-y-4"></div>
+    <div id="no-match" hidden class="card-soft"></div>
+  </div>
+
+  <div data-state="loading" class="space-y-4" aria-busy="true">
+    <div class="skeleton h-12 w-full max-w-md"></div>
+    <div class="skeleton h-32 w-full rounded-box"></div><div class="skeleton h-32 w-full rounded-box"></div><div class="skeleton h-32 w-full rounded-box"></div>
+  </div>
+
+  <div data-state="empty" class="card-soft" id="empty"></div>
+</main>
+
+<template id="course-tpl">
+  <article class="card-soft overflow-hidden" data-course>
+    <button class="w-full text-start p-4 sm:p-5 flex gap-3 sm:gap-4 items-center active:bg-base-200 hover:bg-base-200/60 transition-colors" data-toggle aria-expanded="false">
+      <div class="arch w-10 h-13 sm:w-12 sm:h-16 shrink-0 bg-base-200 grid place-items-center text-primary"><i data-lucide="book-marked" class="size-5"></i></div>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap gap-2 items-center mb-1">
+          <span class="badge badge-sm badge-ghost gap-1"><i data-lucide="archive" class="size-3"></i>مؤرشفة</span>
+          <span class="text-xs opacity-60" data-f="when"></span>
+        </div>
+        <h3 class="font-display text-base sm:text-lg leading-snug" data-f="name"></h3>
+        <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm">
+          <span class="inline-flex items-center gap-1.5"><i data-lucide="award" class="size-4 text-accent"></i><b data-f="grade"></b> · <span class="num" data-f="total"></span></span>
+          <span class="inline-flex items-center gap-1.5 opacity-80"><i data-lucide="calendar-check" class="size-4 text-primary"></i>حضور <span class="num" data-f="rate"></span></span>
+        </div>
+      </div>
+      <i data-lucide="chevron-down" class="size-5 opacity-60 transition-transform" data-chev></i>
+    </button>
+    <div data-body hidden class="border-t border-base-300">
+      <div role="tablist" class="grid grid-cols-3 border-b border-base-300">
+        <button role="tab" class="tab h-12 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm tab-active text-primary font-semibold" data-t="marks"><i data-lucide="award" class="size-4"></i>الدرجات</button>
+        <button role="tab" class="tab h-12 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm" data-t="info"><i data-lucide="calendar" class="size-4"></i>الجدول</button>
+        <button role="tab" class="tab h-12 gap-1 px-1 flex-nowrap whitespace-nowrap text-sm" data-t="pay"><i data-lucide="receipt" class="size-4"></i>المدفوعات</button>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div data-p="marks"></div>
+        <div data-p="info" class="space-y-6" hidden></div>
+        <div data-p="pay" hidden></div>
+        <a class="btn btn-outline btn-primary btn-block sm:w-auto mt-6" data-f="attLink"><i data-lucide="calendar-check" class="size-4"></i>سجل الحضور لهذه الدورة</a>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var D = GH.DEMO, list = document.getElementById("list"), tpl = document.getElementById("course-tpl");
+    document.getElementById("empty").innerHTML = GH.ui.empty("archive", "لا توجد دورات سابقة", "ستظهر هنا الدورات التي أكملتها بعد انتهائها وأرشفتها من الإدارة.", '<a href="home.html" class="btn btn-primary btn-outline mt-2">العودة إلى الدورة الحالية</a>');
+    document.getElementById("no-match").innerHTML = GH.ui.empty("search-x", "لا توجد نتائج", "جرّب كلمة بحث أخرى أو اختر سنة مختلفة.");
+
+    var years = {};
+    D.archived.forEach(function (c) {
+      years[c.year] = 1;
+      var n = tpl.content.firstElementChild.cloneNode(true), s = GH.summarize(GH.sessionsFor(c));
+      n.dataset.year = c.year; n.dataset.name = c.long_name;
+      n.querySelector('[data-f="name"]').textContent = c.long_name;
+      n.querySelector('[data-f="when"]').textContent = c.semester + " · " + c.hijri_year + "هـ · " + GH.fmtDate(c.start_date, { month: "short", year: "numeric" }) + " – " + GH.fmtDate(c.end_date, { month: "short", year: "numeric" });
+      n.querySelector('[data-f="grade"]').textContent = c.final_grade;
+      n.querySelector('[data-f="total"]').textContent = c.total_mark + " / 100";
+      n.querySelector('[data-f="rate"]').textContent = GH.pct(s.rate);
+      n.querySelector('[data-f="attLink"]').href = "attendance.html?course=" + c.id;
+      n.querySelector('[data-p="info"]').innerHTML = GH.ui.courseMeta(c) + '<div class="divider my-0"></div>' + GH.ui.timetable(c, { archived: true });
+      n.querySelector('[data-p="pay"]').innerHTML = GH.ui.payments(c);
+      n.querySelector('[data-p="marks"]').innerHTML = GH.ui.marks(c);
+
+      var btn = n.querySelector("[data-toggle]"), body = n.querySelector("[data-body]");
+      btn.addEventListener("click", function () {
+        var open = body.hidden; body.hidden = !open; btn.setAttribute("aria-expanded", open);
+        n.querySelector("[data-chev]").classList.toggle("rotate-180", open);
+      });
+      n.querySelectorAll("[data-t]").forEach(function (t) {
+        t.addEventListener("click", function () {
+          n.querySelectorAll("[data-t]").forEach(function (x) { var on = x === t; x.classList.toggle("tab-active", on); x.classList.toggle("text-primary", on); x.classList.toggle("font-semibold", on); x.setAttribute("aria-selected", on); });
+          n.querySelectorAll("[data-p]").forEach(function (p) { p.hidden = p.getAttribute("data-p") !== t.getAttribute("data-t"); });
+        });
+      });
+      list.appendChild(n);
+    });
+
+    var sel = document.querySelector("[data-year]");
+    Object.keys(years).sort().reverse().forEach(function (y) { sel.insertAdjacentHTML("beforeend", '<option value="' + y + '">' + y + "</option>"); });
+    function filter() {
+      var q = document.querySelector("[data-search]").value.trim(), y = sel.value, shown = 0;
+      list.querySelectorAll("[data-course]").forEach(function (n) {
+        var ok = (!y || n.dataset.year === y) && (!q || n.dataset.name.indexOf(q) !== -1);
+        n.hidden = !ok; if (ok) shown++;
+      });
+      document.getElementById("no-match").hidden = shown > 0;
+    }
+    document.querySelector("[data-search]").addEventListener("input", filter);
+    sel.addEventListener("change", filter);
+    // first card open by default
+    var first = list.querySelector("[data-toggle]"); if (first) first.click();
+    GH.icons();
+  });
+</script>
+</body>
+</html>

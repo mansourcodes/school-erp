@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>إحصائيات الحضور · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <style>
+    .bar-track { height: .75rem; border-radius: 4px; background: var(--viz-grid); }
+    .bar-fill  { height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; background: var(--viz-1); }
+    .stack { display: flex; gap: 2px; height: 2.25rem; }
+    .stack > span { background-color: var(--c); min-width: 3px; }
+    .stack > span:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
+    .stack > span:last-child  { border-start-end-radius: 6px; border-end-end-radius: 6px; }
+  </style>
+</head>
+<body data-page="stats" data-title="إحصائيات الحضور" data-crumb="الحضور"
+      data-states="ready:بيانات كاملة,loading:جارٍ التحميل,empty:لا توجد بيانات كافية">
+<main class="space-y-5">
+
+  <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+    <label class="select w-full sm:w-96">
+      <span class="label"><i data-lucide="book-open" class="size-4"></i></span>
+      <select id="f-course" aria-label="الدورة"></select>
+    </label>
+    <a href="attendance.html" class="btn btn-ghost text-primary sm:ms-auto" id="to-log"><i data-lucide="calendar-check" class="size-4"></i>سجل الحضور التفصيلي</a>
+  </div>
+
+  <div data-state="ready" class="space-y-5">
+
+    <!-- Hero figure + KPI row -->
+    <section class="grid gap-4 lg:grid-cols-[1.1fr_2fr]">
+      <div class="card-soft p-4 sm:p-6 bg-pattern bg-pattern-ink">
+        <p class="text-sm opacity-70">نسبة الحضور الإجمالية</p>
+        <p class="text-5xl sm:text-6xl font-semibold mt-1 tracking-tight" id="hero"></p>
+        <div class="bar-track mt-4" role="meter" aria-label="نسبة الحضور" aria-valuemin="0" aria-valuemax="100" id="hero-meter"><div class="bar-fill" id="hero-fill"></div></div>
+        <p class="text-sm opacity-70 mt-3" id="hero-sub"></p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 sm:gap-4" id="kpis"></div>
+    </section>
+
+    <!-- Composition -->
+    <section class="card-soft p-4 sm:p-6">
+      <header class="flex items-baseline justify-between gap-3 mb-4">
+        <div><h2 class="font-display text-lg">توزيع حالات الحضور</h2><p class="text-sm opacity-60">من إجمالي الحصص المرصودة</p></div>
+      </header>
+      <div class="relative" id="stack-wrap">
+        <div class="stack" id="stack" role="img"></div>
+        <div class="viz-tip" id="tip-stack"></div>
+      </div>
+      <ul class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-4" id="stack-legend"></ul>
+      <details class="mt-4 text-sm"><summary class="cursor-pointer opacity-70 inline-flex items-center gap-1.5"><i data-lucide="table-2" class="size-4"></i>عرض كجدول</summary><div id="t-stack" class="mt-2"></div></details>
+    </section>
+  </div>
+
+  <div data-state="loading" class="space-y-4" aria-busy="true">
+    <div class="grid gap-4 lg:grid-cols-[1.1fr_2fr]"><div class="skeleton h-44"></div><div class="skeleton h-44"></div></div>
+    <div class="skeleton h-40 w-full"></div>
+  </div>
+  <div data-state="empty" class="card-soft" id="empty"></div>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var D = GH.DEMO, S = GH.STATES;
+    var course = GH.courseById(new URLSearchParams(location.search).get("course") || D.current.id);
+    document.getElementById("empty").innerHTML = GH.ui.empty("chart-pie", "لا توجد بيانات كافية", "تظهر الإحصائيات بعد رصد عدد من الحصص في الدورة.");
+
+    var fc = document.getElementById("f-course");
+    D.courses.forEach(function (c) { fc.insertAdjacentHTML("beforeend", '<option value="' + c.id + '"' + (c.id === course.id ? " selected" : "") + ">" + (c.status === "active" ? "● " : "") + GH.esc(c.long_name) + "</option>"); });
+    fc.addEventListener("change", function () { course = GH.courseById(fc.value); render(); });
+
+    function table(head, rows) {
+      return '<div class="overflow-x-auto"><table class="table table-sm"><thead><tr>' + head.map(function (h, i) { return '<th class="' + (i ? "text-end" : "") + '">' + h + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        rows.map(function (r) { return "<tr>" + r.map(function (c, i) { return '<td class="' + (i ? "text-end num" : "") + '">' + c + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>";
+    }
+    function tipAt(tip, wrap, x, y, html) {
+      tip.innerHTML = html; tip.classList.add("show");
+      var w = wrap.getBoundingClientRect(), tw = tip.offsetWidth;
+      var left = Math.min(Math.max(x - w.left - tw / 2, 0), w.width - tw);
+      tip.style.left = left + "px"; tip.style.top = (y - w.top - tip.offsetHeight - 12) + "px";
+    }
+    function hide(tip) { tip.classList.remove("show"); }
+
+    function render() {
+      document.getElementById("to-log").href = "attendance.html?course=" + course.id;
+      var ss = GH.sessionsFor(course), sum = GH.summarize(ss), c = sum.counts;
+
+      // hero
+      document.getElementById("hero").innerHTML = '<span class="num">' + GH.pct(sum.rate) + "</span>";
+      document.getElementById("hero-fill").style.width = sum.rate + "%";
+      document.getElementById("hero-meter").setAttribute("aria-valuenow", Math.round(sum.rate));
+      document.getElementById("hero-sub").innerHTML = "الحضور في الموعد: <b class='num'>" + GH.pct(sum.punctual) + "</b> · " + sum.recorded + " حصة مرصودة" + (c.unrecorded ? " · " + c.unrecorded + " لم تُرصد" : "");
+
+      // KPI tiles
+      function tile(icon, label, val, sub) { return '<div class="card-soft p-3.5 sm:p-4"><p class="text-xs sm:text-sm opacity-70 flex items-center gap-1.5"><i data-lucide="' + icon + '" class="size-4 text-primary"></i>' + label + '</p><p class="text-2xl sm:text-3xl font-semibold mt-1.5 num">' + val + '</p><p class="text-xs opacity-60 mt-1">' + sub + "</p></div>"; }
+      document.getElementById("kpis").innerHTML =
+        tile("calendar", "الحصص المرصودة", sum.recorded, "منذ " + GH.fmtDate(course.start_date, { day: "numeric", month: "long" })) +
+        tile("circle-check", "حضور في الموعد", c.present, GH.pct(sum.punctual) + " من الحصص") +
+        tile("clock", "تأخير", c.late + c.late_excused, "منها " + c.late_excused + " بعذر") +
+        tile("circle-x", "غياب", sum.absences, "منها " + c.absent_excused + " بعذر");
+
+      // composition stack (status colours + hatch for excused; icon+label legend)
+      var stack = document.getElementById("stack"), tipS = document.getElementById("tip-stack");
+      var parts = GH.STATE_ORDER.filter(function (k) { return c[k]; });
+      stack.setAttribute("aria-label", parts.map(function (k) { return S[k].label + " " + c[k]; }).join("، "));
+      stack.innerHTML = parts.map(function (k) { return '<span class="' + S[k].cls + (S[k].excused ? " hatch" : "") + '" data-k="' + k + '" style="flex:' + c[k] + ' 1 0"></span>'; }).join("");
+      stack.onpointermove = function (e) { var s = e.target.closest("[data-k]"); if (!s) return; var k = s.dataset.k; tipAt(tipS, stack.parentNode, e.clientX, s.getBoundingClientRect().top, "<b>" + S[k].label + "</b><br><span class='num'>" + c[k] + " حصة · " + GH.pct(c[k] / sum.recorded * 100) + "</span>"); };
+      stack.onpointerleave = function () { hide(tipS); };
+      document.getElementById("stack-legend").innerHTML = GH.STATE_ORDER.map(function (k) {
+        return '<li class="flex items-center gap-2">' + GH.pip(k) + '<div class="leading-tight"><p class="text-sm">' + S[k].label + '</p><p class="text-xs opacity-60 num">' + c[k] + " · " + GH.pct(sum.recorded ? c[k] / sum.recorded * 100 : 0) + "</p></div></li>";
+      }).join("");
+      document.getElementById("t-stack").innerHTML = table(["الحالة", "عدد الحصص", "النسبة"], GH.STATE_ORDER.map(function (k) { return [S[k].label, c[k], GH.pct(sum.recorded ? c[k] / sum.recorded * 100 : 0)]; }));
+
+
+      GH.icons();
+    }
+    render();
+  });
+</script>
+</body>
+</html>

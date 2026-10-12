@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Student Portal Redesign — Phase 1 Design (2026-10-12)
+- `_brand/new_design/`: PLAN.md + 8 HTML mockups (index, login, home, archive, attendance,
+  stats, profile, states) sharing `assets/theme.css` (DaisyUI 5 custom themes) and `assets/app.js`
+  (shell, theme toggle, demo data shaped like the planned `/api/v1` responses)
+- Cropped brand logos `assets/img/logo-full.svg`, `assets/img/logo-icon.svg`
+
 ### Foundation
 - Laravel 8 project scaffold with Backpack CRUD 4.1
 - RTL admin panel configuration (`html_direction = rtl`)

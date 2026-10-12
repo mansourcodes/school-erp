@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>تسجيل الدخول · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="login" data-shell="none"
+      data-states="idle:الوضع العادي,submitting:جارٍ الدخول,invalid:خطأ في الإدخال,failed:بيانات غير صحيحة,locked:إيقاف مؤقت (محاولات كثيرة),expired:انتهت الجلسة">
+
+<main class="min-h-dvh grid lg:grid-cols-[1.05fr_1fr]">
+
+  <!-- Brand panel (start side in RTL = right) -->
+  <section class="hero-band bg-pattern relative flex flex-col justify-between px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-20 lg:p-14 lg:pb-14 overflow-hidden">
+    <div class="flex items-center justify-between">
+      <img src="assets/img/logo-full.svg" alt="جمعية الغدير لعلوم القرآن" class="h-12 lg:h-20 w-auto brightness-0 invert">
+      <button class="btn btn-ghost btn-circle text-white lg:hidden" data-theme-btn></button>
+    </div>
+    <div class="hidden lg:block max-w-md">
+      <div class="brand-rule w-24 mb-6"></div>
+      <h2 class="font-display text-4xl leading-snug mb-4">بوابة الطالب</h2>
+      <p class="text-lg opacity-85 leading-relaxed">تابع دورتك الحالية، جدولك الدراسي، حضورك، درجاتك وشهاداتك — في مكان واحد.</p>
+      <ul class="mt-8 space-y-3 text-sm opacity-90">
+        <li class="flex items-center gap-3"><i data-lucide="book-open" class="size-5"></i>الجدول الدراسي والمدفوعات والدرجات</li>
+        <li class="flex items-center gap-3"><i data-lucide="calendar-check" class="size-5"></i>سجل الحضور وإحصائياته</li>
+        <li class="flex items-center gap-3"><i data-lucide="archive" class="size-5"></i>أرشيف الدورات السابقة</li>
+      </ul>
+    </div>
+    <p class="hidden lg:block text-xs opacity-70">© جمعية الغدير لعلوم القرآن</p>
+    <!-- decorative arch silhouette -->
+    <div class="arch absolute -bottom-10 -left-10 w-72 h-96 bg-white/10 hidden lg:block" aria-hidden="true"></div>
+  </section>
+
+  <!-- Form panel -->
+  <section class="flex items-start lg:items-center justify-center px-3 sm:px-4 -mt-14 lg:mt-0 pb-[calc(2rem+env(safe-area-inset-bottom))] lg:p-12 relative">
+    <div class="w-full max-w-md">
+      <div class="card bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body p-5 sm:p-8 gap-5">
+
+          <header>
+            <h1 class="font-display text-2xl">تسجيل الدخول</h1>
+            <p class="text-sm opacity-70 mt-1">أدخل الرقم الشخصي وكلمة المرور المسلّمة لك من إدارة المركز.</p>
+          </header>
+
+          <!-- Role switch: teacher reuses this same screen in a later phase -->
+          <div role="tablist" class="tabs tabs-box tabs-sm w-full grid grid-cols-2" aria-label="نوع الحساب">
+            <button role="tab" class="tab tab-active" aria-selected="true"><i data-lucide="graduation-cap" class="size-4 me-1.5"></i>طالب</button>
+            <button role="tab" class="tab" aria-disabled="true" disabled title="قريبًا"><i data-lucide="users" class="size-4 me-1.5"></i>مدرّس <span class="badge badge-accent badge-xs ms-1.5">قريبًا</span></button>
+          </div>
+
+          <!-- Alerts (one visible at a time) -->
+          <div data-state="failed" role="alert" class="alert alert-soft alert-error">
+            <i data-lucide="circle-x" class="size-5"></i>
+            <span>الرقم الشخصي أو كلمة المرور غير صحيحة. تبقّى لك <b class="num">2</b> محاولات قبل الإيقاف المؤقت.</span>
+          </div>
+          <div data-state="locked" role="alert" class="alert alert-soft alert-warning items-start">
+            <i data-lucide="shield-check" class="size-5 mt-0.5"></i>
+            <div>
+              <p class="font-semibold">تم إيقاف المحاولة مؤقتًا لحماية حسابك</p>
+              <p class="text-sm">يمكنك المحاولة مجددًا بعد <b class="num" data-countdown>01:00</b> دقيقة.</p>
+            </div>
+          </div>
+          <div data-state="expired" role="status" class="alert alert-soft alert-info">
+            <i data-lucide="info" class="size-5"></i>
+            <span>انتهت جلستك لعدم النشاط. يرجى تسجيل الدخول مجددًا.</span>
+          </div>
+
+          <form id="login-form" class="flex flex-col gap-4" novalidate autocomplete="on">
+            <fieldset class="fieldset p-0">
+              <label class="fieldset-legend text-sm pb-1" for="cpr">الرقم الشخصي (CPR)</label>
+              <label class="input input-lg w-full" data-cpr-wrap>
+                <i data-lucide="id-card" class="size-5 opacity-60"></i>
+                <input id="cpr" name="cpr" type="text" inputmode="numeric" enterkeyhint="next" autocomplete="username" maxlength="9"
+                       pattern="\d{9}" dir="ltr" class="num tracking-widest text-start" placeholder="000000000" required
+                       aria-describedby="cpr-hint">
+              </label>
+              <p id="cpr-hint" class="label text-xs">9 أرقام كما في البطاقة الذكية</p>
+              <p data-state="invalid" class="label text-xs text-error"><i data-lucide="triangle-alert" class="size-3.5"></i>الرقم الشخصي يجب أن يتكون من 9 أرقام.</p>
+            </fieldset>
+
+            <fieldset class="fieldset p-0">
+              <div class="flex items-center justify-between pb-1">
+                <label class="fieldset-legend text-sm p-0" for="password">كلمة المرور</label>
+                <button type="button" class="link link-primary text-sm no-underline hover:underline" onclick="document.getElementById('forgot').showModal()">نسيت كلمة المرور؟</button>
+              </div>
+              <label class="input input-lg w-full">
+                <i data-lucide="key-round" class="size-5 opacity-60"></i>
+                <input id="password" name="password" type="password" enterkeyhint="go" autocomplete="current-password" dir="ltr" class="text-start" placeholder="••••••••" required>
+                <button type="button" class="btn btn-ghost btn-sm btn-circle -me-2" data-reveal aria-label="إظهار كلمة المرور" aria-pressed="false">
+                  <i data-lucide="eye" class="size-4"></i>
+                </button>
+              </label>
+              <p class="label text-xs text-warning-content/80 hidden" data-caps><i data-lucide="triangle-alert" class="size-3.5 text-warning"></i>زر الأحرف الكبيرة (Caps Lock) مفعّل</p>
+            </fieldset>
+
+            <!-- Honeypot: invisible to humans, bots fill it → server silently rejects -->
+            <div aria-hidden="true" class="absolute -start-[9999px] w-px h-px overflow-hidden">
+              <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <!-- Human-verification slot (Cloudflare Turnstile, managed/invisible mode) -->
+            <div class="rounded-field border border-dashed border-base-300 bg-base-200/60 px-4 py-3 flex items-center gap-3 text-sm">
+              <span class="size-6 rounded-full border-2 border-success grid place-items-center text-success"><i data-lucide="check" class="size-3.5"></i></span>
+              <span class="flex-1">تم التحقق من أنك لست برنامجًا آليًا</span>
+              <span class="text-[10px] opacity-50 ltr">Turnstile slot</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block mt-1" data-submit>
+              <span data-state="idle invalid failed expired" class="inline-flex items-center gap-2">دخول<i data-lucide="chevron-left" class="size-5"></i></span>
+              <span data-state="submitting" class="inline-flex items-center gap-2"><span class="loading loading-spinner loading-sm"></span>جارٍ التحقق…</span>
+              <span data-state="locked" class="inline-flex items-center gap-2"><i data-lucide="lock" class="size-5"></i>متوقف مؤقتًا</span>
+            </button>
+          </form>
+
+          <p class="text-xs opacity-60 flex items-center gap-2 justify-center">
+            <i data-lucide="shield-check" class="size-4"></i>اتصال آمن ومشفّر · لا تشارك كلمة المرور مع أحد
+          </p>
+        </div>
+      </div>
+
+      <p class="text-center text-xs opacity-60 mt-6">
+        <a href="index.html" class="link">← فهرس التصاميم</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<!-- Forgot / reset password: no self-service by policy -->
+<dialog id="forgot" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box p-0 overflow-hidden">
+    <div class="hero-band bg-pattern px-6 pt-6 pb-8 text-center">
+      <div class="arch w-16 h-20 bg-white/15 mx-auto grid place-items-center mb-3"><i data-lucide="building-2" class="size-7"></i></div>
+      <h3 class="font-display text-xl">استعادة كلمة المرور</h3>
+    </div>
+    <div class="p-6 space-y-4">
+      <p class="leading-relaxed">لإعادة تعيين كلمة المرور أو استرجاعها، يرجى <b>مراجعة قسم إدارة المركز</b> شخصيًا مع إحضار البطاقة الشخصية.</p>
+      <ul class="text-sm space-y-2 bg-base-200 rounded-box p-4">
+        <li class="flex gap-2"><i data-lucide="clock" class="size-4 mt-1 text-primary"></i><span>أوقات المراجعة: <span class="opacity-60">[تحدَّد من الإدارة]</span></span></li>
+        <li class="flex gap-2"><i data-lucide="map-pin" class="size-4 mt-1 text-primary"></i><span>المكان: مكتب الإدارة — المبنى الرئيسي</span></li>
+      </ul>
+      <p class="text-xs opacity-60">حرصًا على أمان حسابك لا تتم إعادة التعيين عبر الإنترنت أو الهاتف.</p>
+    </div>
+    <div class="modal-action px-6 pb-6 mt-0">
+      <form method="dialog" class="w-full"><button class="btn btn-primary btn-block">حسنًا، فهمت</button></form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
+</dialog>
+
+<script>
+  (function () {
+    var form = document.getElementById("login-form");
+    var cpr = document.getElementById("cpr");
+    var pwd = document.getElementById("password");
+    var btn = form.querySelector("[data-submit]");
+    var timer;
+
+    // digits only, max 9
+    cpr.addEventListener("input", function () { cpr.value = cpr.value.replace(/\D/g, "").slice(0, 9); });
+    cpr.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); pwd.focus(); } });
+
+    // show / hide password
+    form.querySelector("[data-reveal]").addEventListener("click", function () {
+      var show = pwd.type === "password";
+      pwd.type = show ? "text" : "password";
+      this.setAttribute("aria-pressed", show);
+      this.setAttribute("aria-label", show ? "إخفاء كلمة المرور" : "إظهار كلمة المرور");
+      this.innerHTML = '<i data-lucide="' + (show ? "eye-off" : "eye") + '" class="size-4"></i>';
+      GH.icons();
+    });
+
+    // caps-lock hint
+    pwd.addEventListener("keyup", function (e) {
+      var on = e.getModifierState && e.getModifierState("CapsLock");
+      form.querySelector("[data-caps]").classList.toggle("hidden", !on);
+    });
+
+    document.addEventListener("gh:state", function (e) {
+      var s = e.detail;
+      clearInterval(timer);
+      var locked = s === "locked", busy = s === "submitting";
+      [cpr, pwd].forEach(function (i) { i.disabled = locked || busy; });
+      btn.disabled = locked || busy;
+      form.querySelector("[data-cpr-wrap]").classList.toggle("input-error", s === "invalid");
+      if (locked) {
+        var left = 60, out = document.querySelector("[data-countdown]");
+        timer = setInterval(function () {
+          left--; out.textContent = "00:" + String(Math.max(left, 0)).padStart(2, "0");
+          if (left <= 0) { clearInterval(timer); GH.setState("idle"); }
+        }, 1000);
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!/^\d{9}$/.test(cpr.value)) { GH.setState("invalid"); cpr.focus(); return; }
+      GH.setState("submitting");
+      setTimeout(function () { location.href = "home.html"; }, 900);
+    });
+  })();
+</script>
+</body>
+</html>

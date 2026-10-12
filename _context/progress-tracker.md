@@ -4,7 +4,18 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
-- None.
+- Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
+  - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
+  - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
+  - Screens: login (bot/lockout states, forgot-password → visit administration), current course,
+    archive, attendance log, attendance stats, profile (photo upload), system states
+  - Rollout decision (2026-10-12): new panel launches as a **beta at `/beta`**; the current Blade
+    portal (`/login`, `/dashboard`) stays active and unchanged until promotion (PLAN.md §4, §9)
+  - Phase 2 = React + Redux Toolkit + RTK Query SPA over a Sanctum-authenticated `/api/v1`;
+    supersedes the Blade/Alpine plan in `_context/feature/01-frontend-student-react.md`
+  - Mobile-first pass (≈90% of visits are phones): 360–430px is the primary layout; chip rails,
+    bottom sheets, day-chip timetable, list-style marks, camera capture for photo, safe-area insets,
+    ≥44px targets; IBM Plex Sans Arabic only; stats reduced to hero + KPIs + status breakdown
 
 ## Completed Recently
 
@@ -44,9 +55,13 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- TBD — awaiting direction from user
+- Review redesign mockups; resolve open questions in `_brand/new_design/PLAN.md` §10
+- Then Phase 2.1: Sanctum + `/api/v1/auth/*` + login rate limiter/Turnstile/honeypot
 
 ## Open Questions
+
+- Student portal redesign: see `_brand/new_design/PLAN.md` §10 (multiple active courses, attendance
+  metric policy, marks "published" flag, photo moderation, admin contact details, Turnstile, SPA URL).
 
 - Some `ClassRoom.attend_table` slots have an empty `start_time` (e.g. classroom 897, curriculum 1).
   `Carbon::parse('')` = now, so the attend form/list show and save the current time. Should start_time

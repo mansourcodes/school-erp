@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>حالات النظام · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="states" data-title="حالات النظام" data-crumb="مرجع التصميم · للمطوّرين">
+<main class="space-y-6">
+
+  <p class="text-sm opacity-70 max-w-2xl">حالات عامة تتعامل معها طبقة الواجهة مركزيًا (معترض RTK Query وحدود الأخطاء) بدلًا من تكرارها في كل صفحة. كل بطاقة تشير إلى رمز الاستجابة المقابل.</p>
+
+  <!-- Offline banner -->
+  <section>
+    <h2 class="font-display text-lg mb-2">انقطاع الاتصال <span class="badge badge-ghost badge-sm ltr">navigator.onLine = false</span></h2>
+    <div role="status" class="alert alert-warning"><i data-lucide="wifi-off" class="size-5"></i><span>أنت غير متصل بالإنترنت. ستُعرض آخر بيانات محفوظة وتُحدّث تلقائيًا عند عودة الاتصال.</span></div>
+  </section>
+
+  <section class="grid gap-5 md:grid-cols-2">
+    <div class="card-soft p-6 text-center">
+      <span class="badge badge-ghost badge-sm ltr mb-3">401</span>
+      <div class="arch w-16 h-20 bg-base-200 grid place-items-center text-primary mx-auto mb-3"><i data-lucide="lock" class="size-7"></i></div>
+      <h3 class="font-display text-lg">انتهت الجلسة</h3>
+      <p class="text-sm opacity-70 mt-1 mb-4">لحماية حسابك تم تسجيل خروجك بعد فترة من عدم النشاط.</p>
+      <a href="login.html" class="btn btn-primary">تسجيل الدخول مجددًا</a>
+    </div>
+
+    <div class="card-soft p-6 text-center">
+      <span class="badge badge-ghost badge-sm ltr mb-3">403</span>
+      <div class="arch w-16 h-20 bg-base-200 grid place-items-center text-primary mx-auto mb-3"><i data-lucide="shield-check" class="size-7"></i></div>
+      <h3 class="font-display text-lg">لا تملك صلاحية الوصول</h3>
+      <p class="text-sm opacity-70 mt-1 mb-4">هذه الصفحة غير متاحة لحسابك.</p>
+      <a href="home.html" class="btn btn-primary btn-outline">العودة للرئيسية</a>
+    </div>
+
+    <div class="card-soft p-6 text-center">
+      <span class="badge badge-ghost badge-sm ltr mb-3">404</span>
+      <div class="arch w-16 h-20 bg-base-200 grid place-items-center text-primary mx-auto mb-3"><i data-lucide="search-x" class="size-7"></i></div>
+      <h3 class="font-display text-lg">الصفحة غير موجودة</h3>
+      <p class="text-sm opacity-70 mt-1 mb-4">ربما تم نقل الرابط أو حذفه.</p>
+      <a href="home.html" class="btn btn-primary btn-outline">العودة للرئيسية</a>
+    </div>
+
+    <div class="card-soft p-6 text-center">
+      <span class="badge badge-ghost badge-sm ltr mb-3">429</span>
+      <div class="arch w-16 h-20 bg-warning/20 grid place-items-center mx-auto mb-3"><i data-lucide="hourglass" class="size-7"></i></div>
+      <h3 class="font-display text-lg">طلبات كثيرة</h3>
+      <p class="text-sm opacity-70 mt-1 mb-4">يرجى الانتظار قليلًا ثم المحاولة مجددًا (<span class="num">30</span> ثانية).</p>
+      <button class="btn" disabled>إعادة المحاولة</button>
+    </div>
+
+    <div class="card-soft p-6 text-center md:col-span-2">
+      <span class="badge badge-ghost badge-sm ltr mb-3">5xx</span>
+      <div class="arch w-16 h-20 bg-error/10 grid place-items-center text-error mx-auto mb-3"><i data-lucide="triangle-alert" class="size-7"></i></div>
+      <h3 class="font-display text-lg">حدث خطأ غير متوقع</h3>
+      <p class="text-sm opacity-70 mt-1 mb-4">نعتذر، تعذّر إكمال طلبك. حاول مجددًا، وإذا تكررت المشكلة راجع إدارة المركز.</p>
+      <button class="btn btn-primary"><i data-lucide="refresh-cw" class="size-4"></i>إعادة المحاولة</button>
+    </div>
+  </section>
+
+  <section class="card-soft p-6">
+    <h2 class="font-display text-lg mb-3">الإشعارات المؤقتة (Toast)</h2>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn btn-sm" onclick="GH.toast('تم تحديث الصورة الشخصية')">نجاح</button>
+      <button class="btn btn-sm" onclick="GH.toast('تعذّر رفع الصورة، حاول مجددًا', 'error')">خطأ</button>
+      <button class="btn btn-sm" onclick="GH.toast('جارٍ تجهيز الشهادة…', 'info')">معلومة</button>
+    </div>
+  </section>
+
+  <section class="card-soft p-6">
+    <h2 class="font-display text-lg mb-3">رموز حالات الحضور</h2>
+    <p class="text-sm opacity-70 mb-4">ألوان الحالة محجوزة ولا تُستخدم لأي غرض آخر، وتأتي دائمًا مع أيقونة ونص. النقش المائل يعني «بعذر».</p>
+    <div class="flex flex-wrap gap-3" id="chips"></div>
+  </section>
+</main>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("chips").innerHTML = GH.STATE_ORDER.concat(["unrecorded"]).map(function (k) {
+      return '<div class="flex items-center gap-2 card-soft px-3 py-2">' + GH.pip(k) + GH.chip(k) + "</div>";
+    }).join("");
+    GH.icons();
+  });
+</script>
+</body>
+</html>

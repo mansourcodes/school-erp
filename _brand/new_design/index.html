@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>بوابة الغدير · فهرس التصاميم</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+</head>
+<body data-page="index" data-shell="none">
+
+<header class="hero-band bg-pattern">
+  <div class="max-w-6xl mx-auto px-4 lg:px-8 py-10 lg:py-14">
+    <div class="flex items-start justify-between gap-4">
+      <img src="assets/img/logo-full.svg" alt="جمعية الغدير لعلوم القرآن" class="h-16 lg:h-20 w-auto brightness-0 invert">
+      <button class="btn btn-ghost btn-circle text-white" data-theme-btn></button>
+    </div>
+    <div class="brand-rule w-24 mt-8 mb-5"></div>
+    <h1 class="font-display text-3xl lg:text-4xl">بوابة الطالب — التصميم الجديد</h1>
+    <p class="opacity-85 mt-2 max-w-2xl">المرحلة الأولى: نماذج HTML + Tailwind + DaisyUI. تمهيدًا للمرحلة الثانية (React + Redux Toolkit + RTK Query) المتصلة بواجهة Laravel البرمجية.</p>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 lg:px-8 py-8 space-y-10">
+
+  <section>
+    <div class="flex items-baseline justify-between gap-3 mb-1">
+      <h2 class="font-display text-xl">معاينة على الجوال</h2>
+      <span class="text-xs opacity-60 ltr">390 × 844</span>
+    </div>
+    <p class="text-sm opacity-70 mb-4">تصميم الجوال هو الأساس (≈90% من الزيارات). اسحب لعرض بقية الشاشات، واضغط على أي شاشة لفتحها.</p>
+    <div class="rail pb-4" id="phones"></div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-xl mb-4">الشاشات</h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="screens"></div>
+  </section>
+
+  <section>
+    <h2 class="font-display text-xl mb-4">الألوان</h2>
+    <div class="grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-6" id="swatches"></div>
+    <p class="text-sm opacity-60 mt-3">لون الواجهة الأساسي أعمق درجةً من لون الشعار (#16897E) ليحقق النص الأبيض تباين WCAG AA. ألوان حالات الحضور محجوزة ولا تُستخدم كألوان سلاسل بيانات.</p>
+  </section>
+
+  <section class="grid gap-5 lg:grid-cols-2">
+    <div class="card-soft p-6">
+      <h2 class="font-display text-xl mb-4">الخطوط</h2>
+      <p class="text-xs opacity-60">IBM Plex Sans Arabic — العناوين والترويسات (500 / 600 / 700)</p>
+      <p class="font-display text-3xl mb-4">جمعية الغدير لعلوم القرآن</p>
+      <p class="text-xs opacity-60">Rubik — الفقرات والتسميات والنصوص الصغيرة والأرقام (400 / 500 / 600)</p>
+      <p class="text-sm opacity-70 mb-1">تُعرض هنا درجاتك وحضورك ومدفوعاتك للدورة الحالية.</p>
+      <p class="text-lg">نسبة الحضور <span class="num font-semibold">92.5%</span> · رقم الطالب <span class="num font-semibold">20240158</span></p>
+    </div>
+    <div class="card-soft p-6">
+      <h2 class="font-display text-xl mb-4">العناصر المميِّزة</h2>
+      <div class="flex items-end gap-6">
+        <div class="text-center"><div class="arch arch-ring w-16 h-20 mx-auto"><div class="arch w-full h-full bg-primary text-primary-content grid place-items-center font-display text-xl">ح</div></div><p class="text-xs opacity-60 mt-2">إطار المحراب</p></div>
+        <div class="text-center flex-1"><div class="hero-band bg-pattern rounded-box h-20"></div><p class="text-xs opacity-60 mt-2">شريط الهوية + نقش الرواق (أقواس الشعار)</p></div>
+        <div class="text-center"><div class="hero-band rounded-box h-20 w-24 grid place-items-center"><div class="brand-rule w-14"></div></div><p class="text-xs opacity-60 mt-2">فاصل (base-200)</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card-soft p-6">
+    <h2 class="font-display text-xl mb-2">الخطة</h2>
+    <p class="opacity-80">الخطة الكاملة (نظام التصميم، معمارية React، عقد الواجهة البرمجية، الحماية، ومرحلة المدرّس) في الملف <code class="ltr">PLAN.md</code> داخل هذا المجلد.</p>
+  </section>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var screens = [
+      ["login.html", "key-round", "تسجيل الدخول", "رقم شخصي + كلمة مرور، تحقق بشري، إيقاف مؤقت بعد محاولات متكررة، ورسالة «راجع الإدارة» لاستعادة كلمة المرور."],
+      ["home.html", "book-open", "الدورة الحالية", "دورة واحدة فقط (نشطة + الأحدث): الجدول، المدفوعات، الدرجات والشهادة، الحصة القادمة."],
+      ["attendance.html", "calendar-check", "سجل الحضور", "تقويم شهري وقائمة أسبوعية، تصفية حسب الدورة والمادة والحالة."],
+      ["stats.html", "chart-pie", "إحصائيات الحضور", "نسبة الحضور الإجمالية، مؤشرات الحصص، وتوزيع حالات الحضور."],
+      ["archive.html", "archive", "أرشيف الدورات", "الدورات السابقة للاطلاع فقط، مع الجدول والمدفوعات والشهادة لكل دورة."],
+      ["profile.html", "user-round", "الملف الشخصي", "رفع الصورة الشخصية بإطار المحراب، بيانات للاطلاع، المظهر، الخروج."],
+      ["states.html", "triangle-alert", "حالات النظام", "401 / 403 / 404 / 429 / 5xx، انقطاع الاتصال، والإشعارات."]
+    ];
+    // phone frames: real pages at 390px, scaled down
+    document.getElementById("phones").innerHTML = screens.filter(function (s) { return s[0] !== "states.html"; }).map(function (s) {
+      return '<figure class="w-[242px]"><a href="' + s[0] + '" class="block rounded-[2.25rem] border-[6px] border-neutral bg-neutral shadow-xl overflow-hidden relative" style="width:242px;height:516px" aria-label="' + s[2] + '">' +
+        '<iframe src="' + s[0] + '" loading="lazy" tabindex="-1" title="' + s[2] + '" style="width:390px;height:844px;border:0;transform:scale(.590);transform-origin:top right;position:absolute;top:0;right:0;pointer-events:none"></iframe></a>' +
+        '<figcaption class="text-center text-sm font-medium mt-2">' + s[2] + "</figcaption></figure>";
+    }).join("");
+    document.getElementById("screens").innerHTML = screens.map(function (s) {
+      return '<a href="' + s[0] + '" class="card-soft p-5 hover:border-primary/40 hover:-translate-y-0.5 transition-all group">' +
+        '<div class="flex items-center gap-3 mb-2"><div class="arch w-10 h-12 bg-primary/10 text-primary grid place-items-center"><i data-lucide="' + s[1] + '" class="size-5"></i></div>' +
+        '<h3 class="font-display text-lg flex-1">' + s[2] + '</h3><i data-lucide="chevron-left" class="size-5 opacity-40 group-hover:opacity-100"></i></div>' +
+        '<p class="text-sm opacity-70">' + s[3] + '</p><p class="text-xs opacity-40 mt-2 ltr">' + s[0] + "</p></a>";
+    }).join("");
+    var sw = [["primary", "--color-primary"], ["secondary", "--color-secondary"], ["accent", "--color-accent"], ["base-100", "--color-base-100"], ["base-200", "--color-base-200"], ["base-300", "--color-base-300"],
+              ["viz-1", "--viz-1"], ["present", "--st-present"], ["late", "--st-late"], ["absent", "--st-absent"], ["error", "--color-error"], ["info", "--color-info"]];
+    function paint() {
+      var cs = getComputedStyle(document.documentElement);
+      document.getElementById("swatches").innerHTML = sw.map(function (s) {
+        var v = cs.getPropertyValue(s[1]).trim();
+        return '<div class="card-soft overflow-hidden"><div class="h-14 border-b border-base-300" style="background:' + v + '"></div><div class="p-2"><p class="text-xs font-medium ltr">' + s[0] + '</p><p class="text-[11px] opacity-60 ltr">' + v + "</p></div></div>";
+      }).join("");
+    }
+    paint(); new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    GH.icons();
+  });
+</script>
+</body>
+</html>

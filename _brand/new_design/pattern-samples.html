@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>نماذج نقش الشعار · بوابة الغدير</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <style>
+    /* samples paint their own layer — switch off the current theme pattern */
+    .sample-band { position: relative; isolation: isolate; overflow: hidden; }
+    .sample-band > .layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  </style>
+</head>
+<body data-page="samples" data-shell="none">
+
+<header class="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-4">
+  <a href="index.html" class="link text-sm opacity-70">→ فهرس التصاميم</a>
+  <h1 class="text-2xl lg:text-3xl font-bold mt-3">نماذج شريط الهوية + تكرار شكل الشعار</h1>
+  <p class="opacity-70 mt-1">7 نماذج تستخدم الشكل الخارجي للشعار (المحراب) فقط، بدون الفتحة في الوسط. كل نموذج معروض على شريط الصفحة الرئيسية بمقاس الجوال وبعرض كامل. اختر الرقم المناسب.</p>
+  <div class="flex items-center gap-4 mt-4">
+    <div class="flex items-center gap-2 text-sm"><span class="opacity-70">الشكل المستخدم:</span>
+      <svg viewBox="0 0 100 128" class="h-8 w-auto"><path fill="currentColor" class="text-primary" d="M0 128V42Q0 28 12 20Q30 8 50 0Q70 8 88 20Q100 28 100 42V128Z"/></svg>
+    </div>
+    <div class="join ms-auto" role="group" aria-label="المظهر">
+      <button class="btn btn-sm join-item" data-theme-set="light"><i data-lucide="sun" class="size-4"></i>فاتح</button>
+      <button class="btn btn-sm join-item" data-theme-set="dark"><i data-lucide="moon" class="size-4"></i>داكن</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 lg:px-8 pb-16 space-y-8" id="samples"></main>
+
+<template id="hero-tpl">
+  <!-- same content as the home hero, phone size -->
+  <div class="p-4 flex gap-3 items-center">
+    <div class="arch arch-ring w-14 h-[4.5rem] shrink-0"><div class="arch w-full h-full grid place-items-center bg-primary text-primary-content text-2xl font-bold">ح</div></div>
+    <div class="min-w-0">
+      <p class="text-sm opacity-85">أهلًا بك، حسين</p>
+      <span class="badge badge-sm border-0 bg-white/20 text-white my-1">نشطة</span>
+      <h2 class="text-lg font-bold leading-snug">الدورة الفصلية الأولى 2026 — المستوى الثاني</h2>
+      <p class="text-xs opacity-85 mt-0.5">الفصل الأول · 1448هـ · الصف 2-ب</p>
+    </div>
+  </div>
+  <div class="mx-4 mb-4 rounded-field bg-white/10 border border-white/20 p-3 flex items-center gap-3">
+    <div class="rounded-field bg-white text-neutral px-2.5 py-1.5 text-center leading-tight shrink-0"><p class="text-[11px]">اليوم</p><p class="font-bold text-sm">4:00 م</p></div>
+    <div class="min-w-0"><p class="text-[11px] opacity-80">الحصة القادمة</p><p class="font-semibold truncate">العقائد</p></div>
+  </div>
+</template>
+
+<script>
+  // ---- the logo's OUTER silhouette (no centre hole), drawn in a w×h box at (x,y)
+  function arch(x, y, w, h, flip) {
+    var sx = w / 100, sy = h / 128;
+    var P = function (px, py) { return (x + px * sx).toFixed(2) + " " + (flip ? (y + h - py * sy) : (y + py * sy)).toFixed(2); };
+    return "M" + P(0, 128) + "L" + P(0, 42) + "Q" + P(0, 28) + " " + P(12, 20) + "Q" + P(30, 8) + " " + P(50, 0) +
+           "Q" + P(70, 8) + " " + P(88, 20) + "Q" + P(100, 28) + " " + P(100, 42) + "L" + P(100, 128) + "Z";
+  }
+  function svgUrl(w, h, body) {
+    return 'url("data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='" + w + "' height='" + h + "' viewBox='0 0 " + w + " " + h + "'>" + body + "</svg>") + '")';
+  }
+  var W = "#ffffff";
+
+  // Each sample → CSS for the decorative layer
+  var SAMPLES = [
+    { name: "خطوط متناوبة", desc: "أقواس بخط رفيع في صفوف متناوبة (مثل الطوب). هادئ ومتوازن، وهو أقرب للنقش الحالي.",
+      css: function () { return { backgroundImage: svgUrl(48, 64, "<path d='" + arch(14, 3, 20, 26) + arch(-10, 35, 20, 26) + arch(38, 35, 20, 26) + "' fill='none' stroke='" + W + "' stroke-width='1.1' stroke-linejoin='round'/>"), backgroundSize: "48px 64px", opacity: .14 }; } },
+
+    { name: "مصمت شبكي", desc: "أقواس مصمتة صغيرة في شبكة منتظمة. حضور أوضح للشعار مع بقاء النص مقروءًا.",
+      css: function () { return { backgroundImage: svgUrl(40, 52, "<path d='" + arch(12, 10, 16, 21) + "' fill='" + W + "'/>"), backgroundSize: "40px 52px", opacity: .09 }; } },
+
+    { name: "رواق", desc: "صف واحد من الأقواس الكبيرة على الحافة السفلية، كأعمدة رواق المسجد. لا يزاحم النص في الأعلى.",
+      css: function () { return { backgroundImage: svgUrl(56, 90, "<path d='" + arch(6, 10, 44, 80) + "' fill='" + W + "'/>"), backgroundSize: "56px 90px", backgroundRepeat: "repeat-x", backgroundPosition: "right bottom -18px", opacity: .10 }; } },
+
+    { name: "أقواس متداخلة", desc: "كل وحدة ثلاثة أقواس متداخلة بخطوط رفيعة — إحساس بالعمق والمحراب.",
+      css: function () {
+        var b = arch(6, 4, 52, 66) + arch(14, 14, 36, 46) + arch(22, 24, 20, 26);
+        return { backgroundImage: svgUrl(64, 76, "<path d='" + b + "' fill='none' stroke='" + W + "' stroke-width='1' stroke-linejoin='round'/>"), backgroundSize: "64px 76px", opacity: .12 };
+      } },
+
+    { name: "قائم ومقلوب بالتناوب", desc: "قوس قائم وآخر مقلوب بالتناوب في صفوف متعاكسة، فيتكوّن نقش هندسي حيوي مع بقاء شكل الشعار واضحًا.",
+      css: function () {
+        var b = arch(5, 5, 14, 20) + arch(29, 5, 14, 20, true) + arch(29, 37, 14, 20) + arch(5, 37, 14, 20, true);
+        return { backgroundImage: svgUrl(48, 64, "<path d='" + b + "' fill='" + W + "'/>"), backgroundSize: "48px 64px", opacity: .08 };
+      } },
+
+    { name: "نسيج دقيق", desc: "أقواس صغيرة جدًا ومتقاربة تعمل كملمس ناعم للسطح، تظهر عند التدقيق فقط.",
+      css: function () { return { backgroundImage: svgUrl(16, 20, "<path d='" + arch(4, 3, 8, 11) + "' fill='" + W + "'/>"), backgroundSize: "16px 20px", opacity: .10 }; } },
+
+    { name: "علامة مائية كبيرة", desc: "قوس واحد كبير في طرف الشريط مع صف خفيف من الأقواس الصغيرة خلفه — توقيع بصري واضح.",
+      css: function () {
+        var big = svgUrl(100, 128, "<path d='" + arch(0, 0, 100, 128) + "' fill='" + W + "' fill-opacity='.11'/>");
+        var small = svgUrl(32, 42, "<path d='" + arch(9, 8, 14, 18) + "' fill='none' stroke='" + W + "' stroke-opacity='.10' stroke-width='1'/>");
+        return { backgroundImage: big + "," + small, backgroundSize: "auto 140%, 32px 42px", backgroundRepeat: "no-repeat, repeat", backgroundPosition: "left -24px top -10%, 0 0", opacity: 1 };
+      } }
+  ];
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var tpl = document.getElementById("hero-tpl").innerHTML, out = "";
+    SAMPLES.forEach(function (s, i) {
+      out += '<section class="card-soft p-4 sm:p-6" id="s' + (i + 1) + '">' +
+        '<header class="flex items-start gap-3 mb-4"><span class="size-10 rounded-full bg-primary text-primary-content grid place-items-center text-lg font-bold shrink-0 num">' + (i + 1) + "</span>" +
+        '<div><h2 class="text-xl font-bold">' + s.name + '</h2><p class="text-sm opacity-70">' + s.desc + "</p></div></header>" +
+        '<div class="grid gap-4 lg:grid-cols-[360px_1fr] items-start">' +
+          '<div><p class="text-xs opacity-60 mb-1.5">الجوال · 360px</p><div class="sample-band hero-band rounded-box w-full max-w-[360px]" data-i="' + i + '"><div class="layer"></div>' + tpl + "</div></div>" +
+          '<div class="min-w-0"><p class="text-xs opacity-60 mb-1.5">عرض كامل</p><div class="sample-band hero-band rounded-box h-[196px]" data-i="' + i + '"><div class="layer"></div>' +
+            '<div class="p-6 h-full flex flex-col justify-end"><img src="assets/img/logo-full.svg" alt="" class="h-12 w-auto self-start brightness-0 invert"><p class="text-2xl font-bold mt-3">بوابة الطالب</p></div></div></div>' +
+        "</div></section>";
+    });
+    document.getElementById("samples").innerHTML = out;
+    document.querySelectorAll(".sample-band").forEach(function (band) {
+      var c = SAMPLES[+band.getAttribute("data-i")].css();
+      Object.assign(band.querySelector(".layer").style, c);
+    });
+    GH.icons();
+  });
+</script>
+</body>
+</html>
