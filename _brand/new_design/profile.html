@@ -20,11 +20,8 @@
   <section class="card-soft overflow-hidden">
     <div class="hero-band bg-pattern h-24 sm:h-28"></div>
     <div class="px-5 sm:px-7 pb-6 -mt-14 sm:-mt-16 flex flex-col sm:flex-row sm:items-end gap-4">
-      <div class="relative w-max">
+      <div class="w-max">
         <div id="big-avatar"></div>
-        <button class="btn btn-primary btn-circle btn-sm absolute -bottom-1 -start-1 shadow-lg" onclick="openUpload()" aria-label="تغيير الصورة الشخصية">
-          <i data-lucide="camera" class="size-4"></i>
-        </button>
       </div>
       <div class="flex-1 min-w-0">
         <h2 class="font-display text-xl sm:text-2xl leading-snug" data-b="name"></h2>
@@ -33,7 +30,7 @@
           <span>مسجّل منذ <span data-b="reg"></span></span>
         </p>
       </div>
-      <button class="btn btn-outline btn-primary w-full sm:w-auto sm:btn-sm sm:self-end" onclick="openUpload()"><i data-lucide="image-plus" class="size-4"></i>تحديث الصورة</button>
+      <p class="text-xs opacity-60 flex items-center gap-1.5 sm:self-end"><i data-lucide="info" class="size-3.5"></i>لتحديث الصورة راجع مدرّسك أو إدارة المركز</p>
     </div>
   </section>
 
@@ -73,6 +70,33 @@
       </dl>
     </div>
 
+    <!-- Push notifications (PWA) -->
+    <div class="card-soft p-5 sm:p-6 lg:col-span-2" id="notif">
+      <h3 class="font-display text-lg mb-3 flex items-center gap-2"><i data-lucide="bell" class="size-5 text-primary"></i>الإشعارات</h3>
+      <div data-perm="default" class="rounded-box bg-primary/10 border border-primary/20 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div class="flex-1"><p class="font-semibold">فعّل الإشعارات على هذا الجهاز</p><p class="text-sm opacity-80">ليصلك تنبيه عند رصد حضورك وعند وصول رسالة من مدرّسيك.</p></div>
+        <button class="btn btn-primary w-full sm:w-auto" data-enable><i data-lucide="bell-ring" class="size-4"></i>تفعيل الإشعارات</button>
+      </div>
+      <p data-perm="granted" hidden class="text-sm text-success flex items-center gap-2"><i data-lucide="circle-check" class="size-4"></i>الإشعارات مفعّلة على هذا الجهاز</p>
+      <div data-perm="denied" hidden role="alert" class="alert alert-soft alert-warning text-sm"><i data-lucide="bell-off" class="size-5"></i><span>الإشعارات محظورة لهذا الموقع. فعّلها من إعدادات المتصفح ثم ارجع إلى هنا.</span></div>
+
+      <ul class="divide-y divide-base-300 mt-3">
+        <li class="py-3 flex items-center gap-3">
+          <div class="flex-1"><p class="font-medium">رصد الحضور</p><p class="text-xs opacity-70">إشعار بحالتك (حاضر، متأخر، غائب…) عند أول رصد لكل حصة</p></div>
+          <input type="checkbox" class="toggle toggle-primary" checked aria-label="إشعارات رصد الحضور">
+        </li>
+        <li class="py-3 flex items-center gap-3">
+          <div class="flex-1"><p class="font-medium">رسائل المدرّسين</p><p class="text-xs opacity-70">إشعار عند وصول رسالة جديدة</p></div>
+          <input type="checkbox" class="toggle toggle-primary" checked aria-label="إشعارات الرسائل">
+        </li>
+      </ul>
+      <p class="text-xs opacity-60 mt-2 flex items-start gap-1.5"><i data-lucide="info" class="size-3.5 mt-0.5 shrink-0"></i>على iPhone تعمل الإشعارات بعد إضافة البوابة إلى الشاشة الرئيسية (iOS 16.4 أو أحدث).</p>
+      <p class="text-[11px] opacity-50 mt-3">معاينة الحالات:
+        <button class="link" data-perm-demo="default">غير مفعّلة</button> ·
+        <button class="link" data-perm-demo="granted">مفعّلة</button> ·
+        <button class="link" data-perm-demo="denied">محظورة</button></p>
+    </div>
+
     <div class="card-soft p-5 sm:p-6 space-y-5">
       <div>
         <h3 class="font-display text-lg mb-2 flex items-center gap-2"><i data-lucide="key-round" class="size-5 text-primary"></i>كلمة المرور</h3>
@@ -93,58 +117,14 @@
   </section>
 </main>
 
-<!-- Photo upload -->
-<dialog id="upload" class="modal modal-bottom sm:modal-middle">
-  <div class="modal-box pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-    <div class="sheet-grip"></div>
-    <h3 class="font-display text-xl mb-1">تحديث الصورة الشخصية</h3>
-    <p class="text-sm opacity-70 mb-4">صورة واضحة للوجه بخلفية فاتحة. ستظهر لك ولمدرّسيك وفي سجلات المركز.</p>
-
-    <div class="grid sm:grid-cols-[auto_1fr] gap-5 items-center">
-      <div class="mx-auto">
-        <div class="arch arch-ring w-32 h-40"><div class="arch w-full h-full bg-base-200 grid place-items-center overflow-hidden" id="pv">
-          <i data-lucide="image" class="size-8 opacity-40"></i></div></div>
-      </div>
-      <!-- phones: two big thumb buttons -->
-      <div class="grid grid-cols-2 gap-2 sm:hidden">
-        <label for="file-cam" class="btn btn-primary btn-lg h-auto py-4 flex-col gap-1"><i data-lucide="camera" class="size-6"></i>التقاط صورة</label>
-        <label for="file" class="btn btn-lg h-auto py-4 flex-col gap-1"><i data-lucide="image" class="size-6"></i>من المعرض</label>
-        <p class="col-span-2 text-xs opacity-60 text-center">JPG أو PNG أو WebP · حتى 2 ميجابايت · 300×300 بكسل على الأقل</p>
-      </div>
-      <!-- larger screens: drop zone -->
-      <label for="file" id="drop" class="hidden sm:flex flex-col items-center justify-center gap-2 text-center rounded-box border-2 border-dashed border-base-300 hover:border-primary/60 hover:bg-primary/10 transition-colors p-6 cursor-pointer">
-        <i data-lucide="upload" class="size-7 text-primary"></i>
-        <span class="font-medium">اسحب الصورة هنا أو اضغط للاختيار</span>
-        <span class="text-xs opacity-60">JPG أو PNG أو WebP · بحد أقصى 2 ميجابايت · 300×300 بكسل على الأقل</span>
-      </label>
-      <input id="file" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
-      <input id="file-cam" type="file" accept="image/*" capture="user" class="sr-only">
-    </div>
-
-    <div id="err" role="alert" class="alert alert-soft alert-error mt-4" hidden><i data-lucide="triangle-alert" class="size-5"></i><span></span></div>
-    <div id="prog" class="mt-4" hidden><progress class="progress progress-primary w-full" value="0" max="100"></progress><p class="text-xs opacity-60 mt-1">جارٍ الرفع…</p></div>
-
-    <div class="modal-action grid grid-cols-2 sm:flex">
-      <form method="dialog" class="contents"><button class="btn btn-ghost btn-lg sm:btn-md">إلغاء</button></form>
-      <button class="btn btn-primary btn-lg sm:btn-md" id="save" disabled><i data-lucide="check" class="size-4"></i>حفظ الصورة</button>
-    </div>
-  </div>
-  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
-</dialog>
-
 <script>
-  var picked = null;
-  function openUpload() { resetUpload(); document.getElementById("upload").showModal(); }
-  function resetUpload() {
-    picked = null; document.getElementById("file").value = ""; document.getElementById("file-cam").value = "";
-    document.getElementById("pv").innerHTML = '<i data-lucide="image" class="size-8 opacity-40"></i>';
-    document.getElementById("err").hidden = true; document.getElementById("prog").hidden = true;
-    document.getElementById("save").disabled = true; GH.icons();
-  }
-  function fail(msg) { var e = document.getElementById("err"); e.querySelector("span").textContent = msg; e.hidden = false; document.getElementById("save").disabled = true; }
-
   document.addEventListener("DOMContentLoaded", function () {
     var st = GH.DEMO.student, cprShown = false;
+    // notification permission states (mockup: no real permission request is made)
+    function perm(s) { document.querySelectorAll("[data-perm]").forEach(function (n) { n.hidden = n.getAttribute("data-perm") !== s; }); }
+    document.querySelectorAll("[data-perm-demo]").forEach(function (b) { b.addEventListener("click", function () { perm(b.getAttribute("data-perm-demo")); }); });
+    document.querySelector("[data-enable]").addEventListener("click", function () { perm("granted"); GH.toast("تم تفعيل الإشعارات"); });
+    perm("default");
     var mask = st.cpr.slice(0, 2) + "•••••" + st.cpr.slice(-2);
     var b = { name: st.name, student_id: st.student_id, reg: GH.fmtDate(st.registration_at), cpr_masked: mask, dob: GH.fmtDate(st.dob), age: st.age,
               degree: st.degree, mobile: st.mobile, mobile2: st.mobile2, email: st.email, address: st.address, iqraa: st.iqraa_id_account };
@@ -158,43 +138,6 @@
       this.innerHTML = '<i data-lucide="' + (cprShown ? "eye-off" : "eye") + '" class="size-3.5"></i>'; GH.icons();
     });
 
-    function take(file) {
-      document.getElementById("err").hidden = true;
-      if (!file) return;
-      if (["image/jpeg", "image/png", "image/webp"].indexOf(file.type) === -1) return fail("صيغة الملف غير مدعومة. استخدم JPG أو PNG أو WebP.");
-      if (file.size > 2 * 1024 * 1024) return fail("حجم الصورة أكبر من 2 ميجابايت.");
-      var url = URL.createObjectURL(file), img = new Image();
-      img.onload = function () {
-        if (img.naturalWidth < 300 || img.naturalHeight < 300) { URL.revokeObjectURL(url); return fail("أبعاد الصورة صغيرة. الحد الأدنى 300×300 بكسل."); }
-        picked = url;
-        document.getElementById("pv").innerHTML = '<img src="' + url + '" alt="معاينة" class="w-full h-full object-cover">';
-        document.getElementById("save").disabled = false;
-      };
-      img.onerror = function () { fail("تعذّر قراءة الصورة."); };
-      img.src = url;
-    }
-    document.getElementById("file").addEventListener("change", function () { take(this.files[0]); });
-    document.getElementById("file-cam").addEventListener("change", function () { take(this.files[0]); });
-    var drop = document.getElementById("drop");
-    ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("border-primary"); }); });
-    ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("border-primary"); }); });
-    drop.addEventListener("drop", function (e) { take(e.dataTransfer.files[0]); });
-
-    document.getElementById("save").addEventListener("click", function () {
-      if (!picked) return;
-      var p = document.getElementById("prog"), bar = p.querySelector("progress"), v = 0;
-      p.hidden = false; this.disabled = true;
-      var t = setInterval(function () {
-        v += 20; bar.value = v;
-        if (v >= 100) {
-          clearInterval(t);
-          st.photo_url = picked;
-          document.querySelectorAll("[data-avatar]").forEach(function (a) { a.querySelector(".arch").innerHTML = '<img src="' + picked + '" alt="صورة الطالب" class="w-full h-full object-cover">'; });
-          document.getElementById("upload").close();
-          GH.toast("تم تحديث الصورة الشخصية");
-        }
-      }, 180);
-    });
   });
 </script>
 </body>

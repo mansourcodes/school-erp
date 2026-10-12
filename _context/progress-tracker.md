@@ -12,6 +12,20 @@ Update this file after every meaningful implementation change.
   - Teacher panel design added (2026-10-12): `t-home`, `t-attendance` (5-state roster, save/undo),
     `t-classes`, `t-classroom` (student photo upload/delete), `t-stats`, `t-profile` (teacher archive page removed);
     teacher tab enabled on the shared login; spec + teacher API in PLAN.md §8
+  - Decisions applied (2026-10-12): `portal.mode` Backpack setting (beta/live/maintenance/closed) replaces the env flag;
+    certificate available when `final_grade` is set; same-day early recording for teachers; no teacher audit log;
+    messages kept 90 days; message push titled with the centre name; Cloudflare Free on a Hostinger KVM 2 VPS (lock down Webmin)
+  - Quality + infrastructure (2026-10-12): PLAN.md §9 maintainable / scalable / secure criteria (OpenAPI
+    contract, e2e on phone viewport, Redis for session/cache/queue, object storage for photos, ASVS L2);
+    §10 move the domain to **Cloudflare** (proxy, Full strict, origin lock / Tunnel, WAF, edge rate limits,
+    Access on /admin, TrustProxies + CF-Connecting-IP). New milestones P0.1 Cloudflare, P0.2 Laravel/PHP upgrade
+  - Messaging + push design added (2026-10-12): student inbox `messages.html` (read-only, unread badge),
+    teacher `t-messages.html` (sent, read progress, delete) + `t-compose.html`; profile notification
+    settings; lock-screen push mockups in `states.html`. Frontend declared **Arabic only**.
+    Pending on implementation: update `architecture.md` invariant 5 (push jobs join the queue)
+  - Architecture decisions (2026-10-12): Phase 2 SPA uses **Feature-Sliced Design** (layers app/pages/
+    widgets/features/entities/shared, RTK Query endpoints injected per slice, Steiger lint in CI) and ships
+    as an installable **PWA** (vite-plugin-pwa; app shell precached, personal API data never SW-cached)
   - Rollout decision (2026-10-12): new panel launches as a **beta at `/beta`**; the current Blade
     portal (`/login`, `/dashboard`) stays active and unchanged until promotion (PLAN.md §4, §9)
   - Phase 2 = React + Redux Toolkit + RTK Query SPA over a Sanctum-authenticated `/api/v1`;
@@ -63,8 +77,10 @@ Update this file after every meaningful implementation change.
 
 ## Open Questions
 
-- Student portal redesign: see `_brand/new_design/PLAN.md` §10 (multiple active courses, attendance
-  metric policy, marks "published" flag, photo moderation, admin contact details, Turnstile, SPA URL).
+- Portal redesign: all 22 plan questions **answered 2026-10-12**, see `_brand/new_design/PLAN.md` §12 Decisions log.
+  Three answers change earlier requirements and should be confirmed with the centre before Phase 3:
+  Q4 students cannot upload their own photo; Q13 teachers use the new panel only (Backpack teacher redirect retired);
+  Q14 teachers don't see archived courses.
 
 - Some `ClassRoom.attend_table` slots have an empty `start_time` (e.g. classroom 897, curriculum 1).
   `Carbon::parse('')` = now, so the attend form/list show and save the current time. Should start_time

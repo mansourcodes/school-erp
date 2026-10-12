@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>رسالة جديدة · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+</head>
+<body data-page="t-compose" data-title="رسالة جديدة" data-crumb="الرسائل" data-back="t-messages.html" data-dock="none">
+<main class="space-y-5 !pb-32">
+
+  <!-- 1. classroom -->
+  <section class="space-y-2">
+    <h2 class="text-sm font-semibold flex items-center gap-2"><span class="size-6 rounded-full bg-primary text-primary-content grid place-items-center text-xs num">1</span>الصف</h2>
+    <div class="rail" id="rooms" role="radiogroup" aria-label="الصف"></div>
+  </section>
+
+  <!-- 2. students -->
+  <section class="space-y-2">
+    <div class="flex items-center justify-between gap-2">
+      <h2 class="text-sm font-semibold flex items-center gap-2"><span class="size-6 rounded-full bg-primary text-primary-content grid place-items-center text-xs num">2</span>الطلاب
+        <span class="badge badge-sm num" id="sel-count"></span></h2>
+      <button class="btn btn-sm btn-ghost text-primary" id="toggle-all"></button>
+    </div>
+    <ul class="card-soft divide-y divide-base-300 overflow-hidden" id="students"></ul>
+  </section>
+
+  <!-- 3. message -->
+  <section class="space-y-2">
+    <h2 class="text-sm font-semibold flex items-center gap-2"><span class="size-6 rounded-full bg-primary text-primary-content grid place-items-center text-xs num">3</span>الرسالة</h2>
+    <textarea id="body" class="textarea w-full min-h-36 text-base leading-relaxed" maxlength="500" placeholder="اكتب رسالتك للطلاب…" aria-describedby="body-hint"></textarea>
+    <div class="flex items-center justify-between text-xs opacity-70" id="body-hint">
+      <span class="inline-flex items-center gap-1"><i data-lucide="lock" class="size-3.5"></i>لا يمكن للطلاب الرد على الرسالة</span>
+      <span class="num"><span id="chars">0</span> / 500</span>
+    </div>
+  </section>
+</main>
+
+<!-- sticky send bar -->
+<div class="fixed inset-x-0 bottom-0 z-40 bg-base-100/95 backdrop-blur border-t border-base-300 pb-[env(safe-area-inset-bottom)] lg:ps-72">
+  <div class="max-w-6xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-3">
+    <p class="flex-1 min-w-0 text-xs opacity-70" id="hint"></p>
+    <button class="btn btn-primary btn-lg" id="send" disabled><i data-lucide="send" class="size-5"></i><span id="send-label">إرسال</span></button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, q = new URLSearchParams(location.search);
+    var room = T.current.filter(function (c) { return String(c.id) === q.get("room"); })[0] || T.current[0];
+    var selected = {};
+    var rail = document.getElementById("rooms");
+    rail.innerHTML = T.current.map(function (c) { return '<button class="chip" role="radio" data-room="' + c.id + '" aria-pressed="' + (c === room) + '" aria-checked="' + (c === room) + '">الصف <span class="num">' + c.number + "</span> · " + GH.esc(c.curriculum.name) + "</button>"; }).join("");
+    rail.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-room]"); if (!b) return;
+      room = T.roomById(b.getAttribute("data-room")); selected = {};
+      rail.querySelectorAll("[data-room]").forEach(function (x) { var on = x === b; x.setAttribute("aria-pressed", on); x.setAttribute("aria-checked", on); });
+      renderStudents();
+    });
+
+    var ul = document.getElementById("students");
+    function renderStudents() {
+      ul.innerHTML = room.students.map(function (s) {
+        return '<li><label class="min-h-16 px-3 py-2 flex items-center gap-3 cursor-pointer active:bg-base-200">' +
+          '<input type="checkbox" class="checkbox checkbox-primary" data-sid="' + s.id + '"' + (selected[s.id] ? " checked" : "") + ">" +
+          T.ui.photo(s, "w-10 h-12") + '<span class="flex-1 min-w-0"><span class="block font-medium truncate">' + GH.esc(s.name) + '</span><span class="block text-xs opacity-60 num">' + s.student_id + "</span></span></label></li>";
+      }).join("");
+      GH.icons(); update();
+    }
+    ul.addEventListener("change", function (e) { var c = e.target.closest("[data-sid]"); if (!c) return; selected[c.getAttribute("data-sid")] = c.checked; update(); });
+    document.getElementById("toggle-all").addEventListener("click", function () {
+      var all = count() === room.students.length;
+      room.students.forEach(function (s) { selected[s.id] = !all; });
+      renderStudents();
+    });
+    function ids() { return Object.keys(selected).filter(function (k) { return selected[k]; }); }
+    function count() { return ids().length; }
+
+    var body = document.getElementById("body");
+    body.addEventListener("input", update);
+    function update() {
+      var n = count(), len = body.value.trim().length;
+      document.getElementById("sel-count").textContent = n + " / " + room.students.length;
+      document.getElementById("toggle-all").textContent = n === room.students.length ? "إلغاء التحديد" : "تحديد الكل";
+      document.getElementById("chars").textContent = body.value.length;
+      document.getElementById("send-label").textContent = n ? (n === room.students.length ? "إرسال للجميع" : "إرسال إلى " + n) : "إرسال";
+      document.getElementById("hint").textContent = !n ? "اختر طالبًا واحدًا على الأقل" : !len ? "اكتب نص الرسالة" : "سيصل إشعار للطلاب المختارين";
+      document.getElementById("send").disabled = !(n && len);
+      window.onbeforeunload = (n || len) ? function () { return true; } : null;
+    }
+    document.getElementById("send").addEventListener("click", function () {
+      var b = this; b.disabled = true; b.innerHTML = '<span class="loading loading-spinner loading-sm"></span>جارٍ الإرسال';
+      setTimeout(function () {
+        T.sendMessage(room.id, ids(), body.value.trim());
+        window.onbeforeunload = null; location.href = "t-messages.html?sent=1";
+      }, 600);
+    });
+    renderStudents();
+  });
+</script>
+</body>
+</html>

@@ -86,7 +86,7 @@
     var ctx = T.bySession(q), c = ctx.room, s = ctx.session;
     var rec = T.recordsFor(c, s);
     var original = Object.assign({}, rec.states), states = Object.assign({}, rec.states);
-    var notStarted = s.when === "future" || s.when === "later";
+    var notStarted = s.when === "future";   // today's sessions can be recorded even before they start (Q9)
     var editable = !c.readonly && !notStarted;
     var backHref = c.readonly ? "t-classroom.html?id=" + c.id : (new URLSearchParams(location.search).get("from") || "t-home.html");
 
@@ -97,7 +97,7 @@
     document.getElementById("h-when").innerHTML = GH.esc(GH.fmtHijri(s.date)) + ' · <span class="num whitespace-nowrap">' + GH.fmtTime(s.start) + " – " + GH.fmtTime(s.end) + "</span>";
     function badge() {
       var b = c.readonly ? '<span class="badge badge-ghost badge-sm gap-1"><i data-lucide="lock" class="size-3"></i>دورة مؤرشفة</span>'
-        : notStarted ? '<span class="badge badge-ghost badge-sm">لم تبدأ بعد</span>'
+        : notStarted ? '<span class="badge badge-ghost badge-sm">يوم لاحق</span>'
         : rec.recorded ? '<span class="badge badge-success badge-soft badge-sm gap-1"><i data-lucide="check" class="size-3"></i>تم الرصد</span>'
         : s.when === "now" ? '<span class="badge badge-primary badge-sm">جارية الآن</span>'
         : '<span class="badge badge-warning badge-sm">لم تُرصد</span>';
@@ -116,7 +116,7 @@
     // read-only banner
     document.getElementById("ro-banner").innerHTML = c.readonly
       ? '<div role="note" class="alert alert-soft items-start"><i data-lucide="lock" class="size-5 mt-0.5"></i><span>هذه الحصة من دورة مؤرشفة — <b>للاطلاع فقط</b>، لا يمكن تعديل الحضور.</span></div>'
-      : notStarted ? '<div role="note" class="alert alert-soft alert-info items-start"><i data-lucide="info" class="size-5 mt-0.5"></i><span>لم تبدأ هذه الحصة بعد. يمكنك مراجعة القائمة، ويُتاح الرصد عند بدء الحصة.</span></div>' : "";
+      : notStarted ? '<div role="note" class="alert alert-soft alert-info items-start"><i data-lucide="info" class="size-5 mt-0.5"></i><span>هذه الحصة في يوم لاحق. يمكنك مراجعة القائمة، ويُتاح الرصد في يوم الحصة.</span></div>' : "";
     if (!editable) document.querySelectorAll("[data-edit]").forEach(function (b) { b.hidden = true; });
 
     // roster
@@ -159,7 +159,9 @@
       if (!editable) return;
       document.getElementById("savebar").hidden = false;
       document.getElementById("sb-set").textContent = set; document.getElementById("sb-total").textContent = total;
-      document.getElementById("sb-hint").textContent = set < total ? "حدّد حالة جميع الطلاب لتفعيل الحفظ" : dirty ? "تغييرات غير محفوظة" : rec.recorded ? "لا توجد تغييرات" : "جاهز للحفظ";
+      document.getElementById("sb-hint").textContent = set < total ? "حدّد حالة جميع الطلاب لتفعيل الحفظ"
+        : !dirty ? (rec.recorded ? "لا توجد تغييرات" : "جاهز للحفظ")
+        : rec.recorded ? "تعديل — لن يُرسل إشعار جديد للطلاب" : "عند الحفظ يصل لكل طالب إشعار بحالته";
       document.getElementById("save").disabled = !(set === total && dirty);
       document.getElementById("undo").disabled = !dirty;
       window.onbeforeunload = dirty ? function () { return true; } : null;
@@ -173,9 +175,10 @@
     document.getElementById("save").addEventListener("click", function () {
       var btn = this; btn.disabled = true; btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span>جارٍ الحفظ';
       setTimeout(function () {
+        var first = !rec.recorded;
         T.saveRecords(s, states); rec = T.recordsFor(c, s); original = Object.assign({}, states);
         btn.innerHTML = '<i data-lucide="save" class="size-5"></i>حفظ'; badge(); render();
-        GH.toast("تم حفظ حضور الصف " + c.number);
+        GH.toast(first ? "تم الحفظ وأُرسل إشعار لكل طالب بحالته" : "تم حفظ التعديل");
       }, 600);
     });
 

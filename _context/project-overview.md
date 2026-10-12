@@ -86,6 +86,9 @@ certificates.
 ## Scope
 
 ### In Scope
+- New student + teacher portal (planned, `/beta`, Arabic-only PWA): see `_brand/new_design/PLAN.md`
+  - One-way teacher → selected-students messages (teacher can delete; students read only, no replies)
+  - Web Push notifications to students: attendance recorded (first save of a session only) and message received
 - Admin CRUD for all entities via Backpack
 - Student self-service portal (read-only)
 - PDF report generation
@@ -95,7 +98,8 @@ certificates.
 ### Out of Scope
 - Public registration (students are created by admin)
 - Payment gateway integration (payments recorded manually)
-- Real-time notifications
+- Real-time notifications, **except** the new portal's Web Push notifications to students (attendance
+  first save, teacher messages). No notifications to teachers/admins, no chat or replies
 
 ## Success Criteria
 

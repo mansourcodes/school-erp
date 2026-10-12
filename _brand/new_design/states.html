@@ -66,6 +66,158 @@
     </div>
   </section>
 
+  <!-- portal.mode screens (Backpack Settings) -->
+  <section class="space-y-3">
+    <h2 class="font-display text-lg">وضع البوابة <span class="badge badge-ghost badge-sm ltr">portal.mode</span></h2>
+    <p class="text-sm opacity-70">يتحكم به المشرف من إعدادات لوحة الإدارة: تجريبي · مباشر · صيانة · مغلقة. لوحة الإدارة لا تتأثر.</p>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="card-soft overflow-hidden">
+        <div class="hero-band bg-pattern px-6 pt-8 pb-10 text-center">
+          <img src="assets/img/logo-full.svg" alt="" class="h-12 mx-auto brightness-0 invert">
+        </div>
+        <div class="p-6 text-center -mt-6">
+          <div class="arch w-16 h-20 bg-warning/20 grid place-items-center mx-auto mb-3 shadow"><i data-lucide="hourglass" class="size-7"></i></div>
+          <span class="badge badge-ghost badge-sm ltr mb-2">maintenance · 503</span>
+          <h3 class="font-display text-lg">البوابة تحت الصيانة</h3>
+          <p class="text-sm opacity-70 mt-1">نعمل على تحسين البوابة، وستعود قريبًا. شكرًا لصبركم.</p>
+          <button class="btn btn-primary mt-4"><i data-lucide="refresh-cw" class="size-4"></i>إعادة المحاولة</button>
+        </div>
+      </div>
+      <div class="card-soft overflow-hidden">
+        <div class="hero-band bg-pattern px-6 pt-8 pb-10 text-center">
+          <img src="assets/img/logo-full.svg" alt="" class="h-12 mx-auto brightness-0 invert">
+        </div>
+        <div class="p-6 text-center -mt-6">
+          <div class="arch w-16 h-20 bg-base-200 grid place-items-center mx-auto mb-3 shadow text-primary"><i data-lucide="lock" class="size-7"></i></div>
+          <span class="badge badge-ghost badge-sm ltr mb-2">closed · 403</span>
+          <h3 class="font-display text-lg">البوابة مغلقة حاليًا</h3>
+          <p class="text-sm opacity-70 mt-1">البوابة غير متاحة في الوقت الحالي. للاستفسار يرجى مراجعة قسم إدارة المركز.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PWA -->
+  <section class="space-y-3">
+    <h2 class="font-display text-lg">تطبيق الويب (PWA)</h2>
+    <p class="text-sm opacity-70">عناصر التثبيت والتحديث والحفظ دون اتصال — مرجع للمرحلة الثانية (PLAN.md §4).</p>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <!-- Install banner (Android / Chrome) -->
+      <div class="card-soft p-4">
+        <p class="text-xs opacity-60 mb-2 ltr">beforeinstallprompt · Android</p>
+        <div class="rounded-box border border-base-300 bg-base-100 p-3 flex items-center gap-3 shadow-sm">
+          <div class="arch w-10 h-12 bg-primary grid place-items-center shrink-0"><img src="assets/img/logo-icon.svg" alt="" class="h-7 brightness-0 invert"></div>
+          <div class="min-w-0 flex-1"><p class="font-semibold text-sm">ثبّت بوابة الغدير</p><p class="text-xs opacity-70">افتحها من شاشتك الرئيسية مثل التطبيق</p></div>
+          <button class="btn btn-primary btn-sm">تثبيت</button>
+          <button class="btn btn-ghost btn-sm btn-square" aria-label="إغلاق"><i data-lucide="x" class="size-4"></i></button>
+        </div>
+      </div>
+
+      <!-- Update available -->
+      <div class="card-soft p-4">
+        <p class="text-xs opacity-60 mb-2 ltr">registerType: 'prompt'</p>
+        <div role="status" class="alert shadow-sm">
+          <i data-lucide="refresh-cw" class="size-5 text-primary"></i>
+          <span class="text-sm">يتوفر تحديث جديد للبوابة</span>
+          <button class="btn btn-primary btn-sm">تحديث</button>
+        </div>
+      </div>
+
+      <!-- iOS add-to-home sheet -->
+      <div class="card-soft p-4">
+        <p class="text-xs opacity-60 mb-2 ltr">iOS Safari · Add to Home Screen</p>
+        <div class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+          <div class="sheet-grip !block"></div>
+          <h3 class="font-display text-base mb-3">أضف البوابة إلى شاشتك الرئيسية</h3>
+          <ol class="space-y-3 text-sm">
+            <li class="flex items-center gap-3"><span class="size-7 rounded-full bg-base-200 grid place-items-center num shrink-0">1</span>اضغط زر المشاركة <i data-lucide="upload" class="size-4 text-info"></i> في شريط Safari</li>
+            <li class="flex items-center gap-3"><span class="size-7 rounded-full bg-base-200 grid place-items-center num shrink-0">2</span>اختر «إضافة إلى الشاشة الرئيسية»</li>
+            <li class="flex items-center gap-3"><span class="size-7 rounded-full bg-base-200 grid place-items-center num shrink-0">3</span>اضغط «إضافة» — ستظهر أيقونة الغدير</li>
+          </ol>
+          <button class="btn btn-block mt-4">حسنًا</button>
+        </div>
+      </div>
+
+      <!-- Teacher: attendance saved offline, waiting to send -->
+      <div class="card-soft p-4">
+        <p class="text-xs opacity-60 mb-2 ltr">Background Sync · PUT /teacher/sessions/{code}</p>
+        <div class="rounded-box border border-base-300 bg-base-100 p-3 flex items-center gap-3 shadow-sm">
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-semibold flex items-center gap-2"><span class="badge badge-warning badge-sm gap-1"><i data-lucide="wifi-off" class="size-3"></i>بانتظار الإرسال</span>الصف <span class="num">2-أ</span></p>
+            <p class="text-xs opacity-70 mt-1">حُفظ الحضور على الجهاز وسيُرسل تلقائيًا عند عودة الاتصال</p>
+          </div>
+          <button class="btn btn-lg" disabled><span class="loading loading-dots loading-sm"></span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Push notifications -->
+  <section class="space-y-3">
+    <h2 class="font-display text-lg">إشعارات الجوال (Push)</h2>
+    <p class="text-sm opacity-70">تصل للطالب حتى والبوابة مغلقة. الضغط على الإشعار يفتح الصفحة المعنية. النص عربي دائمًا.</p>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <!-- lock-screen previews -->
+      <div class="rounded-box p-4 space-y-3" style="background:linear-gradient(160deg,#1d2f2c,#0e1715)">
+        <p class="text-center text-white/80 text-4xl font-semibold num ltr w-full">5:16</p>
+        <p class="text-center text-white/60 text-xs mb-2">الأحد، 11 أكتوبر</p>
+
+        <div class="rounded-2xl bg-white/85 backdrop-blur p-3 text-[#111] flex gap-3 items-start shadow">
+          <img src="assets/img/logo-icon.svg" alt="" class="size-9 rounded-lg bg-white p-1 shrink-0">
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] opacity-60 flex justify-between"><span>بوابة الغدير</span><span>الآن</span></p>
+            <p class="font-semibold text-sm">تم رصد حضورك: حاضر ✓</p>
+            <p class="text-xs opacity-80">تجويد القرآن الكريم · الأحد 11 أكتوبر · 4:00 م</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-white/85 backdrop-blur p-3 text-[#111] flex gap-3 items-start shadow">
+          <img src="assets/img/logo-icon.svg" alt="" class="size-9 rounded-lg bg-white p-1 shrink-0">
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] opacity-60 flex justify-between"><span>بوابة الغدير</span><span>منذ 3 د</span></p>
+            <p class="font-semibold text-sm">تم تسجيلك غائبًا ✗</p>
+            <p class="text-xs opacity-80">الفقه — العبادات · الأحد 11 أكتوبر · 5:15 م. إن كان لديك عذر راجع الإدارة.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-white/85 backdrop-blur p-3 text-[#111] flex gap-3 items-start shadow">
+          <img src="assets/img/logo-icon.svg" alt="" class="size-9 rounded-lg bg-white p-1 shrink-0">
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] opacity-60 flex justify-between"><span>بوابة الغدير</span><span>منذ 20 د</span></p>
+            <p class="font-semibold text-sm">جمعية الغدير لعلوم القرآن</p>
+            <p class="text-xs opacity-80 line-clamp-2">أحسنت في تلاوة اليوم، أداؤك في أحكام النون الساكنة ممتاز. استمر على المراجعة…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- soft permission prompt (shown once after the first successful login) -->
+        <div class="card-soft p-4">
+          <p class="text-xs opacity-60 mb-2 ltr">soft prompt → Notification.requestPermission()</p>
+          <div class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+            <div class="sheet-grip !block"></div>
+            <div class="flex gap-3 items-start">
+              <div class="size-11 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0"><i data-lucide="bell-ring" class="size-6"></i></div>
+              <div><h3 class="font-display text-base">هل تريد تلقي الإشعارات؟</h3><p class="text-sm opacity-75 mt-1">نُعلمك عند رصد حضورك وعند وصول رسالة من مدرّسيك. يمكنك إيقافها من «حسابي» في أي وقت.</p></div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-4"><button class="btn">لاحقًا</button><button class="btn btn-primary">تفعيل</button></div>
+          </div>
+        </div>
+
+        <div class="card-soft p-4 text-sm space-y-2">
+          <p class="font-semibold">متى يصل الإشعار؟</p>
+          <ul class="space-y-1.5 opacity-80">
+            <li class="flex gap-2"><i data-lucide="calendar-check" class="size-4 mt-0.5 text-primary shrink-0"></i>عند <b>أول حفظ</b> لحضور الحصة فقط — تعديل الحضور لاحقًا لا يرسل إشعارًا جديدًا.</li>
+            <li class="flex gap-2"><i data-lucide="mail" class="size-4 mt-0.5 text-primary shrink-0"></i>عند إرسال رسالة للطالب: العنوان اسم الجمعية وأول 80 حرفًا من الرسالة. حذف الرسالة يخفيها من البوابة، لكن لا يسترجع إشعارًا وصل. تُحذف الرسائل تلقائيًا بعد 90 يومًا.</li>
+            <li class="flex gap-2"><i data-lucide="mouse-pointer-click" class="size-4 mt-0.5 text-primary shrink-0"></i>الضغط يفتح: سجل الحضور على يوم الحصة، أو صندوق الرسائل.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="card-soft p-6">
     <h2 class="font-display text-lg mb-3">الإشعارات المؤقتة (Toast)</h2>
     <div class="flex flex-wrap gap-2">

@@ -69,6 +69,9 @@
 ## Translations
 
 - Add keys to both `ar/` and `en/` language files simultaneously
+- **Exception, new student/teacher portal (SPA + its `/api/v1` texts and push notifications): Arabic only.**
+  SPA strings live in `frontend/src/shared/i18n/ar.json`; server-side portal texts in `resources/lang/ar/portal.php`.
+  No `en` copies for the portal.
 - Group by domain: `localize.php` for general UI, `reports.php` for report
   labels, `account.php` for payment/accounting, `examtool.php`, `studentmark.php`
 

@@ -161,6 +161,28 @@
     ]
   };
   DEMO.courses = [DEMO.current].concat(DEMO.archived);
+
+  // Student inbox (one-way: teachers → selected students; students read only)
+  DEMO.messages = [
+    { id: 9003, teacher: "السيد حسن الموسوي", initial: "ح", curriculum: "العقائد", classroom: "2-ب", sent_at: "2026-10-12 13:20",
+      body: "يرجى مراجعة الدرس الثالث (صفات الله الثبوتية) قبل الاختبار القصير يوم الأربعاء. سيكون الاختبار في أول عشر دقائق من الحصة." },
+    { id: 9002, teacher: "الشيخ أحمد الستري", initial: "أ", curriculum: "تجويد القرآن الكريم", classroom: "2-ب", sent_at: "2026-10-11 17:10",
+      body: "أحسنت في تلاوة اليوم، أداؤك في أحكام النون الساكنة ممتاز. استمر على المراجعة اليومية." },
+    { id: 9001, teacher: "الشيخ يوسف المرزوق", initial: "ي", curriculum: "حفظ القرآن الكريم", classroom: "2-ب", sent_at: "2026-10-05 18:45",
+      body: "تم تحديد موعد اختبار حفظ جزء عمّ يوم الخميس 22 أكتوبر. يرجى الحضور قبل الموعد بعشر دقائق.", read: true }
+  ];
+  var READ_KEY = "gh-s-read";
+  function readIds() { try { return JSON.parse(sessionStorage.getItem(READ_KEY) || "[]"); } catch (e) { return []; } }
+  function inbox() { var r = readIds(); return DEMO.messages.map(function (m) { return Object.assign({}, m, { read: m.read || r.indexOf(m.id) !== -1 }); }); }
+  function unread() { return inbox().filter(function (m) { return !m.read; }).length; }
+  function markRead(id) { var r = readIds(); if (r.indexOf(id) === -1) { r.push(id); try { sessionStorage.setItem(READ_KEY, JSON.stringify(r)); } catch (e) {} } }
+  // "اليوم 1:20 م" / "أمس 5:10 م" / "5 أكتوبر" relative to the demo now (12 Oct 2026)
+  function fmtAgo(dt) {
+    var d = dt.slice(0, 10), t = dt.slice(11, 16), y = new Date(TODAY); y.setDate(y.getDate() - 1);
+    if (d === iso(TODAY)) return "اليوم " + fmtTime(t);
+    if (d === iso(y)) return "أمس " + fmtTime(t);
+    return fmtDate(d, { day: "numeric", month: "long" });
+  }
   function courseById(id) { return DEMO.courses.filter(function (c) { return String(c.id) === String(id); })[0] || DEMO.current; }
 
   // Deterministic sessions from the timetable (stand-in for GET /attendance)
@@ -342,7 +364,8 @@
     { id: "attendance", label: "سجل الحضور",     short: "الحضور",    icon: "calendar-check",  href: "attendance.html" },
     { id: "stats",      label: "إحصائيات الحضور", short: "إحصائيات",  icon: "chart-pie",       href: "stats.html" },
     { id: "archive",    label: "أرشيف الدورات",  short: "الأرشيف",   icon: "archive",         href: "archive.html" },
-    { id: "profile",    label: "الملف الشخصي",   short: "حسابي",     icon: "user-round",      href: "profile.html" }
+    { id: "profile",    label: "الملف الشخصي",   short: "حسابي",     icon: "user-round",      href: "profile.html" },
+    { id: "messages",   label: "الرسائل",        short: "الرسائل",   icon: "mail",            href: "messages.html", dock: false, badge: function () { return unread(); } }
   ];
 
   // Role-aware shell. Student is the default; teacher.js sets GH.shellConfig before DOMContentLoaded.
@@ -369,7 +392,9 @@
       '<ul class="menu w-full px-3 gap-1 text-[0.95rem]">' +
       nav.map(function (n) {
         var on = n.id === page || (n.match && n.match.indexOf(page) !== -1);
-        return '<li><a href="' + n.href + '" class="py-2.5 ' + (on ? "menu-active" : "") + '"' + (on ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i>' + n.label + "</a></li>";
+        var bc = n.badge ? n.badge() : 0;
+        return '<li><a href="' + n.href + '" class="py-2.5 ' + (on ? "menu-active" : "") + '"' + (on ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i>' + n.label +
+          (bc ? '<span class="badge badge-error badge-sm ms-auto num">' + bc + "</span>" : "") + "</a></li>";
       }).join("") +
       '</ul><div class="mt-auto p-4 space-y-3"><div class="join w-full" role="group" aria-label="المظهر">' +
       theme.modes.map(function (m) { return '<button class="btn btn-sm join-item flex-1" data-theme-set="' + m + '"><i data-lucide="' + theme.icons[m] + '" class="size-4"></i><span class="sr-only">' + theme.labels[m] + "</span></button>"; }).join("") +
@@ -382,11 +407,16 @@
       '<div class="flex items-center gap-3 px-4 lg:px-8 h-14 lg:h-16 max-w-6xl mx-auto w-full">' + lead +
       '<div class="flex-1 min-w-0"><p class="text-xs opacity-60 leading-none mb-1 flex items-center gap-1.5">' + esc(crumb) +
       ' <span class="badge badge-accent badge-xs">تجريبي</span></p><h1 class="font-display text-base sm:text-lg leading-tight truncate">' + esc(title) + "</h1></div>" +
+      (cfg.inbox === false ? "" : (function () {
+        var n = unread();
+        return '<a href="messages.html" class="btn btn-ghost btn-circle relative" aria-label="الرسائل' + (n ? "، " + n + " غير مقروءة" : "") + '"><i data-lucide="mail" class="size-5"></i>' +
+          (n ? '<span class="badge badge-error badge-xs absolute top-1.5 end-1.5 num px-1 min-w-4">' + n + "</span>" : "") + "</a>";
+      })()) +
       '<button class="btn btn-ghost btn-circle lg:hidden" data-theme-btn></button>' +
       '<a href="' + profile + '" class="lg:hidden" aria-label="الملف الشخصي">' + avatar("w-8 h-10") + "</a></div></header>";
 
     var dock = noDock ? "" : '<nav class="dock dock-md bg-base-100/90 backdrop-blur border-t border-base-300 lg:hidden z-40" aria-label="التنقل الرئيسي">' +
-      nav.map(function (n) {
+      nav.filter(function (n) { return n.dock !== false; }).map(function (n) {
         var a = n.id === page || (n.match && n.match.indexOf(page) !== -1);
         return '<a href="' + n.href + '" class="' + (a ? "dock-active text-primary" : "opacity-70") + '"' + (a ? ' aria-current="page"' : "") + '><i data-lucide="' + n.icon + '" class="size-5"></i><span class="dock-label">' + n.short + "</span></a>";
       }).join("") + "</nav>";
@@ -463,6 +493,7 @@
     theme: theme, ui: ui, icons: icons, toast: toast, setState: setState,
     chip: chip, pip: pip, esc: esc, parse: parse, iso: iso,
     fmtDate: fmtDate, fmtHijri: fmtHijri, fmtTime: fmtTime, money: money, pct: pct,
-    sessionsFor: sessionsFor, summarize: summarize, nextSession: nextSession, courseById: courseById
+    sessionsFor: sessionsFor, summarize: summarize, nextSession: nextSession, courseById: courseById,
+    inbox: inbox, unread: unread, markRead: markRead, fmtAgo: fmtAgo
   };
 })();

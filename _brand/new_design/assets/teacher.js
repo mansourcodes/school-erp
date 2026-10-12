@@ -43,14 +43,16 @@
     room({ id: 912, number: "2-ب", place: "قاعة الإمام الصادق — المبنى الرئيسي", course: D.current, curriculum: { id: 11, name: "تجويد القرآن الكريم" },
            slots: [{ day: 0, start: "16:00", end: "17:00" }, { day: 2, start: "16:00", end: "17:00" }], size: 18, seed: 1 })
   ];
-  var archived = [
+  // Teachers don't see archived courses (decision Q14) — kept empty on purpose
+  var archivedUnused = [
     room({ id: 870, number: "1-أ", place: "قاعة الإمام الباقر", course: D.archived[0], curriculum: { id: 1, name: "التجويد — المستوى الأول" },
            slots: [{ day: 0, start: "16:00", end: "17:00" }, { day: 2, start: "16:00", end: "17:00" }], size: 17, seed: 4, readonly: true }),
     room({ id: 801, number: "1-ج", place: "قاعة الإمام الباقر", course: D.archived[1], curriculum: { id: 1, name: "التجويد — المستوى الأول" },
            slots: [{ day: 0, start: "16:00", end: "17:00" }], size: 14, seed: 5, readonly: true })
   ];
-  current.concat(archived).forEach(function (c) { c.readonly = !!c.readonly; });
-  function roomById(id) { return current.concat(archived).filter(function (c) { return String(c.id) === String(id); })[0] || current[0]; }
+  var archived = [];
+  current.forEach(function (c) { c.readonly = false; });
+  function roomById(id) { return current.filter(function (c) { return String(c.id) === String(id); })[0] || current[0]; }
 
   /* ---------------------------------------------------------- sessions */
   // code mirrors the Attends invariant: date#time#classroom#curriculum
@@ -166,7 +168,10 @@
       ring = " is-today";
       badge = '<span class="badge badge-primary badge-sm gap-1"><span class="status status-success animate-pulse"></span>جارية الآن</span>';
       action = '<a class="btn btn-primary btn-block" href="' + href + '"><i data-lucide="calendar-check" class="size-4"></i>رصد الحضور</a>'; primary = true;
-    } else if (s.when === "later" || s.when === "future") {
+    } else if (s.when === "later") {
+      badge = '<span class="badge badge-ghost badge-sm">لاحقًا اليوم</span>';
+      action = '<a class="btn btn-sm btn-ghost text-primary" href="' + href + '"><i data-lucide="calendar-check" class="size-4"></i>رصد</a>';
+    } else if (s.when === "future") {
       badge = '<span class="badge badge-ghost badge-sm">قادمة</span>';
       action = '<a class="btn btn-sm btn-ghost" href="' + href + '">القائمة</a>';
     } else if (!r.recorded) {
@@ -189,18 +194,49 @@
 
   /* ------------------------------------------------------------ shell */
   GH.shellConfig = {
-    home: "t-home.html", profile: "t-profile.html", crumb: "لوحة المدرّس",
+    home: "t-home.html", profile: "t-profile.html", crumb: "لوحة المدرّس", inbox: false,
     avatar: function (size, txt) { return ui.teacherAvatar(size, txt); },
     person: { first_name: teacher.first_name, sub: "مدرّس · " + current.length + " صفوف" },
     nav: [
       { id: "t-home",      label: "اليوم",            short: "اليوم",     icon: "calendar-clock", href: "t-home.html", match: ["t-attendance"] },
       { id: "t-classes",   label: "صفوفي",            short: "صفوفي",     icon: "school",         href: "t-classes.html", match: ["t-classroom"] },
+      { id: "t-messages",  label: "الرسائل",          short: "الرسائل",   icon: "mail",           href: "t-messages.html", match: ["t-compose"] },
       { id: "t-stats",     label: "إحصائيات الصفوف",  short: "إحصائيات",  icon: "chart-pie",      href: "t-stats.html" },
       { id: "t-profile",   label: "حسابي",            short: "حسابي",     icon: "user-round",     href: "t-profile.html" }
     ]
   };
 
+  /* ---------------------------------------------------------- messages */
+  // One-way: teacher → selected students of one of *my current* classrooms. Students cannot reply.
+  function pick(c, n) { return c.students.slice(0, n).map(function (s) { return s.id; }); }
+  var BASE_MSGS = [
+    { id: 701, room_id: 915, student_ids: pick(current[0], 4), sent_at: "2026-10-11 19:05",
+      body: "تذكير: يرجى إحضار المصحف ودفتر التجويد في حصة الأربعاء، وسنبدأ بتطبيق أحكام الميم الساكنة." },
+    { id: 702, room_id: 920, student_ids: pick(current[1], 20), sent_at: "2026-10-10 12:30",
+      body: "تم تأجيل حصة الخميس 15 أكتوبر إلى الساعة 5:00 م بدلًا من 4:00 م. نعتذر عن أي إزعاج." },
+    { id: 703, room_id: 912, student_ids: pick(current[2], 1), sent_at: "2026-10-06 18:00",
+      body: "أحسنت في تلاوة اليوم، استمر على المراجعة اليومية." }
+  ];
+  var READ_FRAC = { 701: 0.75, 702: 0.7, 703: 1 };
+  var MSG_KEY = "gh-t-msgs", DEL_KEY = "gh-t-deleted";
+  function jget(k, d) { try { return JSON.parse(sessionStorage.getItem(k) || d); } catch (e) { return JSON.parse(d); } }
+  function jset(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function sent() {
+    var del = jget(DEL_KEY, "[]");
+    return jget(MSG_KEY, "[]").concat(BASE_MSGS).filter(function (m) { return del.indexOf(m.id) === -1; }).map(function (m) {
+      var n = m.student_ids.length, r = READ_FRAC[m.id] == null ? 0 : Math.round(n * READ_FRAC[m.id]);
+      return Object.assign({ read_ids: m.student_ids.slice(0, r) }, m);
+    }).sort(function (a, b) { return a.sent_at < b.sent_at ? 1 : -1; });
+  }
+  function sendMessage(roomId, ids, body) {
+    var list = jget(MSG_KEY, "[]");
+    list.unshift({ id: Date.now(), room_id: +roomId, student_ids: ids.map(Number), body: body, sent_at: GH.DEMO.today + " 17:42" });
+    jset(MSG_KEY, list);
+  }
+  function deleteMessage(id) { var d = jget(DEL_KEY, "[]"); d.push(+id); jset(DEL_KEY, d); }
+
   GH.T = {
+    sent: sent, sendMessage: sendMessage, deleteMessage: deleteMessage,
     teacher: teacher, current: current, archived: archived, roomById: roomById, NOW_MIN: NOW_MIN,
     sessionsFor: sessionsFor, recordsFor: recordsFor, saveRecords: saveRecords, bySession: bySession,
     count: count, roomStats: roomStats, todaySessions: todaySessions, pendingAll: pendingAll, ui: ui

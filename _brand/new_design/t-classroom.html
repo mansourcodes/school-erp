@@ -40,6 +40,7 @@
           <label class="input flex-1 min-w-0"><i data-lucide="search" class="size-4 opacity-60"></i><input type="search" id="q" placeholder="بحث باسم الطالب…" aria-label="بحث"></label>
         </div>
         <p class="text-xs opacity-60" id="photo-note"></p>
+        <a class="btn btn-outline btn-primary w-full sm:w-auto" id="msg-btn"><i data-lucide="mail" class="size-4"></i>مراسلة طلاب الصف</a>
         <ul class="divide-y divide-base-300 -mx-2" id="students"></ul>
       </div>
       <div role="tabpanel" id="p-sessions" class="space-y-3" hidden></div>
@@ -113,6 +114,8 @@
       : '<span class="badge badge-sm border-0 bg-white/20 text-white">الدورة الحالية</span>';
     document.getElementById("h-slots").innerHTML = c.slots.map(function (sl) { return '<span class="badge border-0 bg-white/15 text-white num">' + GH.DAYS[sl.day] + " · " + GH.fmtTime(sl.start) + "</span>"; }).join("");
 
+    var mb = document.getElementById("msg-btn");
+    if (c.readonly) mb.remove(); else mb.href = "t-compose.html?room=" + c.id;
     // students
     var byId = {}; stats.students.forEach(function (x) { byId[x.student.id] = x; });
     var ul = document.getElementById("students");

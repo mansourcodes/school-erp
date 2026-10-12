@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="ghadeer">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>الرسائل · لوحة المدرّس</title>
+  <link rel="icon" href="assets/img/logo-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12"></script>
+  <link href="assets/theme.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/teacher.js"></script>
+  <style>
+    .bar-track { height: .4rem; border-radius: 4px; background: var(--viz-grid); }
+    .bar-fill  { height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; background: var(--viz-1); }
+  </style>
+</head>
+<body data-page="t-messages" data-title="الرسائل" data-crumb="الرسائل المرسلة" data-states="ready:رسائل مرسلة,empty:لا رسائل,loading:جارٍ التحميل">
+<main class="space-y-4">
+
+  <a href="t-compose.html" class="btn btn-primary btn-lg w-full sm:w-auto"><i data-lucide="square-pen" class="size-5"></i>رسالة جديدة</a>
+  <p class="text-xs opacity-70 flex items-center gap-1.5"><i data-lucide="info" class="size-4"></i>تصل الرسائل لطلاب صفوفك المختارين كإشعار، ولا يمكنهم الرد عليها.</p>
+
+  <ul data-state="ready" class="space-y-3" id="list"></ul>
+  <div data-state="empty" class="card-soft" id="empty"></div>
+  <div data-state="loading" class="space-y-3" aria-busy="true"><div class="skeleton h-36 w-full"></div><div class="skeleton h-36 w-full"></div></div>
+</main>
+
+<!-- confirm delete -->
+<dialog id="confirm" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+    <div class="sheet-grip"></div>
+    <div class="flex gap-3 items-start">
+      <div class="size-10 rounded-full bg-error/10 text-error grid place-items-center shrink-0"><i data-lucide="trash-2" class="size-5"></i></div>
+      <div><h3 class="font-display text-lg">حذف الرسالة؟</h3>
+        <p class="text-sm opacity-70 mt-1">ستُحذف الرسالة من صناديق <b class="num" id="cf-n"></b> طالب فورًا، ولن يتمكنوا من رؤيتها بعد الآن. الإشعارات التي وصلت سابقًا لا يمكن استرجاعها.</p></div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 mt-5">
+      <form method="dialog" class="contents"><button class="btn btn-lg">إلغاء</button></form>
+      <button class="btn btn-error btn-lg" id="cf-yes">حذف</button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>إغلاق</button></form>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var T = GH.T, del = null;
+    document.getElementById("empty").innerHTML = GH.ui.empty("mail", "لم ترسل أي رسالة بعد", "أرسل تذكيرًا أو إعلانًا لطلاب أحد صفوفك.", '<a href="t-compose.html" class="btn btn-primary mt-2">رسالة جديدة</a>');
+    var ul = document.getElementById("list");
+    function render() {
+      var list = T.sent();
+      if (!list.length) { GH.setState("empty"); return; }
+      ul.innerHTML = list.map(function (m) {
+        var c = T.roomById(m.room_id), n = m.student_ids.length, r = m.read_ids.length, all = n === c.students.length;
+        var people = m.student_ids.map(function (id) { return c.students.filter(function (s) { return s.id === id; })[0]; }).filter(Boolean);
+        return '<li class="card-soft p-4" data-id="' + m.id + '">' +
+          '<header class="flex items-start gap-2">' +
+            '<div class="min-w-0 flex-1"><p class="font-semibold">الصف <span class="num whitespace-nowrap">' + c.number + "</span> · " + GH.esc(c.curriculum.name) + "</p>" +
+            '<p class="text-xs opacity-70 mt-0.5">' + (all ? "إلى جميع الطلاب" : "إلى " + n + (n === 1 ? " طالب" : " طلاب")) + ' · <time class="num">' + GH.fmtAgo(m.sent_at) + "</time></p></div>" +
+            '<button class="btn btn-ghost btn-square text-error -me-2 -mt-1" data-del="' + m.id + '" aria-label="حذف الرسالة"><i data-lucide="trash-2" class="size-5"></i></button>' +
+          "</header>" +
+          '<p class="mt-3 leading-relaxed">' + GH.esc(m.body) + "</p>" +
+          '<details class="mt-3 group">' +
+            '<summary class="list-none cursor-pointer min-h-11 flex items-center gap-3">' +
+              '<div class="flex -space-x-2">' + people.slice(0, 4).map(function (s) { return T.ui.photo(s, "w-6 h-8"); }).join("") + "</div>" +
+              '<div class="flex-1 min-w-0"><p class="text-xs opacity-80">قرأها <b class="num">' + r + "</b> من " + n + '</p><div class="bar-track mt-1"><div class="bar-fill" style="width:' + (n ? r / n * 100 : 0) + '%"></div></div></div>' +
+              '<i data-lucide="chevron-down" class="size-4 opacity-60 group-open:rotate-180 transition-transform"></i>' +
+            "</summary>" +
+            '<ul class="divide-y divide-base-300 mt-2">' + people.map(function (s) {
+              var read = m.read_ids.indexOf(s.id) !== -1;
+              return '<li class="py-2 flex items-center gap-3">' + T.ui.photo(s, "w-8 h-10") + '<span class="flex-1 min-w-0 truncate text-sm">' + GH.esc(s.name) + "</span>" +
+                (read ? '<span class="text-xs text-success inline-flex items-center gap-1"><i data-lucide="check-check" class="size-4"></i>قرأها</span>' : '<span class="text-xs opacity-60">لم تُقرأ</span>') + "</li>";
+            }).join("") + "</ul>" +
+          "</details></li>";
+      }).join("");
+      GH.icons();
+    }
+    ul.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-del]"); if (!b) return;
+      del = +b.getAttribute("data-del");
+      var m = T.sent().filter(function (x) { return x.id === del; })[0];
+      document.getElementById("cf-n").textContent = m.student_ids.length;
+      document.getElementById("confirm").showModal();
+    });
+    document.getElementById("cf-yes").addEventListener("click", function () {
+      T.deleteMessage(del); document.getElementById("confirm").close(); render(); GH.toast("تم حذف الرسالة");
+    });
+    render();
+    if (new URLSearchParams(location.search).get("sent")) GH.toast("تم إرسال الرسالة");
+  });
+</script>
+</body>
+</html>
