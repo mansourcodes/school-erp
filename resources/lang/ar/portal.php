@@ -19,6 +19,18 @@ return [
         'server' => 'حدث خطأ غير متوقع. حاول مرة أخرى لاحقًا.',
     ],
 
+    // Payment keys come from the Backpack settings payment_types / payment_sources.
+    'payment_types' => [
+        'FULL' => 'رسوم كاملة',
+        'PART' => 'دفعة جزئية',
+        'OFFER' => 'عرض خاص',
+    ],
+
+    'payment_sources' => [
+        'CASH' => 'نقدًا',
+        'BENEFIT_PAY' => 'بنفت باي',
+    ],
+
     'attributes' => [
         'role' => 'نوع الحساب',
         'cpr' => 'الرقم الشخصي',

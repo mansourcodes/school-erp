@@ -9,7 +9,8 @@ Update this file after every meaningful implementation change.
     per-CPR lockout, Turnstile, honeypot, security log; 13 feature tests passing (see completed-tracker)
   - **P2.2 SPA shell + auth done** (2026-10-13): `frontend/` FSD app, login, shell, theme, 401/419/429 handling,
     23 tests, CI workflow (see completed-tracker)
-  - Next: **P2.3 Current course** (`GET /student/courses/current` + Home tabs, certificate download)
+  - **P2.3 Current course done** (2026-10-13): course API + certificate print view, Home hero / KPIs / tabs
+  - Next: **P2.4 Archive** (`GET /student/courses?status=archived`, `GET /student/courses/{id}`, read-only detail)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -78,11 +79,18 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- P2.3: `CourseDetailResource` + `Student::currentClassroom()` + `/api/v1/student/courses/current`; Home hero, KPIs, tabs
+- P2.4: archived list + course detail endpoints (reuse `CourseDetailResource` with status `archived`), Archive page
+- P2.5: add the attendance KPI tiles (rate, attended/recorded) to Home
 - Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)
 - Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 
 ## Open Questions
+
+- Certificate: served as the admin HTML print view (no mPDF output exists in the project). A real PDF download
+  would be its own task. OK for the beta?
+- Payment labels (new Arabic copy, please confirm): FULL = رسوم كاملة, PART = دفعة جزئية, OFFER = عرض خاص,
+  CASH = نقدًا, BENEFIT_PAY = بنفت باي (`resources/lang/ar/portal.php`)
+- Real timetables are Friday/Saturday; the mockup dimmed Fri/Sat in the attendance calendar. Revisit in P2.5.
 
 - Frontend dependency majors: plan says React 18, kept. Pinned to Vite 7, Vitest 5, TS 5.9, ESLint 9, MSW 2,
   React Router 7 (newer majors exist: React Router 8, TS 7, ESLint 10, MSW 3). Upgrade as a separate task?

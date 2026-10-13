@@ -18,4 +18,6 @@ export const server = setupServer(
     return new HttpResponse(null, { status: 204 });
   }),
   http.get('*/api/v1/me', () => HttpResponse.json({ message: 'يجب تسجيل الدخول أولًا' }, { status: 401 })),
+  // Signed-in screens: no active course unless a test serves one.
+  http.get('*/api/v1/student/courses/current', () => HttpResponse.json({ data: null })),
 );

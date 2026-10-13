@@ -309,7 +309,7 @@ frontend/src/
 │   ├── viewer/                     signed-in user: me query, role, viewerSlice
 │   ├── course/                     current / archived / detail queries; CourseMeta, Timetable
 │   ├── payment/                    PaymentList, ReceiptView
-│   ├── marks/                      MarksList, GradeSummary
+│   ├── mark/                       MarksList (singular slice name, Steiger naming rule)
 │   ├── attendance/                 status catalog (✓ ت تع ✗ غع), summarize(); StatusChip, StatusPip, StatusStack
 │   ├── class-session/              teacher sessions (code = date#time#classroom#curriculum); SessionCard
 │   ├── classroom/                  teacher classrooms; ClassroomCard
@@ -524,7 +524,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 4. **Current-course query**, in one place (e.g. `Student::currentClassroom()`): `classrooms()->whereHas('course', fn($q) => $q->where('is_active', 1))->orderByDesc(course.start_date)->first()`.
 5. **Attendance query**: build sessions from the classroom `attend_table` (expected) joined with `Attends` + the five `attends_student_*` relations (actual). Reuse the hour-matching logic already in `AcademiaReportsController::reportStudentAttendList`, extracted into a service so the admin report and the API share it.
 6. **Stats endpoint**: computed server-side from the same service (§7.4), so the numbers match the admin report.
-7. **Certificate**: `GET /student/courses/{id}/certificate` returns the existing mPDF certificate, rendered synchronously (invariant 5). Only allowed when marks are published and the course belongs to the student.
+7. **Certificate**: `GET /student/courses/{id}/certificate` returns the existing certificate **print view** (`backend.reports.certificate`, HTML), rendered synchronously (invariant 5); the SPA opens it in a new tab, where the student prints it or saves it as PDF. Only allowed when marks are published (`final_grade` set, else 403) and the course is one of the student's enrollments (else 404). *Changed 2026-10-13:* the project has no working mPDF output (every report is an HTML print view), so a real PDF would be a separate task.
 8. **Student photo** (set by **teachers and admin only**; there is no student upload endpoint, Q4): migration adds nullable `photo_path` to `students`. Store on the `public` disk at `students/photos/{student_id}/{uuid}.webp` (invariant 6: no binaries in DB). Validate `image|mimes:jpeg,png,webp|max:2048|dimensions:min_width=300,min_height=300`. **Re-encode server-side** (strips EXIF/GPS and polyglot payloads; needs an image library such as Intervention Image, which is not installed yet). Delete the previous file on replace. Throttle to 5 uploads/hour.
 9. **Policies**: every `/student/*` query is scoped to `auth('student')->id()`. Never accept a `student_id` from the client.
 10. **Language:** the portal API and push texts are **Arabic only**, kept in `resources/lang/ar/portal.php`. The Laravel `ar` + `en` rule still applies to the admin panel and Blade views; the portal is the documented exception (see `_context/code-standards.md`).
@@ -551,6 +551,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 | Layer | Measure |
 |---|---|
 | Edge (Cloudflare) | First line of defence before Laravel: DDoS absorption, WAF, edge rate limits on the login endpoints, bot management, and the origin is reachable only through Cloudflare (§10). The Laravel limits below still apply and use the **real client IP** from `CF-Connecting-IP` (§10.5). |
+| API rate limits | `/api/v1`: 600/min **per IP** before auth (a classroom shares one Wi-Fi IP) + 120/min **per signed-in user** (`throttle:portal`). Other `/api` routes keep 60/min. |
 | Rate limiting | `RateLimiter::for('student-login')`: **5 attempts / minute per (CPR + IP)** and **20 / minute per IP**. On hit: `429` + `Retry-After`, and the UI shows the countdown (`locked` state). |
 | Progressive lockout | After 10 failures for one CPR within 15 min, lock that CPR for 15 min regardless of IP (stops distributed guessing). Logged. |
 | Bot challenge | **Cloudflare Turnstile** (managed/invisible mode, no puzzles, privacy-friendly), verified server-side with `siteverify` before checking credentials. Fallback if a third party is unwanted: only show a challenge after 3 failures. |
@@ -584,7 +585,7 @@ Envelope: `{ "data": …, "meta": { … } }`. Errors: `{ "message": "…", "erro
 | GET | `/api/v1/student/courses/current` | `CourseDetail` or `data: null` |
 | GET | `/api/v1/student/courses?status=archived` | `CourseSummary[]` (newest first) |
 | GET | `/api/v1/student/courses/{courseId}` | `CourseDetail` (`readonly: true` if archived) |
-| GET | `/api/v1/student/courses/{courseId}/certificate` | `application/pdf` (403 until published) |
+| GET | `/api/v1/student/courses/{courseId}/certificate` | Certificate print view, `text/html` (403 until published, 404 if not enrolled) |
 | GET | `/api/v1/student/attendance?course_id=&from=&to=` | `Session[]` |
 | GET | `/api/v1/student/attendance/stats?course_id=` | `AttendanceStats` |
 | GET | `/api/v1/student/profile` | `Profile` (whitelisted fields, §3.6) |

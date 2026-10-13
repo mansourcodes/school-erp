@@ -4,6 +4,22 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal current course — P2.3 (2026-10-13)
+- API: `GET /api/v1/student/courses/current` (`CourseDetailResource`, `data: null` without an active course) and
+  `GET /api/v1/student/courses/{course}/certificate` (admin certificate print view; 403 until `final_grade`, 404 if not enrolled)
+- `Student::currentClassroom()`: active course, latest `start_date`, then classroom id
+- Resource: curricula from `teachers` + `attend_table` JSON (ISO day 1–7 → 0 = Sun … 6 = Sat; missing end = +1 h,
+  empty start = null), the student's own payments for the course with Arabic type/source labels
+  (`portal.payment_types|payment_sources`), `brief_marks` rows (`n/a` → null), total/grade only once published
+- Rate limits: `/api/v1` 600/min per IP + 120/min per user (`throttle:portal`); the old 60/min per IP would have
+  throttled a whole classroom on one Wi-Fi
+- Verified read-only on dev data: 475/475 students → 200, 387 current courses (= SQL count), 329 real marks records
+  mapped with no errors, all totalling 100
+- SPA: `entities/course` (query, `nextSession()`, Timetable, CourseMeta), `entities/payment` (PaymentList, ReceiptView),
+  `entities/mark` (MarksList); `features/print-receipt`, `features/download-certificate`; widgets `course-hero`,
+  `course-details-tabs` (#payments / #marks deep links); Home with loading / no-course / error states, 2 KPI tiles
+- Tests: 12 new PHPUnit (course contract, scoping, certificate, rate limits); 13 new Vitest (next session + Home)
+
 ### Portal SPA shell + auth — P2.2 (2026-10-13)
 - `frontend/`: Vite 7 + React 18 + TypeScript (strict) + Tailwind 4 + DaisyUI 5 + Redux Toolkit / RTK Query
   + React Router 7 (data router, basename `/beta`) + React Hook Form + `zod/mini`; builds to `public/beta` (gitignored)

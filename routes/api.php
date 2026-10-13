@@ -36,8 +36,14 @@ Route::prefix('v1')
         Route::post('/auth/login', [App\Http\Controllers\Api\V1\AuthController::class, 'login'])
             ->middleware('throttle:student-login');
 
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:portal'])->group(function () {
             Route::post('/auth/logout', [App\Http\Controllers\Api\V1\AuthController::class, 'logout']);
             Route::get('/me', [App\Http\Controllers\Api\V1\MeController::class, 'show']);
+
+            Route::prefix('student')->group(function () {
+                Route::get('/courses/current', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'current']);
+                Route::get('/courses/{course}/certificate', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'certificate'])
+                    ->where('course', '[0-9]+');
+            });
         });
     });

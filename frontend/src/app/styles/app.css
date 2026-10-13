@@ -153,3 +153,11 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Receipt printing: while a receipt dialog is open, print only the receipt. */
+@media print {
+  body:has(dialog[open] .print-area) * { visibility: hidden; }
+  body:has(dialog[open] .print-area) .print-area,
+  body:has(dialog[open] .print-area) .print-area * { visibility: visible; }
+  .print-area { position: fixed; inset: 0; }
+}

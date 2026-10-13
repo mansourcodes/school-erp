@@ -63,7 +63,8 @@
   `auth()->user()->hasRole('Teacher')` is true
 - **SuperAdmin role**: Full access to all CRUD and reports
 - **Portal API (`/api/v1`)**: `auth:sanctum` over the `student` guard (teachers join with `web` in Phase 3).
-  Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors
+  Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors.
+  Other v1 routes: 600/min per IP (shared classroom Wi-Fi) + 120/min per signed-in user
 
 ## Key Relationships
 

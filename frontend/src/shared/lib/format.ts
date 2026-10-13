@@ -8,6 +8,11 @@ export function parseIsoDate(iso: string): Date {
   return new Date(y, m - 1, d);
 }
 
+/** Local date → `YYYY-MM-DD`. */
+export function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 export function fmtDate(
   iso: string,
   options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' },

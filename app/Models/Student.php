@@ -111,6 +111,19 @@ class Student extends Authenticatable
     }
 
 
+    /**
+     * The current course rule (PLAN.md §3.2, Q1): the classroom whose course is active,
+     * latest by start_date, then id. Every other enrollment counts as archived.
+     */
+    public function currentClassroom()
+    {
+        return $this->classRooms()
+            ->where('courses.is_active', 1)
+            ->whereNull('courses.deleted_at')
+            ->orderByDesc('class_rooms.id')
+            ->first();
+    }
+
     public function payments()
     {
         return $this->hasMany(\App\Models\Account\Payment::class);

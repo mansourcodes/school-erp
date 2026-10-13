@@ -57,7 +57,18 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRateLimiting()
     {
         RateLimiter::for('api', function (Request $request) {
+            // The portal is used from classroom Wi-Fi: many students share one IP, and this
+            // runs before the session is read. So v1 gets a generous per-IP ceiling here and
+            // a per-student limit ('portal') after authentication (PLAN.md §9.2, §10.3).
+            if ($request->is('api/v1/*')) {
+                return Limit::perMinute(600)->by('v1|' . $request->ip());
+            }
+
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('portal', function (Request $request) {
+            return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });
 
         // Portal login (PLAN.md §6): per (CPR + IP) and per IP. The per-CPR lockout is in LoginLockout.

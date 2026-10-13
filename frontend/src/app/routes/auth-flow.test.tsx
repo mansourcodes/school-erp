@@ -59,7 +59,7 @@ describe('auth flow', () => {
 
     await fillAndSubmit();
 
-    expect(await screen.findByText('حسين', { selector: 'p.font-display' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'الدورة الحالية' })).toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/');
     expect(xsrfHeader).toBe('token=123');
     expect(body).toEqual({ role: 'student', cpr: '901234567', password: 'secret-pass' });
@@ -129,7 +129,7 @@ describe('auth flow', () => {
   it('sends an expired session back to login with a notice', async () => {
     server.use(signedIn());
     const { store, router } = renderApp('/');
-    expect(await screen.findByText('حسين', { selector: 'p.font-display' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'الدورة الحالية' })).toBeInTheDocument();
 
     server.use(http.get('*/api/v1/me', () => HttpResponse.json({ message: 'x' }, { status: 401 })));
     await store.dispatch(viewerApi.endpoints.me.initiate(undefined, { forceRefetch: true }));
