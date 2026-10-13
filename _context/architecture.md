@@ -98,6 +98,8 @@ ExamTool >── Course, Curriculum
    `student_attend_list` report and portal API alike); do not re-implement the cell rule elsewhere
 5. PDF generation runs synchronously in request handlers (no background jobs
    for reports); exam ZIP packaging and the portal's Web Push notifications are queued
-   (push listeners never fail the request that triggered them)
+   (push listeners never fail the request that triggered them). Production runs
+   `QUEUE_CONNECTION=sync` for now, so these jobs run inside the request (worker deferred,
+   `_context/feature/03-platform-upgrade.md`)
 6. Do not store large binary content in the database — files go to `public`
    disk storage

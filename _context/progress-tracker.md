@@ -16,15 +16,18 @@ Update this file after every meaningful implementation change.
   - **P2.6 Profile done** (2026-10-13)
   - **P2.6b PWA done** (2026-10-13); installability check in Chrome follows P2.7 (needs `/beta` served)
   - **P2.7 Beta launch wiring done** (2026-10-13): `/beta` served by Laravel, `portal.mode` + middleware, SPA
-    maintenance/closed screens, old-portal banner + login limit, TrustProxies (P0.1 code part)
-  - P2.8 (beta period with students) and P2.9 (promotion) are operational steps, gated by P0.1/P0.2, pen test,
-    restore test and the k6 peak test (PLAN.md §11)
+    maintenance/closed screens, old-portal banner + login limit, TrustProxies (code side of the deferred Cloudflare track)
+  - P2.8 (beta period with students) and P2.9 (promotion) are operational steps; P2.9 is gated by the pen test,
+    the restore test and the k6 peak test (PLAN.md §11)
   - **P3.1 Teacher API done** (2026-10-13)
   - **P3.2 Teacher SPA done** (2026-10-13): teacher login + panel, roster with offline queue, student photos
   - **P3.3 Messages done** (2026-10-13)
   - **P3.4 Push notifications done** (2026-10-13)
-  - All build milestones (P2.1–P3.4) are done. Remaining: operational steps P0.1 (Cloudflare account/DNS work),
-    P0.2 (platform upgrade, plan in `_context/feature/03-platform-upgrade.md`), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
+  - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,
+    a11y), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
+  - **Deferred out of the portal plan (2026-10-13):** Cloudflare (was P0.1), the Laravel/PHP/Backpack upgrade (was
+    P0.2, Q21 gate removed), production services (Redis, queue worker, scheduler cron). Plan in `_context/feature/03-platform-upgrade.md`.
+    Production keeps `QUEUE_CONNECTION=sync`.
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -95,14 +98,16 @@ Update this file after every meaningful implementation change.
 
 - P2.6: `/student/profile` (whitelisted fields, PLAN.md §3.6) + Profile page (keeps theme / legacy link / logout)
 - Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)
-- Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
+- When the deferred Cloudflare track starts: set `TRUSTED_PROXIES` in the same change, otherwise the per-IP login
+  limits see Cloudflare's IPs (`_context/feature/03-platform-upgrade.md`, Part B)
 
 ## Open Questions
 
 - Push setup per environment: `php artisan webpush:vapid` (writes VAPID keys to .env; keep them stable), set
-  `VAPID_SUBJECT=mailto:<centre address>`, run a real queue worker (`QUEUE_CONNECTION=database` or redis +
-  `php artisan queue:work`) and the scheduler cron. With `QUEUE_CONNECTION=sync` pushes are sent inside the request.
-- Dev image: `php:8.0-apache` is on Debian bullseye (EOL); the Dockerfile now uses archive.debian.org. Part of P0.2 (`_context/feature/03-platform-upgrade.md`).
+  `VAPID_SUBJECT=mailto:<centre address>`, keep `QUEUE_CONNECTION=sync` (decided 2026-10-13): pushes are sent inside the
+  request. No scheduler cron for now, so run `php artisan messages:prune` by hand for the 90-day retention. Worker +
+  cron are deferred (`_context/feature/03-platform-upgrade.md`, Part C).
+- Dev image: `php:8.0-apache` is on Debian bullseye (EOL); the Dockerfile now uses archive.debian.org. Part of the deferred upgrade (`_context/feature/03-platform-upgrade.md`, Part A).
 
 - **Teacher data**: no active classroom has `user_id` in its `teachers` JSON yet (dev DB: 0 of 39), so the teacher
   panel shows nothing until admins pick the teacher user in each ClassRoom's teachers repeater.

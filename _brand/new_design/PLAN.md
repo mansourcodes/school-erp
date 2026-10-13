@@ -4,7 +4,8 @@
 > Supersedes the Blade/Alpine approach in `_context/feature/01-frontend-student-react.md`.
 > Phase 2 is a React SPA that talks to Laravel only through a versioned JSON API.
 > **Language: the frontend is Arabic only** (RTL, no language switch, no English UI strings).
-> **Non-negotiables: maintainable, scalable, secure** (§9). The domain moves behind **Cloudflare** to absorb attacks before they reach the server (§10).
+> **Non-negotiables: maintainable, scalable, secure** (§9).
+> **Out of this plan (deferred 2026-10-13):** Cloudflare, the Laravel/PHP upgrade and production services (Redis, queue worker, scheduler cron) moved to `_context/feature/03-platform-upgrade.md`. They no longer gate going live. Production keeps `QUEUE_CONNECTION=sync`.
 > **Rollout: the new panel launches as a beta at `/beta`, and the current student portal (`/login`, `/dashboard`) stays active and unchanged.** An admin switches the portal between **beta / live / maintenance / closed** in Backpack Settings (`portal.mode`, §4).
 > **Decisions:** all open questions were answered on 2026-10-12, see §12 Decisions log.
 
@@ -508,7 +509,7 @@ The new student panel ships **side by side** with the current one. Nothing about
   | `maintenance` | Shows the maintenance page | Shows the maintenance screen (“البوابة تحت الصيانة”), PWA shell still loads | `503` + `Retry-After` |
   | `closed` | Shows the closed page | Shows the closed screen (“البوابة مغلقة حاليًا”), no login form | `403 portal_closed` |
 
-  Signed-in users are not logged out by `maintenance`; their next request sees the screen. Mockups for the maintenance and closed screens are in `states.html`. **Gate:** `live` may only be chosen once P0.2 (platform upgrade) is done (§11).
+  Signed-in users are not logged out by `maintenance`; their next request sees the screen. Mockups for the maintenance and closed screens are in `states.html`.
 
 **Promotion (after the beta):** an admin sets `portal.mode = live` (Q7). Then `/` and `/login` redirect to the new panel, and later the SPA moves to `/` with `/beta` kept as a redirect for bookmarks. The old Blade portal is retired in a separate, later step.
 
@@ -530,7 +531,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 10. **Language:** the portal API and push texts are **Arabic only**, kept in `resources/lang/ar/portal.php`. The Laravel `ar` + `en` rule still applies to the admin panel and Blade views; the portal is the documented exception (see `_context/code-standards.md`).
 11. **Messages** (Phase 3, teacher → students, one-way):
     - `messages`: `id`, `sender_user_id` (FK users), `class_room_id` (FK class_rooms), `body` (text, ≤ 500), timestamps, **`deleted_at`** (soft delete, project rule).
-    - **Retention: 90 days** (Q15). A scheduled `messages:prune` command (daily, Laravel scheduler, so the server needs the `schedule:run` cron) soft-deletes messages older than 90 days.
+    - **Retention: 90 days** (Q15). A `messages:prune` command, scheduled daily in the Laravel scheduler, soft-deletes messages older than 90 days. The `schedule:run` cron is deferred (`_context/feature/03-platform-upgrade.md`), so until it exists run `php artisan messages:prune` by hand.
     - `message_recipients`: `message_id`, `student_id`, `read_at` (nullable). Unique `(message_id, student_id)`.
     - `MessagePolicy`: create only for **my current** classrooms (`ClassRoom.teachers[].user_id = me`, course active + latest). Every recipient must be enrolled in that classroom. Delete own messages only. Students: read their own recipient rows only, and there is no create endpoint for students at all.
     - The inbox query excludes soft-deleted messages, so a teacher delete hides the message everywhere at once.
@@ -541,8 +542,8 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
     - **Attendance trigger:** in the shared attendance service (§5.5), when a session's `Attends` record is **created** (first save), dispatch `SendAttendancePush` per student with that student's state. Updates to an existing record dispatch nothing. The flag is the creation itself, so an edit can never re-notify.
     - **Message trigger:** after `POST /teacher/messages` commits, dispatch `SendMessagePush` for the recipients.
     - No quiet hours: pushes are sent immediately (Q18). Every student gets their own status on the first save (Q17).
-    - Both jobs run on the existing **database queue**. They skip students whose setting is off, and prune subscriptions that return 404/410.
-    - ⚠ **This changes architecture invariant 5** (“only exam ZIP packaging is queued”). Update `_context/architecture.md` when this is implemented: the push jobs join the queue, and PDFs stay synchronous.
+    - Both are queued notifications. They skip students whose setting is off, and prune subscriptions that return 404/410.
+    - **Production runs `QUEUE_CONNECTION=sync`** (2026-10-13), so pushes are sent inside the request after the save commits; a push failure never fails the save. A queue worker is deferred (`_context/feature/03-platform-upgrade.md`).
 
 ---
 
@@ -550,7 +551,6 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 
 | Layer | Measure |
 |---|---|
-| Edge (Cloudflare) | First line of defence before Laravel: DDoS absorption, WAF, edge rate limits on the login endpoints, bot management, and the origin is reachable only through Cloudflare (§10). The Laravel limits below still apply and use the **real client IP** from `CF-Connecting-IP` (§10.5). |
 | API rate limits | `/api/v1`: 600/min **per IP** before auth (a classroom shares one Wi-Fi IP) + 120/min **per signed-in user** (`throttle:portal`). Other `/api` routes keep 60/min. |
 | Rate limiting | `RateLimiter::for('student-login')`: **5 attempts / minute per (CPR + IP)** and **20 / minute per IP**. On hit: `429` + `Retry-After`, and the UI shows the countdown (`locked` state). |
 | Progressive lockout | After 10 failures for one CPR within 15 min, lock that CPR for 15 min regardless of IP (stops distributed guessing). Logged. |
@@ -728,7 +728,7 @@ These are acceptance criteria for every milestone, not extras. A feature is not 
 | Types & style | TypeScript `strict`, no `any` in `entities`/`features`. ESLint + Prettier (front), PHP-CS-Fixer / Pint-style rules (back), enforced in CI. |
 | Tests | Unit (Vitest: `shared/lib`, `entities/*/lib`, e.g. `summarize()`), component (Testing Library + MSW), **end-to-end on a phone viewport (Playwright, 390×844, RTL)** for login, current course, roster save, send message. Backend: **PHPUnit feature tests for every policy** (other teacher's classroom → 403, archived → 403, foreign student → 422) and for the attendance-service edge cases already handled in `reportStudentAttendList`. |
 | Single sources of truth | Design tokens in one theme file; attendance status catalog in `entities/attendance`; Arabic copy in `ar.json` / `portal.php`. The admin report and the API share one attendance service (§5.5). |
-| Decisions on paper | Architecture decisions recorded as short ADRs in `_context/` (FSD, Sanctum cookies, PWA cache policy, Cloudflare); `progress-tracker.md` updated per milestone (project rule). |
+| Decisions on paper | Architecture decisions recorded as short ADRs in `_context/` (FSD, Sanctum cookies, PWA cache policy); `progress-tracker.md` updated per milestone (project rule). |
 | Dependencies | Renovate/Dependabot for npm + Composer; pinned versions; `npm audit` + `composer audit` in CI. |
 | Feature flags | `portal.mode` (Backpack Settings: beta / live / maintenance / closed), plus per-feature flags for messages and push, so a feature can be switched off without a deploy. |
 
@@ -737,76 +737,34 @@ Load is small on average but **spiky**: many classes start at the same minute (e
 
 | Area | Plan |
 |---|---|
-| Stateless app | Move `SESSION_DRIVER`, `CACHE_DRIVER` and `QUEUE_CONNECTION` from `file`/`sync` (today's `.env.example`) to **Redis**, which already runs in `docker-compose`. Then any number of app containers can run behind Cloudflare. |
-| Background work | A dedicated **queue worker** container (`php artisan queue:work`, supervised) for push sends and exam ZIPs. Push jobs are chunked (e.g. 100 recipients per job), so a "message to all" never blocks a request. |
-| Files | Student photos and exam files move from the local `public` disk to **S3-compatible object storage (e.g. Cloudflare R2)** once there is more than one app container. The local disk is not shared between containers. |
-| Static assets | `public/beta/assets/*` are content-hashed and served with `Cache-Control: immutable`, so they are cached at the Cloudflare edge and on the device (PWA precache). The origin serves almost no static traffic. |
+| Single server | One app server with `file` sessions/cache and `QUEUE_CONNECTION=sync`. Redis, a queue worker and object storage for files are deferred (`_context/feature/03-platform-upgrade.md`, Part C). |
+| Static assets | `public/beta/assets/*` are content-hashed and served with `Cache-Control: immutable`, so they are cached by the browser and on the device (PWA precache). The origin serves almost no static traffic. |
 | Database | Indexes for the new hot paths: `attends (class_room_id, date)`, `message_recipients (student_id, read_at)`, `messages (sender_user_id, created_at)`. **Pagination** on inbox, sent list and attendance history. **Eager loading** in every API Resource (no N+1). Laravel's query log is checked in tests for the main endpoints. |
 | API efficiency | Composite endpoints sized for one screen (`/teacher/today`, `/student/courses/current`) instead of many small calls on mobile. `ETag` / `304` on read endpoints. RTK Query dedupes and caches on the client. |
-| Capacity check | A k6 load test before promotion: the "4:00 م peak" (N teachers saving rosters + M students opening the app within one minute). Target p95 < 500 ms for roster save, no queue backlog > 1 min. |
+| Capacity check | A k6 load test before promotion: the "4:00 م peak" (N teachers saving rosters + M students opening the app within one minute). Target p95 < 500 ms for roster save. With `sync`, pushes are sent inside the save request, so test with push subscriptions enabled. |
 
 ### 9.3 Secure
 Target: **OWASP ASVS Level 2** for the portal API, plus the login hardening in §6.
 
 | Area | Measures |
 |---|---|
-| **Platform currency** ⚠ (approved, Q21) | The app runs **Laravel 8 / PHP 7.3–8.0**, which as far as I know no longer receive security fixes. This is the biggest security risk in the plan, and it can't be solved by Cloudflare. **Decided (Q21):** a separate upgrade track (Laravel 8 → a currently supported LTS version, PHP 8.2+, and Backpack to a matching version) **before** the beta is promoted to all students (§11 P0.2). |
+| Platform currency ⚠ | Laravel 8 / PHP 8.0 no longer receive security fixes. The upgrade is **deferred** and no longer gates going live (2026-10-13, accepted risk); see `_context/feature/03-platform-upgrade.md`, Part A. |
 | Authorization | Every endpoint goes through a Policy (student: only own records; teacher: only own current classrooms, archived = read-only). IDs from the client are never trusted for scoping. Tests cover each 403. |
 | Input / output | Form Requests with explicit rules (never `$request->all()`, project rule). Message bodies are **plain text**, rendered as text (React escaping, never `dangerouslySetInnerHTML`). Uploads are re-encoded (§5.8). |
 | Data minimization | API Resources whitelist fields. Health/financial/family fields never leave the server (§3.6). The CPR is masked in the UI. Push payloads carry no CPR or marks. |
 | Sessions & CSRF | Sanctum HttpOnly + Secure + SameSite=Lax cookies, CSRF token, idle timeout, logout clears the push subscription and caches (§4 PWA). |
 | Headers | CSP (self + fonts + Turnstile), HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (camera only where needed), `frame-ancestors 'none'`. |
 | Secrets | `.env` never committed; VAPID / Turnstile / DB secrets per environment; least-privilege DB user (no DDL in production runtime). |
-| Admin panel | `/admin` stays reachable behind the **Backpack login only** (Q22), so protect it at the edge: WAF, a strict rate limit on `POST /admin/login`, strong admin passwords, and a short admin session lifetime. Teachers no longer use `/admin` (Q13). |
+| Admin panel | `/admin` stays reachable behind the **Backpack login only**: strong admin passwords, Backpack's login throttling and a short admin session lifetime (edge protection is deferred with Cloudflare). Teachers no longer use `/admin` (Q13). |
 | Monitoring | Failed/locked login log (§6); no teacher audit log (Q12). Error tracking without PII. Alerts on spikes of 401/429/5xx. |
 | Backups | Encrypted daily DB backups (the project already has a backup config). **A restore is tested** before the beta goes live and every quarter after. |
 | Verification | `composer audit` / `npm audit` in CI; a short **penetration test** of `/api/v1` + login before promotion (§11 P2.9). |
 
 ---
 
-## 10. Cloudflare: move the domain behind Cloudflare
+## 10. Infrastructure (moved)
 
-Goal: attacks (DDoS, bots, credential stuffing, scanners) are absorbed at Cloudflare's edge, and the origin server is not reachable directly. It protects **both** the old portal and the new `/beta` panel, so it can be done **now**, before any SPA work (§11 P0.1).
-
-### 10.1 Migration (low risk, reversible)
-1. **Inventory DNS** at the current provider: A/AAAA for the app, MX/SPF/DKIM/DMARC for email, any other subdomains.
-2. **Add the site in Cloudflare**, let it import the records, and check every record against the inventory.
-3. **Proxy only web records** (orange cloud): the app host(s). **Mail records stay "DNS only"** (grey cloud).
-4. Lower the TTLs a day ahead, then **switch the nameservers at the registrar** to Cloudflare's. Propagation takes hours. Keep the old DNS zone untouched as the rollback path.
-5. Verify: the site loads over HTTPS via Cloudflare, `/admin` works, email still sends and arrives, Web Push still delivers (it goes browser ↔ push service, not through Cloudflare).
-
-### 10.2 TLS and the origin
-- SSL/TLS mode **Full (strict)** with a **Cloudflare Origin Certificate** on the server. "Always Use HTTPS", minimum TLS 1.2, HSTS (after confirming everything is HTTPS).
-- **Lock the origin:** the server firewall accepts HTTP(S) **only from Cloudflare's IP ranges**, or better, use a **Cloudflare Tunnel** (`cloudflared`), so the server has no open inbound web ports at all. Otherwise attackers can bypass Cloudflare by hitting the server IP directly.
-
-### 10.3 Protection rules
-| Feature | Configuration |
-|---|---|
-| DDoS protection | On by default (L3/4 + HTTP). |
-| WAF managed rules | Cloudflare managed ruleset (+ OWASP core ruleset where the plan allows), in **log mode for a week**, then block. |
-| Rate limiting rules (edge) | `POST /login` and `POST /api/v1/auth/login`: e.g. 10 / minute per IP → challenge, then block. `/api/v1/*`: a generous per-IP ceiling. These sit **in front of** Laravel's own limiter (§6), not instead of it. |
-| Bots | Bot Fight Mode (or Super Bot Fight Mode on a paid plan). Turnstile (§6) is already a Cloudflare product, so it fits naturally. |
-| Admin | No Cloudflare Access (Q22). An edge rate limit on `POST /admin/login` plus the WAF; scanner paths blocked. |
-| Geo / scanners | Optional: challenge traffic from countries the centre doesn't serve; block common scanner paths (`/.env`, `/wp-admin`, `/vendor/`). |
-| "Under Attack" mode | Documented runbook: who turns it on, and when (sustained L7 attack). Note that it adds an interstitial, so it is a short-term measure. |
-
-### 10.4 Caching rules (do not break the app)
-| Path | Rule |
-|---|---|
-| `/beta/assets/*`, fonts, icons | Cache everything, long TTL (hashed file names) |
-| `/beta/sw.js`, `/beta/manifest.webmanifest`, `/beta/index.html` | **Bypass cache** (no-cache), so PWA updates are never stuck |
-| `/api/*`, `/sanctum/*`, `/login`, `/logout`, `/dashboard`, `/admin/*` | **Bypass cache**, since it is personal or session data |
-
-### 10.5 Laravel changes behind Cloudflare (required)
-- **Real client IP:** trust Cloudflare's proxy ranges in `TrustProxies` and read the visitor IP from `CF-Connecting-IP`. **Without this, every request looks like it comes from Cloudflare**, and the per-IP login rate limiter (§6) would lock out everyone at once or no one at all.
-- Logs and the audit trail record the real client IP.
-- The Turnstile server-side check sends the real IP as `remoteip`.
-- Secure cookies and HSTS assume HTTPS at the edge **and** at the origin (Full strict).
-
-### 10.6 Plan & ownership
-- **Cloudflare plan: Free** (Q19). It covers DNS, proxy, DDoS, the free managed ruleset and a limited number of rate-limiting rules. Use those rules on the login endpoints (`/login`, `/api/v1/auth/login`, `/admin/login`), and rely on Laravel's limiter + Turnstile for the rest. Revisit Pro if attacks show up in the analytics.
-- **Owner: the developer** for now (Q19). Turn on **2FA** on the registrar and Cloudflare accounts, store recovery codes safely, and add a centre account as a second Super Administrator so access doesn't depend on one person.
-- **Origin: Hostinger KVM 2 VPS, Ubuntu + Webmin** (Q20). Use a **Cloudflare Tunnel** (`cloudflared` as a systemd service), or UFW allowing 80/443 only from Cloudflare's IP ranges. ⚠ **Webmin** (port 10000) is a full root panel: never expose it publicly. Allow it only through an SSH tunnel or from a fixed admin IP, keep it updated, and use 2FA. SSH: keys only, no root password login, fail2ban. Redis, the queue worker (systemd/supervisor) and the scheduler cron run on the same VPS. Photos stay on the local disk while there is one server, and move to R2 if a second server is added (§9.2).
+Cloudflare (DNS, TLS, WAF, edge rate limits, origin lock), VPS hardening, the Laravel/PHP/Backpack upgrade and the production services (Redis, queue worker, scheduler cron, object storage) moved to `_context/feature/03-platform-upgrade.md` on 2026-10-13. They are deferred and do not gate any milestone below. The code side that is already done (`TrustProxies` from `TRUSTED_PROXIES`, empty by default) is documented there.
 
 ---
 
@@ -814,8 +772,6 @@ Goal: attacks (DDoS, bots, credential stuffing, scanners) are absorbed at Cloudf
 
 | # | Milestone | Done when |
 |---|---|---|
-| P0.1 | **Cloudflare** (can start now) | DNS moved, web records proxied, mail verified, Full (strict) + origin locked to Cloudflare / Tunnel, WAF in log → block, edge rate limits on login, Access on `/admin`, `TrustProxies` + `CF-Connecting-IP` deployed (§10) |
-| P0.2 | **Platform upgrade** (parallel track) | Laravel + PHP on currently supported versions, Backpack upgraded to match, full regression of admin + reports + old portal (§9.3) |
 | P1 | Design mockups (this folder) | All screens + states reviewed by the centre ✅ (awaiting review) |
 | P2.1 | API foundation | Sanctum + login/logout/me + rate limiter + Turnstile + honeypot; PHPUnit feature tests for lockout and enumeration |
 | P2.2 | SPA shell + auth | Vite app with the **FSD skeleton** (layers, aliases, Steiger + ESLint boundaries in CI), `widgets/app-shell`, theme, `features/auth/login`, 401/419/429 handling |
@@ -826,11 +782,11 @@ Goal: attacks (DDoS, bots, credential stuffing, scanners) are absorbed at Cloudf
 | P2.6b | **PWA** | Manifest + icons (incl. maskable), service worker precache, update prompt, install banner (Android + iOS sheet), cache purge on logout, teacher offline save queue; installable in Chrome DevTools → Application, verified on Android + iOS |
 | P2.7 | **Beta launch at `/beta`** | SPA built into `public/beta`; `/beta/{path?}` fallback route + `portal.mode` setting and `PortalMode` middleware; “تجريبي” badge + link back to the old portal; old `/login` and `/dashboard` verified unchanged; RTL + a11y audit (keyboard, contrast, screen reader on charts) |
 | P2.8 | Beta feedback | A beta period with real students (length set by the centre); bugs fixed; usage compared between old and new portal |
-| P2.9 | Promote to default | After the centre approves: `/` and `/login` point to the new panel; `/beta` kept as a redirect; old Blade portal retired later as its own change. **Gate:** P0.1 + P0.2 done, pen test passed, restore tested, k6 peak test passed (§9) |
+| P2.9 | Promote to default | After the centre approves: `/` and `/login` point to the new panel; `/beta` kept as a redirect; old Blade portal retired later as its own change. **Gate:** pen test passed, restore tested, k6 peak test passed (§9) |
 | P3.1 | Teacher API | §8 endpoints + scope policy (own classrooms, current = write, archived = read) + feature tests for 403 cases |
 | P3.2 | Teacher SPA (incl. `photo_path` migration + upload/re-encode) | Teacher shell + today, roster (save / undo / leave-guard), classes, classroom + photo sheet, stats, profile, under `/beta/teacher` |
 | P3.3 | **Messages** | Tables + teacher send/list/delete + student inbox/read/unread badge; scope tests (other teacher's classroom, archived classroom, foreign student → 403/422) |
-| P3.4 | **Push notifications** | VAPID keys, push-subscription endpoints, SW `push`/`notificationclick` (injectManifest), soft prompt + profile toggles, queued sends on first attendance save and on message send, unsubscribe on logout; tested on Android Chrome + installed iOS PWA |
+| P3.4 | **Push notifications** | VAPID keys, push-subscription endpoints, SW `push`/`notificationclick` (injectManifest), soft prompt + profile toggles, sends on first attendance save and on message send, unsubscribe on logout; tested on Android Chrome + installed iOS PWA |
 
 ---
 
@@ -856,10 +812,10 @@ Goal: attacks (DDoS, bots, credential stuffing, scanners) are absorbed at Cloudf
 | Q16 | Message notification text | **Centre name** as the title + the first ~80 characters |
 | Q17 | Who gets attendance pushes | **Every student, with their own status** (first save only) |
 | Q18 | Quiet hours | **None**; sent immediately |
-| Q19 | Cloudflare plan & owner | **Free plan**, owned by the **developer** for now (2FA + a second admin recommended) |
-| Q20 | Origin hosting | **Hostinger KVM 2 VPS, Ubuntu + Webmin** (lock Webmin down, §10.6) |
-| Q21 | Platform upgrade | **Yes, before `portal.mode = live`** (P0.2 gates going live) |
-| Q22 | Cloudflare Access on `/admin` | **No**; Backpack login only, protected by the WAF + rate limits |
+| Q19 | Cloudflare plan & owner | Moved to `_context/feature/03-platform-upgrade.md` (deferred 2026-10-13) |
+| Q20 | Origin hosting | **Hostinger KVM 2 VPS, Ubuntu + Webmin** (hardening in `_context/feature/03-platform-upgrade.md`) |
+| Q21 | Platform upgrade | **Changed 2026-10-13:** deferred, no longer gates `portal.mode = live`; see `_context/feature/03-platform-upgrade.md` |
+| Q22 | Cloudflare Access on `/admin` | **No**; Backpack login only (Cloudflare moved to `_context/feature/03-platform-upgrade.md`) |
 
 ### Still open
 - None from the original list. The three ⚠ items above (Q4, Q13, Q14) change earlier requirements, so confirm them with the centre before Phase 3.
