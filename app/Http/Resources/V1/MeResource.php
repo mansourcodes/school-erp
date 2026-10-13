@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Services\Portal\StudentPhotos;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -19,8 +20,8 @@ class MeResource extends JsonResource
             'name' => $name,
             'first_name' => $name === '' ? '' : explode(' ', $name)[0],
             'student_id' => $this->student_id,
-            // Set by teachers/admin from Phase 3 (PLAN.md §5.8).
-            'photo_url' => null,
+            // Set by teachers or the admin (PLAN.md §5.8, Q4).
+            'photo_url' => StudentPhotos::url($this->resource),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Services\Portal\StudentPhotos;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -27,7 +28,7 @@ class ProfileResource extends JsonResource
             'student_id' => $this->student_id,
             'registration_at' => optional($this->registration_at ?: $this->created_at)->toDateString(),
             'iqraa_id_account' => $this->iqraa_id_account,
-            'photo_url' => null,
+            'photo_url' => StudentPhotos::url($this->resource),
         ];
     }
 }

@@ -8,7 +8,9 @@ use App\Models\Curriculum;
 use App\Services\Attendance\AttendanceRecorder;
 use App\Services\Attendance\ClassroomAttendance;
 use App\Services\Attendance\StudentSessions;
+use App\Services\Portal\StudentPhotos;
 use App\Services\Teacher\ClassroomStats;
+use RuntimeException;
 use App\Services\Teacher\TeacherScope;
 use App\Services\Teacher\TeacherSessions;
 use Carbon\Carbon;
@@ -150,7 +152,7 @@ class TeacherController extends Controller
                     'id' => $student->id,
                     'name' => $student->name,
                     'student_id' => $student->student_id,
-                    'photo_url' => null,
+                    'photo_url' => StudentPhotos::url($student),
                     'state' => $states[$student->id] ?? null,
                 ];
             })->values(),
@@ -245,6 +247,44 @@ class TeacherController extends Controller
         ]]);
     }
 
+    /**
+     * POST /teacher/classrooms/{id}/students/{sid}/photo: multipart `photo`. Applies at once (Q11),
+     * only for a student of one of my current classrooms.
+     */
+    public function uploadPhoto(Request $request, $id, $sid, StudentPhotos $photos)
+    {
+        $student = $this->classroomStudent($request, $id, $sid);
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048', 'dimensions:min_width=300,min_height=300'],
+        ]);
+
+        try {
+            $photos->store($student, $request->file('photo'));
+        } catch (RuntimeException $e) {
+            throw ValidationException::withMessages(['photo' => [__('portal.photo.unreadable')]]);
+        }
+
+        return response()->json(['data' => ['photo_url' => StudentPhotos::url($student)]]);
+    }
+
+    /** DELETE /teacher/classrooms/{id}/students/{sid}/photo */
+    public function deletePhoto(Request $request, $id, $sid, StudentPhotos $photos)
+    {
+        $photos->delete($this->classroomStudent($request, $id, $sid));
+
+        return response()->noContent();
+    }
+
+    protected function classroomStudent(Request $request, $classroomId, $studentId)
+    {
+        $classroom = $this->scope($request)->find($classroomId);
+        abort_unless($classroom, 404);
+        $student = $classroom->students->firstWhere('id', (int) $studentId);
+        abort_unless($student, 404);
+
+        return $student;
+    }
+
     /** @return array [ClassRoom, session, all sessions of the classroom] or 404 */
     protected function resolveSession(Request $request, $code)
     {
@@ -302,7 +342,7 @@ class TeacherController extends Controller
             'id' => $row['student']->id,
             'name' => $row['student']->name,
             'student_id' => $row['student']->student_id,
-            'photo_url' => null,
+            'photo_url' => StudentPhotos::url($row['student']),
             'rate' => $row['stats']['rate'],
             'recorded' => $row['stats']['recorded'],
             'absences' => $row['absences'],

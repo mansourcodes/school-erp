@@ -50,6 +50,10 @@ Route::prefix('v1')
                 Route::get('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'session']);
                 Route::put('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'saveSession']);
                 Route::get('/stats', [App\Http\Controllers\Api\V1\TeacherController::class, 'stats']);
+                Route::post('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadPhoto'])
+                    ->where(['id' => '[0-9]+', 'sid' => '[0-9]+'])->middleware('throttle:student-photo');
+                Route::delete('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deletePhoto'])
+                    ->where(['id' => '[0-9]+', 'sid' => '[0-9]+']);
             });
 
             Route::prefix('student')->middleware('portal.role:student')->group(function () {

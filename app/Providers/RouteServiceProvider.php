@@ -84,6 +84,11 @@ class RouteServiceProvider extends ServiceProvider
             ];
         });
 
+        // Photo uploads (PLAN.md §5.8): 5 an hour per teacher and student, so a class photo day still works.
+        RateLimiter::for('student-photo', function (Request $request) {
+            return Limit::perHour(5)->by('photo|' . $request->user()->getAuthIdentifier() . '|' . $request->route('sid'));
+        });
+
         RateLimiter::for('portal', function (Request $request) {
             return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });

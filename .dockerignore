@@ -1,0 +1,9 @@
+.git
+node_modules
+frontend/node_modules
+public/beta
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+.env
