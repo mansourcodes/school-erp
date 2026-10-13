@@ -5,7 +5,7 @@ import { LoginForm } from '@/features/auth/login';
 import { JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { PasswordHelpDialog } from '@/features/password-help';
 import { ThemeCycleButton } from '@/features/theme-switch';
-import { BASE_PATH, routes } from '@/shared/config';
+import { BASE_PATH, homeOf, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 
 const BRAND_POINTS = [
@@ -55,13 +55,15 @@ export function LoginPage() {
         <div className="w-full max-w-md">
           <LoginForm
             expired={params.get('expired') === '1'}
-            onSuccess={() => {
+            onSuccess={(viewer) => {
               try {
                 sessionStorage.setItem(JUST_LOGGED_IN_KEY, '1');
               } catch {
                 // Private mode: no install banner right after login.
               }
-              navigate(from, { replace: true });
+              // Back to where the session expired, if that page belongs to this role; else the role's home.
+              const ownsFrom = viewer.role === 'teacher' ? from.startsWith('/teacher') : !from.startsWith('/teacher');
+              navigate(from !== routes.home && ownsFrom ? from : homeOf(viewer.role), { replace: true });
             }}
             onForgotPassword={() => setHelpOpen(true)}
           />

@@ -9,6 +9,7 @@ import {
   Info,
   KeyRound,
   Lock,
+  Mail,
   ShieldCheck,
   TriangleAlert,
   UsersRound,
@@ -20,13 +21,14 @@ import { ensureCsrfCookie, toApiError } from '@/shared/api';
 import { TURNSTILE_SITE_KEY } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { fmtCountdown } from '@/shared/lib';
+import type { Viewer } from '@/entities/viewer';
 import { type LoginRequest, useLoginMutation } from '../api/login-api';
 import { useCountdown } from '../lib/use-countdown';
-import { loginSchema, type LoginValues } from '../model/login-schema';
+import { type LoginRole, loginSchema, type LoginValues } from '../model/login-schema';
 import { Turnstile, type TurnstileHandle } from './Turnstile';
 
 type Alert =
-  | { kind: 'failed'; attemptsLeft?: number }
+  | { kind: 'failed'; attemptsLeft?: number; role: LoginRole }
   | { kind: 'bot' }
   | { kind: 'network' }
   | { kind: 'unexpected' };
@@ -34,7 +36,8 @@ type Alert =
 interface LoginFormProps {
   /** Arrived here because the session timed out (?expired=1). */
   expired?: boolean;
-  onSuccess: () => void;
+  /** The page routes by `viewer.role` (student home or teacher today). */
+  onSuccess: (viewer: Viewer) => void;
   /** The page opens the password-help dialog (features never import each other). */
   onForgotPassword: () => void;
 }
@@ -61,11 +64,20 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
     handleSubmit,
     setError,
     setFocus,
+    setValue,
+    clearErrors,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { cpr: '', password: '', website: '' },
+    defaultValues: { role: 'student', cpr: '', email: '', password: '', website: '' },
   });
+  const role = watch('role');
+  const selectRole = (next: LoginRole) => {
+    setValue('role', next);
+    clearErrors();
+    setAlert(null);
+  };
 
   const cprField = register('cpr');
   const busy = isSubmitting || locked;
@@ -74,8 +86,8 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
   const submit = async (values: LoginValues) => {
     setAlert(null);
     const body: LoginRequest = {
-      role: 'student',
-      cpr: values.cpr,
+      role: values.role,
+      ...(values.role === 'teacher' ? { email: values.email.trim() } : { cpr: values.cpr }),
       password: values.password,
       website: values.website || undefined,
       turnstile_token: turnstileToken ?? undefined,
@@ -86,8 +98,8 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
       for (let attempt = 0; ; attempt++) {
         try {
           await ensureCsrfCookie();
-          await login(body).unwrap();
-          onSuccess();
+          const viewer = await login(body).unwrap();
+          onSuccess(viewer);
           return;
         } catch (error) {
           if (attempt === 0 && toApiError(error).status === 419) continue;
@@ -103,12 +115,13 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
       } else if (apiError.status === 422 && apiError.errors?.turnstile_token) {
         setAlert({ kind: 'bot' });
       } else if (apiError.status === 422 && apiError.attemptsLeft !== undefined) {
-        setAlert({ kind: 'failed', attemptsLeft: apiError.attemptsLeft });
+        setAlert({ kind: 'failed', attemptsLeft: apiError.attemptsLeft, role: values.role });
         setFocus('password');
       } else if (apiError.status === 422 && apiError.errors) {
         if (apiError.errors.cpr) setError('cpr', { message: apiError.errors.cpr[0] });
+        if (apiError.errors.email) setError('email', { message: apiError.errors.email[0] });
         if (apiError.errors.password) setError('password', { message: apiError.errors.password[0] });
-        if (!apiError.errors.cpr && !apiError.errors.password) setAlert({ kind: 'unexpected' });
+        if (!apiError.errors.cpr && !apiError.errors.email && !apiError.errors.password) setAlert({ kind: 'unexpected' });
       } else if (apiError.status === 'offline') {
         setAlert({ kind: 'network' });
       } else {
@@ -122,19 +135,32 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
       <div className="card-body p-5 sm:p-8 gap-5">
         <header>
           <h1 className="font-display text-2xl">{t('login.title')}</h1>
-          <p className="text-sm opacity-70 mt-1">{t('login.intro')}</p>
+          <p className="text-sm opacity-70 mt-1">{t(role === 'teacher' ? 'login.introTeacher' : 'login.intro')}</p>
         </header>
 
-        {/* One login screen; the teacher tab opens in Phase 3 (PLAN.md §3.1). */}
+        {/* One login screen for both roles (PLAN.md §3.1, §8). */}
         <div role="tablist" className="tabs tabs-box w-full grid grid-cols-2" aria-label={t('login.roleLabel')}>
-          <button type="button" role="tab" className="tab h-11 tab-active" aria-selected="true">
+          <button
+            type="button"
+            role="tab"
+            className={`tab h-11 ${role === 'student' ? 'tab-active' : ''}`}
+            aria-selected={role === 'student'}
+            disabled={busy}
+            onClick={() => selectRole('student')}
+          >
             <GraduationCap className="size-4 me-1.5" strokeWidth={1.75} aria-hidden="true" />
             {t('login.student')}
           </button>
-          <button type="button" role="tab" className="tab h-11 tab-disabled" aria-selected="false" aria-disabled="true" disabled>
+          <button
+            type="button"
+            role="tab"
+            className={`tab h-11 ${role === 'teacher' ? 'tab-active' : ''}`}
+            aria-selected={role === 'teacher'}
+            disabled={busy}
+            onClick={() => selectRole('teacher')}
+          >
             <UsersRound className="size-4 me-1.5" strokeWidth={1.75} aria-hidden="true" />
             {t('login.teacher')}
-            <span className="badge badge-ghost badge-xs ms-1.5">{t('login.soon')}</span>
           </button>
         </div>
 
@@ -160,7 +186,48 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
         ) : null}
 
         <form className="flex flex-col gap-4" noValidate onSubmit={handleSubmit(submit)}>
-          <fieldset className="fieldset p-0">
+          {role === 'teacher' && (
+            <fieldset className="fieldset p-0">
+              <label className="fieldset-legend text-sm pb-1" htmlFor="email">
+                {t('login.email')}
+              </label>
+              <label className={`input input-lg w-full ${errors.email ? 'input-error' : ''}`}>
+                <Mail className="size-5 opacity-60" strokeWidth={1.75} aria-hidden="true" />
+                <input
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  enterKeyHint="next"
+                  autoComplete="username"
+                  dir="ltr"
+                  className="text-start"
+                  placeholder="name@example.com"
+                  aria-invalid={!!errors.email}
+                  aria-describedby="email-hint"
+                  disabled={busy}
+                  {...register('email')}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      setFocus('password');
+                    }
+                  }}
+                />
+              </label>
+              {errors.email ? (
+                <p className="label text-xs text-error" role="alert">
+                  <TriangleAlert className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
+                  {errors.email.message}
+                </p>
+              ) : (
+                <p id="email-hint" className="label text-xs">
+                  {t('login.emailHint')}
+                </p>
+              )}
+            </fieldset>
+          )}
+
+          <fieldset className="fieldset p-0" hidden={role !== 'student'}>
             <label className="fieldset-legend text-sm pb-1" htmlFor="cpr">
               {t('login.cpr')}
             </label>
@@ -306,7 +373,7 @@ function LoginAlert({ alert }: { alert: Alert }) {
         <div role="alert" className="alert alert-soft alert-error">
           <CircleX className="size-5" strokeWidth={1.75} aria-hidden="true" />
           <span>
-            {t('login.failed')}
+            {t(alert.role === 'teacher' ? 'login.failedTeacher' : 'login.failed')}
             {alert.attemptsLeft !== undefined && <> {t('login.attemptsLeft', { n: alert.attemptsLeft })}</>}
           </span>
         </div>

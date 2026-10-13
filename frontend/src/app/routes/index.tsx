@@ -7,6 +7,7 @@ import { t } from '@/shared/i18n';
 import { GuestOnly, PortalGate, RequireRole } from './guards';
 
 const title = (key: string): ShellRouteHandle => ({ title: t(key) });
+const task = (key: string): ShellRouteHandle => ({ title: t(key), task: true });
 
 // Screens past the first one are code-split, so a phone on mobile data
 // downloads them only when opened (PLAN.md §4 "Mobile performance budget").
@@ -37,6 +38,47 @@ export const appRoutes: RouteObject[] = [
                 path: routes.profile,
                 lazy: () => import('@/pages/student/profile').then((m) => ({ Component: m.ProfilePage })),
                 handle: title('nav.profile'),
+              },
+            ],
+          },
+        ],
+      },
+      {
+        // Teacher panel (PLAN.md §8), same SPA and shell.
+        element: <RequireRole role="teacher" />,
+        children: [
+          {
+            element: <AppShell />,
+            children: [
+              {
+                path: routes.teacher.today,
+                lazy: () => import('@/pages/teacher/today').then((m) => ({ Component: m.TeacherTodayPage })),
+                handle: title('teacher.navToday'),
+              },
+              {
+                path: `${routes.teacher.today}/attendance/:code`,
+                lazy: () => import('@/pages/teacher/roster').then((m) => ({ Component: m.TeacherRosterPage })),
+                handle: task('teacher.rosterTitle'),
+              },
+              {
+                path: routes.teacher.classes,
+                lazy: () => import('@/pages/teacher/classes').then((m) => ({ Component: m.TeacherClassesPage })),
+                handle: title('teacher.navClasses'),
+              },
+              {
+                path: `${routes.teacher.classes}/:id`,
+                lazy: () => import('@/pages/teacher/classroom').then((m) => ({ Component: m.TeacherClassroomPage })),
+                handle: task('teacher.classroomTitle'),
+              },
+              {
+                path: routes.teacher.stats,
+                lazy: () => import('@/pages/teacher/stats').then((m) => ({ Component: m.TeacherStatsPage })),
+                handle: title('teacher.navStats'),
+              },
+              {
+                path: routes.teacher.profile,
+                lazy: () => import('@/pages/teacher/profile').then((m) => ({ Component: m.TeacherProfilePage })),
+                handle: title('teacher.navProfile'),
               },
             ],
           },

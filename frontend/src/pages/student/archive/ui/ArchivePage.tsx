@@ -2,7 +2,7 @@ import { Archive, CalendarCheck, Lock, RefreshCw, Search, SearchX, WifiOff } fro
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { type CourseSummary, useArchivedCoursesQuery, useCourseQuery } from '@/entities/course';
-import { useMeQuery, type Viewer } from '@/entities/viewer';
+import { type StudentViewer, useMeQuery } from '@/entities/viewer';
 import { ArchivedCourseCard } from '@/widgets/archived-course-card';
 import { CourseDetailsTabs, type CourseTab } from '@/widgets/course-details-tabs';
 import { routes } from '@/shared/config';
@@ -34,7 +34,7 @@ export function ArchivePage() {
     (c) => (!year || c.year === year) && (!query.trim() || c.long_name.includes(query.trim())),
   );
 
-  if (isLoading || !viewer) return <ArchiveSkeleton />;
+  if (isLoading || !viewer || viewer.role !== 'student') return <ArchiveSkeleton />;
   if (isError || !courses) {
     return (
       <div className="card-soft">
@@ -130,7 +130,7 @@ export function ArchivePage() {
 const ARCHIVE_TABS: CourseTab[] = ['marks', 'timetable', 'payments'];
 
 /** Fetched when its card opens; read-only (no "today" in the timetable). */
-function ArchivedCourseBody({ course, viewer }: { course: CourseSummary; viewer: Viewer }) {
+function ArchivedCourseBody({ course, viewer }: { course: CourseSummary; viewer: StudentViewer }) {
   const { data: detail, isLoading, isError, refetch } = useCourseQuery(course.id);
   const [tab, setTab] = useState<CourseTab>('marks');
 

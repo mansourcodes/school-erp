@@ -6,7 +6,7 @@ import { ReceiptDialog } from '@/features/print-receipt';
 import { type CourseDetail, CourseMeta, Timetable } from '@/entities/course';
 import { MarksList } from '@/entities/mark';
 import { type Payment, PaymentList } from '@/entities/payment';
-import type { Viewer } from '@/entities/viewer';
+import type { StudentViewer } from '@/entities/viewer';
 import { t } from '@/shared/i18n';
 
 export type CourseTab = 'timetable' | 'payments' | 'marks';
@@ -31,7 +31,7 @@ export function useCourseTab(): [CourseTab, (tab: CourseTab) => void] {
 
 interface CourseDetailsTabsProps {
   course: CourseDetail;
-  viewer: Viewer;
+  viewer: StudentViewer;
   tab: CourseTab;
   onTabChange: (tab: CourseTab) => void;
   /** Archive cards lead with the result (PLAN.md §3.3). */

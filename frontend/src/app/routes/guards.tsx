@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router';
 import { type ViewerRole, useMeQuery } from '@/entities/viewer';
 import { PortalUnavailablePage } from '@/pages/system';
 import { baseApi, portalAvailable, selectPortalUnavailable, selectSessionStatus, toApiError } from '@/shared/api';
-import { routes } from '@/shared/config';
+import { homeOf, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { useAppDispatch, useAppSelector } from '@/shared/lib';
 import { EmptyState, Splash } from '@/shared/ui';
@@ -40,7 +40,8 @@ export function RequireRole({ role }: { role: ViewerRole }) {
     );
   }
 
-  if (viewer.role !== role) return <Navigate to={routes.home} replace />;
+  // The other role's area: go to your own home.
+  if (viewer.role !== role) return <Navigate to={homeOf(viewer.role)} replace />;
   return <Outlet />;
 }
 
@@ -68,6 +69,6 @@ export function GuestOnly() {
   const { data: viewer, isLoading } = useMeQuery(undefined, { skip: sessionStatus === 'expired' });
 
   if (isLoading) return <Splash />;
-  if (viewer) return <Navigate to={routes.home} replace />;
+  if (viewer) return <Navigate to={homeOf(viewer.role)} replace />;
   return <Outlet />;
 }

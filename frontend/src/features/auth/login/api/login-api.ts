@@ -2,8 +2,11 @@ import { type Viewer, viewerApi } from '@/entities/viewer';
 import { baseApi, sessionAuthenticated } from '@/shared/api';
 
 export interface LoginRequest {
-  role: 'student';
-  cpr: string;
+  role: 'student' | 'teacher';
+  /** student */
+  cpr?: string;
+  /** teacher */
+  email?: string;
   password: string;
   /** Honeypot; humans never fill it (PLAN.md §6). */
   website?: string;

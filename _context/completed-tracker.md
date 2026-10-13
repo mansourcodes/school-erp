@@ -4,6 +4,23 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Teacher SPA — P3.2 (2026-10-13)
+- Backend: `students.photo_path`; teacher photo upload/delete (GD re-encode to 512 px WebP, EXIF/appended bytes
+  dropped, previous file deleted, 5/hour per teacher+student); `photo_url` in /me, profile, roster, classroom rows;
+  Backpack teacher pages redirect to `/beta/teacher` only when `portal.mode = live` (Q13)
+- Dockerfile: GD with JPEG + WebP; Debian bullseye (EOL) packages from archive.debian.org; `.dockerignore`
+- SPA: login teacher tab (email); viewer = student | teacher; role-home redirects; role-aware shell (teacher nav,
+  task screens with back arrow and no dock)
+- `entities/class-session`, `entities/classroom`, `entities/student`; `features/mark-attendance` (draft + undo,
+  five-state control, quick all-present/absent, save bar with first-save / edit hints, leave guard via `useBlocker`,
+  offline queue client), `features/manage-student-photo` (on-device resize ≤ 1024 px with EXIF rotation, rear
+  camera / gallery, delete confirmation sheet); widgets `roster-editor`, `today-sessions`, `classroom-students`,
+  `follow-up-list`; pages today, roster, classes, classroom, stats, profile (lazy)
+- Service worker: roster PUTs that fail offline go to a Workbox Background Sync queue (replayed on reconnect or
+  next worker start), pages are told when sent/refused; logout clears the queue
+- Tests: 7 PHPUnit (photos), 7 Vitest (teacher panel). EXIF-rotation on the server is untested (GD cannot write
+  EXIF to build a fixture); the client applies the rotation before upload anyway
+
 ### Teacher API — P3.1 (2026-10-13)
 - Login: `role: teacher` + email (web guard, Spatie role Teacher required; other admin users get the generic
   failure); same lockout / throttle / Turnstile / honeypot (`PortalLogin`, keyed per account); `GET /me` →

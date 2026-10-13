@@ -19,4 +19,15 @@ export const routes = {
   stats: '/attendance/stats',
   archive: '/archive',
   profile: '/profile',
+  teacher: {
+    today: '/teacher',
+    classes: '/teacher/classes',
+    classroom: (id: number | string) => `/teacher/classes/${id}`,
+    roster: (code: string) => `/teacher/attendance/${encodeURIComponent(code)}`,
+    stats: '/teacher/stats',
+    profile: '/teacher/profile',
+  },
 } as const;
+
+/** Where each role lands after login. */
+export const homeOf = (role: 'student' | 'teacher') => (role === 'teacher' ? routes.teacher.today : routes.home);

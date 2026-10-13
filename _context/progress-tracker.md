@@ -20,7 +20,8 @@ Update this file after every meaningful implementation change.
   - P2.8 (beta period with students) and P2.9 (promotion) are operational steps, gated by P0.1/P0.2, pen test,
     restore test and the k6 peak test (PLAN.md §11)
   - **P3.1 Teacher API done** (2026-10-13)
-  - Next: **P3.2 Teacher SPA** (+ photo upload, offline save queue, Backpack teacher redirect in live mode)
+  - **P3.2 Teacher SPA done** (2026-10-13): teacher login + panel, roster with offline queue, student photos
+  - Next: **P3.3 Messages**
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first

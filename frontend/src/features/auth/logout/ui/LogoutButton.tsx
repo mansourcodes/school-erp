@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { baseApi, sessionEnded } from '@/shared/api';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { useAppDispatch } from '@/shared/lib';
+import { clearRosterQueue, useAppDispatch } from '@/shared/lib';
 import { useLogoutMutation } from '../api/logout-api';
 
 /** Personal data is never cached by the worker; this also drops anything a future route might add. */
@@ -28,6 +28,8 @@ export function LogoutButton({ className = '' }: { className?: string }) {
     dispatch(sessionEnded());
     dispatch(baseApi.util.resetApiState());
     await purgeRuntimeCaches();
+    // Queued attendance saves belong to this teacher; a shared phone must not send them later.
+    clearRosterQueue();
     navigate(routes.login, { replace: true });
   };
 

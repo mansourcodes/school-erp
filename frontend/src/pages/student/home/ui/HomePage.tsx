@@ -22,7 +22,7 @@ export function HomePage() {
   const { data: stats } = useAttendanceStatsQuery(undefined, { refetchOnFocus: true, refetchOnReconnect: true });
   const [tab, selectTab] = useCourseTab();
 
-  if (isLoading || !viewer) return <HomeSkeleton />;
+  if (isLoading || !viewer || viewer.role !== 'student') return <HomeSkeleton />;
   if (isError && course === undefined) return <HomeError onRetry={refetch} />;
   if (!course) return <NoActiveCourse />;
 

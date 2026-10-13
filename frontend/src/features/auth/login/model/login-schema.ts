@@ -2,11 +2,21 @@
 import { z } from 'zod/mini';
 import { t } from '@/shared/i18n';
 
-// Mirrors LoginRequest on the server: CPR digits:9, password ≤ 128.
-export const loginSchema = z.object({
-  cpr: z.string().check(z.regex(/^\d{9}$/, t('login.cprInvalid'))),
-  password: z.string().check(z.minLength(1, t('login.passwordRequired')), z.maxLength(128)),
-  website: z.optional(z.string()),
-});
+const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+// Mirrors LoginRequest on the server: student CPR digits:9, teacher email, password ≤ 128.
+export const loginSchema = z
+  .object({
+    role: z.enum(['student', 'teacher']),
+    cpr: z.string(),
+    email: z.string(),
+    password: z.string().check(z.minLength(1, t('login.passwordRequired')), z.maxLength(128)),
+    website: z.optional(z.string()),
+  })
+  .check(
+    z.refine((v) => v.role !== 'student' || /^\d{9}$/.test(v.cpr), { message: t('login.cprInvalid'), path: ['cpr'] }),
+    z.refine((v) => v.role !== 'teacher' || EMAIL.test(v.email.trim()), { message: t('login.emailInvalid'), path: ['email'] }),
+  );
 
 export type LoginValues = z.infer<typeof loginSchema>;
+export type LoginRole = LoginValues['role'];

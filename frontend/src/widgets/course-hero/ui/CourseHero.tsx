@@ -1,11 +1,11 @@
 import { type CourseDetail, nextSession } from '@/entities/course';
-import { type Viewer, ViewerAvatar } from '@/entities/viewer';
+import { type StudentViewer, ViewerAvatar } from '@/entities/viewer';
 import { t, tList } from '@/shared/i18n';
 import { fmtTime, parseIsoDate } from '@/shared/lib';
 
 interface CourseHeroProps {
   course: CourseDetail;
-  viewer: Viewer;
+  viewer: StudentViewer;
   now: Date;
 }
 
