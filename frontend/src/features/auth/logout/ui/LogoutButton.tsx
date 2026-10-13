@@ -1,0 +1,36 @@
+import { LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { baseApi, sessionEnded } from '@/shared/api';
+import { routes } from '@/shared/config';
+import { t } from '@/shared/i18n';
+import { useAppDispatch } from '@/shared/lib';
+import { useLogoutMutation } from '../api/logout-api';
+
+export function LogoutButton({ className = '' }: { className?: string }) {
+  const [logout, { isLoading }] = useLogoutMutation();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const onClick = async () => {
+    try {
+      await logout().unwrap();
+    } catch {
+      // Already signed out or offline: clear this device anyway.
+    }
+    // Shared family phones: nothing of this student stays in memory (PLAN.md §4 PWA security).
+    dispatch(sessionEnded());
+    dispatch(baseApi.util.resetApiState());
+    navigate(routes.login, { replace: true });
+  };
+
+  return (
+    <button type="button" className={`btn btn-ghost ${className}`} onClick={onClick} disabled={isLoading}>
+      {isLoading ? (
+        <span className="loading loading-spinner loading-sm" aria-hidden="true" />
+      ) : (
+        <LogOut className="size-5" strokeWidth={1.75} aria-hidden="true" />
+      )}
+      {t('logout.action')}
+    </button>
+  );
+}

@@ -66,6 +66,16 @@
 - Return JSON responses with consistent shape
 - Authenticate API requests — do not expose student/admin data publicly
 
+## Portal SPA (`frontend/`)
+
+- Feature-Sliced Design (PLAN.md §4): import only from lower layers and only through a slice's `index.ts`;
+  features never import other features (compose them in a page/widget). `npm run lint` + `npm run lint:fsd` must pass
+- Server data through RTK Query endpoints injected per slice into `shared/api` `baseApi`; client state stays small
+  (reducers registered only in `app/store`); never store tokens in JS
+- All UI strings via `t()` from `shared/i18n` (`ar.json`); Tailwind logical utilities only (`ms-*`, `ps-*`, `start-*`)
+- Colours only from theme tokens in `app/styles/app.css`; no new hex values in components
+- TypeScript strict, no `any`; tests next to code (`*.test.ts(x)`), API mocked with MSW (`frontend/test/`)
+
 ## Translations
 
 - Add keys to both `ar/` and `en/` language files simultaneously

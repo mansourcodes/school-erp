@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## In Progress
 
+- Portal redesign — Phase 2 build started (2026-10-13)
+  - **P2.1 API foundation done**: Sanctum + `/api/v1/auth/login|logout` + `/api/v1/me`, login rate limits,
+    per-CPR lockout, Turnstile, honeypot, security log; 13 feature tests passing (see completed-tracker)
+  - **P2.2 SPA shell + auth done** (2026-10-13): `frontend/` FSD app, login, shell, theme, 401/419/429 handling,
+    23 tests, CI workflow (see completed-tracker)
+  - Next: **P2.3 Current course** (`GET /student/courses/current` + Home tabs, certificate download)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -72,10 +78,25 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- Review redesign mockups; resolve open questions in `_brand/new_design/PLAN.md` §10
-- Then Phase 2.1: Sanctum + `/api/v1/auth/*` + login rate limiter/Turnstile/honeypot
+- P2.3: `CourseDetailResource` + `Student::currentClassroom()` + `/api/v1/student/courses/current`; Home hero, KPIs, tabs
+- Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)
+- Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 
 ## Open Questions
+
+- Frontend dependency majors: plan says React 18, kept. Pinned to Vite 7, Vitest 5, TS 5.9, ESLint 9, MSW 2,
+  React Router 7 (newer majors exist: React Router 8, TS 7, ESLint 10, MSW 3). Upgrade as a separate task?
+- `npm audit` (dev only): `braces` via Steiger, no fix published yet; CI audits production deps only.
+- Messages envelope + unread badge in the top bar is deferred to P3.3 (no messages API yet).
+
+- Portal session idle timeout: PLAN.md §6 suggests ~60 min, but `SESSION_LIFETIME` (120) is shared with the
+  admin panel. Lower it globally, or add a portal-only idle check?
+- `tests/Feature/ExampleTest` (stock Laravel, expects `/` → 200) fails because `/` requires student login.
+  Pre-existing; replace or delete it?
+- Existing unauthenticated `/api/{course,classroom,student,teacher}` routes expose data publicly
+  (code-standards: "Authenticate API requests"). Untouched by P2.1; needs its own fix.
+- Composer: the `anasbakro/dompdf` VCS repository in composer.json isn't used by any installed package but
+  breaks `composer update` without GitHub credentials. Remove it?
 
 - Portal redesign: all 22 plan questions **answered 2026-10-12**, see `_brand/new_design/PLAN.md` §12 Decisions log.
   Three answers change earlier requirements and should be confirmed with the centre before Phase 3:

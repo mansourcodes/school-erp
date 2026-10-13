@@ -4,6 +4,38 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal SPA shell + auth — P2.2 (2026-10-13)
+- `frontend/`: Vite 7 + React 18 + TypeScript (strict) + Tailwind 4 + DaisyUI 5 + Redux Toolkit / RTK Query
+  + React Router 7 (data router, basename `/beta`) + React Hook Form + `zod/mini`; builds to `public/beta` (gitignored)
+- FSD skeleton (PLAN.md §4): `app` (store, providers, routes, styles) · `pages` (login, student/home, student/profile,
+  system) · `widgets/app-shell` · `features` (auth/login, auth/logout, theme-switch, password-help) ·
+  `entities/viewer` · `shared` (api, config, i18n, lib, ui)
+- Boundaries: ESLint `no-restricted-imports` per layer (upward imports fail) + Steiger (slice isolation, public APIs);
+  `insignificant-slice` off while slices have one consumer; plan segment names kept in `app`
+- `shared/api`: one `baseApi` (cookies, `X-XSRF-TOKEN` from the cookie), session slice; 401/419 after sign-in →
+  cache reset + `/login?expired=1`; 429 → `Retry-After` into the error; `toApiError()` normalises the v1 envelope
+- Login: CPR digits-only (9), password reveal, Caps Lock hint, honeypot, Turnstile widget (when `VITE_TURNSTILE_SITE_KEY`),
+  generic failure + attempts left, lockout countdown, 419 retry, offline message, password-help dialog (page-composed)
+- Shell: top bar (beta badge, title from route `handle`), dock on phones, sidebar on `lg`, offline banner,
+  link back to the old portal, logout (sidebar + profile placeholder), theme system/light/dark (`gh-theme`, pre-paint `theme-boot.js`)
+- Tokens + motifs ported to `app/styles/app.css` (`@plugin "daisyui/theme"`); fonts self-hosted via Fontsource
+- Code-split routes; first-load JS 114 KB gz signed in (+23.5 KB login chunk), budget 170 KB
+- 23 Vitest tests (MSW integration over the real route tree + unit); CI `.github/workflows/frontend.yml`
+- Verified in Chrome at 400px against the Laravel container through the Vite proxy (redirect, failure state)
+
+### Portal API foundation — P2.1 (2026-10-13)
+- `laravel/sanctum` 2.15 (SPA cookie mode, `sanctum.guard = ['student']`, token migrations ignored)
+- `/api/v1` group (`routes/api.php`): `ForceJsonResponse` + `EnsureFrontendRequestsAreStateful`;
+  `POST auth/login` (`throttle:student-login`), `POST auth/logout` + `GET me` (`auth:sanctum`)
+- `Api\V1\AuthController` / `MeController` → `LoginRequest` (role `student`, CPR `digits:9`, password ≤ 128)
+  → `Services\Portal\StudentLogin` (honeypot → per-CPR lockout → Turnstile → credentials) → `V1\MeResource`
+- Rate limits: 5/min per (CPR + IP), 20/min per IP; `LoginLockout`: 10 failures per CPR in 15 min → 15 min lock
+- No enumeration: one generic message, dummy-hash check for unknown CPRs; `attempts_left` in the 422 body
+- Turnstile verifier (`services.turnstile.*`, disabled when no secret, fails closed); honeypot `website`
+- Security log channel `security` (daily, 90 days): failed / locked / honeypot / bot-check, CPR as HMAC
+- Arabic-only `resources/lang/ar/portal.php`; `Handler` renders v1 401/403/404/419/429 in Arabic
+- 13 PHPUnit feature tests (`tests/Feature/Api/V1/StudentLoginTest.php`); phpunit uses a separate `testing` DB
+
 ### Student Portal Redesign — Phase 1 Design (2026-10-12)
 - `_brand/new_design/`: PLAN.md + 8 HTML mockups (index, login, home, archive, attendance,
   stats, profile, states) sharing `assets/theme.css` (DaisyUI 5 custom themes) and `assets/app.js`

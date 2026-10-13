@@ -6,8 +6,10 @@
 | ----------- | --------------------------------------------- | ------------------------------------------------ |
 | Framework   | Laravel 8 + PHP 7.3/8.0                       | Core application framework                       |
 | Admin UI    | Backpack CRUD 4.1 + Bootstrap 4 (RTL)         | Admin panel with CRUD scaffolding                |
-| Student UI  | Bootstrap 5 RTL + Blade                       | Student-facing portal                            |
+| Student UI  | Bootstrap 5 RTL + Blade                       | Student-facing portal (current, stays during beta) |
+| Portal SPA  | React 18 + RTK Query + Tailwind 4 / DaisyUI 5 (Vite) | New student/teacher portal at `/beta`, Feature-Sliced Design |
 | Auth        | Laravel built-in (Users) + custom Student guard | Dual guard: `web` for admin, `student` for portal |
+| Portal API auth | Laravel Sanctum 2.x (SPA cookie mode)     | `/api/v1` session auth for the new `/beta` portal; no tokens |
 | Database    | MySQL via Eloquent + migrations               | All relational data                              |
 | PDF         | carlos-meneses/laravel-mpdf                   | Report and certificate generation                |
 | Roles/Perms | Spatie Permission (via Backpack PermMgr)      | Role-based access control                        |
@@ -22,6 +24,12 @@
 - `app/Http/Controllers/Report/` — Report rendering controllers (PDF/print views)
 - `app/Http/Controllers/StudentPanel/` — Student portal auth + dashboard
 - `app/Http/Controllers/Api/` — API endpoints (classrooms, courses, curriculum, students)
+- `app/Http/Controllers/Api/V1/` — new portal JSON API (`/api/v1`, PLAN.md §7): thin controllers →
+  Form Requests (`app/Http/Requests/Api/V1/`) → services (`app/Services/Portal/`) → API Resources
+  (`app/Http/Resources/V1/`, whitelisted fields only)
+- `frontend/` — portal SPA source (FSD layers app → pages → widgets → features → entities → shared,
+  imports flow downward only; enforced by ESLint + Steiger). Talks to Laravel only via `/api/v1` + `/sanctum/csrf-cookie`.
+  Build output `public/beta/` is a gitignored artifact
 - `app/Models/` — Eloquent models; `Account/` sub-namespace for Payment
 - `resources/views/` — All Blade templates; `vendor/backpack/` for customised Backpack views
 - `resources/views/reports/` — Print/PDF templates (student, course, exam, payment, statistic, account)
@@ -38,7 +46,10 @@
   `StudentMarks.marks` (student mark entries — custom cast `MarksDetailsCast`)
 - **Local disk (`public`)**: Uploaded exam files (`examtools/exams/`) and
   generated ZIP archives
-- **Session**: Laravel session for both `web` and `student` guards
+- **Session**: Laravel session for both `web` and `student` guards; the `/api/v1` portal API uses the same
+  session cookie through Sanctum's stateful middleware (old and new portal share the login)
+- **Cache**: login throttles and the per-CPR lockout counters (`portal-login:*` keys)
+- **Logs**: `storage/logs/security-*.log` — failed/locked portal logins (CPR as HMAC, IP, UA)
 
 ## Auth and Access Model
 
@@ -51,6 +62,8 @@
   restricts ClassRoom queries to their own assigned classrooms when
   `auth()->user()->hasRole('Teacher')` is true
 - **SuperAdmin role**: Full access to all CRUD and reports
+- **Portal API (`/api/v1`)**: `auth:sanctum` over the `student` guard (teachers join with `web` in Phase 3).
+  Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors
 
 ## Key Relationships
 

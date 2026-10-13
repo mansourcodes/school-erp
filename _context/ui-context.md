@@ -12,6 +12,10 @@ Custom overrides in `resources/sass/custom/backpack.rtl.scss`.
 `#b7b7b6` (grey). White navbar. White cards on grey page background.
 No dark mode.
 
+**New portal SPA (`/beta`)** — DaisyUI 5 themes `ghadeer` (light) / `ghadeer-night` (dark), system / light / dark
+per device. Tokens, typography (Rubik + IBM Plex Sans Arabic) and motifs (arch, riwaq pattern, hero band) live in
+`frontend/src/app/styles/app.css`; the design reference is `_brand/new_design/` (PLAN.md §2). Lucide icons.
+
 ## Colors
 
 ### Student Portal (custom inline styles in `layouts/app.blade.php`)
