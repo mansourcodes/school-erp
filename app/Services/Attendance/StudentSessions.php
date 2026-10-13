@@ -93,7 +93,13 @@ class StudentSessions
             $counts[$session['state']]++;
         }
 
-        $recorded = count($sessions) - $counts['unrecorded'];
+        return self::fromCounts($counts);
+    }
+
+    /** The same metrics from state counts (e.g. several classrooms summed). */
+    public static function fromCounts(array $counts)
+    {
+        $recorded = array_sum($counts) - $counts['unrecorded'];
         $attended = $counts['present'] + $counts['late'] + $counts['late_excused'];
 
         return [

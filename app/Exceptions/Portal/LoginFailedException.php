@@ -11,17 +11,20 @@ class LoginFailedException extends Exception
 {
     protected $attemptsLeft;
 
-    public function __construct($attemptsLeft)
+    protected $field;
+
+    public function __construct($attemptsLeft, $role = 'student')
     {
-        parent::__construct(__('portal.auth.failed'));
+        parent::__construct(__($role === 'teacher' ? 'portal.auth.failed_teacher' : 'portal.auth.failed'));
         $this->attemptsLeft = $attemptsLeft;
+        $this->field = $role === 'teacher' ? 'email' : 'cpr';
     }
 
     public function render()
     {
         return response()->json([
             'message' => $this->getMessage(),
-            'errors' => ['cpr' => [$this->getMessage()]],
+            'errors' => [$this->field => [$this->getMessage()]],
             'attempts_left' => $this->attemptsLeft,
         ], 422);
     }

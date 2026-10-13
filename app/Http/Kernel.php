@@ -82,5 +82,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'teacher.attendance_only' => \App\Http\Middleware\RedirectTeacherToAttendance::class,
         'portal.mode' => \App\Http\Middleware\PortalMode::class,
+        'portal.role' => \App\Http\Middleware\PortalRole::class,
     ];
 }

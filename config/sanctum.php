@@ -24,12 +24,12 @@ return [
     | Sanctum Guards
     |--------------------------------------------------------------------------
     |
-    | Session guards checked by `auth:sanctum`. Students only for now; the
-    | teacher phase adds 'web' (PLAN.md §8).
+    | Session guards checked by `auth:sanctum`: students, then teachers (web guard,
+    | PLAN.md §8). The Backpack admin uses its own guard and is never accepted here.
     |
     */
 
-    'guard' => ['student'],
+    'guard' => ['student', 'web'],
 
     /*
     |--------------------------------------------------------------------------

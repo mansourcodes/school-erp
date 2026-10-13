@@ -41,7 +41,18 @@ Route::prefix('v1')
             Route::post('/auth/logout', [App\Http\Controllers\Api\V1\AuthController::class, 'logout']);
             Route::get('/me', [App\Http\Controllers\Api\V1\MeController::class, 'show']);
 
-            Route::prefix('student')->group(function () {
+            // Teacher panel (PLAN.md §8): own classrooms of the current course only.
+            Route::prefix('teacher')->middleware('portal.role:teacher')->group(function () {
+                Route::get('/today', [App\Http\Controllers\Api\V1\TeacherController::class, 'today']);
+                Route::get('/classrooms', [App\Http\Controllers\Api\V1\TeacherController::class, 'classrooms']);
+                Route::get('/classrooms/{id}', [App\Http\Controllers\Api\V1\TeacherController::class, 'classroom'])->where('id', '[0-9]+');
+                Route::get('/classrooms/{id}/sessions', [App\Http\Controllers\Api\V1\TeacherController::class, 'classroomSessions'])->where('id', '[0-9]+');
+                Route::get('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'session']);
+                Route::put('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'saveSession']);
+                Route::get('/stats', [App\Http\Controllers\Api\V1\TeacherController::class, 'stats']);
+            });
+
+            Route::prefix('student')->middleware('portal.role:student')->group(function () {
                 Route::get('/courses', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'index']);
                 Route::get('/courses/current', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'current']);
                 Route::get('/courses/{course}', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'show'])

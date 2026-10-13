@@ -4,6 +4,21 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Teacher API — P3.1 (2026-10-13)
+- Login: `role: teacher` + email (web guard, Spatie role Teacher required; other admin users get the generic
+  failure); same lockout / throttle / Turnstile / honeypot (`PortalLogin`, keyed per account); `GET /me` →
+  `TeacherMeResource`; `sanctum.guard = [student, web]` (Backpack keeps its own `backpack` guard)
+- `portal.role:student|teacher` middleware on the route groups (mutation-tested)
+- `TeacherScope`: classrooms whose `teachers[].user_id` is the teacher, in the latest active course only;
+  within a classroom only the teacher's subjects
+- `TeacherSessions`: expected sessions × own records (report hour rule), status recorded / pending / open /
+  upcoming, editable = date ≤ today (Q9, Q10); code `date#HH:MM#classroom#curriculum`
+- `AttendanceRecorder`: idempotent save (find by hour-match or create) + pivot sync; the admin easy form now
+  syncs through it too
+- `ClassroomStats`: per-student and overall metrics with the shared cell rule; follow-up = rate < 80% or ≥ 3 absences
+- Endpoints: `/teacher/today`, `/classrooms`, `/classrooms/{id}`, `/classrooms/{id}/sessions`,
+  `GET|PUT /sessions/{code}`, `/stats?classroom_id=`; 11 feature tests
+
 ### Portal beta launch wiring — P2.7 (2026-10-13)
 - `/beta/{path?}` serves `public/beta/index.html` (no-cache); hashed assets and `sw.js` are static files
 - Backpack setting `portal.mode` (migration `2026_10_13_000000_add_portal_mode_to_settings_table`, default beta) read

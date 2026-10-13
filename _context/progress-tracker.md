@@ -19,7 +19,8 @@ Update this file after every meaningful implementation change.
     maintenance/closed screens, old-portal banner + login limit, TrustProxies (P0.1 code part)
   - P2.8 (beta period with students) and P2.9 (promotion) are operational steps, gated by P0.1/P0.2, pen test,
     restore test and the k6 peak test (PLAN.md §11)
-  - Next: **P3.1 Teacher API**
+  - **P3.1 Teacher API done** (2026-10-13)
+  - Next: **P3.2 Teacher SPA** (+ photo upload, offline save queue, Backpack teacher redirect in live mode)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -93,6 +94,11 @@ Update this file after every meaningful implementation change.
 - Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 
 ## Open Questions
+
+- **Teacher data**: no active classroom has `user_id` in its `teachers` JSON yet (dev DB: 0 of 39), so the teacher
+  panel shows nothing until admins pick the teacher user in each ClassRoom's teachers repeater.
+- Teacher scope is per subject: a teacher sees only the sessions of the subjects assigned to them in a classroom
+  (the old Backpack page listed every subject of their classrooms). Confirm with the centre.
 
 - Deploy: the web server must send `manifest.webmanifest` as `application/manifest+json`, and `/beta/sw.js`,
   `/beta/index.html`, `/beta/manifest.webmanifest` with no-cache (Cloudflare cache rules, PLAN.md §10.4).

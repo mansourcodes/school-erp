@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\Attendance\AttendanceRecorder;
 use Carbon\Carbon;
 use App\Http\Requests\AttendsRequest;
 use App\Models\Attends;
@@ -570,18 +571,6 @@ class AttendsCrudController extends CrudController
         $attend->curriculum_id = $request->get('curriculum_id');
         $student_attend_state = $request->get('student_attend_state');
 
-        $attend_state = [];
-
-        $attend_state['attend'] = [];
-        $attend_state['absent'] = [];
-        $attend_state['absent_w_excuse'] = [];
-        $attend_state['late'] = [];
-        $attend_state['late_w_excuse'] = [];
-
-        foreach ($student_attend_state as $key => $value) {
-            $attend_state[$value][] = $key;
-        }
-
 
         try {
             $attend->save();
@@ -596,11 +585,8 @@ class AttendsCrudController extends CrudController
         }
 
 
-        $attend->attendStudents()->sync($attend_state['attend']);
-        $attend->absentStudents()->sync($attend_state['absent']);
-        $attend->absentWithExcuseStudents()->sync($attend_state['absent_w_excuse']);
-        $attend->lateStudents()->sync($attend_state['late']);
-        $attend->lateWithExcuseStudents()->sync($attend_state['late_w_excuse']);
+        // Same pivot writes as the teacher portal (PLAN.md §8).
+        app(AttendanceRecorder::class)->syncStates($attend, $student_attend_state ?: []);
 
         $attend->update();
 

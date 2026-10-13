@@ -86,7 +86,7 @@ class StudentLoginTest extends TestCase
     {
         $this->login(['cpr' => '12ab'])->assertStatus(422)->assertJsonValidationErrors('cpr');
         $this->login(['password' => str_repeat('x', 129)])->assertStatus(422)->assertJsonValidationErrors('password');
-        $this->login(['role' => 'teacher'])->assertStatus(422)->assertJsonValidationErrors('role');
+        $this->login(['role' => 'admin'])->assertStatus(422)->assertJsonValidationErrors('role');
     }
 
     public function test_cpr_is_locked_after_ten_failures_from_any_ip()
