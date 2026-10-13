@@ -138,7 +138,10 @@
     "noneBody": "لم يتم تسجيلك في دورة نشطة بعد. عند تسجيلك من قِبل إدارة المركز ستظهر تفاصيل الدورة هنا.",
     "browseArchive": "تصفّح الدورات السابقة",
     "errorBody": "تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.",
-    "loading": "جارٍ تحميل بيانات الدورة…"
+    "loading": "جارٍ تحميل بيانات الدورة…",
+    "attendanceRate": "نسبة الحضور",
+    "attended": "الحصص المحضورة",
+    "attendedSub": "غياب {absent} · تأخير {late}"
   },
   "payments": {
     "total": "إجمالي المدفوع",
@@ -186,6 +189,64 @@
     "backHome": "العودة إلى الدورة الحالية",
     "noMatchTitle": "لا توجد نتائج",
     "noMatchBody": "جرّب كلمة بحث أخرى أو اختر سنة مختلفة.",
-    "loadingDetail": "جارٍ تحميل تفاصيل الدورة…"
+    "loadingDetail": "جارٍ تحميل تفاصيل الدورة…",
+    "rate": "حضور {rate}"
+  },
+  "attendanceState": {
+    "present": "حاضر",
+    "late": "متأخر",
+    "late_excused": "متأخر بعذر",
+    "absent": "غائب",
+    "absent_excused": "غائب بعذر",
+    "unrecorded": "لم يُرصد"
+  },
+  "attendance": {
+    "course": "الدورة",
+    "subject": "المادة",
+    "allSubjects": "كل المواد",
+    "rate": "نسبة الحضور",
+    "attendedOf": "{attended} من {recorded} حصة",
+    "viewLabel": "طريقة العرض",
+    "calendar": "تقويم",
+    "list": "قائمة",
+    "legend": "دليل الرموز",
+    "prevMonth": "الشهر السابق",
+    "nextMonth": "الشهر التالي",
+    "tapDay": "اضغط على أي يوم لعرض حصصه",
+    "pickDay": "اختر يومًا",
+    "daySessions": "{date}، {n} حصص",
+    "stateFilter": "تصفية حسب الحالة",
+    "week": "أسبوع {date}",
+    "otherClassroom": "سُجّل في صف آخر",
+    "noMatchTitle": "لا توجد حصص مطابقة",
+    "noMatchBody": "عدّل عوامل التصفية لعرض المزيد.",
+    "emptyTitle": "لا توجد سجلات حضور بعد",
+    "emptyBody": "تظهر السجلات هنا بعد أن يرصد المدرّس الحضور لأول حصة.",
+    "noCourseTitle": "لا توجد دورة لعرض حضورها",
+    "noCourseBody": "عند تسجيلك في دورة سيظهر حضورك هنا.",
+    "close": "إغلاق",
+    "active": "● {name}"
+  },
+  "stats": {
+    "overall": "نسبة الحضور الإجمالية",
+    "punctualLine": "الحضور في الموعد: {pct} · {n} حصة مرصودة",
+    "unrecordedLine": " · {n} لم تُرصد",
+    "recorded": "الحصص المرصودة",
+    "since": "منذ {date}",
+    "onTime": "حضور في الموعد",
+    "ofSessions": "{pct} من الحصص",
+    "late": "تأخير",
+    "excusedPart": "منها {n} بعذر",
+    "absent": "غياب",
+    "composition": "توزيع حالات الحضور",
+    "compositionSub": "من إجمالي الحصص المرصودة",
+    "asTable": "عرض كجدول",
+    "state": "الحالة",
+    "sessions": "عدد الحصص",
+    "share": "النسبة",
+    "sessionsCount": "{n} حصة",
+    "toLog": "سجل الحضور التفصيلي",
+    "emptyTitle": "لا توجد بيانات كافية",
+    "emptyBody": "تظهر الإحصائيات بعد رصد عدد من الحصص في الدورة."
   }
 }

@@ -100,6 +100,29 @@ describe('HomePage', () => {
     expect(screen.getAllByText('ممتاز').length).toBeGreaterThan(0);
   });
 
+  it('shows the attendance tiles from the stats endpoint', async () => {
+    serve(course);
+    server.use(
+      http.get('*/api/v1/student/attendance/stats', () =>
+        HttpResponse.json({
+          data: {
+            counts: { present: 40, late: 2, late_excused: 1, absent: 1, absent_excused: 2, unrecorded: 1 },
+            recorded: 46,
+            attended: 43,
+            rate: 93.5,
+            punctual: 87,
+          },
+        }),
+      ),
+    );
+    renderApp('/');
+
+    expect(await screen.findByText('93.5%')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /نسبة الحضور/ })).toHaveAttribute('href', '/attendance/stats');
+    expect(screen.getByRole('link', { name: /الحصص المحضورة/ })).toHaveTextContent('43 / 46');
+    expect(screen.getByText('غياب 3 · تأخير 3')).toBeInTheDocument();
+  });
+
   it('explains when there is no active course', async () => {
     serve(null);
     renderApp('/');

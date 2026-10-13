@@ -10,7 +10,6 @@ const title = (key: string): ShellRouteHandle => ({ title: t(key) });
 
 // Screens past the first one are code-split, so a phone on mobile data
 // downloads them only when opened (PLAN.md §4 "Mobile performance budget").
-const comingSoon = () => import('@/pages/system').then((m) => ({ Component: m.ComingSoonPage }));
 const archive = () => import('@/pages/student/archive').then((m) => ({ Component: m.ArchivePage }));
 
 export const appRoutes: RouteObject[] = [
@@ -29,8 +28,8 @@ export const appRoutes: RouteObject[] = [
             element: <AppShell />,
             children: [
               { index: true, element: <HomePage />, handle: title('nav.home') },
-              { path: routes.attendance, lazy: comingSoon, handle: title('nav.attendance') },
-              { path: routes.stats, lazy: comingSoon, handle: title('nav.stats') },
+              { path: routes.attendance, lazy: () => import('@/pages/student/attendance').then((m) => ({ Component: m.AttendancePage })), handle: title('nav.attendance') },
+              { path: routes.stats, lazy: () => import('@/pages/student/stats').then((m) => ({ Component: m.StatsPage })), handle: title('nav.stats') },
               { path: routes.archive, lazy: archive, handle: title('nav.archive') },
               { path: `${routes.archive}/:courseId`, lazy: archive, handle: title('nav.archive') },
               {

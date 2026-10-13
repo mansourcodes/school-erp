@@ -48,6 +48,8 @@
   generated ZIP archives
 - **Session**: Laravel session for both `web` and `student` guards; the `/api/v1` portal API uses the same
   session cookie through Sanctum's stateful middleware (old and new portal share the login)
+- **Time**: the app runs in UTC (`config/app.php`); the portal's "today" uses `config('portal.timezone')`
+  (Asia/Bahrain)
 - **Cache**: login throttles and the per-CPR lockout counters (`portal-login:*` keys)
 - **Logs**: `storage/logs/security-*.log` — failed/locked portal logins (CPR as HMAC, IP, UA)
 
@@ -92,6 +94,8 @@ ExamTool >── Course, Curriculum
    uniqueness is enforced via this code, not a simple integer PK
 4. The `student` auth guard is completely separate from the `web` (admin)
    guard — middleware must specify the correct guard explicitly
+5a. Attendance states are resolved only by `App\Services\Attendance\ClassroomAttendance` (admin
+   `student_attend_list` report and portal API alike); do not re-implement the cell rule elsewhere
 5. PDF generation runs synchronously in request handlers (no background jobs
    for reports); only exam ZIP packaging is queued
 6. Do not store large binary content in the database — files go to `public`

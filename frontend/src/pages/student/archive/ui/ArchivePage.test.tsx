@@ -20,6 +20,7 @@ const summary = (id: number, year: string, name: string, grade: string | null): 
   marks_published: grade !== null,
   total_mark: grade ? 91.5 : null,
   final_grade: grade,
+  attendance_rate: grade ? 93.5 : null,
 });
 
 const courses = [

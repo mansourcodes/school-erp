@@ -161,3 +161,40 @@
   body:has(dialog[open] .print-area) .print-area * { visibility: visible; }
   .print-area { position: fixed; inset: 0; }
 }
+
+/* Attendance status encoding (PLAN.md §2): icon + label, never colour alone.
+   "Excused" is a 45° hatch on the same hue, not a sixth colour. */
+.st { --c: var(--st-none); display: inline-flex; align-items: center; gap: .35rem;
+      padding: .15rem .6rem .15rem .5rem; border-radius: 999px; font-size: .8125rem; font-weight: 500;
+      background: color-mix(in oklab, var(--c) 14%, var(--color-base-100));
+      color: var(--color-base-content); white-space: nowrap; }
+.st svg { width: 14px; height: 14px; color: color-mix(in oklab, var(--c) 75%, var(--color-base-content)); }
+.st-none { --c: var(--st-none); }
+.st-present { --c: var(--st-present); }
+.st-late, .st-late-excused { --c: var(--st-late); }
+.st-absent, .st-absent-excused { --c: var(--st-absent); }
+.hatch { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 2px, transparent 2px 6px); }
+[data-theme="ghadeer-night"] .hatch { background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.45) 0 2px, transparent 2px 6px); }
+.pip { width: 1.35rem; height: 1.35rem; border-radius: .4rem; display: grid; place-items: center;
+       font-size: .62rem; font-weight: 700; color: #111; background-color: var(--c); flex: none; }
+.pip.st-absent, .pip.st-absent-excused, .pip.st-present { color: #fff; }
+
+/* Composition bar (stats) */
+.stack { display: flex; gap: 2px; height: 2.25rem; }
+.stack > span { background-color: var(--c); min-width: 3px; }
+.stack > span:first-child { border-start-start-radius: 6px; border-end-start-radius: 6px; }
+.stack > span:last-child { border-start-end-radius: 6px; border-end-end-radius: 6px; }
+.bar-track { height: .75rem; border-radius: 4px; background: var(--color-base-300); }
+.bar-fill { height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; background: var(--viz-1); }
+
+/* Horizontal chip rail: swipeable, no visible scrollbar */
+.rail { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
+        margin-inline: -1rem; padding-inline: 1rem; -webkit-overflow-scrolling: touch; }
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; flex: none; }
+.chip { min-height: 2.5rem; padding: 0 1rem; border-radius: 999px; display: inline-flex; align-items: center; gap: .4rem;
+        font-size: .875rem; background: var(--color-base-100); border: 1px solid var(--color-base-300); white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--color-primary); color: var(--color-primary-content); border-color: var(--color-primary); }
+.sheet-grip { width: 2.5rem; height: .3rem; border-radius: 999px; background: var(--color-base-300); margin: -.25rem auto .75rem; }
+@media (width >= 40rem) { .sheet-grip { display: none; } }
+.is-today { box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-primary) 45%, transparent); }

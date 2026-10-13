@@ -32,6 +32,8 @@ export interface CourseSummary {
   marks_published: boolean;
   total_mark: number | null;
   final_grade: string | null;
+  /** PLAN.md §7.4; null when nothing was recorded */
+  attendance_rate: number | null;
 }
 
 /** GET /api/v1/student/courses/current and /student/courses/{id} (PLAN.md §7.3). */

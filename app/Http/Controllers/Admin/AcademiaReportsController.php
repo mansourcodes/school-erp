@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\Attends;
 use App\Models\ClassRoom;
+use App\Services\Attendance\ClassroomAttendance;
 use App\Models\Course;
 use App\Models\Curriculum;
 use App\Models\StudentMarks;
@@ -479,58 +480,8 @@ class AcademiaReportsController extends Controller
             $teachers[$teachers_object['curriculum_id']] = $teachers_object['teacher_name'];
         }
 
-        // recorded attends: [curriculum_id][date][start hour | '*' | 'other'][student_id] => state
-        // matched by hour only: old records saved start_time as 'H:m' (m = month), and
-        // ones the repair migration could not match to a timetable slot keep wrong minutes.
-        // '*' is the fallback for slots without a start_time in the timetable (the form then
-        // records the time it was opened, so the hour can't match).
-        // 'other' holds records from other classrooms of the same course, for students moved
-        // into this classroom; used only when this classroom has no record for the student.
-        // $course_states[date][student_id] is the last fallback: the student's record in any
-        // classroom of the course on that date, whatever the curriculum (classrooms of a course
-        // usually teach different levels, so a moved student rarely shares the curriculum).
-        // Students removed from the classroom are not rendered, so their records are ignored.
-        $state_relations = [
-            'attend' => 'attendStudents',
-            'absent' => 'absentStudents',
-            'absent_w_excuse' => 'absentWithExcuseStudents',
-            'late' => 'lateStudents',
-            'late_w_excuse' => 'lateWithExcuseStudents',
-        ];
-
-        $student_ids = $classroom->students->pluck('id')->all();
-        $only_classroom_students = function ($query) use ($student_ids) {
-            $query->whereIn('students.id', $student_ids);
-        };
-
-        $attends = Attends::where('class_room_id', $classroom->id)
-            ->orWhere('course_id', $classroom->course_id)
-            ->with(array_fill_keys(array_values($state_relations), $only_classroom_students))
-            ->get();
-
-        $attend_states = [];
-        $course_states = [];
-        foreach ($attends as $attend) {
-            $date = $attend->date->format('Y-m-d');
-            $hour = Carbon::parse($attend->start_time)->format('H');
-            $is_own = $attend->class_room_id == $classroom->id;
-            $buckets = $is_own ? [$hour, '*'] : ['other'];
-
-            foreach ($state_relations as $state => $relation) {
-                foreach ($attend->{$relation} as $student) {
-                    foreach ($buckets as $bucket) {
-                        $attend_states[(int)$attend->curriculum_id][$date][$bucket][$student->id] = $state;
-                    }
-                    if (!$is_own) {
-                        $course_states[$date][$student->id] = $state;
-                    }
-                }
-            }
-        }
-
-
-        $return['attend_states'] = $attend_states;
-        $return['course_states'] = $course_states;
+        // Recorded states and the cell rule live in the shared service (also used by the portal API).
+        $return['attendance'] = new ClassroomAttendance($classroom);
         $return['teachers'] = $teachers;
         $return['attend_table'] = $attend_table;
         $return['classroom'] = $classroom;

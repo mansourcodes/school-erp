@@ -4,6 +4,26 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal attendance + stats — P2.5 (2026-10-13)
+- `App\Services\Attendance\ClassroomAttendance`: recorded states + the cell rule (slot hour → any record of the
+  subject/day → other classroom of the course → any subject of the course that day), moved out of
+  `reportStudentAttendList` **and** its Blade view; the admin report now calls the service
+- Verified: the `student_attend_list` HTML of 75 real classrooms is byte-identical before/after; a blunt mutation
+  changes 6 of them (harness works); moved-student paths are covered by 8 service tests (dev data has none)
+- `StudentSessions`: a student's sessions up to now from the timetable + the service (`attend` → present …,
+  none → unrecorded; today's unrecorded session listed only once it has started) and §7.4 stats
+- API: `GET /api/v1/student/attendance?course_id=&from=&to=`, `GET /api/v1/student/attendance/stats?course_id=`;
+  archive cards gain `attendance_rate`; `Student::enrolledClassroomFor()`
+- `config('portal.timezone')` = Asia/Bahrain for "today" (the app runs in UTC); a test fails if UTC is used
+- Real data: 475/475 → 200 on all three endpoints, 11,997 sessions, stats = sessions for all 387 current courses;
+  attendance p50 144 ms / p95 156 ms (Docker on Windows), archive list ≤ 256 ms, ≤ 18 queries
+- SPA: `entities/attendance` (status catalog, summarize, chips/pips, SessionRow, queries), `features/filter-attendance`
+  (course select, subject + status chip rails, `useSelectedCourse` from `?course=`), widgets `attendance-calendar`
+  (month grid; side panel on lg, bottom sheet on phones; `?date=` opens a day), `attendance-log` (by week),
+  `attendance-summary` (hero, KPIs, composition bar + table); Attendance + Stats pages; Home attendance tiles;
+  archive card rate. Weekend dimming dropped (the centre teaches Fri/Sat). Placeholder ComingSoonPage removed
+- Tests: 18 new PHPUnit (service + API), 11 new Vitest
+
 ### Portal archive — P2.4 (2026-10-13)
 - API: `GET /api/v1/student/courses?status=archived` (`CourseSummaryResource`: identity, dates, result once published)
   and `GET /api/v1/student/courses/{course}` (`CourseDetailResource`, status `active` for the current course, else `archived`)

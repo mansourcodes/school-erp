@@ -1,5 +1,6 @@
-import { Archive, BookOpen, GraduationCap, RefreshCw, Wallet, WifiOff } from 'lucide-react';
+import { Archive, BookOpen, CalendarCheck, CircleCheck, GraduationCap, RefreshCw, Wallet, WifiOff } from 'lucide-react';
 import { Link } from 'react-router';
+import { type AttendanceStats, useAttendanceStatsQuery } from '@/entities/attendance';
 import { type CourseDetail, useCurrentCourseQuery } from '@/entities/course';
 import { marksTotals } from '@/entities/mark';
 import { totalPaid } from '@/entities/payment';
@@ -8,7 +9,7 @@ import { CourseDetailsTabs, type CourseTab, useCourseTab } from '@/widgets/cours
 import { CourseHero } from '@/widgets/course-hero';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { money } from '@/shared/lib';
+import { money, pct } from '@/shared/lib';
 
 export function HomePage() {
   const { data: viewer } = useMeQuery();
@@ -18,6 +19,7 @@ export function HomePage() {
     refetchOnReconnect: true,
   });
 
+  const { data: stats } = useAttendanceStatsQuery(undefined, { refetchOnFocus: true, refetchOnReconnect: true });
   const [tab, selectTab] = useCourseTab();
 
   if (isLoading || !viewer) return <HomeSkeleton />;
@@ -27,7 +29,7 @@ export function HomePage() {
   return (
     <div className="space-y-4 lg:space-y-6">
       <CourseHero course={course} viewer={viewer} now={new Date()} />
-      <KpiTiles course={course} onOpenTab={selectTab} />
+      <KpiTiles course={course} stats={stats ?? null} onOpenTab={selectTab} />
       <CourseDetailsTabs
         id="course-details"
         course={course}
@@ -41,8 +43,14 @@ export function HomePage() {
   );
 }
 
-/** Attendance tiles join in P2.5, once the attendance API exists. */
-function KpiTiles({ course, onOpenTab }: { course: CourseDetail; onOpenTab: (tab: CourseTab) => void }) {
+interface KpiTilesProps {
+  course: CourseDetail;
+  stats: AttendanceStats | null;
+  onOpenTab: (tab: CourseTab) => void;
+}
+
+/** 2×2 on phones, 4 across on desktop (PLAN.md §3.2). */
+function KpiTiles({ course, stats, onOpenTab }: KpiTilesProps) {
   const marks = marksTotals(course.marks);
   const open = (tab: CourseTab) => {
     onOpenTab(tab);
@@ -50,7 +58,33 @@ function KpiTiles({ course, onOpenTab }: { course: CourseDetail; onOpenTab: (tab
   };
 
   return (
-    <section className="grid grid-cols-2 gap-3 lg:gap-4" aria-label={t('course.summary')}>
+    <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4" aria-label={t('course.summary')}>
+      <Link to={routes.stats} className="card-soft p-3.5 sm:p-4 active:bg-base-200">
+        <p className="text-xs sm:text-sm opacity-70 flex items-center gap-1.5">
+          <CalendarCheck className="size-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          {t('course.attendanceRate')}
+        </p>
+        <p className="text-2xl sm:text-3xl font-semibold mt-1.5 num">{stats?.rate != null ? pct(stats.rate) : '—'}</p>
+        <div className="h-1.5 rounded-full bg-base-200 mt-2.5 overflow-hidden">
+          <div className="h-full rounded-full" style={{ background: 'var(--viz-1)', width: `${stats?.rate ?? 0}%` }} />
+        </div>
+      </Link>
+      <Link to={routes.attendance} className="card-soft p-3.5 sm:p-4 active:bg-base-200">
+        <p className="text-xs sm:text-sm opacity-70 flex items-center gap-1.5">
+          <CircleCheck className="size-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          {t('course.attended')}
+        </p>
+        <p className="text-2xl sm:text-3xl font-semibold mt-1.5 num">
+          {stats?.attended ?? 0}
+          <span className="text-sm opacity-50"> / {stats?.recorded ?? 0}</span>
+        </p>
+        <p className="text-xs opacity-60 mt-1.5 num">
+          {t('course.attendedSub', {
+            absent: (stats?.counts.absent ?? 0) + (stats?.counts.absent_excused ?? 0),
+            late: (stats?.counts.late ?? 0) + (stats?.counts.late_excused ?? 0),
+          })}
+        </p>
+      </Link>
       <button type="button" className="card-soft p-3.5 sm:p-4 text-start active:bg-base-200" onClick={() => open('payments')}>
         <p className="text-xs sm:text-sm opacity-70 flex items-center gap-1.5">
           <Wallet className="size-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
@@ -80,7 +114,9 @@ function HomeSkeleton() {
   return (
     <div className="space-y-4" aria-busy="true">
       <div className="skeleton h-40 w-full rounded-box" />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="skeleton h-24" />
+        <div className="skeleton h-24" />
         <div className="skeleton h-24" />
         <div className="skeleton h-24" />
       </div>

@@ -1,8 +1,8 @@
-import { Archive, Award, BookMarked, ChevronDown } from 'lucide-react';
+import { Archive, Award, BookMarked, CalendarCheck, ChevronDown } from 'lucide-react';
 import { type ReactNode, useId } from 'react';
 import type { CourseSummary } from '@/entities/course';
 import { t } from '@/shared/i18n';
-import { fmtDate } from '@/shared/lib';
+import { fmtDate, pct } from '@/shared/lib';
 
 interface ArchivedCourseCardProps {
   course: CourseSummary;
@@ -48,16 +48,24 @@ export function ArchivedCourseCard({ course, open, onToggle, children }: Archive
             {when && <span className="text-xs opacity-60">{when}</span>}
           </div>
           <h2 className="font-display text-base sm:text-lg leading-snug">{course.long_name}</h2>
-          <p className="mt-2 text-sm inline-flex items-center gap-1.5">
-            <Award className="size-4 text-accent" strokeWidth={1.75} aria-hidden="true" />
-            {course.marks_published ? (
-              <span className="num">
-                {t('archive.result', { grade: course.final_grade ?? '', total: course.total_mark ?? '—' })}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm">
+            <span className="inline-flex items-center gap-1.5">
+              <Award className="size-4 text-accent" strokeWidth={1.75} aria-hidden="true" />
+              {course.marks_published ? (
+                <span className="num">
+                  {t('archive.result', { grade: course.final_grade ?? '', total: course.total_mark ?? '—' })}
+                </span>
+              ) : (
+                <span className="opacity-70">{t('archive.noResult')}</span>
+              )}
+            </span>
+            {course.attendance_rate !== null && (
+              <span className="inline-flex items-center gap-1.5 opacity-80">
+                <CalendarCheck className="size-4 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                <span className="num">{t('archive.rate', { rate: pct(course.attendance_rate) })}</span>
               </span>
-            ) : (
-              <span className="opacity-70">{t('archive.noResult')}</span>
             )}
-          </p>
+          </div>
         </div>
         <ChevronDown
           className={`size-5 opacity-60 transition-transform shrink-0 ${open ? 'rotate-180' : ''}`}

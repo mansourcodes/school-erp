@@ -3,6 +3,12 @@
 return [
 
     /*
+    | The centre's local time, for "today" and "has this session started" (the app
+    | itself runs in UTC, see config/app.php).
+    */
+    'timezone' => env('PORTAL_TIMEZONE', 'Asia/Bahrain'),
+
+    /*
     |--------------------------------------------------------------------------
     | Portal login protection (PLAN.md §6)
     |--------------------------------------------------------------------------

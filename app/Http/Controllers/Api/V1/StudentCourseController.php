@@ -8,6 +8,8 @@ use App\Http\Resources\V1\CourseSummaryResource;
 use App\Models\Account\Payment;
 use App\Models\ClassRoom;
 use App\Models\StudentMarks;
+use App\Services\Attendance\StudentSessions;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
@@ -30,9 +32,13 @@ class StudentCourseController extends Controller
             ->get()
             ->keyBy('course_id');
 
+        $now = Carbon::now(config('portal.timezone'));
+
         return response()->json([
-            'data' => $classrooms->map(function ($classroom) use ($marks) {
-                return new CourseSummaryResource($classroom, $marks->get($classroom->course_id));
+            'data' => $classrooms->map(function ($classroom) use ($marks, $student, $now) {
+                $stats = StudentSessions::stats(StudentSessions::forStudent($classroom, $student->id, $now));
+
+                return new CourseSummaryResource($classroom, $marks->get($classroom->course_id), $stats['rate']);
             })->values(),
         ]);
     }
@@ -98,10 +104,7 @@ class StudentCourseController extends Controller
 
     protected function enrolledClassroom($student, $courseId)
     {
-        $classroom = $student->enrolledClassrooms()
-            ->where('class_rooms.course_id', $courseId)
-            ->orderByDesc('class_rooms.id')
-            ->first();
+        $classroom = $student->enrolledClassroomFor($courseId);
         abort_unless($classroom, 404);
 
         return $classroom;

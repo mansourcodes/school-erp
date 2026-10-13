@@ -11,7 +11,9 @@ Update this file after every meaningful implementation change.
     23 tests, CI workflow (see completed-tracker)
   - **P2.3 Current course done** (2026-10-13): course API + certificate print view, Home hero / KPIs / tabs
   - **P2.4 Archive done** (2026-10-13): archive list + read-only detail, `/archive/:courseId`
-  - Next: **P2.5 Attendance + stats** (shared attendance service extracted from `reportStudentAttendList`)
+  - **P2.5 Attendance + stats done** (2026-10-13): shared `ClassroomAttendance` service (admin report unchanged,
+    verified), attendance + stats endpoints and pages, Home attendance tiles, archive rates
+  - Next: **P2.6 Profile** (`GET /student/profile`, display-only photo, masked CPR, notification settings card)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -80,9 +82,7 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- P2.5: extract the attendance service from `AcademiaReportsController::reportStudentAttendList` (the admin report and
-  the API must give the same numbers); `/student/attendance` + `/stats`; attendance + stats pages; attendance KPI tiles
-  on Home; attendance rate on archive cards
+- P2.6: `/student/profile` (whitelisted fields, PLAN.md §3.6) + Profile page (keeps theme / legacy link / logout)
 - Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)
 - Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 
@@ -92,7 +92,11 @@ Update this file after every meaningful implementation change.
   would be its own task. OK for the beta?
 - Payment labels (new Arabic copy, please confirm): FULL = رسوم كاملة, PART = دفعة جزئية, OFFER = عرض خاص,
   CASH = نقدًا, BENEFIT_PAY = بنفت باي (`resources/lang/ar/portal.php`)
-- Real timetables are Friday/Saturday; the mockup dimmed Fri/Sat in the attendance calendar. Revisit in P2.5.
+- **Admin attend list skips a session on the course start date**: `HtmlHelper::getDaysInRange` uses
+  `modify('next <day>')`, so a course that starts on a teaching day loses that first session in the report, and
+  (to stay identical) in the portal. Fix both together? (One-line change in `getDaysInRange`; pinned by a test.)
+- `config/app.php` timezone is UTC; the portal uses `portal.timezone` (Asia/Bahrain). Should the whole app move to
+  Asia/Bahrain? (Affects stored timestamps; separate decision.)
 
 - Frontend dependency majors: plan says React 18, kept. Pinned to Vite 7, Vitest 5, TS 5.9, ESLint 9, MSW 2,
   React Router 7 (newer majors exist: React Router 8, TS 7, ESLint 10, MSW 3). Upgrade as a separate task?

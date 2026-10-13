@@ -179,7 +179,7 @@ Phase 2 keeps these as small hand-written HTML components, and no chart library 
 ### 3.4 Attendance log (`attendance.html`)
 - Filters: course (current marked ●, archived selectable) and subject. View toggle: **calendar | list**.
 - Summary strip: radial rate, attended/recorded, legend.
-- Calendar: month grid (Sun→Sat, Fri/Sat dimmed), one coded pip per session, today ringed; selecting a day shows its sessions (subject, time, teacher, status chip) in a side panel.
+- Calendar: month grid (Sun→Sat; days without sessions dimmed, no weekend dimming because the centre teaches Fri/Sat), one coded pip per session, today ringed; selecting a day shows its sessions (subject, time, teacher, status chip) in a side panel (lg) or a bottom sheet (phones). `?date=` opens that day.
 - List: grouped by week (sticky headers), newest first, with status filter chips.
 - `?course=<id>` preselects a course (used by archive and stats links).
 

@@ -132,6 +132,15 @@ class Student extends Authenticatable
         return $this->classRooms()->whereNull('courses.deleted_at');
     }
 
+    /** The student's classroom in one course (latest if several), or null. */
+    public function enrolledClassroomFor($courseId)
+    {
+        return $this->enrolledClassrooms()
+            ->where('class_rooms.course_id', $courseId)
+            ->orderByDesc('class_rooms.id')
+            ->first();
+    }
+
     /**
      * Every enrollment except the current one, one per course (PLAN.md §3.3).
      */

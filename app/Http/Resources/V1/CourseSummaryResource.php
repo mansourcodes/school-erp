@@ -13,10 +13,13 @@ class CourseSummaryResource extends JsonResource
 {
     protected $studentMarks;
 
-    public function __construct($classroom, ?StudentMarks $studentMarks)
+    protected $attendanceRate;
+
+    public function __construct($classroom, ?StudentMarks $studentMarks, $attendanceRate)
     {
         parent::__construct($classroom);
         $this->studentMarks = $studentMarks;
+        $this->attendanceRate = $attendanceRate;
     }
 
     public function toArray($request)
@@ -40,6 +43,8 @@ class CourseSummaryResource extends JsonResource
             'marks_published' => $published,
             'total_mark' => $published ? $this->studentMarks->total_mark : null,
             'final_grade' => $published ? $finalGrade : null,
+            // PLAN.md §7.4; null when no session of the course was recorded.
+            'attendance_rate' => $this->attendanceRate,
         ];
     }
 }

@@ -116,7 +116,6 @@
                     @endforeach
                 </tr>
                 @php
-                    $curriculum_states = $attend_states[$attend_curriculum_table['curriculum']->id] ?? [];
                     $slot_hour = $attend_curriculum_table['start_time'] ? $attend_curriculum_table['start_time']->format('H') : null;
                 @endphp
                 @foreach ($classroom->students as $key => $student)
@@ -125,16 +124,9 @@
                         <th class="onlinecontent text-right">{{ $student->name }}</th>
                         @foreach ($attend_curriculum_table['calander_days'] as $date)
                             @php
-                                $state = $curriculum_states[$date][$slot_hour][$student->id]
-                                    ?? $curriculum_states[$date]['*'][$student->id]
-                                    ?? null;
-                                $from_other_classroom = false;
-                                if (!$state) {
-                                    $state = $curriculum_states[$date]['other'][$student->id]
-                                        ?? $course_states[$date][$student->id]
-                                        ?? null;
-                                    $from_other_classroom = (bool) $state;
-                                }
+                                [$state, $from_other_classroom] = $attendance->stateFor(
+                                    $attend_curriculum_table['curriculum']->id, $date, $slot_hour, $student->id
+                                );
                             @endphp
                             <td class="align-middle {{ $state ? $state_marks[$state]['class'] : '' }}"
                                 title="{{ $state ? __('attend.student_' . ($state == 'attend' ? 'attended' : $state)) : '' }}{{ $from_other_classroom ? ' (صف آخر)' : '' }}">
