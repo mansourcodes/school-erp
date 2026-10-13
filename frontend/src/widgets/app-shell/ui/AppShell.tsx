@@ -57,8 +57,8 @@ export function AppShell() {
       </main>
 
       <nav className="dock dock-md bg-base-100/90 backdrop-blur border-t border-base-300 lg:hidden z-40" aria-label={t('nav.main')}>
-        {studentNav.map(({ to, short, icon: Icon }) => (
-          <NavLink key={to} to={to} end className={({ isActive }) => (isActive ? 'dock-active text-primary' : 'opacity-70')}>
+        {studentNav.map(({ to, short, icon: Icon, end }) => (
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => (isActive ? 'dock-active text-primary' : 'opacity-70')}>
             <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
             <span className="dock-label">{t(short)}</span>
           </NavLink>
@@ -85,9 +85,9 @@ function Sidebar({ viewer }: { viewer: Viewer }) {
       </div>
 
       <ul className="menu w-full px-3 gap-1 text-[0.95rem]">
-        {studentNav.map(({ to, label, icon: Icon }) => (
+        {studentNav.map(({ to, label, icon: Icon, end }) => (
           <li key={to}>
-            <NavLink to={to} end className={({ isActive }) => `py-2.5 ${isActive ? 'menu-active' : ''}`}>
+            <NavLink to={to} end={end} className={({ isActive }) => `py-2.5 ${isActive ? 'menu-active' : ''}`}>
               <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
               {t(label)}
             </NavLink>

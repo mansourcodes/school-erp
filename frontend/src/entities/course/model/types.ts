@@ -16,7 +16,25 @@ export interface CourseCurriculum {
   slots: Slot[];
 }
 
-/** GET /api/v1/student/courses/current (PLAN.md §7.3). */
+/** GET /api/v1/student/courses?status=archived: one archive card. */
+export interface CourseSummary {
+  id: number;
+  classroom_id: number;
+  status: 'archived';
+  long_name: string;
+  academic_path: string | null;
+  year: string | null;
+  hijri_year: string | null;
+  semester: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  class_room_number: string | null;
+  marks_published: boolean;
+  total_mark: number | null;
+  final_grade: string | null;
+}
+
+/** GET /api/v1/student/courses/current and /student/courses/{id} (PLAN.md §7.3). */
 export interface CourseDetail {
   id: number;
   classroom_id: number;

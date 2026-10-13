@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\CourseDetailResource;
+use App\Http\Resources\V1\CourseSummaryResource;
 use App\Models\Account\Payment;
 use App\Models\ClassRoom;
 use App\Models\StudentMarks;
@@ -15,6 +16,38 @@ use Illuminate\Http\Request;
  */
 class StudentCourseController extends Controller
 {
+    /** GET /student/courses?status=archived — every enrollment except the current one, newest first. */
+    public function index(Request $request)
+    {
+        $request->validate(['status' => ['required', 'in:archived']]);
+
+        $student = $request->user();
+        $classrooms = $student->archivedClassrooms();
+        $classrooms->load('course.academicPath');
+
+        $marks = StudentMarks::where('student_id', $student->id)
+            ->whereIn('course_id', $classrooms->pluck('course_id'))
+            ->get()
+            ->keyBy('course_id');
+
+        return response()->json([
+            'data' => $classrooms->map(function ($classroom) use ($marks) {
+                return new CourseSummaryResource($classroom, $marks->get($classroom->course_id));
+            })->values(),
+        ]);
+    }
+
+    /** GET /student/courses/{course} — one of the student's courses; archived ones are read-only. */
+    public function show(Request $request, $courseId)
+    {
+        $student = $request->user();
+        $classroom = $this->enrolledClassroom($student, $courseId);
+        $current = $student->currentClassroom();
+        $status = $current && (int) $current->course_id === (int) $classroom->course_id ? 'active' : 'archived';
+
+        return $this->detail($student, $classroom, $status);
+    }
+
     public function current(Request $request)
     {
         $student = $request->user();
@@ -65,7 +98,10 @@ class StudentCourseController extends Controller
 
     protected function enrolledClassroom($student, $courseId)
     {
-        $classroom = $student->classRooms()->where('class_rooms.course_id', $courseId)->first();
+        $classroom = $student->enrolledClassrooms()
+            ->where('class_rooms.course_id', $courseId)
+            ->orderByDesc('class_rooms.id')
+            ->first();
         abort_unless($classroom, 404);
 
         return $classroom;

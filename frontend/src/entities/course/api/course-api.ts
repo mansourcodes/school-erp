@@ -1,5 +1,5 @@
 import { baseApi } from '@/shared/api';
-import type { CourseDetail } from '../model/types';
+import type { CourseDetail, CourseSummary } from '../model/types';
 
 export const courseApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -9,7 +9,19 @@ export const courseApi = baseApi.injectEndpoints({
       transformResponse: (response: { data: CourseDetail | null }) => response.data,
       providesTags: ['Course'],
     }),
+    /** Every enrollment except the current one, newest first. */
+    archivedCourses: build.query<CourseSummary[], void>({
+      query: () => '/student/courses?status=archived',
+      transformResponse: (response: { data: CourseSummary[] }) => response.data,
+      providesTags: ['Course'],
+    }),
+    /** One of the student's courses; `status: 'archived'` = read-only. */
+    course: build.query<CourseDetail, number>({
+      query: (id) => `/student/courses/${id}`,
+      transformResponse: (response: { data: CourseDetail }) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'Course', id }],
+    }),
   }),
 });
 
-export const { useCurrentCourseQuery } = courseApi;
+export const { useCurrentCourseQuery, useArchivedCoursesQuery, useCourseQuery } = courseApi;

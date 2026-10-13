@@ -18,6 +18,8 @@ export function HomePage() {
     refetchOnReconnect: true,
   });
 
+  const [tab, selectTab] = useCourseTab();
+
   if (isLoading || !viewer) return <HomeSkeleton />;
   if (isError && course === undefined) return <HomeError onRetry={refetch} />;
   if (!course) return <NoActiveCourse />;
@@ -25,18 +27,25 @@ export function HomePage() {
   return (
     <div className="space-y-4 lg:space-y-6">
       <CourseHero course={course} viewer={viewer} now={new Date()} />
-      <KpiTiles course={course} />
-      <CourseDetailsTabs course={course} viewer={viewer} today={new Date().getDay()} />
+      <KpiTiles course={course} onOpenTab={selectTab} />
+      <CourseDetailsTabs
+        id="course-details"
+        course={course}
+        viewer={viewer}
+        tab={tab}
+        onTabChange={selectTab}
+        today={new Date().getDay()}
+        sticky
+      />
     </div>
   );
 }
 
 /** Attendance tiles join in P2.5, once the attendance API exists. */
-function KpiTiles({ course }: { course: CourseDetail }) {
-  const [, selectTab] = useCourseTab();
+function KpiTiles({ course, onOpenTab }: { course: CourseDetail; onOpenTab: (tab: CourseTab) => void }) {
   const marks = marksTotals(course.marks);
   const open = (tab: CourseTab) => {
-    selectTab(tab);
+    onOpenTab(tab);
     document.getElementById('course-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 

@@ -4,6 +4,20 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal archive — P2.4 (2026-10-13)
+- API: `GET /api/v1/student/courses?status=archived` (`CourseSummaryResource`: identity, dates, result once published)
+  and `GET /api/v1/student/courses/{course}` (`CourseDetailResource`, status `active` for the current course, else `archived`)
+- `Student::enrolledClassrooms()` (drops soft-deleted courses, which the `classRooms()` join kept) and
+  `archivedClassrooms()` (all but the current course, one per course, newest first); the certificate endpoint uses it too
+- Verified read-only on dev data: 475/475 lists → 200, 1,056 archive cards, all details → 200 and archived,
+  none overlapping the current course, all newest-first
+- SPA: `/archive` and `/archive/:courseId`; search + year filter; `widgets/archived-course-card` (disclosure shell);
+  detail fetched only when a card opens; tabs marks → timetable → payments; link to the course's attendance log
+- `CourseDetailsTabs` is now controlled (hash on Home, local state on archive cards) with `useId` ids
+- Shell: exact nav matching only for Home and Attendance, so the archive tab stays active on `/archive/:id`
+- Tests: 8 new PHPUnit (`StudentArchiveTest`, fixtures in `Concerns/BuildsEnrollments`), 5 new Vitest;
+  Testing Library async timeout 4 s for lazy routes under parallel load
+
 ### Portal current course — P2.3 (2026-10-13)
 - API: `GET /api/v1/student/courses/current` (`CourseDetailResource`, `data: null` without an active course) and
   `GET /api/v1/student/courses/{course}/certificate` (admin certificate print view; 403 until `final_grade`, 404 if not enrolled)

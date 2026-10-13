@@ -10,7 +10,8 @@ Update this file after every meaningful implementation change.
   - **P2.2 SPA shell + auth done** (2026-10-13): `frontend/` FSD app, login, shell, theme, 401/419/429 handling,
     23 tests, CI workflow (see completed-tracker)
   - **P2.3 Current course done** (2026-10-13): course API + certificate print view, Home hero / KPIs / tabs
-  - Next: **P2.4 Archive** (`GET /student/courses?status=archived`, `GET /student/courses/{id}`, read-only detail)
+  - **P2.4 Archive done** (2026-10-13): archive list + read-only detail, `/archive/:courseId`
+  - Next: **P2.5 Attendance + stats** (shared attendance service extracted from `reportStudentAttendList`)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -79,8 +80,9 @@ Update this file after every meaningful implementation change.
 
 ## Next Up
 
-- P2.4: archived list + course detail endpoints (reuse `CourseDetailResource` with status `archived`), Archive page
-- P2.5: add the attendance KPI tiles (rate, attended/recorded) to Home
+- P2.5: extract the attendance service from `AcademiaReportsController::reportStudentAttendList` (the admin report and
+  the API must give the same numbers); `/student/attendance` + `/stats`; attendance + stats pages; attendance KPI tiles
+  on Home; attendance rate on archive cards
 - Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)
 - Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 

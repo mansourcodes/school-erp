@@ -584,7 +584,7 @@ Envelope: `{ "data": …, "meta": { … } }`. Errors: `{ "message": "…", "erro
 |---|---|---|
 | GET | `/api/v1/student/courses/current` | `CourseDetail` or `data: null` |
 | GET | `/api/v1/student/courses?status=archived` | `CourseSummary[]` (newest first) |
-| GET | `/api/v1/student/courses/{courseId}` | `CourseDetail` (`readonly: true` if archived) |
+| GET | `/api/v1/student/courses/{courseId}` | `CourseDetail`; `status: "archived"` = read-only (404 if not enrolled or the course is deleted) |
 | GET | `/api/v1/student/courses/{courseId}/certificate` | Certificate print view, `text/html` (403 until published, 404 if not enrolled) |
 | GET | `/api/v1/student/attendance?course_id=&from=&to=` | `Session[]` |
 | GET | `/api/v1/student/attendance/stats?course_id=` | `AttendanceStats` |

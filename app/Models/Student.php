@@ -117,11 +117,36 @@ class Student extends Authenticatable
      */
     public function currentClassroom()
     {
-        return $this->classRooms()
+        return $this->enrolledClassrooms()
             ->where('courses.is_active', 1)
-            ->whereNull('courses.deleted_at')
             ->orderByDesc('class_rooms.id')
             ->first();
+    }
+
+    /**
+     * Enrollments the portal may show: newest course first, without soft-deleted courses
+     * (`classRooms()` joins `courses` directly, so its soft-delete scope does not apply).
+     */
+    public function enrolledClassrooms()
+    {
+        return $this->classRooms()->whereNull('courses.deleted_at');
+    }
+
+    /**
+     * Every enrollment except the current one, one per course (PLAN.md §3.3).
+     */
+    public function archivedClassrooms()
+    {
+        $current = $this->currentClassroom();
+
+        return $this->enrolledClassrooms()
+            ->orderByDesc('class_rooms.id')
+            ->get()
+            ->reject(function ($classroom) use ($current) {
+                return $current && (int) $classroom->course_id === (int) $current->course_id;
+            })
+            ->unique('course_id')
+            ->values();
     }
 
     public function payments()

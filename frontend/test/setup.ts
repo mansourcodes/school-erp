@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { server } from './server';
+
+// Lazy routes are transformed on first import; under parallel load that can exceed the 1 s default.
+configure({ asyncUtilTimeout: 4000 });
 
 // jsdom does not implement scrolling.
 Element.prototype.scrollIntoView = () => {};
