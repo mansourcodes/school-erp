@@ -1,7 +1,8 @@
 import { ArrowRight, ArrowUpRight, Mail, WifiOff } from 'lucide-react';
 import { NavLink, Outlet, useMatches, useNavigate } from 'react-router';
 import { LogoutButton } from '@/features/auth/logout';
-import { InstallBanner } from '@/features/install-app';
+import { PushSoftPrompt } from '@/features/enable-notifications';
+import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { ThemeCycleButton, ThemeSegment } from '@/features/theme-switch';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
 import { BASE_PATH, homeOf, LEGACY_PORTAL_URL, routes } from '@/shared/config';
@@ -83,6 +84,8 @@ export function AppShell() {
       <main className={`max-w-6xl mx-auto w-full px-4 lg:px-8 pt-4 lg:pt-8 ${task ? 'pb-36' : 'pb-dock'}`}>
         {!task && <InstallBanner />}
         <Outlet />
+        {/* Students only: teachers receive no notifications in this phase (PLAN.md §4). */}
+        {viewer.role === 'student' && <PushSoftPrompt afterLoginKey={JUST_LOGGED_IN_KEY} />}
       </main>
 
       {!task && (

@@ -2,6 +2,7 @@
 
 namespace App\Services\Attendance;
 
+use App\Events\AttendanceFirstRecorded;
 use App\Models\Attends;
 use App\Models\ClassRoom;
 use Carbon\Carbon;
@@ -23,7 +24,7 @@ class AttendanceRecorder
      */
     public function save(ClassRoom $classroom, $curriculumId, $date, $start, array $states, Carbon $now)
     {
-        return DB::transaction(function () use ($classroom, $curriculumId, $date, $start, $states, $now) {
+        $result = DB::transaction(function () use ($classroom, $curriculumId, $date, $start, $states, $now) {
             $attend = $this->find($classroom, $curriculumId, $date, $start);
             $created = false;
 
@@ -43,6 +44,13 @@ class AttendanceRecorder
 
             return [$attend->fresh(), $created];
         });
+
+        // First save only (after commit): students get their status once; edits never notify.
+        if ($result[1]) {
+            event(new AttendanceFirstRecorded($result[0]->id));
+        }
+
+        return $result;
     }
 
     /** This classroom's record of one session, matched like ClassroomAttendance (by hour). */

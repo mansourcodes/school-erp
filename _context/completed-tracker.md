@@ -4,6 +4,22 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Push notifications — P3.4 (2026-10-13)
+- `laravel-notification-channels/webpush` 5.1 (minishlink/web-push 6, Laravel 8 / PHP 8.0); `config/webpush.php`,
+  `push_subscriptions` (Student `HasPushSubscriptions`), `student_notification_settings`; expired subscriptions
+  (404/410) are deleted by the package
+- `AttendanceFirstRecorded` (fired after commit when the Attends record is created: teacher save or admin easy form;
+  edits never) → `AttendanceRecordedPush` per student with their own status; `MessageSent` → `MessageReceivedPush`
+  (centre name + first 80 chars). Queued notifications; skipped without VAPID keys or when the student turned the
+  type off; listeners never let a push failure fail the save (found by test: with a `sync` queue it returned 500)
+- API: `GET /push/config`, `POST|DELETE /push/subscriptions` (https endpoints, students only),
+  `GET|PATCH /student/notification-settings`
+- SW: `push` (rtl, tag per session/message) + `notificationclick` (focus / open `/beta/attendance?date=` or
+  `/beta/messages#id`), pages refresh on `PUSH_RECEIVED`
+- SPA: `features/enable-notifications` (profile card: enable / granted / denied / iPhone install note, two toggles,
+  soft prompt once after first login), logout unsubscribes this device; 9 PHPUnit + 3 Vitest
+- Not verified end to end against a real push service (needs VAPID keys and a browser on a phone)
+
 ### Messages — P3.3 (2026-10-13)
 - Tables `messages` (soft delete, indexes) + `message_recipients` (`read_at`, unique per message/student);
   `messages:prune` daily (90 days, needs the `schedule:run` cron); `MessageSent` event for push (P3.4)

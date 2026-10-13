@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 use Spatie\Permission\Traits\HasRoles;
 
 class Student extends Authenticatable
@@ -17,6 +18,8 @@ class Student extends Authenticatable
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory, SoftDeletes, Notifiable;
     use HasRoles;
+    // Web Push subscriptions of the student's devices (PLAN.md §5.12).
+    use HasPushSubscriptions;
 
 
     /**

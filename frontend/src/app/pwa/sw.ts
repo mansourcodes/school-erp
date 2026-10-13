@@ -64,6 +64,62 @@ registerRoute(
 // Other /api/v1/* and /sanctum/* requests have no route on purpose: always the network, never stored here.
 // Phones are often shared in a family; RTK Query's in-memory cache covers short offline gaps.
 
+// Web Push (PLAN.md §4 "Push notifications"): show it, then open the screen it points to.
+interface PushPayload {
+  title?: string;
+  body?: string;
+  icon?: string;
+  badge?: string;
+  tag?: string;
+  dir?: NotificationDirection;
+  lang?: string;
+  data?: { url?: string };
+}
+
+self.addEventListener('push', (event) => {
+  let payload: PushPayload = {};
+  try {
+    payload = (event.data?.json() ?? {}) as PushPayload;
+  } catch {
+    payload = { body: event.data?.text() };
+  }
+  event.waitUntil(
+    (async () => {
+      await self.registration.showNotification(payload.title ?? 'بوابة الغدير', {
+        body: payload.body,
+        icon: payload.icon ?? '/beta/pwa-192x192.png',
+        badge: payload.badge ?? '/beta/pwa-64x64.png',
+        // One notification per session / message: a repeat replaces it.
+        tag: payload.tag,
+        dir: payload.dir ?? 'rtl',
+        lang: payload.lang ?? 'ar',
+        data: payload.data ?? {},
+      });
+      // Open pages refresh the unread badge and lists.
+      for (const client of await self.clients.matchAll({ type: 'window' })) {
+        client.postMessage({ type: 'PUSH_RECEIVED', tag: payload.tag });
+      }
+    })(),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = new URL((event.notification.data as { url?: string } | undefined)?.url ?? '/beta/', self.location.origin).href;
+  event.waitUntil(
+    (async () => {
+      const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      const open = windows.find((client) => client.url.startsWith(`${self.location.origin}/beta`));
+      if (open) {
+        await open.focus();
+        await open.navigate(url);
+      } else {
+        await self.clients.openWindow(url);
+      }
+    })(),
+  );
+});
+
 self.addEventListener('message', (event) => {
   // "يتوفر تحديث جديد · تحديث": the page asks the waiting worker to take over.
   if (event.data?.type === 'SKIP_WAITING') void self.skipWaiting();

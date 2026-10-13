@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router';
 import { baseApi, sessionEnded } from '@/shared/api';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { clearRosterQueue, useAppDispatch } from '@/shared/lib';
-import { useLogoutMutation } from '../api/logout-api';
+import { useMeQuery } from '@/entities/viewer';
+import { clearRosterQueue, currentPushSubscription, useAppDispatch } from '@/shared/lib';
+import { useLogoutMutation, useUnsubscribePushMutation } from '../api/logout-api';
 
 /** Personal data is never cached by the worker; this also drops anything a future route might add. */
 async function purgeRuntimeCaches() {
@@ -15,11 +16,20 @@ async function purgeRuntimeCaches() {
 
 export function LogoutButton({ className = '' }: { className?: string }) {
   const [logout, { isLoading }] = useLogoutMutation();
+  const [unsubscribePush] = useUnsubscribePushMutation();
+  const { data: viewer } = useMeQuery();
+  const isStudent = viewer?.role === 'student';
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onClick = async () => {
     try {
+      // Students only have push (teachers get none in this phase).
+      const subscription = isStudent ? await currentPushSubscription() : null;
+      if (subscription) {
+        await unsubscribePush(subscription.endpoint).unwrap().catch(() => undefined);
+        await subscription.unsubscribe();
+      }
       await logout().unwrap();
     } catch {
       // Already signed out or offline: clear this device anyway.

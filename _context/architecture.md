@@ -97,6 +97,7 @@ ExamTool >── Course, Curriculum
 5a. Attendance states are resolved only by `App\Services\Attendance\ClassroomAttendance` (admin
    `student_attend_list` report and portal API alike); do not re-implement the cell rule elsewhere
 5. PDF generation runs synchronously in request handlers (no background jobs
-   for reports); only exam ZIP packaging is queued
+   for reports); exam ZIP packaging and the portal's Web Push notifications are queued
+   (push listeners never fail the request that triggered them)
 6. Do not store large binary content in the database — files go to `public`
    disk storage

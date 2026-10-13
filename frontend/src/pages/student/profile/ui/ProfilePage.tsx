@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { LogoutButton } from '@/features/auth/logout';
+import { NotificationsCard } from '@/features/enable-notifications';
 import { ThemeSegment } from '@/features/theme-switch';
 import { maskCpr, type Profile, useMeQuery, useProfileQuery, ViewerAvatar } from '@/entities/viewer';
 import { LEGACY_PORTAL_URL } from '@/shared/config';
@@ -72,6 +73,7 @@ export function ProfilePage() {
           </div>
 
           <ProfileCards profile={profile} />
+          <NotificationsCard />
         </>
       )}
 

@@ -41,6 +41,13 @@ Route::prefix('v1')
             Route::post('/auth/logout', [App\Http\Controllers\Api\V1\AuthController::class, 'logout']);
             Route::get('/me', [App\Http\Controllers\Api\V1\MeController::class, 'show']);
 
+            // Web Push: students only; teachers receive no notifications in this phase (PLAN.md §4).
+            Route::prefix('push')->middleware('portal.role:student')->group(function () {
+                Route::get('/config', [App\Http\Controllers\Api\V1\PushController::class, 'config']);
+                Route::post('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'subscribe']);
+                Route::delete('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'unsubscribe']);
+            });
+
             // Teacher panel (PLAN.md §8): own classrooms of the current course only.
             Route::prefix('teacher')->middleware('portal.role:teacher')->group(function () {
                 Route::get('/today', [App\Http\Controllers\Api\V1\TeacherController::class, 'today']);
@@ -66,6 +73,8 @@ Route::prefix('v1')
                     ->where('course', '[0-9]+');
                 Route::get('/profile', [App\Http\Controllers\Api\V1\MeController::class, 'profile']);
                 Route::get('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'inbox']);
+                Route::get('/notification-settings', [App\Http\Controllers\Api\V1\PushController::class, 'settings']);
+                Route::patch('/notification-settings', [App\Http\Controllers\Api\V1\PushController::class, 'updateSettings']);
                 Route::post('/messages/{id}/read', [App\Http\Controllers\Api\V1\MessageController::class, 'read'])->where('id', '[0-9]+');
                 Route::get('/attendance', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'index']);
                 Route::get('/attendance/stats', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'stats']);

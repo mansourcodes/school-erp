@@ -5,7 +5,10 @@ export const logoutApi = baseApi.injectEndpoints({
     logout: build.mutation<void, void>({
       query: () => ({ url: '/auth/logout', method: 'POST' }),
     }),
+    unsubscribePush: build.mutation<void, string>({
+      query: (endpoint) => ({ url: '/push/subscriptions', method: 'DELETE', body: { endpoint } }),
+    }),
   }),
 });
 
-export const { useLogoutMutation } = logoutApi;
+export const { useLogoutMutation, useUnsubscribePushMutation } = logoutApi;

@@ -24,4 +24,7 @@ export const server = setupServer(
   http.get('*/api/v1/student/attendance/stats', () => HttpResponse.json({ data: null })),
   http.get('*/api/v1/student/attendance', () => HttpResponse.json({ data: [] })),
   http.get('*/api/v1/student/courses', () => HttpResponse.json({ data: [] })),
+  // Push off unless a test enables it.
+  http.get('*/api/v1/push/config', () => HttpResponse.json({ data: { enabled: false, public_key: null } })),
+  http.get('*/api/v1/student/notification-settings', () => HttpResponse.json({ data: { attendance: true, messages: true } })),
 );

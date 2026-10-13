@@ -22,6 +22,13 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        // Portal Web Push (PLAN.md §5.12): notifications themselves are queued.
+        \App\Events\AttendanceFirstRecorded::class => [
+            \App\Listeners\SendAttendancePush::class,
+        ],
+        \App\Events\MessageSent::class => [
+            \App\Listeners\SendMessagePush::class,
+        ],
     ];
 
     /**

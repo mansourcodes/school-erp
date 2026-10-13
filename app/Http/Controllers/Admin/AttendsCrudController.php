@@ -587,6 +587,8 @@ class AttendsCrudController extends CrudController
 
         // Same pivot writes as the teacher portal (PLAN.md §8).
         app(AttendanceRecorder::class)->syncStates($attend, $student_attend_state ?: []);
+        // The easy form always creates the record: this is its first save (students get a push).
+        event(new \App\Events\AttendanceFirstRecorded($attend->id));
 
         $attend->update();
 
