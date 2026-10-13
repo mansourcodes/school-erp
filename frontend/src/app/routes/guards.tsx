@@ -1,10 +1,11 @@
 import { CloudOff } from 'lucide-react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { type ViewerRole, useMeQuery } from '@/entities/viewer';
-import { selectSessionStatus, toApiError } from '@/shared/api';
+import { PortalUnavailablePage } from '@/pages/system';
+import { baseApi, portalAvailable, selectPortalUnavailable, selectSessionStatus, toApiError } from '@/shared/api';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { useAppSelector } from '@/shared/lib';
+import { useAppDispatch, useAppSelector } from '@/shared/lib';
 import { EmptyState, Splash } from '@/shared/ui';
 
 /** Signed-in area for one role. A timed-out session lands on /login?expired=1. */
@@ -41,6 +42,24 @@ export function RequireRole({ role }: { role: ViewerRole }) {
 
   if (viewer.role !== role) return <Navigate to={routes.home} replace />;
   return <Outlet />;
+}
+
+/** The portal switch (maintenance / closed) replaces every screen until it is lifted. */
+export function PortalGate() {
+  const unavailable = useAppSelector(selectPortalUnavailable);
+  const dispatch = useAppDispatch();
+
+  if (!unavailable) return <Outlet />;
+  return (
+    <PortalUnavailablePage
+      mode={unavailable}
+      onRetry={() => {
+        dispatch(portalAvailable());
+        // Refetch everything; if still in maintenance, the API puts the screen back.
+        dispatch(baseApi.util.resetApiState());
+      }}
+    />
+  );
 }
 
 /** The login screen is for signed-out users only. */

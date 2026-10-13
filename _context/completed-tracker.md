@@ -4,6 +4,21 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal beta launch wiring — P2.7 (2026-10-13)
+- `/beta/{path?}` serves `public/beta/index.html` (no-cache); hashed assets and `sw.js` are static files
+- Backpack setting `portal.mode` (migration `2026_10_13_000000_add_portal_mode_to_settings_table`, default beta) read
+  by `App\Support\PortalMode`; `PortalMode` middleware (`portal.mode:legacy` on the old portal, `portal.mode:api` on
+  `/api/v1`) runs before authentication (kernel `$middlewarePriority`): live → old URLs redirect to `/beta`,
+  maintenance → notice + API 503 `portal_maintenance` (Retry-After), closed → notice + API 403 `portal_closed`;
+  `/admin` untouched (tested in every mode)
+- SPA `PortalGate`: maintenance / closed screens from any API answer, retry for maintenance
+- Old portal: dismissible "try the new portal" banner (beta only, ar + en), old `POST /login` rate-limited like
+  the new one (`legacy-student-login`)
+- P0.1 code part: `TrustProxies` from `TRUSTED_PROXIES` (`cloudflare` keyword expands to Cloudflare ranges,
+  `127.0.0.1` for a Tunnel); spoofed X-Forwarded-For from outside the proxies is ignored (tested)
+- Verified in Chrome via Laravel: `/beta/login` renders, service worker active (scope `/beta/`), shell precached,
+  manifest valid, no API response cached
+
 ### Portal PWA — P2.6b (2026-10-13)
 - `vite-plugin-pwa` (injectManifest, `src/app/pwa/sw.ts`, own `tsconfig.sw.json`): app shell precached
   (26 files, no fonts), navigation fallback for `/beta/*`, fonts CacheFirst on first use, `/api` + `/sanctum`

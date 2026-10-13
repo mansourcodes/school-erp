@@ -4,7 +4,7 @@ import { ErrorPage, NotFoundPage } from '@/pages/system';
 import { AppShell, type ShellRouteHandle } from '@/widgets/app-shell';
 import { BASE_PATH, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { GuestOnly, RequireRole } from './guards';
+import { GuestOnly, PortalGate, RequireRole } from './guards';
 
 const title = (key: string): ShellRouteHandle => ({ title: t(key) });
 
@@ -14,6 +14,7 @@ const archive = () => import('@/pages/student/archive').then((m) => ({ Component
 
 export const appRoutes: RouteObject[] = [
   {
+    element: <PortalGate />,
     errorElement: <ErrorPage />,
     children: [
       {

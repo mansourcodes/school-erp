@@ -15,7 +15,11 @@ Update this file after every meaningful implementation change.
     verified), attendance + stats endpoints and pages, Home attendance tiles, archive rates
   - **P2.6 Profile done** (2026-10-13)
   - **P2.6b PWA done** (2026-10-13); installability check in Chrome follows P2.7 (needs `/beta` served)
-  - Next: **P2.7 Beta launch** (`/beta` route, `portal.mode`, `PortalMode` middleware, old-portal banner)
+  - **P2.7 Beta launch wiring done** (2026-10-13): `/beta` served by Laravel, `portal.mode` + middleware, SPA
+    maintenance/closed screens, old-portal banner + login limit, TrustProxies (P0.1 code part)
+  - P2.8 (beta period with students) and P2.9 (promotion) are operational steps, gated by P0.1/P0.2, pen test,
+    restore test and the k6 peak test (PLAN.md §11)
+  - Next: **P3.1 Teacher API**
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -89,6 +93,10 @@ Update this file after every meaningful implementation change.
 - Before go-live (P0.1): `TrustProxies` + `CF-Connecting-IP`, otherwise the per-IP login limits see Cloudflare's IPs
 
 ## Open Questions
+
+- Deploy: the web server must send `manifest.webmanifest` as `application/manifest+json`, and `/beta/sw.js`,
+  `/beta/index.html`, `/beta/manifest.webmanifest` with no-cache (Cloudflare cache rules, PLAN.md §10.4).
+  Build step: `cd frontend && npm ci && npm run build` (writes `public/beta`, gitignored).
 
 - Certificate: served as the admin HTML print view (no mPDF output exists in the project). A real PDF download
   would be its own task. OK for the beta?

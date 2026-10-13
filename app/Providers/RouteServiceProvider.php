@@ -67,6 +67,23 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
 
+        // The old Blade login form: same limits, answered the Blade way.
+        RateLimiter::for('legacy-student-login', function (Request $request) {
+            $tooMany = function (Request $request) {
+                return back()->withInput($request->only('cpr'))
+                    ->withErrors(['cpr' => __('localize.too_many_login_attempts')]);
+            };
+
+            return [
+                Limit::perMinute(config('portal.login.per_cpr_ip_per_minute'))
+                    ->by('legacy-cpr-ip|' . sha1((string) $request->input('cpr')) . '|' . $request->ip())
+                    ->response($tooMany),
+                Limit::perMinute(config('portal.login.per_ip_per_minute'))
+                    ->by('legacy-ip|' . $request->ip())
+                    ->response($tooMany),
+            ];
+        });
+
         RateLimiter::for('portal', function (Request $request) {
             return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });

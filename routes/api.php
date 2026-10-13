@@ -30,6 +30,7 @@ Route::get('/teacher/{id}', [App\Http\Controllers\Api\TeacherController::class, 
 Route::prefix('v1')
     ->middleware([
         \App\Http\Middleware\ForceJsonResponse::class,
+        'portal.mode:api',
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ])
     ->group(function () {

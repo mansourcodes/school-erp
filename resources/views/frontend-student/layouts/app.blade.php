@@ -115,6 +115,15 @@
             </div>
         </nav>
 
+        @if (\App\Support\PortalMode::is(\App\Support\PortalMode::BETA))
+            {{-- PLAN.md §4: the only change to the old portal during the beta. --}}
+            <div class="alert alert-info alert-dismissible fade show rounded-0 mb-0 text-center" role="alert">
+                {{ __('localize.portal_beta_banner') }}
+                <a href="{{ url('/beta') }}" class="alert-link ms-2">{{ __('localize.portal_beta_banner_link') }}</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('localize.close') }}"></button>
+            </div>
+        @endif
+
         <main class="py-4">
             @yield('content')
         </main>

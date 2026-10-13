@@ -20,5 +20,13 @@
 	'no_payment_found' => 'لا يوجد مبالغ مدفوعه',
 	'old_courses' => 'الدورات السابقة',
 	'class_teachers' => 'مسؤولي الصف',
-	'no_certificate_found'=> 'لم تصدر الشهاده'
+	'no_certificate_found'=> 'لم تصدر الشهاده',
+	'portal_beta_banner' => 'جرّب بوابة الطالب الجديدة (نسخة تجريبية)',
+	'portal_beta_banner_link' => 'افتح البوابة الجديدة',
+	'portal_maintenance_title' => 'البوابة تحت الصيانة',
+	'portal_maintenance_body' => 'نعمل على تحسين البوابة، وستعود قريبًا. شكرًا لصبركم.',
+	'portal_closed_title' => 'البوابة مغلقة حاليًا',
+	'portal_closed_body' => 'البوابة غير متاحة في الوقت الحالي. للاستفسار يرجى مراجعة قسم إدارة المركز.',
+	'too_many_login_attempts' => 'محاولات كثيرة. انتظر دقيقة ثم حاول مرة أخرى.',
+	'close' => 'إغلاق',
 ];

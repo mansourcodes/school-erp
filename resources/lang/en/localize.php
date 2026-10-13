@@ -20,4 +20,13 @@
 	'no_payment_found' => 'No payment found',
 	'old_courses' => 'old courses',
 	'class_teachers' => 'class_Teachers',
+	'no_certificate_found' => 'No certificate issued',
+	'portal_beta_banner' => 'Try the new student portal (beta)',
+	'portal_beta_banner_link' => 'Open the new portal',
+	'portal_maintenance_title' => 'The portal is under maintenance',
+	'portal_maintenance_body' => 'We are improving the portal and it will be back soon. Thank you for your patience.',
+	'portal_closed_title' => 'The portal is closed',
+	'portal_closed_body' => 'The portal is not available at the moment. Please contact the centre administration.',
+	'too_many_login_attempts' => 'Too many attempts. Wait a minute and try again.',
+	'close' => 'Close',
 ];

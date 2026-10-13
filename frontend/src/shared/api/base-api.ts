@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { API_BASE_URL, CSRF_COOKIE_URL } from '@/shared/config';
 import { readCookie } from '@/shared/lib';
+import { portalUnavailable } from './portal-status';
 import { selectSessionStatus, sessionExpired } from './session';
 
 const rawBaseQuery = fetchBaseQuery({
@@ -45,6 +46,11 @@ const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQuery
       api.dispatch(baseApi.util.resetApiState());
     }
   }
+
+  // Portal switch: the whole app shows the maintenance / closed screen.
+  const code = typeof error.data === 'object' && error.data !== null ? (error.data as { code?: unknown }).code : undefined;
+  if (error.status === 503 && code === 'portal_maintenance') api.dispatch(portalUnavailable('maintenance'));
+  if (error.status === 403 && code === 'portal_closed') api.dispatch(portalUnavailable('closed'));
 
   if (error.status === 429) {
     const retryAfter = Number(result.meta?.response?.headers.get('Retry-After'));
