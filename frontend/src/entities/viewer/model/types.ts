@@ -6,6 +6,8 @@ export interface StudentViewer {
   first_name: string;
   student_id: string;
   photo_url: string | null;
+  /** Top-bar envelope badge (PLAN.md §7.2). */
+  unread_messages: number;
 }
 
 export interface TeacherViewer {

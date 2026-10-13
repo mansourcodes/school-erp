@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, WifiOff } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Mail, WifiOff } from 'lucide-react';
 import { NavLink, Outlet, useMatches, useNavigate } from 'react-router';
 import { LogoutButton } from '@/features/auth/logout';
 import { InstallBanner } from '@/features/install-app';
@@ -54,6 +54,19 @@ export function AppShell() {
             </p>
             <h1 className="font-display text-base sm:text-lg leading-tight truncate">{title}</h1>
           </div>
+          {viewer.role === 'student' && (
+            // Messages: envelope + unread badge on every screen size (PLAN.md §2 "Navigation").
+            <NavLink
+              to={routes.messages}
+              className="btn btn-ghost btn-circle relative"
+              aria-label={viewer.unread_messages ? t('messages.inboxLabel', { n: viewer.unread_messages }) : t('messages.title')}
+            >
+              <Mail className="size-5" strokeWidth={1.75} aria-hidden="true" />
+              {viewer.unread_messages > 0 && (
+                <span className="badge badge-error badge-xs absolute top-1.5 end-1.5 num px-1 min-w-4">{viewer.unread_messages}</span>
+              )}
+            </NavLink>
+          )}
           <ThemeCycleButton className="lg:hidden" />
           <NavLink to={profile} className="lg:hidden" aria-label={t('nav.profile')}>
             <ViewerAvatar viewer={viewer} className="w-8 h-10" textClassName="text-sm" />
@@ -74,7 +87,7 @@ export function AppShell() {
 
       {!task && (
         <nav className="dock dock-md bg-base-100/90 backdrop-blur border-t border-base-300 lg:hidden z-40" aria-label={t('nav.main')}>
-          {nav.map(({ to, short, icon: Icon, end }) => (
+          {nav.filter((item) => !item.sidebarOnly).map(({ to, short, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={({ isActive }) => (isActive ? 'dock-active text-primary' : 'opacity-70')}>
               <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
               <span className="dock-label">{t(short)}</span>
@@ -105,11 +118,14 @@ function Sidebar({ viewer }: { viewer: Viewer }) {
       </div>
 
       <ul className="menu w-full px-3 gap-1 text-[0.95rem]">
-        {navFor(viewer.role).map(({ to, label, icon: Icon, end }) => (
+        {navFor(viewer.role).map(({ to, label, icon: Icon, end, badge }) => (
           <li key={to}>
             <NavLink to={to} end={end} className={({ isActive }) => `py-2.5 ${isActive ? 'menu-active' : ''}`}>
               <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
               {t(label)}
+              {badge === 'unread' && viewer.role === 'student' && viewer.unread_messages > 0 && (
+                <span className="badge badge-error badge-sm ms-auto num">{viewer.unread_messages}</span>
+              )}
             </NavLink>
           </li>
         ))}

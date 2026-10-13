@@ -9,6 +9,7 @@ export const demoViewer = {
   first_name: 'حسين',
   student_id: '20240158',
   photo_url: null,
+  unread_messages: 0,
 };
 
 // Default: signed out. Tests override handlers per scenario.

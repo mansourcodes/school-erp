@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Teacher messages are kept 90 days (PLAN.md §5.11). Needs the `schedule:run` cron on the server.
+        $schedule->command('messages:prune')->daily();
     }
 
     /**

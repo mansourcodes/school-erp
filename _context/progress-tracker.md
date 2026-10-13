@@ -21,7 +21,8 @@ Update this file after every meaningful implementation change.
     restore test and the k6 peak test (PLAN.md §11)
   - **P3.1 Teacher API done** (2026-10-13)
   - **P3.2 Teacher SPA done** (2026-10-13): teacher login + panel, roster with offline queue, student photos
-  - Next: **P3.3 Messages**
+  - **P3.3 Messages done** (2026-10-13)
+  - Next: **P3.4 Push notifications**
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first

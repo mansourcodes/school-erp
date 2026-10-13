@@ -35,6 +35,11 @@ export const appRoutes: RouteObject[] = [
               { path: routes.archive, lazy: archive, handle: title('nav.archive') },
               { path: `${routes.archive}/:courseId`, lazy: archive, handle: title('nav.archive') },
               {
+                path: routes.messages,
+                lazy: () => import('@/pages/student/messages').then((m) => ({ Component: m.MessagesPage })),
+                handle: title('messages.title'),
+              },
+              {
                 path: routes.profile,
                 lazy: () => import('@/pages/student/profile').then((m) => ({ Component: m.ProfilePage })),
                 handle: title('nav.profile'),
@@ -69,6 +74,16 @@ export const appRoutes: RouteObject[] = [
                 path: `${routes.teacher.classes}/:id`,
                 lazy: () => import('@/pages/teacher/classroom').then((m) => ({ Component: m.TeacherClassroomPage })),
                 handle: task('teacher.classroomTitle'),
+              },
+              {
+                path: routes.teacher.messages,
+                lazy: () => import('@/pages/teacher/messages').then((m) => ({ Component: m.TeacherMessagesPage })),
+                handle: title('teacher.navMessages'),
+              },
+              {
+                path: `${routes.teacher.messages}/new`,
+                lazy: () => import('@/pages/teacher/compose').then((m) => ({ Component: m.TeacherComposePage })),
+                handle: task('messages.new'),
               },
               {
                 path: routes.teacher.stats,

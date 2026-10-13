@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import {
   canQueue,
-  LeaveGuard,
   markQueued,
   QuickActions,
+  RosterLeaveGuard,
   SaveBar,
   StateSegment,
   useQueued,
@@ -181,7 +181,7 @@ export function RosterEditor({ roster }: { roster: Roster }) {
           onUndo={draft.undo}
         />
       )}
-      <LeaveGuard when={draft.dirty && !queued && !saving} />
+      <RosterLeaveGuard when={draft.dirty && !queued && !saving} />
 
       {toast && (
         <div className="toast toast-top toast-center z-[70]">

@@ -4,6 +4,19 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Messages — P3.3 (2026-10-13)
+- Tables `messages` (soft delete, indexes) + `message_recipients` (`read_at`, unique per message/student);
+  `messages:prune` daily (90 days, needs the `schedule:run` cron); `MessageSent` event for push (P3.4)
+- API: teacher `GET|POST /teacher/messages`, `DELETE /teacher/messages/{id}` (own only); student
+  `GET /student/messages`, `POST /student/messages/{id}/read` (idempotent, 404 when deleted/foreign);
+  `/me.unread_messages`. Scope tests: other teacher's / archived classroom → 404, foreign student → 422,
+  students cannot send, body 1–500, delete own only, prune
+- SPA: `entities/message`, features read / send / delete; widgets inbox-list (pagination, `#id` deep link,
+  "no longer available"), sent-messages (read progress, delete sheet); student inbox + top-bar envelope badge,
+  sidebar entry, Home unread strip; teacher Messages tab + compose task screen (classroom chips, select all,
+  500-char counter, leave guard); "مراسلة طلاب الصف" from a classroom
+- `LeaveGuard` moved to `shared/ui` (roster + compose)
+
 ### Teacher SPA — P3.2 (2026-10-13)
 - Backend: `students.photo_path`; teacher photo upload/delete (GD re-encode to 512 px WebP, EXIF/appended bytes
   dropped, previous file deleted, 5/hour per teacher+student); `photo_url` in /me, profile, roster, classroom rows;

@@ -1,9 +1,10 @@
-import { CalendarDays, Info, Users } from 'lucide-react';
+import { CalendarDays, Info, Mail, Users } from 'lucide-react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { SessionCard, useClassroomSessionsQuery } from '@/entities/class-session';
 import { useTeacherClassroomQuery } from '@/entities/classroom';
 import { ClassroomStudents } from '@/widgets/classroom-students';
+import { routes } from '@/shared/config';
 import { t, tList } from '@/shared/i18n';
 import { fmtDate, fmtTime, pct } from '@/shared/lib';
 import { ErrorCard, LoadingBlocks } from '@/shared/ui';
@@ -44,6 +45,10 @@ export function TeacherClassroomPage() {
         <p className="text-xs opacity-80 mt-2 num">
           {t('teacher.students', { n: classroom.students.length })} · {t('teacher.rate', { rate: classroom.rate === null ? '—' : pct(classroom.rate) })}
         </p>
+        <Link to={`${routes.teacher.messages}/new?room=${classroom.id}`} className="btn btn-sm mt-3 bg-white/15 border-white/30 text-white">
+          <Mail className="size-4" strokeWidth={1.75} aria-hidden="true" />
+          {t('teacher.messageClass')}
+        </Link>
       </section>
 
       <section className="card-soft">

@@ -1,10 +1,8 @@
 import { CheckCheck, CloudUpload, Save, Undo2, X } from 'lucide-react';
-import { useEffect } from 'react';
-import { useBlocker } from 'react-router';
 import { ATTENDANCE_STATES } from '@/entities/attendance';
 import type { RosterState } from '@/entities/class-session';
 import { t } from '@/shared/i18n';
-import { Dialog } from '@/shared/ui';
+import { LeaveGuard } from '@/shared/ui';
 
 const ORDER: RosterState[] = ['present', 'late', 'late_excused', 'absent', 'absent_excused'];
 
@@ -118,39 +116,15 @@ export function SaveBar({ setCount, total, hint, canSave, canUndo, saving, queue
   );
 }
 
-/** "لديك تغييرات غير محفوظة": in-app navigation asks first; closing the tab gets the browser prompt. */
-export function LeaveGuard({ when }: { when: boolean }) {
-  const blocker = useBlocker(({ currentLocation, nextLocation }) => when && currentLocation.pathname !== nextLocation.pathname);
-
-  useEffect(() => {
-    if (!when) return;
-    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [when]);
-
+/** "لديك تغييرات غير محفوظة" (PLAN.md §8 roster). */
+export function RosterLeaveGuard({ when }: { when: boolean }) {
   return (
-    <Dialog
-      open={blocker.state === 'blocked'}
-      onClose={() => blocker.reset?.()}
-      labelledBy="leave-title"
-      closeLabel={t('teacher.stay')}
-    >
-      <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-        <div className="sheet-grip" />
-        <h2 id="leave-title" className="font-display text-lg">
-          {t('teacher.leaveTitle')}
-        </h2>
-        <p className="text-sm opacity-75 mt-1">{t('teacher.leaveBody')}</p>
-        <div className="grid grid-cols-2 gap-2 mt-6">
-          <button type="button" className="btn btn-lg" onClick={() => blocker.reset?.()}>
-            {t('teacher.stay')}
-          </button>
-          <button type="button" className="btn btn-error btn-lg" onClick={() => blocker.proceed?.()}>
-            {t('teacher.leave')}
-          </button>
-        </div>
-      </div>
-    </Dialog>
+    <LeaveGuard
+      when={when}
+      title={t('teacher.leaveTitle')}
+      body={t('teacher.leaveBody')}
+      stayLabel={t('teacher.stay')}
+      leaveLabel={t('teacher.leave')}
+    />
   );
 }

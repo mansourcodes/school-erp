@@ -50,6 +50,9 @@ Route::prefix('v1')
                 Route::get('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'session']);
                 Route::put('/sessions/{code}', [App\Http\Controllers\Api\V1\TeacherController::class, 'saveSession']);
                 Route::get('/stats', [App\Http\Controllers\Api\V1\TeacherController::class, 'stats']);
+                Route::get('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'sent']);
+                Route::post('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'send']);
+                Route::delete('/messages/{id}', [App\Http\Controllers\Api\V1\MessageController::class, 'destroy'])->where('id', '[0-9]+');
                 Route::post('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadPhoto'])
                     ->where(['id' => '[0-9]+', 'sid' => '[0-9]+'])->middleware('throttle:student-photo');
                 Route::delete('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deletePhoto'])
@@ -62,6 +65,8 @@ Route::prefix('v1')
                 Route::get('/courses/{course}', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'show'])
                     ->where('course', '[0-9]+');
                 Route::get('/profile', [App\Http\Controllers\Api\V1\MeController::class, 'profile']);
+                Route::get('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'inbox']);
+                Route::post('/messages/{id}/read', [App\Http\Controllers\Api\V1\MessageController::class, 'read'])->where('id', '[0-9]+');
                 Route::get('/attendance', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'index']);
                 Route::get('/attendance/stats', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'stats']);
                 Route::get('/courses/{course}/certificate', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'certificate'])

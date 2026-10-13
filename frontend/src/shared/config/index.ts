@@ -19,12 +19,14 @@ export const routes = {
   stats: '/attendance/stats',
   archive: '/archive',
   profile: '/profile',
+  messages: '/messages',
   teacher: {
     today: '/teacher',
     classes: '/teacher/classes',
     classroom: (id: number | string) => `/teacher/classes/${id}`,
     roster: (code: string) => `/teacher/attendance/${encodeURIComponent(code)}`,
     stats: '/teacher/stats',
+    messages: '/teacher/messages',
     profile: '/teacher/profile',
   },
 } as const;
