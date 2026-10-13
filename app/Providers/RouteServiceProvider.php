@@ -59,5 +59,24 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
+
+        // Portal login (PLAN.md §6): per (CPR + IP) and per IP. The per-CPR lockout is in LoginLockout.
+        RateLimiter::for('student-login', function (Request $request) {
+            $tooMany = function (Request $request, array $headers) {
+                return response()->json([
+                    'message' => __('portal.auth.throttled'),
+                    'retry_after' => (int) $headers['Retry-After'],
+                ], 429, $headers);
+            };
+
+            return [
+                Limit::perMinute(config('portal.login.per_cpr_ip_per_minute'))
+                    ->by('cpr-ip|' . sha1((string) $request->input('cpr')) . '|' . $request->ip())
+                    ->response($tooMany),
+                Limit::perMinute(config('portal.login.per_ip_per_minute'))
+                    ->by('ip|' . $request->ip())
+                    ->response($tooMany),
+            ];
+        });
     }
 }

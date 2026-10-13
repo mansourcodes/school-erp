@@ -54,6 +54,14 @@ return [
             'days' => 14,
         ],
 
+        // Failed / locked portal logins (PLAN.md §6). CPRs are logged as HMAC hashes only.
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => 'info',
+            'days' => 90,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
