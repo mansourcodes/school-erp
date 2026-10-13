@@ -1,4 +1,5 @@
 import { baseApi, sessionAuthenticated } from '@/shared/api';
+import type { Profile } from '../model/profile';
 import type { Viewer } from '../model/types';
 
 export const viewerApi = baseApi.injectEndpoints({
@@ -16,7 +17,12 @@ export const viewerApi = baseApi.injectEndpoints({
         }
       },
     }),
+    profile: build.query<Profile, void>({
+      query: () => '/student/profile',
+      transformResponse: (response: { data: Profile }) => response.data,
+      providesTags: ['Viewer'],
+    }),
   }),
 });
 
-export const { useMeQuery } = viewerApi;
+export const { useMeQuery, useProfileQuery } = viewerApi;

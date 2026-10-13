@@ -45,6 +45,7 @@ Route::prefix('v1')
                 Route::get('/courses/current', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'current']);
                 Route::get('/courses/{course}', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'show'])
                     ->where('course', '[0-9]+');
+                Route::get('/profile', [App\Http\Controllers\Api\V1\MeController::class, 'profile']);
                 Route::get('/attendance', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'index']);
                 Route::get('/attendance/stats', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'stats']);
                 Route::get('/courses/{course}/certificate', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'certificate'])

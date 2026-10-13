@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal profile — P2.6 (2026-10-13)
+- `GET /api/v1/student/profile` (`ProfileResource`, whitelist test: no health/financial/notes/family fields);
+  CPR re-padded to 9 digits (integer column drops the leading zero of 2000s CPRs)
+- Profile page: identity header (display-only photo + note), personal / contact / academic cards, CPR masked with
+  reveal, password notice, appearance, legacy link, logout. Notification card arrives with push (P3.4)
+
 ### Portal attendance + stats — P2.5 (2026-10-13)
 - `App\Services\Attendance\ClassroomAttendance`: recorded states + the cell rule (slot hour → any record of the
   subject/day → other classroom of the course → any subject of the course that day), moved out of

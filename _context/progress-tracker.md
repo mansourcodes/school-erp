@@ -13,7 +13,8 @@ Update this file after every meaningful implementation change.
   - **P2.4 Archive done** (2026-10-13): archive list + read-only detail, `/archive/:courseId`
   - **P2.5 Attendance + stats done** (2026-10-13): shared `ClassroomAttendance` service (admin report unchanged,
     verified), attendance + stats endpoints and pages, Home attendance tiles, archive rates
-  - Next: **P2.6 Profile** (`GET /student/profile`, display-only photo, masked CPR, notification settings card)
+  - **P2.6 Profile done** (2026-10-13)
+  - Next: **P2.6b PWA** (manifest, icons, service worker, update prompt, install banner)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
