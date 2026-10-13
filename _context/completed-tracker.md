@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Message pruning without cron (2026-10-13)
+- `App\Jobs\PruneOldMessages` (plain job, `dispatchSync()`), used by `messages:prune` and by the admin dashboard
+- `App\Http\Controllers\Admin\AdminController` extends Backpack's: first `/admin/dashboard` visit of the day prunes
+  (`Cache::add` per date; failures reported, dashboard still opens). `backpack.base.setup_dashboard_routes = false`,
+  dashboard + `/admin` redirect routes moved to `routes/backpack/custom.php`; 1 PHPUnit test
+
 ### Push notifications — P3.4 (2026-10-13)
 - `laravel-notification-channels/webpush` 5.1 (minishlink/web-push 6, Laravel 8 / PHP 8.0); `config/webpush.php`,
   `push_subscriptions` (Student `HasPushSubscriptions`), `student_notification_settings`; expired subscriptions

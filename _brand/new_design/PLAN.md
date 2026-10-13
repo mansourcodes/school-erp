@@ -531,7 +531,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 10. **Language:** the portal API and push texts are **Arabic only**, kept in `resources/lang/ar/portal.php`. The Laravel `ar` + `en` rule still applies to the admin panel and Blade views; the portal is the documented exception (see `_context/code-standards.md`).
 11. **Messages** (Phase 3, teacher → students, one-way):
     - `messages`: `id`, `sender_user_id` (FK users), `class_room_id` (FK class_rooms), `body` (text, ≤ 500), timestamps, **`deleted_at`** (soft delete, project rule).
-    - **Retention: 90 days** (Q15). A `messages:prune` command, scheduled daily in the Laravel scheduler, soft-deletes messages older than 90 days. The `schedule:run` cron is deferred (`_context/feature/03-platform-upgrade.md`), so until it exists run `php artisan messages:prune` by hand.
+    - **Retention: 90 days** (Q15). A `messages:prune` command, scheduled daily in the Laravel scheduler, soft-deletes messages older than 90 days. The `schedule:run` cron is deferred (`_context/feature/03-platform-upgrade.md`), so the first admin visit to `/admin/dashboard` each day also runs it (`PruneOldMessages::dispatchSync()`).
     - `message_recipients`: `message_id`, `student_id`, `read_at` (nullable). Unique `(message_id, student_id)`.
     - `MessagePolicy`: create only for **my current** classrooms (`ClassRoom.teachers[].user_id = me`, course active + latest). Every recipient must be enrolled in that classroom. Delete own messages only. Students: read their own recipient rows only, and there is no create endpoint for students at all.
     - The inbox query excludes soft-deleted messages, so a teacher delete hides the message everywhere at once.

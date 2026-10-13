@@ -16,7 +16,7 @@ Three tracks taken out of the portal plan (`_brand/new_design/PLAN.md`) on **202
 |---|---|
 | Gate for going live | **Removed.** Before, P0.1 (Cloudflare) and P0.2 (upgrade) had to be done before `portal.mode = live` (Q21). Now they are separate, later tracks. |
 | Queue | **`QUEUE_CONNECTION=sync` in production.** No queue worker and no Redis for now (see Part C for what this means). |
-| Scheduler cron | Not set up for now. `messages:prune` does not run on its own (see Part C). |
+| Scheduler cron | Not set up for now. Message pruning runs on the first admin visit to `/admin/dashboard` each day (see Part C). |
 | Turnstile | **Stays in the portal plan** (login bot check, already in code). It is a Cloudflare product, but it does not need the domain on Cloudflare. |
 
 **Accepted risk:** the portal can go live on Laravel 8 / PHP 8.0, which no longer get security fixes, and without
@@ -277,7 +277,7 @@ What that means in the running app:
 | Area | Effect with `sync` / no cron |
 |---|---|
 | Push notifications | The queued notifications (`AttendanceRecordedPush`, `MessageReceivedPush`) run **inside the request**, after the save commits. A roster save or a message send makes one HTTP call to the push service per subscribed device, so it gets slower as more students enable notifications. A push failure never fails the save (the listeners catch and report it). |
-| Message retention (Q15, 90 days) | `messages:prune` is scheduled daily in `app/Console/Kernel.php`, but **without the `schedule:run` cron it never runs**. Run `php artisan messages:prune` by hand (or add the cron) to enforce the 90 days. |
+| Message retention (Q15, 90 days) | `messages:prune` is scheduled daily in `app/Console/Kernel.php`, but without the `schedule:run` cron the schedule never fires. Instead, the **first admin visit to `/admin/dashboard` each day** runs `PruneOldMessages::dispatchSync()` (`App\Http\Controllers\Admin\AdminController`, once per day via `Cache::add`; a failure is reported and never breaks the dashboard). If no admin opens the dashboard, messages stay longer; `php artisan messages:prune` still works by hand. |
 | Exam ZIP packaging | Runs inside the request as well (same as before the portal work). |
 | Sessions / cache | Stay on `file` (one server only). |
 
@@ -290,7 +290,7 @@ fix, and it needs no code change: only `.env` and a supervised process.
 |---|---|
 | Stateless app | Move `SESSION_DRIVER`, `CACHE_DRIVER` and `QUEUE_CONNECTION` from `file`/`sync` to **Redis** (already in `docker-compose`). Then more than one app server can run. |
 | Background work | A **queue worker** (`php artisan queue:work`, systemd or supervisor) for push sends and exam ZIPs. Chunk push jobs (e.g. 100 recipients per job) so a "message to all" never blocks a request. A simpler first step: `QUEUE_CONNECTION=database` + one worker. |
-| Scheduler | Cron entry `* * * * * php /path/to/artisan schedule:run` (as the web user), so `messages:prune` runs daily. |
+| Scheduler | Cron entry `* * * * * php /path/to/artisan schedule:run` (as the web user), so `messages:prune` runs daily without depending on an admin visit. The dashboard trigger can then be removed; keeping it is harmless (a second run the same day finds nothing to prune). |
 | Files | Student photos and exam files move from the local `public` disk to **S3-compatible object storage (e.g. Cloudflare R2)** once there is more than one app server. While there is one server they stay on the local disk. |
 | Capacity | The k6 "4:00 م peak" test (portal plan §9.2) should be re-run after this change; with a worker it also checks the queue backlog (< 1 min). |
 

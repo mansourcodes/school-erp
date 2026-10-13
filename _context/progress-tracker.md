@@ -105,7 +105,8 @@ Update this file after every meaningful implementation change.
 
 - Push setup per environment: `php artisan webpush:vapid` (writes VAPID keys to .env; keep them stable), set
   `VAPID_SUBJECT=mailto:<centre address>`, keep `QUEUE_CONNECTION=sync` (decided 2026-10-13): pushes are sent inside the
-  request. No scheduler cron for now, so run `php artisan messages:prune` by hand for the 90-day retention. Worker +
+  request. No scheduler cron for now: the first admin visit to `/admin/dashboard`
+  each day prunes messages older than 90 days. Worker +
   cron are deferred (`_context/feature/03-platform-upgrade.md`, Part C).
 - Dev image: `php:8.0-apache` is on Debian bullseye (EOL); the Dockerfile now uses archive.debian.org. Part of the deferred upgrade (`_context/feature/03-platform-upgrade.md`, Part A).
 

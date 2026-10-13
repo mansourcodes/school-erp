@@ -176,4 +176,24 @@ class MessagesTest extends TestCase
         $this->assertSame(1, Message::count());
         $this->assertSame(1, Message::onlyTrashed()->count());
     }
+
+    /** No scheduler cron in production: the first admin dashboard visit of the day prunes. */
+    public function test_the_admin_dashboard_prunes_once_per_day()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(Role::findOrCreate('Superadmin', 'web'));
+        $this->stored([$this->student->id])->forceFill(['created_at' => now()->subDays(91)])->save();
+
+        $this->actingAs($admin, 'backpack')->get('/admin/dashboard')->assertOk();
+        $this->assertSame(0, Message::count());
+
+        // Same day: a second old message stays until tomorrow's first visit.
+        $this->stored([$this->student->id])->forceFill(['created_at' => now()->subDays(91)])->save();
+        $this->actingAs($admin, 'backpack')->get('/admin/dashboard')->assertOk();
+        $this->assertSame(1, Message::count());
+
+        $this->travel(1)->days();
+        $this->actingAs($admin, 'backpack')->get('/admin/dashboard')->assertOk();
+        $this->assertSame(0, Message::count());
+    }
 }

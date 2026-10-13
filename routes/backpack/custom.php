@@ -18,6 +18,10 @@ Route::group([
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () {
 
+    // Backpack's dashboard routes (setup_dashboard_routes is off), with the daily message pruning.
+    Route::get('dashboard', 'AdminController@dashboard')->name('backpack.dashboard');
+    Route::get('/', 'AdminController@redirect')->name('backpack');
+
 
 
     Route::get('reports', 'AcademiaReportsController@print');
