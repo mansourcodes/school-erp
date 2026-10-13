@@ -14,7 +14,8 @@ Update this file after every meaningful implementation change.
   - **P2.5 Attendance + stats done** (2026-10-13): shared `ClassroomAttendance` service (admin report unchanged,
     verified), attendance + stats endpoints and pages, Home attendance tiles, archive rates
   - **P2.6 Profile done** (2026-10-13)
-  - Next: **P2.6b PWA** (manifest, icons, service worker, update prompt, install banner)
+  - **P2.6b PWA done** (2026-10-13); installability check in Chrome follows P2.7 (needs `/beta` served)
+  - Next: **P2.7 Beta launch** (`/beta` route, `portal.mode`, `PortalMode` middleware, old-portal banner)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first

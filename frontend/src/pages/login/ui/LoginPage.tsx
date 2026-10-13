@@ -2,6 +2,7 @@ import { Archive, BookOpen, CalendarCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { LoginForm } from '@/features/auth/login';
+import { JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { PasswordHelpDialog } from '@/features/password-help';
 import { ThemeCycleButton } from '@/features/theme-switch';
 import { BASE_PATH, routes } from '@/shared/config';
@@ -54,7 +55,14 @@ export function LoginPage() {
         <div className="w-full max-w-md">
           <LoginForm
             expired={params.get('expired') === '1'}
-            onSuccess={() => navigate(from, { replace: true })}
+            onSuccess={() => {
+              try {
+                sessionStorage.setItem(JUST_LOGGED_IN_KEY, '1');
+              } catch {
+                // Private mode: no install banner right after login.
+              }
+              navigate(from, { replace: true });
+            }}
             onForgotPassword={() => setHelpOpen(true)}
           />
         </div>

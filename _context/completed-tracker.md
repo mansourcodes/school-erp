@@ -4,6 +4,16 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal PWA — P2.6b (2026-10-13)
+- `vite-plugin-pwa` (injectManifest, `src/app/pwa/sw.ts`, own `tsconfig.sw.json`): app shell precached
+  (26 files, no fonts), navigation fallback for `/beta/*`, fonts CacheFirst on first use, `/api` + `/sanctum`
+  never routed (network only); manifest per PLAN §4 (ar/rtl, scope `/beta/`, standalone, shortcuts);
+  icons generated from the arch logo (192, 512, maskable 512, apple-touch 180)
+- Update prompt (`registerType: 'prompt'`, reload only on tap); install banner (`features/install-app`: Android
+  native prompt, iOS how-to sheet, from 2nd visit or after login, 30-day dismiss, never in standalone);
+  logout drops runtime caches
+- Teacher offline save queue moves to P3.2 (needs the roster)
+
 ### Portal profile — P2.6 (2026-10-13)
 - `GET /api/v1/student/profile` (`ProfileResource`, whitelist test: no health/financial/notes/family fields);
   CPR re-padded to 9 digits (integer column drops the leading zero of 2000s CPRs)

@@ -1,6 +1,7 @@
 import { Provider } from 'react-redux';
 import { type createBrowserRouter, RouterProvider } from 'react-router';
 import { useThemeSync } from '@/features/theme-switch';
+import { UpdatePrompt } from '../pwa/UpdatePrompt';
 import type { AppStore } from '../store';
 
 function ThemeSync() {
@@ -18,6 +19,7 @@ export function App({ store, router }: AppProps) {
     <Provider store={store}>
       <ThemeSync />
       <RouterProvider router={router} />
+      <UpdatePrompt />
     </Provider>
   );
 }

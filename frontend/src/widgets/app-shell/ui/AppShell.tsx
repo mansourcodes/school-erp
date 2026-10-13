@@ -1,6 +1,7 @@
 import { ArrowUpRight, WifiOff } from 'lucide-react';
 import { NavLink, Outlet, useMatches } from 'react-router';
 import { LogoutButton } from '@/features/auth/logout';
+import { InstallBanner } from '@/features/install-app';
 import { ThemeCycleButton, ThemeSegment } from '@/features/theme-switch';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
 import { BASE_PATH, LEGACY_PORTAL_URL, routes } from '@/shared/config';
@@ -53,6 +54,7 @@ export function AppShell() {
       </header>
 
       <main className="max-w-6xl mx-auto w-full px-4 lg:px-8 pt-4 lg:pt-8 pb-dock">
+        <InstallBanner />
         <Outlet />
       </main>
 
