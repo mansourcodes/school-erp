@@ -24,7 +24,7 @@ Update this file after every meaningful implementation change.
   - **P3.3 Messages done** (2026-10-13)
   - **P3.4 Push notifications done** (2026-10-13)
   - All build milestones (P2.1–P3.4) are done. Remaining: operational steps P0.1 (Cloudflare account/DNS work),
-    P0.2 (platform upgrade), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
+    P0.2 (platform upgrade, plan in `_context/feature/03-platform-upgrade.md`), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
 - Student portal redesign — Phase 1 (design) delivered, awaiting review (2026-10-12)
   - Plan + mockups in `_brand/new_design/` (`PLAN.md`, `index.html` gallery)
   - HTML + Tailwind 4 + DaisyUI 5 (custom themes `ghadeer` / `ghadeer-night`), RTL, mobile-first
@@ -102,7 +102,7 @@ Update this file after every meaningful implementation change.
 - Push setup per environment: `php artisan webpush:vapid` (writes VAPID keys to .env; keep them stable), set
   `VAPID_SUBJECT=mailto:<centre address>`, run a real queue worker (`QUEUE_CONNECTION=database` or redis +
   `php artisan queue:work`) and the scheduler cron. With `QUEUE_CONNECTION=sync` pushes are sent inside the request.
-- Dev image: `php:8.0-apache` is on Debian bullseye (EOL); the Dockerfile now uses archive.debian.org. Part of P0.2.
+- Dev image: `php:8.0-apache` is on Debian bullseye (EOL); the Dockerfile now uses archive.debian.org. Part of P0.2 (`_context/feature/03-platform-upgrade.md`).
 
 - **Teacher data**: no active classroom has `user_id` in its `teachers` JSON yet (dev DB: 0 of 39), so the teacher
   panel shows nothing until admins pick the teacher user in each ClassRoom's teachers repeater.
