@@ -85,6 +85,8 @@ class StudentLoginTest extends TestCase
     public function test_input_is_validated_before_the_database()
     {
         $this->login(['cpr' => '12ab'])->assertStatus(422)->assertJsonValidationErrors('cpr');
+        $this->login(['cpr' => '1234567890123'])->assertStatus(422)->assertJsonValidationErrors('cpr');
+        $this->login(['cpr' => '1.5'])->assertStatus(422)->assertJsonValidationErrors('cpr');
         $this->login(['password' => str_repeat('x', 129)])->assertStatus(422)->assertJsonValidationErrors('password');
         $this->login(['role' => 'admin'])->assertStatus(422)->assertJsonValidationErrors('role');
     }

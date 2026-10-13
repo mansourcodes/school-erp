@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
 use App\Models\Curriculum;
+use App\Models\PushDelivery;
 use App\Services\Attendance\AttendanceRecorder;
 use App\Services\Attendance\ClassroomAttendance;
 use App\Services\Attendance\StudentSessions;
@@ -199,12 +200,15 @@ class TeacherController extends Controller
             $session['date'],
             $session['start'],
             $states,
-            $this->now()
+            $this->now(),
+            $request->user()->id
         );
 
         return response()->json(['data' => [
             'updated_at' => $attend->updated_at->toIso8601String(),
             'created' => $created,
+            // Pushes the app now sends one by one (push outbox); only a first save has any.
+            'push_pending' => $created ? PushDelivery::where('user_id', $request->user()->id)->where('attend_id', $attend->id)->where('status', PushDelivery::PENDING)->count() : 0,
         ]]);
     }
 

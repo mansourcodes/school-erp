@@ -5,12 +5,12 @@ import { MESSAGE_MAX } from '@/entities/message';
 import { StudentPhoto } from '@/entities/student';
 import { t } from '@/shared/i18n';
 import { LeaveGuard, LoadingBlocks } from '@/shared/ui';
-import { useSendMessageMutation } from '../api/send-message-api';
+import { type SendMessageResult, useSendMessageMutation } from '../api/send-message-api';
 
 interface ComposeFormProps {
   /** From "مراسلة طلاب الصف" (?room=). */
   initialClassroomId?: number;
-  onSent: () => void;
+  onSent: (result: SendMessageResult) => void;
 }
 
 /** New message (PLAN.md §8 screen 8): ① classroom ② students ③ text, then send. */
@@ -25,7 +25,7 @@ export function ComposeForm({ initialClassroomId, onSent }: ComposeFormProps) {
   const [body, setBody] = useState('');
   const [send, { isLoading: sending }] = useSendMessageMutation();
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState<SendMessageResult | null>(null);
 
   const all = students.length > 0 && selected.size === students.length;
   const canSend = selected.size > 0 && body.trim().length > 0 && body.length <= MESSAGE_MAX && !sending;
@@ -45,16 +45,16 @@ export function ComposeForm({ initialClassroomId, onSent }: ComposeFormProps) {
     if (!effectiveId) return;
     setError(null);
     try {
-      await send({ classroom_id: effectiveId, student_ids: [...selected], body: body.trim() }).unwrap();
+      const result = await send({ classroom_id: effectiveId, student_ids: [...selected], body: body.trim() }).unwrap();
       // Navigate after the guard has re-rendered without unsent text (see effect below).
-      setSent(true);
+      setSent(result);
     } catch {
       setError(t('messages.failed'));
     }
   };
 
   useEffect(() => {
-    if (sent) onSent();
+    if (sent) onSent(sent);
   }, [sent, onSent]);
 
   if (classrooms.isLoading) return <LoadingBlocks />;

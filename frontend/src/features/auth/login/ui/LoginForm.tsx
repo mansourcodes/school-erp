@@ -24,7 +24,7 @@ import { fmtCountdown } from '@/shared/lib';
 import type { Viewer } from '@/entities/viewer';
 import { type LoginRequest, useLoginMutation } from '../api/login-api';
 import { useCountdown } from '../lib/use-countdown';
-import { type LoginRole, loginSchema, type LoginValues } from '../model/login-schema';
+import { CPR_MAX_LENGTH, type LoginRole, loginSchema, type LoginValues } from '../model/login-schema';
 import { Turnstile, type TurnstileHandle } from './Turnstile';
 
 type Alert =
@@ -239,16 +239,15 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
                 inputMode="numeric"
                 enterKeyHint="next"
                 autoComplete="username"
-                maxLength={9}
+                maxLength={CPR_MAX_LENGTH}
                 dir="ltr"
                 className="num tracking-widest text-start"
-                placeholder="000000000"
                 aria-invalid={!!errors.cpr}
                 aria-describedby="cpr-hint"
                 disabled={busy}
                 {...cprField}
                 onChange={(event) => {
-                  event.target.value = event.target.value.replace(/\D/g, '').slice(0, 9);
+                  event.target.value = event.target.value.replace(/\D/g, '').slice(0, CPR_MAX_LENGTH);
                   return cprField.onChange(event);
                 }}
                 onKeyDown={(event) => {

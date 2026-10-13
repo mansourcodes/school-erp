@@ -3,41 +3,26 @@
 namespace App\Listeners;
 
 use App\Events\AttendanceFirstRecorded;
-use App\Models\Attends;
-use App\Notifications\AttendanceRecordedPush;
-use App\Services\Attendance\ClassroomAttendance;
-use App\Services\Attendance\StudentSessions;
-use Illuminate\Support\Facades\Notification;
+use App\Services\Portal\PushOutbox;
 use Throwable;
 
 /**
- * Each student of the first save gets their own status (Q17); the sends are queued.
- * A push problem must never fail the teacher's save (with a `sync` queue it would run inline).
+ * Each student of the first save gets their own status (Q17). A teacher save only records the
+ * pushes in the outbox (the teacher's app sends them one by one); an admin save sends them now.
+ * A push problem must never fail the save.
  */
 class SendAttendancePush
 {
     public function handle(AttendanceFirstRecorded $event)
     {
-        $attend = Attends::with(array_merge(['curriculum'], array_values(ClassroomAttendance::STATE_RELATIONS)))->find($event->attendId);
-        if (! $attend) {
-            return;
-        }
-
-        foreach (ClassroomAttendance::STATE_RELATIONS as $state => $relation) {
-            if ($attend->{$relation}->isEmpty()) {
-                continue;
+        try {
+            $outbox = app(PushOutbox::class);
+            $ids = $outbox->queueAttendance($event->attendId, $event->senderUserId);
+            if ($event->senderUserId === null) {
+                $outbox->sendMany($ids);
             }
-            try {
-                Notification::send($attend->{$relation}, new AttendanceRecordedPush(
-                    StudentSessions::STATE_NAMES[$state],
-                    optional($attend->curriculum)->curriculum_name,
-                    $attend->date->toDateString(),
-                    $attend->start_time,
-                    $attend->id
-                ));
-            } catch (Throwable $e) {
-                report($e);
-            }
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 }

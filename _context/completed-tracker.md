@@ -4,6 +4,17 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Push outbox + CPR length (2026-10-13)
+- Login CPR: digits only, 1–12 long (`digits_between:1,12` in `LoginRequest`, same rule + `maxLength` in the SPA)
+- Push outbox (`push_deliveries`, `App\Services\Portal\PushOutbox`): teacher saves and messages record one row per
+  reachable student (subscribed device + type on) and answer at once with `push_pending`; admin easy-form saves send
+  at once. `GET /teacher/push-deliveries`, `POST /teacher/push-deliveries/{id}/send` (own rows, atomic claim,
+  3 attempts, 24 h expiry, stuck `sending` retried after 5 min)
+- SPA `features/send-notifications` (slice + one global runner: sequential sends, pauses offline / on 429, resumes
+  on `online`, app start and `ROSTER_SYNCED`) and `pages/teacher/notify` (progress, per-student status, retry,
+  "متابعة"); roster save and compose redirect there when `push_pending > 0`
+- Tests: PushTest rewritten for the outbox (15 tests), roster→notify flow in Vitest
+
 ### Message pruning without cron (2026-10-13)
 - `App\Jobs\PruneOldMessages` (plain job, `dispatchSync()`), used by `messages:prune` and by the admin dashboard
 - `App\Http\Controllers\Admin\AdminController` extends Backpack's: first `/admin/dashboard` visit of the day prunes

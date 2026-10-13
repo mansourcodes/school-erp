@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\MessageRecipient;
+use App\Models\PushDelivery;
 use App\Services\Portal\StudentPhotos;
 use App\Services\Teacher\TeacherScope;
 use Illuminate\Http\Request;
@@ -94,7 +95,12 @@ class MessageController extends Controller
 
         event(new \App\Events\MessageSent($message));
 
-        return response()->json(['data' => ['id' => $message->id, 'recipients_count' => count($data['student_ids'])]], 201);
+        return response()->json(['data' => [
+            'id' => $message->id,
+            'recipients_count' => count($data['student_ids']),
+            // Pushes the app now sends one by one (push outbox).
+            'push_pending' => PushDelivery::where('message_id', $message->id)->where('status', PushDelivery::PENDING)->count(),
+        ]], 201);
     }
 
     /** DELETE /teacher/messages/{id}: my own only; it leaves every inbox at once. */

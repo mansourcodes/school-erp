@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\Api\V1;
 
+use App\Events\AttendanceFirstRecorded;
+use App\Models\Attends;
+use App\Models\PushDelivery;
 use App\Models\Student;
 use App\Models\StudentNotificationSetting;
 use App\Models\User;
@@ -58,11 +61,42 @@ class PushTest extends TestCase
         )->assertOk();
     }
 
-    public function test_the_first_save_notifies_each_student_with_their_own_status()
+    protected function subscribe(Student $student)
+    {
+        $student->updatePushSubscription('https://fcm.googleapis.com/fcm/send/' . $student->id, 'BKey', 'auth');
+    }
+
+    protected function sendDelivery($id, $user = null)
+    {
+        return $this->actingAs($user ?: $this->teacher, 'web')->postJson("/api/v1/teacher/push-deliveries/{$id}/send");
+    }
+
+    public function test_the_first_save_only_records_the_pushes_and_answers_at_once()
     {
         Notification::fake();
+        $this->subscribe($this->student);
+        $this->subscribe($this->classmate);
 
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent'])
+            ->assertJsonPath('data.push_pending', 2);
+
+        Notification::assertNothingSent();
+        $this->assertSame('present', PushDelivery::where('student_id', $this->student->id)->value('state'));
+        $this->assertSame('absent', PushDelivery::where('student_id', $this->classmate->id)->value('state'));
+    }
+
+    public function test_the_teacher_app_sends_each_student_their_own_status_once()
+    {
+        $this->subscribe($this->student);
+        $this->subscribe($this->classmate);
         $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
+        Notification::fake();
+
+        $pending = $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertOk()->json('data');
+        $this->assertCount(2, $pending);
+        foreach ($pending as $row) {
+            $this->sendDelivery($row['id'])->assertOk()->assertJsonPath('data.status', 'sent');
+        }
 
         Notification::assertSentTo($this->student, AttendanceRecordedPush::class, function ($n) {
             return $n->state === 'present' && $n->date === '2026-09-18';
@@ -70,28 +104,91 @@ class PushTest extends TestCase
         Notification::assertSentTo($this->classmate, AttendanceRecordedPush::class, function ($n) {
             return $n->state === 'absent';
         });
+
+        // Sending again (a second tab, a retry) does nothing.
+        $this->sendDelivery($pending[0]['id'])->assertOk()->assertJsonPath('data.status', 'sent');
+        Notification::assertSentToTimes($this->student, AttendanceRecordedPush::class, 1);
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertExactJson(['data' => []]);
+    }
+
+    public function test_only_students_with_a_device_and_the_type_on_get_a_row()
+    {
+        $this->subscribe($this->student);
+        StudentNotificationSetting::create(['student_id' => $this->classmate->id, 'attendance' => false]);
+        $this->subscribe($this->classmate);
+
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent'])
+            ->assertJsonPath('data.push_pending', 1);
+        $this->assertSame([$this->student->id], PushDelivery::pluck('student_id')->all());
     }
 
     public function test_edits_never_notify_again()
     {
+        $this->subscribe($this->student);
         $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
-        Notification::fake();
 
-        $this->saveRoster([$this->student->id => 'late', $this->classmate->id => 'absent_excused']);
-
-        Notification::assertNothingSent();
+        $this->saveRoster([$this->student->id => 'late', $this->classmate->id => 'absent_excused'])
+            ->assertJsonPath('data.push_pending', 0);
+        $this->assertSame(1, PushDelivery::count());
     }
 
-    public function test_a_message_notifies_its_recipients_only()
+    public function test_rows_are_the_teachers_own()
+    {
+        // Stored directly: one identity per test (Sanctum keeps the first resolved user).
+        $id = PushDelivery::create([
+            'user_id' => $this->teacher->id, 'student_id' => $this->student->id, 'type' => 'messages', 'message_id' => 1,
+        ])->id;
+
+        $other = User::factory()->create();
+        $other->assignRole('Teacher');
+        $this->sendDelivery($id, $other)->assertStatus(404);
+        $this->assertSame(PushDelivery::PENDING, PushDelivery::first()->status);
+    }
+
+    public function test_students_cannot_reach_the_outbox()
+    {
+        $this->actingAs($this->student, 'student')->getJson('/api/v1/teacher/push-deliveries')->assertStatus(403);
+    }
+
+    public function test_unsent_rows_expire_after_a_day()
+    {
+        $this->subscribe($this->student);
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
+
+        Carbon::setTestNow(now()->addHours(25));
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertExactJson(['data' => []]);
+        $this->assertSame(PushDelivery::SKIPPED, PushDelivery::first()->status);
+    }
+
+    public function test_an_admin_save_sends_at_once()
     {
         Notification::fake();
+        $this->subscribe($this->student);
+        $attend = Attends::create([
+            'date' => '2026-09-18', 'start_time' => '16:00', 'class_room_id' => $this->classroom->id,
+            'course_id' => $this->classroom->course_id, 'curriculum_id' => $this->curriculum->id,
+        ]);
+        app(\App\Services\Attendance\AttendanceRecorder::class)->syncStates($attend, [$this->student->id => 'attend']);
+
+        event(new AttendanceFirstRecorded($attend->id));
+
+        Notification::assertSentTo($this->student, AttendanceRecordedPush::class);
+        $this->assertSame(PushDelivery::SENT, PushDelivery::first()->status);
+    }
+
+    public function test_a_message_records_its_recipients_only()
+    {
+        $this->subscribe($this->student);
+        $this->subscribe($this->classmate);
 
         $this->actingAs($this->teacher, 'web')->postJson('/api/v1/teacher/messages', [
             'classroom_id' => $this->classroom->id,
             'student_ids' => [$this->student->id],
             'body' => 'غدًا اختبار قصير في أول عشر دقائق من الحصة.',
-        ])->assertStatus(201);
+        ])->assertStatus(201)->assertJsonPath('data.push_pending', 1);
 
+        Notification::fake();
+        $this->sendDelivery(PushDelivery::first()->id)->assertJsonPath('data.status', 'sent');
         Notification::assertSentTo($this->student, MessageReceivedPush::class);
         Notification::assertNotSentTo($this->classmate, MessageReceivedPush::class);
     }

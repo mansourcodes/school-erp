@@ -89,7 +89,7 @@ describe('teacher panel', () => {
       http.get('*/api/v1/teacher/sessions/:code', () => HttpResponse.json({ data: roster() })),
       http.put('*/api/v1/teacher/sessions/:code', async ({ request, params }) => {
         saved = { code: params.code, body: await request.json() };
-        return HttpResponse.json({ data: { updated_at: '2026-09-25T16:05:00+03:00', created: true } });
+        return HttpResponse.json({ data: { updated_at: '2026-09-25T16:05:00+03:00', created: true, push_pending: 0 } });
       }),
     );
     renderApp('/teacher/attendance/' + encodeURIComponent('2026-09-25#16:00#912#11'));
@@ -110,8 +110,49 @@ describe('teacher panel', () => {
     expect(screen.getByText('عند الحفظ يصل لكل طالب إشعار بحالته')).toBeInTheDocument();
     await user.click(save);
 
-    expect(await screen.findByText('تم الحفظ وأُرسل إشعار لكل طالب بحالته')).toBeInTheDocument();
+    expect(await screen.findByText('تم حفظ الحضور')).toBeInTheDocument();
     expect(saved).toEqual({ code: '2026-09-25#16:00#912#11', body: { states: { 1: 'present', 2: 'absent_excused' } } });
+  });
+
+  it('after a first save, opens the sending page and sends each notification one by one', async () => {
+    asTeacher();
+    const sentIds: number[] = [];
+    let saved = false;
+    server.use(
+      http.get('*/api/v1/teacher/sessions/:code', () => HttpResponse.json({ data: roster() })),
+      http.put('*/api/v1/teacher/sessions/:code', () => {
+        saved = true;
+        return HttpResponse.json({ data: { updated_at: '2026-09-25T16:05:00+03:00', created: true, push_pending: 2 } });
+      }),
+      http.get('*/api/v1/teacher/push-deliveries', () =>
+        HttpResponse.json({
+          data: saved
+            ? [
+                { id: 7, type: 'attendance', student_name: 'علي حسن' },
+                { id: 8, type: 'attendance', student_name: 'محمد جعفر' },
+              ].filter((row) => !sentIds.includes(row.id))
+            : [],
+        }),
+      ),
+      http.post('*/api/v1/teacher/push-deliveries/:id/send', ({ params }) => {
+        sentIds.push(Number(params.id));
+        return HttpResponse.json({ data: { id: Number(params.id), status: 'sent' } });
+      }),
+    );
+    const { router } = renderApp('/teacher/attendance/' + encodeURIComponent('2026-09-25#16:00#912#11'));
+    const user = userEvent.setup();
+
+    await user.click(await screen.findByRole('button', { name: 'الكل حاضر' }));
+    await user.click(screen.getByRole('button', { name: 'حفظ' }));
+
+    expect(await screen.findByText('تم حفظ الحضور')).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/teacher/notify');
+    expect(await screen.findByText('أُرسلت الإشعارات')).toBeInTheDocument();
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+    expect(sentIds).toEqual([7, 8]);
+
+    await user.click(screen.getByRole('button', { name: 'متابعة' }));
+    expect(router.state.location.pathname).toBe('/teacher');
   });
 
   it('undo restores the saved states', async () => {

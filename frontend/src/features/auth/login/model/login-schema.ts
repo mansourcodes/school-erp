@@ -4,7 +4,11 @@ import { t } from '@/shared/i18n';
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// Mirrors LoginRequest on the server: student CPR digits:9, teacher email, password ≤ 128.
+/** Student CPR: digits only, 1–12 long. */
+export const CPR_MAX_LENGTH = 12;
+const CPR = /^\d{1,12}$/;
+
+// Mirrors LoginRequest on the server: student CPR digits_between:1,12, teacher email, password ≤ 128.
 export const loginSchema = z
   .object({
     role: z.enum(['student', 'teacher']),
@@ -14,7 +18,7 @@ export const loginSchema = z
     website: z.optional(z.string()),
   })
   .check(
-    z.refine((v) => v.role !== 'student' || /^\d{9}$/.test(v.cpr), { message: t('login.cprInvalid'), path: ['cpr'] }),
+    z.refine((v) => v.role !== 'student' || CPR.test(v.cpr), { message: t('login.cprInvalid'), path: ['cpr'] }),
     z.refine((v) => v.role !== 'teacher' || EMAIL.test(v.email.trim()), { message: t('login.emailInvalid'), path: ['email'] }),
   );
 

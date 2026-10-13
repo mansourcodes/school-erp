@@ -16,7 +16,8 @@ class LoginRequest extends FormRequest
         return [
             // Students sign in with their CPR, teachers with their email (PLAN.md §3.1, §8).
             'role' => ['required', 'in:student,teacher'],
-            'cpr' => ['required_if:role,student', 'nullable', 'digits:9'],
+            // CPR: digits only, 1–12 long (not every student has a 9-digit Bahraini CPR).
+            'cpr' => ['required_if:role,student', 'nullable', 'digits_between:1,12'],
             'email' => ['required_if:role,teacher', 'nullable', 'email', 'max:255'],
             'password' => ['required', 'string', 'max:128'],
             'turnstile_token' => ['nullable', 'string', 'max:2048'],

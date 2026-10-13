@@ -2,6 +2,7 @@ import { ArrowRight, ArrowUpRight, Mail, WifiOff } from 'lucide-react';
 import { NavLink, Outlet, useMatches, useNavigate } from 'react-router';
 import { LogoutButton } from '@/features/auth/logout';
 import { PushSoftPrompt } from '@/features/enable-notifications';
+import { useOutboxRunner } from '@/features/send-notifications';
 import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { ThemeCycleButton, ThemeSegment } from '@/features/theme-switch';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
@@ -22,6 +23,8 @@ export function AppShell() {
   const handles = useMatches().map((match) => match.handle as ShellRouteHandle | undefined);
   const title = handles.map((h) => h?.title).filter(Boolean).at(-1);
   const task = handles.some((h) => h?.task);
+  // Teachers: send students' notifications left over from a closed app or an offline save.
+  useOutboxRunner(viewer?.role === 'teacher');
 
   if (!viewer) return null;
   const nav = navFor(viewer.role);

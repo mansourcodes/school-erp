@@ -27,6 +27,8 @@ export const routes = {
     roster: (code: string) => `/teacher/attendance/${encodeURIComponent(code)}`,
     stats: '/teacher/stats',
     messages: '/teacher/messages',
+    /** After a save or a message: sends the students' notifications one by one. */
+    notify: '/teacher/notify',
     profile: '/teacher/profile',
   },
 } as const;

@@ -1,6 +1,6 @@
 import { Check, ChevronLeft, ChevronRight, History, Info } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import {
   canQueue,
   markQueued,
@@ -29,6 +29,13 @@ export function RosterEditor({ roster }: { roster: Roster }) {
   const [save, { isLoading: saving }] = useSaveAttendanceMutation();
   const queued = useQueued(session.code);
   const [toast, setToast] = useState<{ text: string; kind: 'success' | 'info' | 'error' } | null>(null);
+  // Saved with notifications to send: go to the sending page once the leave guard is off.
+  const [leaving, setLeaving] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (leaving) navigate(routes.teacher.notify, { state: { saved: 'attendance', next: routes.teacher.today } });
+  }, [leaving, navigate]);
   const editable = session.editable;
 
   const show = (text: string, kind: 'success' | 'info' | 'error') => {
@@ -39,6 +46,10 @@ export function RosterEditor({ roster }: { roster: Roster }) {
   const onSave = async () => {
     try {
       const result = await save({ code: session.code, states: draft.payload() }).unwrap();
+      if (result.push_pending > 0) {
+        setLeaving(true);
+        return;
+      }
       show(result.created ? t('teacher.savedFirst') : t('teacher.savedEdit'), 'success');
     } catch (error) {
       const apiError = toApiError(error);
@@ -181,7 +192,7 @@ export function RosterEditor({ roster }: { roster: Roster }) {
           onUndo={draft.undo}
         />
       )}
-      <RosterLeaveGuard when={draft.dirty && !queued && !saving} />
+      <RosterLeaveGuard when={draft.dirty && !queued && !saving && !leaving} />
 
       {toast && (
         <div className="toast toast-top toast-center z-[70]">

@@ -276,13 +276,13 @@ What that means in the running app:
 
 | Area | Effect with `sync` / no cron |
 |---|---|
-| Push notifications | The queued notifications (`AttendanceRecordedPush`, `MessageReceivedPush`) run **inside the request**, after the save commits. A roster save or a message send makes one HTTP call to the push service per subscribed device, so it gets slower as more students enable notifications. A push failure never fails the save (the listeners catch and report it). |
+| Push notifications | Teacher saves and messages **do not send** inside the request: they record a push outbox (`push_deliveries`) and the teacher's app sends the rows one request at a time from `/teacher/notify` (PLAN.md §5.12). So the save stays fast however many students enable push. Admin easy-form saves still send inside the request. |
 | Message retention (Q15, 90 days) | `messages:prune` is scheduled daily in `app/Console/Kernel.php`, but without the `schedule:run` cron the schedule never fires. Instead, the **first admin visit to `/admin/dashboard` each day** runs `PruneOldMessages::dispatchSync()` (`App\Http\Controllers\Admin\AdminController`, once per day via `Cache::add`; a failure is reported and never breaks the dashboard). If no admin opens the dashboard, messages stay longer; `php artisan messages:prune` still works by hand. |
 | Exam ZIP packaging | Runs inside the request as well (same as before the portal work). |
 | Sessions / cache | Stay on `file` (one server only). |
 
-Watch the roster-save time once push is in use. If it gets slow, Part C (at least a database queue + worker) is the
-fix, and it needs no code change: only `.env` and a supervised process.
+The outbox depends on the teacher's app staying open until the rows are sent (rows left behind are resumed the next
+time the teacher app opens, and expire after 24 h). With a worker (below) the server could send them itself.
 
 ### Deferred work
 
@@ -296,4 +296,4 @@ fix, and it needs no code change: only `.env` and a supervised process.
 
 ### Acceptance criteria
 Worker running under a supervisor and restarted on deploy, cron installed, `messages:prune` seen in the logs daily,
-pushes no longer sent inside the request, roster save p95 within the §9.2 target at peak.
+the outbox drained by the worker instead of the teacher's app, roster save p95 within the §9.2 target at peak.

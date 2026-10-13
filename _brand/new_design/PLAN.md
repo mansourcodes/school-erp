@@ -157,7 +157,7 @@ Phase 2 keeps these as small hand-written HTML components, and no chart library 
 
 ### 3.1 Login (`login.html`)
 - Role tabs **طالب / مدرّس**. The teacher tab is disabled with a “قريبًا” badge in Phase 2 and enabled in Phase 3.
-- CPR: numeric, exactly 9 digits, `dir=ltr`, `autocomplete=username`. Password: show/hide toggle, Caps-Lock hint, `autocomplete=current-password`.
+- CPR: digits only, 1–12 long (changed 2026-10-13, was exactly 9), `dir=ltr`, `autocomplete=username`. Password: show/hide toggle, Caps-Lock hint, `autocomplete=current-password`.
 - Hidden honeypot field `website`, plus a human-verification slot (Turnstile, see §6).
 - States: idle · submitting · invalid input · wrong credentials (generic message, remaining attempts) · **locked** (countdown, form disabled) · session expired.
 - **Forgot password** opens a dialog: “يرجى مراجعة قسم إدارة المركز شخصيًا مع إحضار البطاقة الشخصية”. There is no self-service reset, no email/SMS, and no reset endpoint. The dialog shows **generic text only** (no hours or phone), decision Q5.
@@ -542,8 +542,8 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
     - **Attendance trigger:** in the shared attendance service (§5.5), when a session's `Attends` record is **created** (first save), dispatch `SendAttendancePush` per student with that student's state. Updates to an existing record dispatch nothing. The flag is the creation itself, so an edit can never re-notify.
     - **Message trigger:** after `POST /teacher/messages` commits, dispatch `SendMessagePush` for the recipients.
     - No quiet hours: pushes are sent immediately (Q18). Every student gets their own status on the first save (Q17).
-    - Both are queued notifications. They skip students whose setting is off, and prune subscriptions that return 404/410.
-    - **Production runs `QUEUE_CONNECTION=sync`** (2026-10-13), so pushes are sent inside the request after the save commits; a push failure never fails the save. A queue worker is deferred (`_context/feature/03-platform-upgrade.md`).
+    - The notifications skip students whose setting is off, and prune subscriptions that return 404/410. A push failure never fails the save.
+    - **Push outbox** (2026-10-13; production runs `QUEUE_CONNECTION=sync` with no worker): a save does not send. After commit, the listeners write one `push_deliveries` row per student who has a subscribed device and the type on, and the save answers at once with `push_pending`. The SPA then opens `/teacher/notify`, which sends the rows one request at a time (`GET /teacher/push-deliveries`, `POST /teacher/push-deliveries/{id}/send`, own rows only; each row is claimed atomically so it is sent once). The sending keeps going if the teacher leaves the page; rows left by a closed app or an offline save the service worker replayed are picked up when the teacher app opens; unsent rows expire after 24 h; a failed row is retried up to 3 times. **Admin saves** (Backpack easy form, no SPA) still send at once, inside the request.
 
 ---
 
@@ -557,7 +557,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 | Bot challenge | **Cloudflare Turnstile** (managed/invisible mode, no puzzles, privacy-friendly), verified server-side with `siteverify` before checking credentials. Fallback if a third party is unwanted: only show a challenge after 3 failures. |
 | Honeypot | Hidden `website` field. If filled, return the same generic failure after a fixed delay. |
 | No user enumeration | One message for every failure (“الرقم الشخصي أو كلمة المرور غير صحيحة”), with constant-time comparison and identical response timing for unknown CPRs. |
-| Input validation | CPR `digits:9`, password `string|max:128`, rejected before hitting the DB. |
+| Input validation | CPR `digits_between:1,12`, password `string|max:128`, rejected before hitting the DB. |
 | Sessions | Sanctum stateful cookies: `HttpOnly`, `Secure`, `SameSite=Lax`, `session()->regenerate()` on login, invalidate + regenerate token on logout, idle timeout (e.g. 60 min) leading to the “session expired” state. |
 | CSRF | `GET /sanctum/csrf-cookie` before login; RTK Query sends `X-XSRF-TOKEN`. |
 | Transport & headers | HTTPS only + HSTS; CSP limited to self (+ Turnstile + fonts); `X-Frame-Options: DENY`; `Referrer-Policy: same-origin`. |
@@ -741,7 +741,7 @@ Load is small on average but **spiky**: many classes start at the same minute (e
 | Static assets | `public/beta/assets/*` are content-hashed and served with `Cache-Control: immutable`, so they are cached by the browser and on the device (PWA precache). The origin serves almost no static traffic. |
 | Database | Indexes for the new hot paths: `attends (class_room_id, date)`, `message_recipients (student_id, read_at)`, `messages (sender_user_id, created_at)`. **Pagination** on inbox, sent list and attendance history. **Eager loading** in every API Resource (no N+1). Laravel's query log is checked in tests for the main endpoints. |
 | API efficiency | Composite endpoints sized for one screen (`/teacher/today`, `/student/courses/current`) instead of many small calls on mobile. `ETag` / `304` on read endpoints. RTK Query dedupes and caches on the client. |
-| Capacity check | A k6 load test before promotion: the "4:00 م peak" (N teachers saving rosters + M students opening the app within one minute). Target p95 < 500 ms for roster save. With `sync`, pushes are sent inside the save request, so test with push subscriptions enabled. |
+| Capacity check | A k6 load test before promotion: the "4:00 م peak" (N teachers saving rosters + M students opening the app within one minute). Target p95 < 500 ms for roster save (pushes are not part of the save: the app sends them afterwards, push outbox §5.12). |
 
 ### 9.3 Secure
 Target: **OWASP ASVS Level 2** for the portal API, plus the login hardening in §6.

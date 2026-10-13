@@ -28,9 +28,9 @@ describe('auth flow', () => {
     server.use(http.post('*/api/v1/auth/login', () => login()));
     renderApp('/login');
 
-    await fillAndSubmit('12345');
+    await fillAndSubmit('abc');
 
-    expect(await screen.findByText('الرقم الشخصي يجب أن يتكون من 9 أرقام.')).toBeInTheDocument();
+    expect(await screen.findByText('الرقم الشخصي يجب أن يتكون من أرقام فقط (حتى 12 رقمًا).')).toBeInTheDocument();
     expect(login).not.toHaveBeenCalled();
   });
 
@@ -39,9 +39,9 @@ describe('auth flow', () => {
     const user = userEvent.setup();
     const cpr = await screen.findByLabelText('الرقم الشخصي (CPR)');
 
-    await user.type(cpr, '90a12-34567899');
+    await user.type(cpr, '90a12-3456789012345');
 
-    expect(cpr).toHaveValue('901234567');
+    expect(cpr).toHaveValue('901234567890');
   });
 
   it('logs in with the CSRF cookie and opens the shell', async () => {

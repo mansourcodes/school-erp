@@ -20,9 +20,10 @@ class AttendanceRecorder
      * record of that subject and day for a slot without a time), else creates it.
      *
      * @param  array  $states  student_id => stored state (attend, late, late_w_excuse, absent, absent_w_excuse)
+     * @param  int|null  $teacherId  the teacher whose app sends the pushes (push outbox)
      * @return array [Attends, bool created]
      */
-    public function save(ClassRoom $classroom, $curriculumId, $date, $start, array $states, Carbon $now)
+    public function save(ClassRoom $classroom, $curriculumId, $date, $start, array $states, Carbon $now, $teacherId = null)
     {
         $result = DB::transaction(function () use ($classroom, $curriculumId, $date, $start, $states, $now) {
             $attend = $this->find($classroom, $curriculumId, $date, $start);
@@ -47,7 +48,7 @@ class AttendanceRecorder
 
         // First save only (after commit): students get their status once; edits never notify.
         if ($result[1]) {
-            event(new AttendanceFirstRecorded($result[0]->id));
+            event(new AttendanceFirstRecorded($result[0]->id, $teacherId));
         }
 
         return $result;

@@ -26,5 +26,7 @@ export const server = setupServer(
   http.get('*/api/v1/student/courses', () => HttpResponse.json({ data: [] })),
   // Push off unless a test enables it.
   http.get('*/api/v1/push/config', () => HttpResponse.json({ data: { enabled: false, public_key: null } })),
+  // Teacher shell: nothing left in the push outbox by default.
+  http.get('*/api/v1/teacher/push-deliveries', () => HttpResponse.json({ data: [] })),
   http.get('*/api/v1/student/notification-settings', () => HttpResponse.json({ data: { attendance: true, messages: true } })),
 );

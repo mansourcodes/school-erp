@@ -86,6 +86,11 @@ export const appRoutes: RouteObject[] = [
                 handle: task('messages.new'),
               },
               {
+                path: routes.teacher.notify,
+                lazy: () => import('@/pages/teacher/notify').then((m) => ({ Component: m.TeacherNotifyPage })),
+                handle: task('notify.title'),
+              },
+              {
                 path: routes.teacher.stats,
                 lazy: () => import('@/pages/teacher/stats').then((m) => ({ Component: m.TeacherStatsPage })),
                 handle: title('teacher.navStats'),

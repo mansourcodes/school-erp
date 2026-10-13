@@ -14,8 +14,12 @@ class AttendanceFirstRecorded
 
     public $attendId;
 
-    public function __construct($attendId)
+    /** The teacher whose app sends the pushes (push outbox); null = the server sends them now (admin). */
+    public $senderUserId;
+
+    public function __construct($attendId, $senderUserId = null)
     {
         $this->attendId = $attendId;
+        $this->senderUserId = $senderUserId;
     }
 }

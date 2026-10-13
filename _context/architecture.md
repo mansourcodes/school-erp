@@ -99,7 +99,8 @@ ExamTool >── Course, Curriculum
 5. PDF generation runs synchronously in request handlers (no background jobs
    for reports); exam ZIP packaging and the portal's Web Push notifications are queued
    (push listeners never fail the request that triggered them). Production runs
-   `QUEUE_CONNECTION=sync` for now, so these jobs run inside the request (worker deferred,
-   `_context/feature/03-platform-upgrade.md`)
+   `QUEUE_CONNECTION=sync` with no worker, so teacher saves and messages only record a push
+   outbox (`push_deliveries`) that the teacher's app sends one request at a time
+   (`App\Services\Portal\PushOutbox`); admin saves send inside the request
 6. Do not store large binary content in the database — files go to `public`
    disk storage

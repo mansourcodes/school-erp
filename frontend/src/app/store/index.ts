@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import { pushOutboxReducer } from '@/features/send-notifications';
 import { themeReducer } from '@/features/theme-switch';
 import { baseApi, portalReducer, sessionReducer } from '@/shared/api';
 
@@ -9,6 +10,7 @@ const rootReducer = combineReducers({
   session: sessionReducer,
   portal: portalReducer,
   theme: themeReducer,
+  pushOutbox: pushOutboxReducer,
 });
 
 export function setupStore(preloadedState?: Partial<ReturnType<typeof rootReducer>>) {
