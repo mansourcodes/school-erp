@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\V1;
 
 use App\Models\Student;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -64,10 +65,57 @@ class StudentLoginTest extends TestCase
     public function test_logout_ends_the_session()
     {
         $this->login()->assertOk();
+        $token = $this->student->fresh()->remember_token;
+        $recaller = Auth::guard('student')->getRecallerName();
 
-        $this->postJson('/api/v1/auth/logout')->assertNoContent();
+        // The browser sends its remember cookie with the logout.
+        $response = $this->withCredentials()->withCookie($recaller, $this->student->id . '|' . $token . '|' . $this->student->password)
+            ->postJson('/api/v1/auth/logout')
+            ->assertNoContent();
 
         $this->assertGuest('student');
+        // This device forgets its remember cookie; the token stays, so other devices stay signed in.
+        $this->assertTrue(collect($response->headers->getCookies())->contains(function ($cookie) use ($recaller) {
+            return $cookie->getName() === $recaller && $cookie->isCleared();
+        }));
+        $this->assertSame($token, $this->student->fresh()->remember_token);
+    }
+
+    public function test_login_keeps_the_student_signed_in_until_logout()
+    {
+        $this->login()->assertOk()->assertCookie(Auth::guard('student')->getRecallerName());
+        $this->assertNotNull($this->student->fresh()->remember_token);
+    }
+
+    /** The session expired (no session cookie): the remember cookie alone signs the student in. */
+    public function test_the_remember_cookie_alone_restores_the_session()
+    {
+        $this->student->forceFill(['remember_token' => 'device-token'])->save();
+        $recaller = Auth::guard('student')->getRecallerName();
+
+        // JSON test requests send cookies only with credentials (Laravel 8).
+        $this->withCredentials()->withCookie($recaller, $this->student->id . '|device-token|' . $this->student->password)
+            ->getJson('/api/v1/me')
+            ->assertOk()
+            ->assertJsonPath('data.id', $this->student->id);
+    }
+
+    public function test_a_wrong_remember_cookie_is_refused()
+    {
+        $this->student->forceFill(['remember_token' => 'device-token'])->save();
+
+        $this->withCredentials()->withCookie(Auth::guard('student')->getRecallerName(), $this->student->id . '|other|' . $this->student->password)
+            ->getJson('/api/v1/me')
+            ->assertStatus(401);
+    }
+
+    public function test_a_new_password_signs_every_device_out()
+    {
+        $this->student->forceFill(['remember_token' => 'device-token'])->save();
+
+        $this->student->update(['password' => Hash::make('new-pass')]);
+
+        $this->assertNotSame('device-token', $this->student->fresh()->remember_token);
     }
 
     public function test_wrong_password_and_unknown_cpr_get_the_same_answer()

@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use \App\Models\Concerns\SignsOutDevicesOnPasswordChange;
     use HasFactory, Notifiable;
     use CrudTrait; // <----- this
     use HasRoles; // <------ and this

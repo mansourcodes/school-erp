@@ -1,14 +1,16 @@
 import { ArrowRight, ArrowUpRight, Mail, WifiOff } from 'lucide-react';
+import { useCallback } from 'react';
 import { NavLink, Outlet, useMatches, useNavigate } from 'react-router';
 import { LogoutButton } from '@/features/auth/logout';
 import { PushSoftPrompt } from '@/features/enable-notifications';
-import { useOutboxRunner } from '@/features/send-notifications';
+import { useRosterHandoff } from '@/features/mark-attendance';
+import { refreshOutbox, useOutboxRunner } from '@/features/send-notifications';
 import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { ThemeCycleButton, ThemeSegment } from '@/features/theme-switch';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
 import { BASE_PATH, homeOf, LEGACY_PORTAL_URL, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
-import { useOnlineStatus } from '@/shared/lib';
+import { useAppDispatch, useOnlineStatus } from '@/shared/lib';
 import { navFor, type ShellRouteHandle } from '../config/nav';
 
 /**
@@ -25,6 +27,10 @@ export function AppShell() {
   const task = handles.some((h) => h?.task);
   // Teachers: send students' notifications left over from a closed app or an offline save.
   useOutboxRunner(viewer?.role === 'teacher');
+  // Offline saves the service worker hands back (stale CSRF): resend, then send their notifications.
+  const dispatch = useAppDispatch();
+  const onHandoffSaved = useCallback(() => void dispatch(refreshOutbox()), [dispatch]);
+  useRosterHandoff(viewer?.role === 'teacher', onHandoffSaved);
 
   if (!viewer) return null;
   const nav = navFor(viewer.role);

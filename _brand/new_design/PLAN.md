@@ -558,12 +558,12 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 | Honeypot | Hidden `website` field. If filled, return the same generic failure after a fixed delay. |
 | No user enumeration | One message for every failure (“الرقم الشخصي أو كلمة المرور غير صحيحة”), with constant-time comparison and identical response timing for unknown CPRs. |
 | Input validation | CPR `digits_between:1,12`, password `string|max:128`, rejected before hitting the DB. |
-| Sessions | Sanctum stateful cookies: `HttpOnly`, `Secure`, `SameSite=Lax`, `session()->regenerate()` on login, invalidate + regenerate token on logout, idle timeout (e.g. 60 min) leading to the “session expired” state. |
+| Sessions | Sanctum stateful cookies: `HttpOnly`, `Secure`, `SameSite=Lax`, `session()->regenerate()` on login, invalidate + regenerate token on logout. **Signed in until logout** (changed 2026-10-14): login sets Laravel's remember-me cookie (HttpOnly, Secure), so when the server session ends (`SESSION_LIFETIME`) the next request signs the user in again; a stale CSRF token (419) is refreshed and the request retried once. Logout forgets the cookie on that device only. A password change (admin reset) signs every device out. “Session expired” now only appears after that or a logout elsewhere. |
 | CSRF | `GET /sanctum/csrf-cookie` before login; RTK Query sends `X-XSRF-TOKEN`. |
 | Transport & headers | HTTPS only + HSTS; CSP limited to self (+ Turnstile + fonts); `X-Frame-Options: DENY`; `Referrer-Policy: same-origin`. |
 | Audit | Log failed/locked logins (CPR hash, IP, UA, time) for the admin. Optional Backpack list later. |
 | Password reset | **None online, by policy.** Admin resets in Backpack after an in-person ID check. No reset endpoint exists, so there is no reset attack surface. |
-| Out of scope (no “remember me”) | Shared family devices are common, so no long-lived cookies. |
+| Shared devices | Decided 2026-10-14: stay signed in until logout (was: no “remember me”). On a shared family device the user must log out; an admin password reset signs out every device. |
 
 ---
 
@@ -752,7 +752,7 @@ Target: **OWASP ASVS Level 2** for the portal API, plus the login hardening in �
 | Authorization | Every endpoint goes through a Policy (student: only own records; teacher: only own current classrooms, archived = read-only). IDs from the client are never trusted for scoping. Tests cover each 403. |
 | Input / output | Form Requests with explicit rules (never `$request->all()`, project rule). Message bodies are **plain text**, rendered as text (React escaping, never `dangerouslySetInnerHTML`). Uploads are re-encoded (§5.8). |
 | Data minimization | API Resources whitelist fields. Health/financial/family fields never leave the server (§3.6). The CPR is masked in the UI. Push payloads carry no CPR or marks. |
-| Sessions & CSRF | Sanctum HttpOnly + Secure + SameSite=Lax cookies, CSRF token, idle timeout, logout clears the push subscription and caches (§4 PWA). |
+| Sessions & CSRF | Sanctum HttpOnly + Secure + SameSite=Lax cookies, CSRF token, remember-me cookie until logout (§6), logout clears the push subscription and caches (§4 PWA). |
 | Headers | CSP (self + fonts + Turnstile), HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (camera only where needed), `frame-ancestors 'none'`. |
 | Secrets | `.env` never committed; VAPID / Turnstile / DB secrets per environment; least-privilege DB user (no DDL in production runtime). |
 | Admin panel | `/admin` stays reachable behind the **Backpack login only**: strong admin passwords, Backpack's login throttling and a short admin session lifetime (edge protection is deferred with Cloudflare). Teachers no longer use `/admin` (Q13). |

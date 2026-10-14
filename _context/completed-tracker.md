@@ -4,6 +4,17 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Portal stays signed in until logout (2026-10-14)
+- `AuthController` logs in with remember-me (`login($user, true)`); logout uses `logoutCurrentDevice()` (forgets this
+  device's cookie, other devices stay signed in); `SignsOutDevicesOnPasswordChange` (Student, User) cycles the
+  remember token when the password changes
+- SPA base query: 419 → `GET /sanctum/csrf-cookie` and retry once (stale CSRF after the server session ended);
+  "session expired" text no longer says "inactivity"
+- Service worker: a replayed offline roster save that gets 419 is handed to an open page (`ROSTER_REPLAY`,
+  `useRosterHandoff`), which resends it with a fresh token; kept in the queue when no page is open
+- Tests: 4 PHPUnit (remember cookie set, cookie alone restores the session, wrong cookie refused, password change
+  cycles the token; logout forgets the cookie) + 1 Vitest (419 retry)
+
 ### Push outbox + CPR length (2026-10-13)
 - Login CPR: digits only, 1–12 long (`digits_between:1,12` in `LoginRequest`, same rule + `maxLength` in the SPA)
 - Push outbox (`push_deliveries`, `App\Services\Portal\PushOutbox`): teacher saves and messages record one row per

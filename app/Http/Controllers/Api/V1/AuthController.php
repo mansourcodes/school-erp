@@ -28,7 +28,9 @@ class AuthController extends Controller
             $request
         );
 
-        Auth::guard(PortalLogin::GUARDS[$role])->login($user);
+        // Remember-me cookie: the portal stays signed in until the user logs out, even after the
+        // session itself expires (SESSION_LIFETIME). A password change signs every device out.
+        Auth::guard(PortalLogin::GUARDS[$role])->login($user, true);
         $request->session()->regenerate();
 
         return MeController::resourceFor($user);
@@ -36,9 +38,10 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Either portal guard; the Backpack admin session (its own guard) is not touched.
+        // Either portal guard; the Backpack admin session (its own guard) is not touched. This device
+        // only: it forgets its remember cookie; the user's other devices stay signed in.
         foreach (PortalLogin::GUARDS as $guard) {
-            Auth::guard($guard)->logout();
+            Auth::guard($guard)->logoutCurrentDevice();
         }
         $request->session()->invalidate();
         $request->session()->regenerateToken();

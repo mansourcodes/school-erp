@@ -134,8 +134,34 @@ describe('auth flow', () => {
     server.use(http.get('*/api/v1/me', () => HttpResponse.json({ message: 'x' }, { status: 401 })));
     await store.dispatch(viewerApi.endpoints.me.initiate(undefined, { forceRefetch: true }));
 
-    expect(await screen.findByText('انتهت جلستك لعدم النشاط. يرجى تسجيل الدخول مجددًا.')).toBeInTheDocument();
+    expect(await screen.findByText('انتهت جلستك. يرجى تسجيل الدخول مجددًا.')).toBeInTheDocument();
     expect(router.state.location.search).toBe('?expired=1');
+  });
+
+  it('refreshes a stale CSRF token and retries instead of signing out', async () => {
+    server.use(signedIn());
+    const { store, router } = renderApp('/');
+    expect(await screen.findByRole('heading', { level: 1, name: 'الدورة الحالية' })).toBeInTheDocument();
+
+    // The server session ended; the remember cookie signs the user in again, but the old CSRF token is gone.
+    let csrfRefreshed = false;
+    let calls = 0;
+    server.use(
+      http.get('*/sanctum/csrf-cookie', () => {
+        csrfRefreshed = true;
+        return new HttpResponse(null, { status: 204 });
+      }),
+      http.get('*/api/v1/me', () => {
+        calls++;
+        return calls === 1 ? HttpResponse.json({ message: 'CSRF token mismatch.' }, { status: 419 }) : HttpResponse.json({ data: demoViewer });
+      }),
+    );
+    await store.dispatch(viewerApi.endpoints.me.initiate(undefined, { forceRefetch: true }));
+
+    expect(csrfRefreshed).toBe(true);
+    expect(calls).toBe(2);
+    expect(screen.queryByText('انتهت جلستك. يرجى تسجيل الدخول مجددًا.')).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/');
   });
 
   it('logs out from the profile screen and clears cached data', async () => {

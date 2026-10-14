@@ -15,6 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Student extends Authenticatable
 {
+    use \App\Models\Concerns\SignsOutDevicesOnPasswordChange;
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory, SoftDeletes, Notifiable;
     use HasRoles;

@@ -27,8 +27,10 @@ const rawBaseQuery = fetchBaseQuery({
 const AUTH_ENDPOINTS = new Set(['login', 'logout']);
 
 /**
- * - 401/419 after a successful sign-in → session expired: clear all cached data;
- *   the route guard then sends the user to /login?expired=1.
+ * - 419 (CSRF token gone with the server session; the remember cookie still signs the user in):
+ *   fetch a fresh CSRF cookie and retry once.
+ * - 401/419 after a successful sign-in → session expired (logged out elsewhere, password changed):
+ *   clear all cached data; the route guard then sends the user to /login?expired=1.
  * - 429 → copy `Retry-After` into the error body so the UI can count down.
  */
 const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
@@ -36,7 +38,15 @@ const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQuery
   api,
   extraOptions,
 ) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
+  let result = await rawBaseQuery(args, api, extraOptions);
+  if (result.error?.status === 419) {
+    try {
+      await ensureCsrfCookie();
+      result = await rawBaseQuery(args, api, extraOptions);
+    } catch {
+      // Offline or server down: handled below like any other error.
+    }
+  }
   const { error } = result;
   if (!error) return result;
 

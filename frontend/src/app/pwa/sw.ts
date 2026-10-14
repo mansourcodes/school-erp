@@ -35,8 +35,20 @@ const rosterQueue = new Queue('roster-saves', {
       try {
         const response = await fetch(entry.request.clone());
         const code = decodeURIComponent(new URL(entry.request.url).pathname.split('/').pop() ?? '');
-        // 4xx (e.g. the roster changed or the session expired) will not succeed later either: drop it.
         const clients = await self.clients.matchAll({ type: 'window' });
+        if (response.status === 419) {
+          // The stored CSRF header is stale (the server session ended meanwhile; the remember cookie
+          // still signs the teacher in). The worker cannot read the new token, so an open page
+          // resends the save; with no page open, keep it for the next start.
+          if (clients.length === 0) {
+            await queue.unshiftRequest(entry);
+            break;
+          }
+          const body = (await entry.request.clone().json()) as { states: Record<string, string> };
+          clients[0].postMessage({ type: 'ROSTER_REPLAY', code, states: body.states });
+          continue;
+        }
+        // Other 4xx (e.g. the roster changed) will not succeed later either: drop it.
         for (const client of clients) {
           client.postMessage({ type: response.ok ? 'ROSTER_SYNCED' : 'ROSTER_REJECTED', code });
         }
