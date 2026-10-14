@@ -4,6 +4,8 @@ namespace App\Http\Resources\V1;
 
 use App\Models\Curriculum;
 use App\Models\StudentMarks;
+use App\Models\User;
+use App\Services\Portal\TeacherPhotos;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
@@ -90,16 +92,20 @@ class CourseDetailResource extends JsonResource
             ->unique()
             ->values();
         $names = Curriculum::withTrashed()->whereIn('id', $ids)->pluck('curriculum_name', 'id');
+        // Photos of the teacher users linked in the row (`user_id` is optional in the admin form).
+        $users = User::whereIn('id', $teachers->pluck('user_id')->filter())->get(['id', 'photo_path'])->keyBy('id');
 
-        return $ids->map(function ($id) use ($teachers, $slots, $names) {
+        return $ids->map(function ($id) use ($teachers, $slots, $names, $users) {
             $teacher = $teachers->first(function ($t) use ($id) {
                 return (int) $t['curriculum_id'] === $id;
             });
+            $user = empty($teacher['user_id']) ? null : $users->get((int) $teacher['user_id']);
 
             return [
                 'id' => $id,
                 'name' => $names->get($id, ''),
                 'teacher' => $teacher['teacher_name'] ?? null,
+                'teacher_photo_url' => $user ? TeacherPhotos::url($user) : null,
                 'slots' => $slots
                     ->filter(function ($s) use ($id) {
                         return (int) $s['curriculum_id'] === $id;

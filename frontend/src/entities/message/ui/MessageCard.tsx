@@ -25,11 +25,15 @@ export function MessageCard({ message, onOpen }: MessageCardProps) {
       onClick={() => unread && onOpen(message)}
     >
       <header className="flex items-center gap-3">
-        <div className="arch w-9 h-11 shrink-0 grid place-items-center bg-primary text-primary-content">
-          <span className="font-display" aria-hidden="true">
-            {Array.from((message.teacher ?? '').trim())[0] ?? ''}
-          </span>
-        </div>
+        {message.teacher_photo_url ? (
+          <img src={message.teacher_photo_url} alt="" className="arch w-9 h-11 shrink-0 object-cover bg-base-200" loading="lazy" />
+        ) : (
+          <div className="arch w-9 h-11 shrink-0 grid place-items-center bg-primary text-primary-content">
+            <span className="font-display" aria-hidden="true">
+              {Array.from((message.teacher ?? '').trim())[0] ?? ''}
+            </span>
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <p className={`truncate ${unread ? 'font-semibold' : 'font-medium'}`}>{message.teacher}</p>
           <p className="text-xs opacity-60 num">

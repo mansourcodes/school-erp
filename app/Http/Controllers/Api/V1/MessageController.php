@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\MessageRecipient;
 use App\Models\PushDelivery;
 use App\Services\Portal\StudentPhotos;
+use App\Services\Portal\TeacherPhotos;
 use App\Services\Teacher\TeacherScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -127,6 +128,7 @@ class MessageController extends Controller
                 return [
                     'id' => $r->message_id,
                     'teacher' => optional($r->message->sender)->name,
+                    'teacher_photo_url' => $r->message->sender ? TeacherPhotos::url($r->message->sender) : null,
                     'classroom' => $this->classroomLabel($r->message),
                     'body' => $r->message->body,
                     'sent_at' => $r->message->created_at->toIso8601String(),

@@ -1,12 +1,12 @@
 import { Provider } from 'react-redux';
 import { type createBrowserRouter, RouterProvider } from 'react-router';
-import { useThemeSync } from '@/features/theme-switch';
+import { usePortalTheme } from '@/features/portal-theme';
 import { PushRefresh } from '../pwa/PushRefresh';
 import { UpdatePrompt } from '../pwa/UpdatePrompt';
 import type { AppStore } from '../store';
 
-function ThemeSync() {
-  useThemeSync();
+function PortalTheme() {
+  usePortalTheme();
   return null;
 }
 
@@ -18,7 +18,7 @@ interface AppProps {
 export function App({ store, router }: AppProps) {
   return (
     <Provider store={store}>
-      <ThemeSync />
+      <PortalTheme />
       <RouterProvider router={router} />
       <UpdatePrompt />
       <PushRefresh />

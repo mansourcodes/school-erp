@@ -60,7 +60,7 @@ export function TeacherClassroomPage() {
               role="tab"
               aria-selected={tab === tabId}
               onClick={() => setTab(tabId)}
-              className={`tab h-12 gap-1 ${tab === tabId ? 'tab-active text-primary font-semibold' : ''}`}
+              className={`tab flex items-center justify-center h-12 gap-1 px-1 whitespace-nowrap ${tab === tabId ? 'tab-active text-primary font-semibold' : ''}`}
             >
               <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
               {label}

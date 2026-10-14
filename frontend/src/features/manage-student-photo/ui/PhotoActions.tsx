@@ -2,9 +2,9 @@ import { Camera, Image, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toApiError } from '@/shared/api';
 import { t } from '@/shared/i18n';
+import { resizeImage } from '@/shared/lib';
 import { Dialog } from '@/shared/ui';
 import { useDeleteStudentPhotoMutation, useUploadStudentPhotoMutation } from '../api/student-photo-api';
-import { resizeImage } from '../lib/resize-image';
 
 interface PhotoActionsProps {
   classroomId: number;

@@ -3,11 +3,12 @@ import { nextSession } from './next-session';
 
 // Real data: the centre teaches on Friday (5) and Saturday (6).
 const curricula: CourseCurriculum[] = [
-  { id: 1, name: 'تجويد', teacher: 'الشيخ أحمد', slots: [{ day: 5, start: '16:00', end: '17:00' }] },
+  { id: 1, name: 'تجويد', teacher: 'الشيخ أحمد', teacher_photo_url: null, slots: [{ day: 5, start: '16:00', end: '17:00' }] },
   {
     id: 2,
     name: 'فقه',
     teacher: null,
+    teacher_photo_url: null,
     slots: [
       { day: 5, start: '17:15', end: '18:15' },
       { day: 6, start: '09:00', end: '10:00' },

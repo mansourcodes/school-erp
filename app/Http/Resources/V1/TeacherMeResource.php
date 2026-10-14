@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Services\Portal\TeacherPhotos;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -19,7 +20,7 @@ class TeacherMeResource extends JsonResource
             'name' => $name,
             'first_name' => $name === '' ? '' : explode(' ', $name)[0],
             'email' => $this->email,
-            'photo_url' => null,
+            'photo_url' => TeacherPhotos::url($this->resource),
         ];
     }
 }

@@ -46,11 +46,11 @@ describe('ProfilePage', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
-  it('keeps logout and appearance available', async () => {
+  it('keeps logout; the theme is set by the centre, not here', async () => {
     renderApp('/profile');
 
     await screen.findByRole('heading', { level: 2, name: profile.name });
     expect(screen.getAllByRole('button', { name: 'تسجيل الخروج' }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole('group', { name: 'المظهر' }).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('group', { name: 'المظهر' })).not.toBeInTheDocument();
   });
 });

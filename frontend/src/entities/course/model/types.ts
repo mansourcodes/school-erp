@@ -13,6 +13,8 @@ export interface CourseCurriculum {
   id: number;
   name: string;
   teacher: string | null;
+  /** Set when the subject is linked to a teacher user with a photo. */
+  teacher_photo_url: string | null;
   slots: Slot[];
 }
 

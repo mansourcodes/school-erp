@@ -89,7 +89,12 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perHour(5)->by('photo|' . $request->user()->getAuthIdentifier() . '|' . $request->route('sid'));
         });
 
-        RateLimiter::for('portal', function (Request $request) {
+        // The teacher's own photo: 5 an hour.
+        RateLimiter::for('teacher-photo', function (Request $request) {
+            return Limit::perHour(5)->by('teacher-photo|' . $request->user()->getAuthIdentifier());
+        });
+
+        RateLimiter::for('portal',function (Request $request) {
             return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });
 

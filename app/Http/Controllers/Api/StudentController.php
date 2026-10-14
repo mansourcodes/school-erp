@@ -17,15 +17,26 @@ class StudentController extends Controller
     {
         $search_term = $request->input('q');
 
+        // A Backpack field with include_all_form_fields (the admin message form) sends the whole
+        // form: when it has a classroom, only that classroom's students are offered.
+        $classRoomId = optional(collect($request->input('form', []))->firstWhere('name', 'class_room_id'))['value'] ?? null;
+        $query = Student::query();
+        if ($classRoomId) {
+            $query->whereHas('classRooms', function ($q) use ($classRoomId) {
+                $q->where('class_rooms.id', $classRoomId);
+            });
+        }
+
         if ($search_term) {
-            $results = Student::where('name', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('cpr', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('mobile', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('mobile2', 'LIKE', '%' . $search_term . '%')
-                ->orWhere('address', 'LIKE', '%' . $search_term . '%')
-                ->paginate(10);
+            $results = $query->where(function ($q) use ($search_term) {
+                $q->where('name', 'LIKE', '%' . $search_term . '%')
+                    ->orWhere('cpr', 'LIKE', '%' . $search_term . '%')
+                    ->orWhere('mobile', 'LIKE', '%' . $search_term . '%')
+                    ->orWhere('mobile2', 'LIKE', '%' . $search_term . '%')
+                    ->orWhere('address', 'LIKE', '%' . $search_term . '%');
+            })->paginate(10);
         } else {
-            $results = Student::paginate(10);
+            $results = $query->paginate(10);
         }
 
         return $results;

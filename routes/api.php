@@ -27,6 +27,10 @@ Route::get('/teacher/{id}', [App\Http\Controllers\Api\TeacherController::class, 
 /*
 | Portal API v1 (/beta SPA, PLAN.md §7). Cookie sessions via Sanctum, same origin.
 */
+// Outside portal.mode: the maintenance / closed screens use the theme too.
+Route::get('/v1/theme', [App\Http\Controllers\Api\V1\PortalThemeController::class, 'show'])
+    ->middleware([\App\Http\Middleware\ForceJsonResponse::class, 'throttle:60,1']);
+
 Route::prefix('v1')
     ->middleware([
         \App\Http\Middleware\ForceJsonResponse::class,
@@ -67,6 +71,9 @@ Route::prefix('v1')
                     ->where(['id' => '[0-9]+', 'sid' => '[0-9]+'])->middleware('throttle:student-photo');
                 Route::delete('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deletePhoto'])
                     ->where(['id' => '[0-9]+', 'sid' => '[0-9]+']);
+                Route::post('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadOwnPhoto'])
+                    ->middleware('throttle:teacher-photo');
+                Route::delete('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deleteOwnPhoto']);
             });
 
             Route::prefix('student')->middleware('portal.role:student')->group(function () {

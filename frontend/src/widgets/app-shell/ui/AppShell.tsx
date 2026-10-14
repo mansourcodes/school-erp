@@ -6,7 +6,6 @@ import { PushSoftPrompt } from '@/features/enable-notifications';
 import { useRosterHandoff } from '@/features/mark-attendance';
 import { refreshOutbox, useOutboxRunner } from '@/features/send-notifications';
 import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
-import { ThemeCycleButton, ThemeSegment } from '@/features/theme-switch';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
 import { BASE_PATH, homeOf, LEGACY_PORTAL_URL, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
@@ -77,7 +76,6 @@ export function AppShell() {
               )}
             </NavLink>
           )}
-          <ThemeCycleButton className="lg:hidden" />
           <NavLink to={profile} className="lg:hidden" aria-label={t('nav.profile')}>
             <ViewerAvatar viewer={viewer} className="w-8 h-10" textClassName="text-sm" />
           </NavLink>
@@ -144,7 +142,6 @@ function Sidebar({ viewer }: { viewer: Viewer }) {
       </ul>
 
       <div className="mt-auto p-4 space-y-3">
-        <ThemeSegment />
         {viewer.role === 'student' && (
           <a href={LEGACY_PORTAL_URL} className="btn btn-ghost btn-sm btn-block justify-start opacity-80">
             <ArrowUpRight className="size-4" strokeWidth={1.75} aria-hidden="true" />

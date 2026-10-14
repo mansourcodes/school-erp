@@ -1,12 +1,12 @@
-import { KeyRound, School, Sun } from 'lucide-react';
+import { Camera, KeyRound, School } from 'lucide-react';
 import { LogoutButton } from '@/features/auth/logout';
-import { ThemeSegment } from '@/features/theme-switch';
+import { TeacherPhotoActions } from '@/features/manage-teacher-photo';
 import { useTeacherClassroomsQuery } from '@/entities/classroom';
 import { useMeQuery, ViewerAvatar } from '@/entities/viewer';
 import { t } from '@/shared/i18n';
 import { LoadingBlocks } from '@/shared/ui';
 
-/** /teacher/profile (PLAN.md §8 screen 9): name, email, assigned classrooms, password note, theme, logout. */
+/** /teacher/profile (PLAN.md §8 screen 9): name, email, assigned classrooms, own photo, password note, logout. */
 export function TeacherProfilePage() {
   const { data: viewer } = useMeQuery();
   const { data: classrooms } = useTeacherClassroomsQuery();
@@ -44,6 +44,14 @@ export function TeacherProfilePage() {
         </dl>
       </section>
 
+      <section className="card-soft p-5 sm:p-6">
+        <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+          <Camera className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          {t('teacher.ownPhoto')}
+        </h3>
+        <TeacherPhotoActions hasPhoto={viewer.photo_url !== null} />
+      </section>
+
       <section className="card-soft p-5 sm:p-6 space-y-5">
         <div>
           <h3 className="font-display text-lg mb-2 flex items-center gap-2">
@@ -51,14 +59,6 @@ export function TeacherProfilePage() {
             {t('profile.password')}
           </h3>
           <p className="text-sm opacity-80">{t('teacher.passwordNote')}</p>
-        </div>
-        <div className="brand-rule" />
-        <div>
-          <h3 className="font-display text-lg mb-3 flex items-center gap-2">
-            <Sun className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-            {t('profile.appearance')}
-          </h3>
-          <ThemeSegment />
         </div>
         <div className="brand-rule" />
         <LogoutButton className="btn-outline btn-error btn-block btn-lg sm:btn-md" />

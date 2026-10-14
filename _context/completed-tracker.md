@@ -4,6 +4,58 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Receipt printing fix (2026-10-14)
+- "طباعة" on the payment receipt printed blank pages: `.print-area { position: fixed }` sat inside daisyUI's
+  transformed, `overflow-hidden` `.modal-box`, which collapsed to 0 px and clipped it; the hidden page behind still
+  added pages
+- `app.css` print rules now `display: none` everything off the path to `.print-area`, reset the modal box's
+  translate / scale / clip, clear daisyUI's open-modal `:root` darkening, and print the header band in colour
+  (`print-color-adjust: exact`); verified with a headless Chromium PDF (one page, receipt only)
+
+### Teacher photos (2026-10-14)
+- `users.photo_path` (migration `2026_10_14_100000_add_photo_path_to_users_table`); files on the public disk under
+  `teachers/photos/{user_id}/`
+- `App\Services\Portal\ProfilePhotos` (GD re-encode, EXIF strip, 512 px) is now the shared base of `StudentPhotos`
+  (`students/photos`) and the new `TeacherPhotos` (`teachers/photos`)
+- Admin: `UserCrudController` has a `photo_path` upload field (create / edit, clear button removes it) and a list
+  column; the upload is validated (jpeg/png/webp, ≥ 300×300, ≤ 2 MB) and stored through `TeacherPhotos`
+- Teacher portal: `POST|DELETE /api/v1/teacher/photo` (`throttle:teacher-photo`, 5/hour); `TeacherMeResource.photo_url`;
+  SPA `features/manage-teacher-photo` on `/teacher/profile` (add / change / delete with an in-page confirm sheet)
+- Student portal: `teacher_photo_url` on each `CourseDetail.curricula[]` (from the `user_id` of the `teachers` JSON row;
+  null when the row has no linked user) and on inbox messages (the sender); shown in the timetable, the hero's next
+  session and the message card
+- Course info section (`CourseMeta`) leads with a "المدرّسون" block: one card per teacher name, 64×80 arch photo
+  (initial when none), name and their subjects
+- `resizeImage` moved from `features/manage-student-photo` to `shared/lib`
+- Tests: 8 PHPUnit (`TeacherPhotoTest`), 3 Vitest (teacher profile upload, inbox photo, course info teachers)
+
+### Admin messages CRUD (2026-10-14)
+- `/admin/message` (`MessageCrudController`, Superadmin only; sidebar under academic registration): list with
+  sender, classroom, text, read progress (`read / recipients`); show with each recipient's read state; edit the text
+  only (recipients and read state stay); delete is the model's soft delete (leaves every inbox at once)
+- Create: classroom + chosen students (or "all students of the classroom"), validated by `MessageRequest` (students
+  must be enrolled); the admin is the sender; `MessageSent($message, sendNow: true)` makes `SendMessagePush` send the
+  pushes at once (no teacher app to drain the outbox), like an admin attendance save
+- `api/student` narrows to one classroom when a Backpack `include_all_form_fields` form sends `class_room_id`
+- `Message` uses `CrudTrait`; translations in `lang/ar/message.php`
+- Tests: 7 PHPUnit (`tests/Feature/Admin/MessageCrudTest`)
+
+### Portal theme setting, dark mode removed (2026-10-14)
+- Backpack setting `portal.theme` (migration `2026_10_14_000000_add_portal_theme_to_settings_table`, select):
+  `ghadeer` (default) / `girls` (Islamic theme for girls) / `cupcake` / `autumn` / `wireframe`; `App\Support\PortalTheme`
+- Public `GET /api/v1/theme` (`PortalThemeController`), outside `portal.mode` so maintenance / closed screens are
+  themed; throttled 60/min per IP
+- SPA: `features/theme-switch` (system / light / dark per device) replaced by `features/portal-theme`; theme
+  controls removed from the login, top bar, sidebar and both profile pages; `ghadeer-night` deleted;
+  `theme-boot.js` paints the last theme the server sent (localStorage `gh-theme`), then the app fetches the current one
+- cupcake / autumn / wireframe are DaisyUI's own presets, enabled in `app.css` with per-theme brand extras (hero, viz)
+- Turnstile pinned to `theme: 'light'`
+- Tests: 3 PHPUnit (`PortalThemeTest`), 2 Vitest (`themes.test.ts`); profile test now checks the control is gone
+
+### Roster prev/next loading state (2026-10-14)
+- `TeacherRosterPage` uses RTK Query `currentData` + `isFetching`: while the previous / next session is fetched
+  the stale roster is replaced by `LoadingBlocks`; refetches of the same session keep the roster on screen
+
 ### Portal stays signed in until logout (2026-10-14)
 - `AuthController` logs in with remember-me (`login($user, true)`); logout uses `logoutCurrentDevice()` (forgets this
   device's cookie, other devices stay signed in); `SignsOutDevicesOnPasswordChange` (Student, User) cycles the
@@ -298,3 +350,8 @@ Update this file after every meaningful implementation change.
 ### Attend start_time fix (2026-10-12)
 - Attend times saved/compared as `H:i` (was `H:m`, month instead of minutes)
 - Data-repair migration restores existing `attends.start_time` from classroom timetables
+
+### Teacher classroom info tab fix (2026-10-14)
+- `GET /teacher/classrooms/{id}` merged the detail `course` object with `+`, which kept the summary's
+  string `course` — the info tab showed no course name or dates. Now `array_merge`; covered by
+  `TeacherApiTest::test_a_classroom_carries_its_course_details`

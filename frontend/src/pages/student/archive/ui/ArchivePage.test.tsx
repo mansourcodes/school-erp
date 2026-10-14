@@ -33,7 +33,7 @@ const detail = (id: number): CourseDetail => ({
   ...courses.find((c) => c.id === id)!,
   duration: '64',
   class_room_name: 'قاعة الإمام الباقر',
-  curricula: [{ id: 1, name: `منهج الدورة ${id}`, teacher: 'الشيخ أحمد', slots: [{ day: 5, start: '16:00', end: '17:00' }] }],
+  curricula: [{ id: 1, name: `منهج الدورة ${id}`, teacher: 'الشيخ أحمد', teacher_photo_url: null, slots: [{ day: 5, start: '16:00', end: '17:00' }] }],
   payments: [],
   marks: [{ key: 'm0', label: 'الامتحان النهائي', max: 100, mark: 91.5 }],
 });

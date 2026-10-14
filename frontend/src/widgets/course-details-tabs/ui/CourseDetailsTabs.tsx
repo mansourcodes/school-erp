@@ -82,7 +82,7 @@ export function CourseDetailsTabs({
               aria-controls={panelId(name)}
               tabIndex={tab === name ? 0 : -1}
               onClick={() => onTabChange(name)}
-              className={`tab h-13 sm:h-14 gap-1 sm:gap-1.5 px-1 flex-nowrap whitespace-nowrap text-sm sm:text-base ${
+              className={`tab flex items-center justify-center h-13 sm:h-14 gap-1 sm:gap-1.5 px-1 whitespace-nowrap text-sm sm:text-base ${
                 tab === name ? 'tab-active text-primary font-semibold' : ''
               }`}
             >

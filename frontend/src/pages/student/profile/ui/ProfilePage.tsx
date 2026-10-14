@@ -9,13 +9,11 @@ import {
   type LucideIcon,
   Phone,
   RefreshCw,
-  Sun,
   WifiOff,
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { LogoutButton } from '@/features/auth/logout';
 import { NotificationsCard } from '@/features/enable-notifications';
-import { ThemeSegment } from '@/features/theme-switch';
 import { maskCpr, type Profile, useMeQuery, useProfileQuery, ViewerAvatar } from '@/entities/viewer';
 import { LEGACY_PORTAL_URL } from '@/shared/config';
 import { t } from '@/shared/i18n';
@@ -84,14 +82,6 @@ export function ProfilePage() {
             {t('profile.password')}
           </h3>
           <p className="text-sm opacity-80 leading-relaxed">{t('profile.passwordNote')}</p>
-        </div>
-        <div className="brand-rule" />
-        <div>
-          <h3 className="font-display text-lg mb-3 flex items-center gap-2">
-            <Sun className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-            {t('profile.appearance')}
-          </h3>
-          <ThemeSegment />
         </div>
         <div className="brand-rule" />
         <a href={LEGACY_PORTAL_URL} className="btn btn-ghost btn-block justify-start">

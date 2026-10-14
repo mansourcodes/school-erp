@@ -60,6 +60,9 @@
             <li class='nav-item'><a class='nav-link' href='{{ backpack_url('student') }}'><i
                         class='nav-icon la la-user-graduate'></i> {{ __('student.students') }}</a></li>
 
+            <li class='nav-item'><a class='nav-link' href='{{ backpack_url('message') }}'><i
+                        class='nav-icon la la-envelope'></i> {{ __('message.messages') }}</a></li>
+
 
 
 

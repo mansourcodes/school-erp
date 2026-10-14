@@ -21,8 +21,8 @@ const course: CourseDetail = {
   class_room_number: '2-ب',
   class_room_name: 'قاعة الإمام الصادق',
   curricula: [
-    { id: 11, name: 'تجويد القرآن الكريم', teacher: 'الشيخ أحمد', slots: [{ day: 5, start: '16:00', end: '17:00' }] },
-    { id: 12, name: 'الفقه', teacher: 'الشيخ محمد', slots: [{ day: 6, start: '17:15', end: '18:15' }] },
+    { id: 11, name: 'تجويد القرآن الكريم', teacher: 'الشيخ أحمد', teacher_photo_url: '/storage/teachers/photos/1/a.webp', slots: [{ day: 5, start: '16:00', end: '17:00' }] },
+    { id: 12, name: 'الفقه', teacher: 'الشيخ محمد', teacher_photo_url: null, slots: [{ day: 6, start: '17:15', end: '18:15' }] },
   ],
   payments: [
     { id: 1043, date: '2026-09-07', amount: 30, type: 'رسوم كاملة', source: 'نقدًا' },
@@ -53,6 +53,16 @@ describe('HomePage', () => {
     expect(screen.getByText('الفصل الأول · 1448هـ · الصف 2-ب')).toBeInTheDocument();
     expect(screen.getAllByText('تجويد القرآن الكريم').length).toBeGreaterThan(0);
     expect(screen.getByText('45.000 د.ب')).toBeInTheDocument();
+  });
+
+  it('shows each teacher with their photo in the course info', async () => {
+    serve(course);
+    renderApp('/');
+
+    const teachers = within(await screen.findByRole('region', { name: 'المدرّسون' }));
+    expect(teachers.getByRole('img', { name: 'الشيخ أحمد' })).toHaveAttribute('src', '/storage/teachers/photos/1/a.webp');
+    expect(teachers.getByText('الشيخ محمد')).toBeInTheDocument();
+    expect(teachers.queryByRole('img', { name: 'الشيخ محمد' })).not.toBeInTheDocument();
   });
 
   it('opens the payments tab from the KPI tile and shows a receipt', async () => {

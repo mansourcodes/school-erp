@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * A teacher's message to selected students of one classroom (PLAN.md §5.11). One-way: students
- * read only; there is no reply.
+ * A message to selected students of one classroom (PLAN.md §5.11), from a teacher or from the
+ * Superadmin (/admin/message). One-way: students read only; there is no reply.
  */
 class Message extends Model
 {
-    use SoftDeletes;
+    use CrudTrait, SoftDeletes;
 
     /** Kept for this many days, then pruned (Q15). */
     const RETENTION_DAYS = 90;

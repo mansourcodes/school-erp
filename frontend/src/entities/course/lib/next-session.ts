@@ -7,6 +7,7 @@ export interface NextSession {
   dayOffset: number;
   curriculum: string;
   teacher: string | null;
+  teacherPhotoUrl: string | null;
   start: string;
   end: string | null;
 }
@@ -48,6 +49,7 @@ export function nextSession(course: Pick<CourseDetail, 'curricula' | 'start_date
         dayOffset: offset,
         curriculum: curriculum.name,
         teacher: curriculum.teacher,
+        teacherPhotoUrl: curriculum.teacher_photo_url,
         start: s,
         end: slot.end,
       };

@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { LoginForm } from '@/features/auth/login';
 import { JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { PasswordHelpDialog } from '@/features/password-help';
-import { ThemeCycleButton } from '@/features/theme-switch';
 import { BASE_PATH, homeOf, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 
@@ -31,7 +30,6 @@ export function LoginPage() {
       <section className="hero-band bg-pattern relative flex flex-col justify-between px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-20 lg:p-14 overflow-hidden">
         <div className="flex items-center justify-between">
           <img src={`${BASE_PATH}logo-full.svg`} alt={t('app.centre')} className="h-12 lg:h-20 w-auto brightness-0 invert" />
-          <ThemeCycleButton className="text-white lg:hidden" />
         </div>
         <div className="hidden lg:block max-w-md">
           <div className="brand-rule w-24 mb-6" />

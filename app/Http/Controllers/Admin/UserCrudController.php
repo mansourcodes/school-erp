@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\PermissionManager\app\Http\Requests\UserStoreCrudRequest as StoreRequest;
 use Backpack\PermissionManager\app\Http\Requests\UserUpdateCrudRequest as UpdateRequest;
+use App\Services\Portal\TeacherPhotos;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class UserCrudController extends CrudController
 {
@@ -28,6 +30,13 @@ class UserCrudController extends CrudController
     public function setupListOperation()
     {
         $this->crud->addColumns([
+            [
+                'name'   => 'photo_path',
+                'label'  => trans('localize.user_photo'),
+                'type'   => 'image',
+                'disk'   => 'public',
+                'height' => '40px',
+            ],
             [
                 'name'  => 'name',
                 'label' => trans('backpack::permissionmanager.name'),
@@ -107,10 +116,14 @@ class UserCrudController extends CrudController
     public function store()
     {
         $this->crud->setRequest($this->crud->validateRequest());
+        $photo = $this->takePhotoInput($this->crud->getRequest());
         $this->crud->setRequest($this->handlePasswordInput($this->crud->getRequest()));
         $this->crud->unsetValidation(); // validation has already been run
 
-        return $this->traitStore();
+        $response = $this->traitStore();
+        $this->savePhoto($photo);
+
+        return $response;
     }
 
     /**
@@ -121,10 +134,54 @@ class UserCrudController extends CrudController
     public function update()
     {
         $this->crud->setRequest($this->crud->validateRequest());
+        $photo = $this->takePhotoInput($this->crud->getRequest());
         $this->crud->setRequest($this->handlePasswordInput($this->crud->getRequest()));
         $this->crud->unsetValidation(); // validation has already been run
 
-        return $this->traitUpdate();
+        $response = $this->traitUpdate();
+        $this->savePhoto($photo);
+
+        return $response;
+    }
+
+    /**
+     * Validates and removes the `photo_path` upload from the request, so the photo goes through
+     * TeacherPhotos (re-encoded, scaled) instead of being filled on the model.
+     *
+     * @return \Illuminate\Http\UploadedFile|false|null a new file, false when cleared, null when unchanged
+     */
+    protected function takePhotoInput($request)
+    {
+        $request->validate([
+            'photo_path' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048', 'dimensions:min_width=300,min_height=300'],
+        ]);
+
+        $file = $request->file('photo_path');
+        // The upload field's clear button posts an empty `photo_path`.
+        $photo = $file ?: ($request->exists('photo_path') ? false : null);
+        $request->files->remove('photo_path');
+        $request->request->remove('photo_path');
+
+        return $photo;
+    }
+
+    protected function savePhoto($photo)
+    {
+        $user = $this->crud->entry;
+        if ($photo === false) {
+            $this->photos()->delete($user);
+        } elseif ($photo) {
+            try {
+                $this->photos()->store($user, $photo);
+            } catch (RuntimeException $e) {
+                \Alert::error(__('portal.photo.unreadable'))->flash();
+            }
+        }
+    }
+
+    protected function photos()
+    {
+        return app(TeacherPhotos::class);
     }
 
     /**
@@ -159,6 +216,14 @@ class UserCrudController extends CrudController
                 'name'  => 'email',
                 'label' => trans('backpack::permissionmanager.email'),
                 'type'  => 'email',
+            ],
+            [
+                'name'   => 'photo_path',
+                'label'  => trans('localize.user_photo'),
+                'type'   => 'upload',
+                'upload' => true,
+                'disk'   => 'public',
+                'hint'   => trans('localize.user_photo_hint'),
             ],
             [
                 'name'  => 'password',

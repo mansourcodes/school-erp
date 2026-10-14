@@ -45,7 +45,11 @@ function SessionList({ entries }: { entries: Entry[] }) {
               </span>
               {curriculum.teacher && (
                 <span className="inline-flex items-center gap-1">
-                  <UserRound className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
+                  {curriculum.teacher_photo_url ? (
+                    <img src={curriculum.teacher_photo_url} alt="" className="arch w-5 h-6.5 object-cover shrink-0" loading="lazy" />
+                  ) : (
+                    <UserRound className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
+                  )}
                   {curriculum.teacher}
                 </span>
               )}

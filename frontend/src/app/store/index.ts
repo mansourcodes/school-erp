@@ -1,7 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { pushOutboxReducer } from '@/features/send-notifications';
-import { themeReducer } from '@/features/theme-switch';
 import { baseApi, portalReducer, sessionReducer } from '@/shared/api';
 
 // Reducers are registered only here (PLAN.md §4).
@@ -9,7 +8,6 @@ const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   session: sessionReducer,
   portal: portalReducer,
-  theme: themeReducer,
   pushOutbox: pushOutboxReducer,
 });
 

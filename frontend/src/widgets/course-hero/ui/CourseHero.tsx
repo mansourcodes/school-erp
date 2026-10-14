@@ -53,7 +53,14 @@ export function CourseHero({ course, viewer, now }: CourseHeroProps) {
             <div className="min-w-0">
               <p className="text-[11px] opacity-80">{t('course.nextSession')}</p>
               <p className="font-semibold truncate">{next.curriculum}</p>
-              {next.teacher && <p className="text-xs opacity-75 truncate">{next.teacher}</p>}
+              {next.teacher && (
+                <p className="text-xs flex items-center gap-1.5 min-w-0">
+                  {next.teacherPhotoUrl && (
+                    <img src={next.teacherPhotoUrl} alt="" className="arch w-5 h-6.5 object-cover shrink-0" />
+                  )}
+                  <span className="opacity-75 truncate">{next.teacher}</span>
+                </p>
+              )}
             </div>
           </div>
         )}

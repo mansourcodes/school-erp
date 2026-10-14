@@ -8,6 +8,7 @@ export interface MessageClassroom {
 export interface InboxMessage {
   id: number;
   teacher: string | null;
+  teacher_photo_url: string | null;
   classroom: MessageClassroom | null;
   body: string;
   sent_at: string;

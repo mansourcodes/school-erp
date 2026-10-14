@@ -10,6 +10,7 @@ const page = <T,>(data: T[]) => ({ data, meta: { current_page: 1, last_page: 1 }
 const inboxMessage = (over: Partial<InboxMessage>): InboxMessage => ({
   id: 9003,
   teacher: 'السيد حسن الموسوي',
+  teacher_photo_url: null,
   classroom: { id: 912, number: '2-ب', name: null },
   body: 'يرجى مراجعة الدرس الثالث قبل الاختبار القصير.',
   sent_at: '2026-10-12T13:20:00+03:00',
@@ -53,6 +54,18 @@ describe('student inbox', () => {
     renderApp('/messages#4242');
 
     expect(await screen.findByText('لم تعد هذه الرسالة متاحة')).toBeInTheDocument();
+  });
+  it("shows the teacher's photo next to their name", async () => {
+    server.use(
+      http.get('*/api/v1/me', () => HttpResponse.json({ data: demoViewer })),
+      http.get('*/api/v1/student/messages', () =>
+        HttpResponse.json(page([inboxMessage({ teacher_photo_url: '/storage/teachers/photos/5/a.webp', read_at: '2026-10-12T14:00:00+03:00' })])),
+      ),
+    );
+    const { container } = renderApp('/messages');
+
+    expect(await screen.findByText('السيد حسن الموسوي')).toBeInTheDocument();
+    expect(container.querySelector('article img')).toHaveAttribute('src', '/storage/teachers/photos/5/a.webp');
   });
 });
 

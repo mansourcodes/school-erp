@@ -123,6 +123,16 @@ class TeacherApiTest extends TestCase
             ->assertJsonPath('data.0.pending_count', 2);
     }
 
+    public function test_a_classroom_carries_its_course_details()
+    {
+        $this->asTeacher()->getJson("/api/v1/teacher/classrooms/{$this->classroom->id}")
+            ->assertOk()
+            ->assertJsonPath('data.course.id', $this->classroom->course->id)
+            ->assertJsonPath('data.course.long_name', $this->classroom->course->long_name)
+            ->assertJsonPath('data.course.start_date', '2026-09-04')
+            ->assertJsonPath('data.course.end_date', '2026-12-25');
+    }
+
     public function test_today_lists_sessions_pending_and_upcoming()
     {
         $this->asTeacher()->getJson('/api/v1/teacher/today')

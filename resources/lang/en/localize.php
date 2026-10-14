@@ -29,4 +29,6 @@
 	'portal_closed_body' => 'The portal is not available at the moment. Please contact the centre administration.',
 	'too_many_login_attempts' => 'Too many attempts. Wait a minute and try again.',
 	'close' => 'Close',
+	'user_photo' => 'Photo',
+	'user_photo_hint' => "The teacher's photo is shown to their students next to their name in the portal. JPG, PNG or WebP, at least 300×300, up to 2 MB.",
 ];

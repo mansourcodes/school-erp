@@ -10,6 +10,7 @@ use App\Services\Attendance\AttendanceRecorder;
 use App\Services\Attendance\ClassroomAttendance;
 use App\Services\Attendance\StudentSessions;
 use App\Services\Portal\StudentPhotos;
+use App\Services\Portal\TeacherPhotos;
 use App\Services\Teacher\ClassroomStats;
 use RuntimeException;
 use App\Services\Teacher\TeacherScope;
@@ -105,7 +106,8 @@ class TeacherController extends Controller
         $mine = $scope->curriculumIds($classroom);
         $stats = ClassroomStats::compute($classroom, $mine, $this->now());
 
-        return response()->json(['data' => $this->classroomSummary($classroom, $mine) + [
+        // array_merge, not `+`: the summary's string `course` must be replaced by the detail object.
+        return response()->json(['data' => array_merge($this->classroomSummary($classroom, $mine), [
             'course' => [
                 'id' => $classroom->course->id,
                 'long_name' => $classroom->course->long_name,
@@ -115,7 +117,7 @@ class TeacherController extends Controller
             'rate' => $stats['overall']['rate'],
             'students' => array_map([$this, 'studentRow'], $stats['students']),
             'readonly' => false,
-        ]]);
+        ])]);
     }
 
     /** GET /teacher/classrooms/{id}/sessions */
@@ -275,6 +277,32 @@ class TeacherController extends Controller
     public function deletePhoto(Request $request, $id, $sid, StudentPhotos $photos)
     {
         $photos->delete($this->classroomStudent($request, $id, $sid));
+
+        return response()->noContent();
+    }
+
+    /**
+     * POST /teacher/photo: multipart `photo`, my own photo; my students see it next to my name.
+     */
+    public function uploadOwnPhoto(Request $request, TeacherPhotos $photos)
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048', 'dimensions:min_width=300,min_height=300'],
+        ]);
+
+        try {
+            $photos->store($request->user(), $request->file('photo'));
+        } catch (RuntimeException $e) {
+            throw ValidationException::withMessages(['photo' => [__('portal.photo.unreadable')]]);
+        }
+
+        return response()->json(['data' => ['photo_url' => TeacherPhotos::url($request->user())]]);
+    }
+
+    /** DELETE /teacher/photo */
+    public function deleteOwnPhoto(Request $request, TeacherPhotos $photos)
+    {
+        $photos->delete($request->user());
 
         return response()->noContent();
     }

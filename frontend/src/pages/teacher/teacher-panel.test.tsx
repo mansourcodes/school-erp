@@ -233,4 +233,32 @@ describe('teacher panel', () => {
     expect(await screen.findByRole('heading', { name: 'طلاب يحتاجون متابعة' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /محمد جعفر/ })).toHaveAttribute('href', '/teacher/classes/912');
   });
+
+  it("uploads the teacher's own photo from the profile and shows it", async () => {
+    let photoUrl: string | null = null;
+    let uploads = 0;
+    server.use(
+      http.get('*/api/v1/me', () => HttpResponse.json({ data: { ...teacher, photo_url: photoUrl } })),
+      http.get('*/api/v1/teacher/classrooms', () => HttpResponse.json({ data: [] })),
+      http.post('*/api/v1/teacher/photo', () => {
+        uploads++;
+        photoUrl = '/storage/teachers/photos/5/a.webp';
+        return HttpResponse.json({ data: { photo_url: photoUrl } });
+      }),
+    );
+    renderApp('/teacher/profile');
+    const user = userEvent.setup();
+
+    expect(await screen.findByRole('button', { name: 'إضافة صورة' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'حذف الصورة' })).not.toBeInTheDocument();
+
+    await user.upload(screen.getByTestId('teacher-photo-input'), new File(['x'], 'me.jpg', { type: 'image/jpeg' }));
+
+    expect(await screen.findByText('تم تحديث الصورة')).toBeInTheDocument();
+    expect(uploads).toBe(1);
+    // /me is refetched: the avatar shows the photo and the photo can now be changed or deleted.
+    expect(await screen.findByRole('button', { name: 'تغيير الصورة' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'حذف الصورة' })).toBeInTheDocument();
+    expect(screen.getAllByRole('img', { name: teacher.name })[0]).toHaveAttribute('src', '/storage/teachers/photos/5/a.webp');
+  });
 });

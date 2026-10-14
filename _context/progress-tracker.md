@@ -23,6 +23,7 @@ Update this file after every meaningful implementation change.
   - **P3.2 Teacher SPA done** (2026-10-13): teacher login + panel, roster with offline queue, student photos
   - **P3.3 Messages done** (2026-10-13)
   - **P3.4 Push notifications done** (2026-10-13)
+  - **Admin messages CRUD done** (2026-10-14): Superadmin lists / sends / edits / deletes any message at `/admin/message`
   - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,
     a11y), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
   - **Deferred out of the portal plan (2026-10-13):** Cloudflare (was P0.1), the Laravel/PHP/Backpack upgrade (was
@@ -59,6 +60,17 @@ Update this file after every meaningful implementation change.
     ≥44px targets; IBM Plex Sans Arabic only; stats reduced to hero + KPIs + status breakdown
 
 ## Completed Recently
+
+- Receipt printing fixed (2026-10-14): "طباعة" printed blank pages; now prints the receipt alone on one page
+
+- Teacher photos (2026-10-14): set by the admin (users CRUD) or the teacher (portal profile); students see them next to
+  the teacher's name in the timetable, next-session card and inbox
+
+- Portal theme is a Backpack setting (`portal.theme`), dark mode removed (2026-10-14)
+  - ghadeer (default) / girls / cupcake / autumn / wireframe; applies on the next app open or reload
+
+- Roster previous / next shows loading skeletons while the other session loads (2026-10-14)
+  - `TeacherRosterPage` reads `currentData` (not `data`), so the stale roster gives way to `LoadingBlocks`
 
 - `student_attend_list` report shows recorded attendance (2026-10-12)
   - `AcademiaReportsController::reportStudentAttendList` builds `attend_states[curriculum_id][date][hour][student_id]`
@@ -102,6 +114,9 @@ Update this file after every meaningful implementation change.
   limits see Cloudflare's IPs (`_context/feature/03-platform-upgrade.md`, Part B)
 
 ## Open Questions
+
+- `wireframe` theme (DaisyUI preset): primary is light grey, so `text-primary` items (active tab, active nav) are
+  low-contrast on white. Keep the preset as-is, or darken its primary for the portal?
 
 - Push setup per environment: `php artisan webpush:vapid` (writes VAPID keys to .env; keep them stable), set
   `VAPID_SUBJECT=mailto:<centre address>`, keep `QUEUE_CONNECTION=sync` (decided 2026-10-13): teacher saves record a push

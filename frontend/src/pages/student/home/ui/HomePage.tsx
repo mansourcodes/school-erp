@@ -1,4 +1,4 @@
-import { Archive, BookOpen, CalendarCheck, CircleCheck, GraduationCap, Mail, RefreshCw, Wallet, WifiOff } from 'lucide-react';
+import { Archive, BookOpen, CalendarCheck, ChevronLeft, CircleCheck, GraduationCap, Mail, RefreshCw, Wallet, WifiOff } from 'lucide-react';
 import { Link } from 'react-router';
 import { type AttendanceStats, useAttendanceStatsQuery } from '@/entities/attendance';
 import { type CourseDetail, useCurrentCourseQuery } from '@/entities/course';
@@ -30,13 +30,18 @@ export function HomePage() {
     <div className="space-y-4 lg:space-y-6">
       <CourseHero course={course} viewer={viewer} now={new Date()} />
       {viewer.unread_messages > 0 && (
-        <Link to={routes.messages} className="card-soft p-3.5 flex items-center gap-3 active:bg-base-200 border-primary/40 bg-primary/10">
-          <div className="size-10 rounded-full bg-primary text-primary-content grid place-items-center shrink-0">
+        <Link
+          to={routes.messages}
+          className="rounded-box p-3.5 flex items-center gap-3 bg-accent text-accent-content shadow-md shadow-accent/30 active:brightness-95"
+        >
+          <div className="relative size-10 rounded-full bg-accent-content text-accent grid place-items-center shrink-0">
             <Mail className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            <span className="absolute -top-0.5 -end-0.5 size-3 rounded-full bg-error ring-2 ring-accent motion-safe:animate-pulse" />
           </div>
           <p className="font-semibold flex-1 num">
             {viewer.unread_messages === 1 ? t('messages.unreadStripOne') : t('messages.unreadStripMany', { n: viewer.unread_messages })}
           </p>
+          <ChevronLeft className="size-5 shrink-0 rtl:rotate-0 ltr:rotate-180" strokeWidth={2} aria-hidden="true" />
         </Link>
       )}
       <KpiTiles course={course} stats={stats ?? null} onOpenTab={selectTab} />

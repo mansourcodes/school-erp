@@ -1,8 +1,10 @@
 /* Al-Ghadeer portal: design tokens + brand motifs (ported from _brand/new_design/assets/theme.css). */
 @import "tailwindcss";
 
+/* Theme = Backpack setting `portal.theme` (app/Support/PortalTheme.php), applied as data-theme.
+   cupcake / autumn / wireframe are DaisyUI's own presets (daisyui.com/theme-generator). No dark themes. */
 @plugin "daisyui" {
-  themes: false;
+  themes: cupcake, autumn, wireframe;
   logs: false;
 }
 
@@ -41,37 +43,38 @@
   --noise: 0;
 }
 
+/* Islamic theme for girls: rose and plum with the same gold, softer corners. */
 @plugin "daisyui/theme" {
-  name: "ghadeer-night";
-  prefersdark: true;
-  color-scheme: dark;
-  --color-base-100: #14201e;
-  --color-base-200: #0e1715;
-  --color-base-300: #22312e;
-  --color-base-content: #e3ece9;
-  --color-primary: #2bb3a5;
-  --color-primary-content: #03211d;
-  --color-secondary: #a9d9d2;
-  --color-secondary-content: #0b2724;
-  --color-accent: #dcb862;
-  --color-accent-content: #241a03;
-  --color-neutral: #2a3b38;
-  --color-neutral-content: #e3ece9;
-  --color-info: #5b9cf0;
-  --color-info-content: #06182e;
-  --color-success: #3fbf5f;
-  --color-success-content: #062210;
-  --color-warning: #fab219;
+  name: "girls";
+  color-scheme: light;
+  --color-base-100: #fffcfb;
+  --color-base-200: #f8eff2;
+  --color-base-300: #ecdae0;
+  --color-base-content: #3b2433;
+  /* White text on primary: 7.2:1. */
+  --color-primary: #8c3a62;
+  --color-primary-content: #ffffff;
+  --color-secondary: #4a1f3c;
+  --color-secondary-content: #fbeef4;
+  --color-accent: #c9a24b;
+  --color-accent-content: #2a1f05;
+  --color-neutral: #3b2433;
+  --color-neutral-content: #f6eef1;
+  --color-info: #2a6fc4;
+  --color-info-content: #ffffff;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
+  --color-warning: #f2a516;
   --color-warning-content: #2a1d00;
-  --color-error: #ef6b6b;
-  --color-error-content: #2b0707;
+  --color-error: #c62f2f;
+  --color-error-content: #ffffff;
   --radius-selector: 2rem;
-  --radius-field: 0.75rem;
-  --radius-box: 1.25rem;
+  --radius-field: 1rem;
+  --radius-box: 1.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
-  --depth: 0;
+  --depth: 1;
   --noise: 0;
 }
 
@@ -89,14 +92,35 @@
   --st-absent: #d03b3b;
   --st-none: #d6d1c3;
 }
-[data-theme="ghadeer-night"] {
-  --brand-teal: #19a196;
-  --brand-teal-2: #2bb3a5;
-  --hero-from: #0b2724;
-  --hero-to: #0f5a52;
-  --pattern-opacity: 0.08;
-  --viz-1: #1fa595;
-  --st-none: #33433f;
+/* --brand-teal* is the brand hue of each theme (named after the Ghadeer logo). Hero text is always light. */
+[data-theme="girls"] {
+  --brand-teal: #8c3a62;
+  --brand-teal-2: #b05683;
+  --hero-from: #4a1f3c;
+  --hero-to: #9a4470;
+  --pattern-opacity: 0.12;
+  --viz-1: #a14a77;
+}
+[data-theme="cupcake"] {
+  --brand-teal: oklch(43% 0.078 188.216);
+  --brand-teal-2: oklch(85% 0.138 181.071);
+  --hero-from: oklch(35% 0.07 313.189);
+  --hero-to: oklch(45% 0.078 188.216);
+  --viz-1: oklch(62% 0.11 181.071);
+}
+[data-theme="autumn"] {
+  --brand-teal: oklch(40.723% 0.161 17.53);
+  --brand-teal-2: oklch(61.676% 0.169 23.865);
+  --hero-from: oklch(30% 0.12 17.53);
+  --hero-to: oklch(40.723% 0.161 17.53);
+  --viz-1: oklch(40.723% 0.161 17.53);
+}
+[data-theme="wireframe"] {
+  --brand-teal: oklch(35% 0 0);
+  --brand-teal-2: oklch(60% 0 0);
+  --hero-from: oklch(25% 0 0);
+  --hero-to: oklch(42% 0 0);
+  --viz-1: oklch(45% 0 0);
 }
 
 /* Typography: Rubik for text and numbers, IBM Plex Sans Arabic for titles */
@@ -154,12 +178,21 @@
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Receipt printing: while a receipt dialog is open, print only the receipt. */
+/* Receipt printing: while a receipt dialog is open, print only the receipt.
+   Everything off the path to `.print-area` is removed (not just hidden) so it
+   can't add blank pages, and the modal box drops its transform/clip — a
+   transformed, overflow-hidden box would otherwise clip the receipt away. */
 @media print {
-  body:has(dialog[open] .print-area) * { visibility: hidden; }
-  body:has(dialog[open] .print-area) .print-area,
-  body:has(dialog[open] .print-area) .print-area * { visibility: visible; }
-  .print-area { position: fixed; inset: 0; }
+  body:has(dialog[open] .print-area) *:not(:has(.print-area), .print-area, .print-area *) { display: none; }
+  dialog[open]:has(.print-area) { position: static; display: block; background: none; }
+  dialog[open]:has(.print-area)::backdrop { background: none; }
+  /* daisyUI darkens :root while a modal is open; paper stays white. */
+  :root:has(dialog[open] .print-area) { background: #fff; scrollbar-gutter: auto; }
+  dialog[open] .modal-box:has(.print-area) {
+    translate: none; scale: none; max-width: none; width: 100%; max-height: none;
+    overflow: visible; box-shadow: none; border-radius: 0;
+  }
+  .print-area { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 
 /* Attendance status encoding (PLAN.md §2): icon + label, never colour alone.
@@ -174,7 +207,6 @@
 .st-late, .st-late-excused { --c: var(--st-late); }
 .st-absent, .st-absent-excused { --c: var(--st-absent); }
 .hatch { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 2px, transparent 2px 6px); }
-[data-theme="ghadeer-night"] .hatch { background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.45) 0 2px, transparent 2px 6px); }
 .pip { width: 1.35rem; height: 1.35rem; border-radius: .4rem; display: grid; place-items: center;
        font-size: .62rem; font-weight: 700; color: #111; background-color: var(--c); flex: none; }
 .pip.st-absent, .pip.st-absent-excused, .pip.st-present { color: #fff; }

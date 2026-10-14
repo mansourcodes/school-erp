@@ -8,14 +8,18 @@ use Throwable;
 
 /**
  * Records a push per recipient in the outbox (PLAN.md §5.12); the sending teacher's app sends
- * them one by one. A push problem must never fail the send itself.
+ * them one by one, while an admin send goes out now. A push problem must never fail the send itself.
  */
 class SendMessagePush
 {
     public function handle(MessageSent $event)
     {
         try {
-            app(PushOutbox::class)->queueMessage($event->message, $event->message->sender_user_id);
+            $outbox = app(PushOutbox::class);
+            $ids = $outbox->queueMessage($event->message, $event->message->sender_user_id);
+            if ($event->sendNow) {
+                $outbox->sendMany($ids);
+            }
         } catch (Throwable $e) {
             report($e);
         }

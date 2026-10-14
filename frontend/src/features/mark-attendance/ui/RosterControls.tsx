@@ -83,10 +83,14 @@ interface SaveBarProps {
   onUndo: () => void;
 }
 
-/** Sticky bottom bar of the roster task screen. */
+/**
+ * Sticky bottom bar of the roster task screen.
+ * The `after:` strip carries the background past the bottom edge: mobile toolbars (iOS Safari, Android Chrome)
+ * can leave the fixed viewport's bottom short of the screen's, and the rows would otherwise show through below.
+ */
 export function SaveBar({ setCount, total, hint, canSave, canUndo, saving, queued, onSave, onUndo }: SaveBarProps) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 bg-base-100/95 backdrop-blur border-t border-base-300 pb-[env(safe-area-inset-bottom)] lg:ps-72">
+    <div className="fixed inset-x-0 bottom-0 z-40 bg-base-100/95 backdrop-blur border-t border-base-300 pb-[env(safe-area-inset-bottom)] lg:ps-72 after:absolute after:inset-x-0 after:top-full after:h-24 after:bg-base-100">
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold num">{t('teacher.setCount', { set: setCount, total })}</p>

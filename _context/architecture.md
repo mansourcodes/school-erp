@@ -45,7 +45,8 @@
   schedule slots), `Curriculum.marks_labels` (mark template definitions),
   `StudentMarks.marks` (student mark entries — custom cast `MarksDetailsCast`)
 - **Local disk (`public`)**: Uploaded exam files (`examtools/exams/`) and
-  generated ZIP archives
+  generated ZIP archives; portal photos `students/photos/` (`students.photo_path`) and `teachers/photos/`
+  (`users.photo_path`), always re-encoded by `App\Services\Portal\ProfilePhotos`
 - **Session**: Laravel session for both `web` and `student` guards; the `/api/v1` portal API uses the same
   session cookie through Sanctum's stateful middleware (old and new portal share the login)
 - **Time**: the app runs in UTC (`config/app.php`); the portal's "today" uses `config('portal.timezone')`
