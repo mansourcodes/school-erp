@@ -131,7 +131,7 @@ class TeacherPhotoTest extends TestCase
     {
         $admin = User::factory()->create();
         $admin->assignRole(Role::findOrCreate('Superadmin', 'web'));
-        $form = ['name' => $this->teacher->name, 'email' => $this->teacher->email, 'id' => $this->teacher->id];
+        $form = ['name' => $this->teacher->name, 'username' => $this->teacher->username, 'email' => $this->teacher->email, 'id' => $this->teacher->id];
 
         $this->actingAs($admin, 'backpack')
             ->put("/admin/user/{$this->teacher->id}", $form + ['photo_path' => $this->jpeg(400, 400)])

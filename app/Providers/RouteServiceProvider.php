@@ -94,6 +94,16 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perHour(5)->by('teacher-photo|' . $request->user()->getAuthIdentifier());
         });
 
+        // Checks the current password: keep guessing it slow even from a signed-in session.
+        RateLimiter::for('teacher-password', function (Request $request) {
+            return Limit::perHour(10)->by('teacher-password|' . $request->user()->getAuthIdentifier());
+        });
+
+        // Checks the current password and tells whether a username is taken: keep guessing and probing slow.
+        RateLimiter::for('teacher-username', function (Request $request) {
+            return Limit::perHour(10)->by('teacher-username|' . $request->user()->getAuthIdentifier());
+        });
+
         RateLimiter::for('portal',function (Request $request) {
             return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });

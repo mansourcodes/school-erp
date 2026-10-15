@@ -17,7 +17,7 @@ class LoginFailedException extends Exception
     {
         parent::__construct(__($role === 'teacher' ? 'portal.auth.failed_teacher' : 'portal.auth.failed'));
         $this->attemptsLeft = $attemptsLeft;
-        $this->field = $role === 'teacher' ? 'email' : 'cpr';
+        $this->field = $role === 'teacher' ? 'username' : 'cpr';
     }
 
     public function render()

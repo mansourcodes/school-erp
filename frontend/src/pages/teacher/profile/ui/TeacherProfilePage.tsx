@@ -1,12 +1,17 @@
-import { Camera, KeyRound, School } from 'lucide-react';
+import { AtSign, Camera, KeyRound, School } from 'lucide-react';
 import { LogoutButton } from '@/features/auth/logout';
+import { ChangePasswordForm } from '@/features/change-password';
+import { ChangeUsernameForm } from '@/features/change-username';
 import { TeacherPhotoActions } from '@/features/manage-teacher-photo';
 import { useTeacherClassroomsQuery } from '@/entities/classroom';
 import { useMeQuery, ViewerAvatar } from '@/entities/viewer';
 import { t } from '@/shared/i18n';
 import { LoadingBlocks } from '@/shared/ui';
 
-/** /teacher/profile (PLAN.md §8 screen 9): name, email, assigned classrooms, own photo, password note, logout. */
+/**
+ * /teacher/profile (PLAN.md §8 screen 9): name, username, email, assigned classrooms, own photo, username and
+ * password change, logout.
+ */
 export function TeacherProfilePage() {
   const { data: viewer } = useMeQuery();
   const { data: classrooms } = useTeacherClassroomsQuery();
@@ -29,8 +34,12 @@ export function TeacherProfilePage() {
       <section className="card-soft p-5 sm:p-6">
         <dl className="grid sm:grid-cols-2 gap-4 [&_dt]:text-[0.8125rem] [&_dt]:opacity-60 [&_dd]:font-medium">
           <div>
+            <dt>{t('teacher.username')}</dt>
+            <dd className="ltr">{viewer.username}</dd>
+          </div>
+          <div>
             <dt>{t('teacher.email')}</dt>
-            <dd className="ltr">{viewer.email}</dd>
+            <dd className="ltr">{viewer.email || '—'}</dd>
           </div>
           <div>
             <dt className="flex items-center gap-1">
@@ -52,13 +61,23 @@ export function TeacherProfilePage() {
         <TeacherPhotoActions hasPhoto={viewer.photo_url !== null} />
       </section>
 
+      <section className="card-soft p-5 sm:p-6">
+        <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+          <AtSign className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+          {t('changeUsername.title')}
+        </h3>
+        <p className="text-sm opacity-80 mb-4">{t('changeUsername.note')}</p>
+        <ChangeUsernameForm username={viewer.username} />
+      </section>
+
       <section className="card-soft p-5 sm:p-6 space-y-5">
         <div>
           <h3 className="font-display text-lg mb-2 flex items-center gap-2">
             <KeyRound className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-            {t('profile.password')}
+            {t('changePassword.title')}
           </h3>
-          <p className="text-sm opacity-80">{t('teacher.passwordNote')}</p>
+          <p className="text-sm opacity-80 mb-4">{t('changePassword.note')}</p>
+          <ChangePasswordForm />
         </div>
         <div className="brand-rule" />
         <LogoutButton className="btn-outline btn-error btn-block btn-lg sm:btn-md" />

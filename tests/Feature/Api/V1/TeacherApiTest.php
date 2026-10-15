@@ -36,7 +36,7 @@ class TeacherApiTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2026-09-25 17:30', 'Asia/Bahrain')->utc());
 
         Role::findOrCreate('Teacher', 'web');
-        $this->teacher = User::factory()->create(['email' => 'teacher@example.com', 'password' => Hash::make('secret-pass')]);
+        $this->teacher = User::factory()->create(['username' => 'teacher.ali', 'email' => 'teacher@example.com', 'password' => Hash::make('secret-pass')]);
         $this->teacher->assignRole('Teacher');
 
         $this->otherSubject = Curriculum::factory()->create(['curriculum_name' => 'الفقه']);
@@ -72,24 +72,33 @@ class TeacherApiTest extends TestCase
         return urlencode($date . '#' . $time . '#' . ($classroom ?: $this->classroom)->id . '#' . ($curriculum ?: $this->curriculum)->id);
     }
 
-    public function test_teachers_log_in_with_email_and_get_the_teacher_role()
+    public function test_teachers_log_in_with_their_username_and_get_the_teacher_role()
     {
         $this->withHeaders(['Referer' => 'http://localhost/beta/login'])
-            ->postJson('/api/v1/auth/login', ['role' => 'teacher', 'email' => 'Teacher@Example.com', 'password' => 'secret-pass'])
+            ->postJson('/api/v1/auth/login', ['role' => 'teacher', 'username' => ' Teacher.Ali ', 'password' => 'secret-pass'])
             ->assertOk()
             ->assertJsonPath('data.role', 'teacher')
+            ->assertJsonPath('data.username', 'teacher.ali')
             ->assertJsonPath('data.email', 'teacher@example.com');
+    }
+
+    public function test_the_email_no_longer_signs_a_teacher_in()
+    {
+        $this->withHeaders(['Referer' => 'http://localhost/beta/login'])
+            ->postJson('/api/v1/auth/login', ['role' => 'teacher', 'username' => 'teacher@example.com', 'password' => 'secret-pass'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('username');
     }
 
     public function test_admin_users_without_the_teacher_role_cannot_use_the_portal()
     {
-        User::factory()->create(['email' => 'admin@example.com', 'password' => Hash::make('secret-pass')]);
+        User::factory()->create(['username' => 'admin', 'password' => Hash::make('secret-pass')]);
 
         $this->withHeaders(['Referer' => 'http://localhost/beta/login'])
-            ->postJson('/api/v1/auth/login', ['role' => 'teacher', 'email' => 'admin@example.com', 'password' => 'secret-pass'])
+            ->postJson('/api/v1/auth/login', ['role' => 'teacher', 'username' => 'admin', 'password' => 'secret-pass'])
             ->assertStatus(422)
             ->assertJsonPath('message', __('portal.auth.failed_teacher'))
-            ->assertJsonValidationErrors('email');
+            ->assertJsonValidationErrors('username');
     }
 
     // One identity per test: Sanctum's guard keeps the user it resolved for the app's lifetime,

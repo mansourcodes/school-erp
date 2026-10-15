@@ -71,7 +71,7 @@ describe('student inbox', () => {
 });
 
 describe('teacher messages', () => {
-  const teacher = { role: 'teacher' as const, id: 5, name: 'الشيخ أحمد', first_name: 'الشيخ', email: 't@example.com', photo_url: null };
+  const teacher = { role: 'teacher' as const, id: 5, name: 'الشيخ أحمد', first_name: 'الشيخ', username: 'ahmad', email: 't@example.com', photo_url: null };
   const classrooms = [{ id: 912, number: '2-ب', name: null } as TeacherClassroom];
   const detail = {
     id: 912,

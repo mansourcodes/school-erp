@@ -9,9 +9,9 @@ import {
   Info,
   KeyRound,
   Lock,
-  Mail,
   ShieldCheck,
   TriangleAlert,
+  UserRound,
   UsersRound,
   WifiOff,
 } from 'lucide-react';
@@ -24,7 +24,7 @@ import { fmtCountdown } from '@/shared/lib';
 import type { Viewer } from '@/entities/viewer';
 import { type LoginRequest, useLoginMutation } from '../api/login-api';
 import { useCountdown } from '../lib/use-countdown';
-import { CPR_MAX_LENGTH, type LoginRole, loginSchema, type LoginValues } from '../model/login-schema';
+import { CPR_MAX_LENGTH, type LoginRole, loginSchema, type LoginValues, USERNAME_MAX_LENGTH } from '../model/login-schema';
 import { Turnstile, type TurnstileHandle } from './Turnstile';
 
 type Alert =
@@ -70,7 +70,7 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { role: 'student', cpr: '', email: '', password: '', website: '' },
+    defaultValues: { role: 'student', cpr: '', username: '', password: '', website: '' },
   });
   const role = watch('role');
   const selectRole = (next: LoginRole) => {
@@ -87,7 +87,7 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
     setAlert(null);
     const body: LoginRequest = {
       role: values.role,
-      ...(values.role === 'teacher' ? { email: values.email.trim() } : { cpr: values.cpr }),
+      ...(values.role === 'teacher' ? { username: values.username.trim() } : { cpr: values.cpr }),
       password: values.password,
       website: values.website || undefined,
       turnstile_token: turnstileToken ?? undefined,
@@ -119,9 +119,9 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
         setFocus('password');
       } else if (apiError.status === 422 && apiError.errors) {
         if (apiError.errors.cpr) setError('cpr', { message: apiError.errors.cpr[0] });
-        if (apiError.errors.email) setError('email', { message: apiError.errors.email[0] });
+        if (apiError.errors.username) setError('username', { message: apiError.errors.username[0] });
         if (apiError.errors.password) setError('password', { message: apiError.errors.password[0] });
-        if (!apiError.errors.cpr && !apiError.errors.email && !apiError.errors.password) setAlert({ kind: 'unexpected' });
+        if (!apiError.errors.cpr && !apiError.errors.username && !apiError.errors.password) setAlert({ kind: 'unexpected' });
       } else if (apiError.status === 'offline') {
         setAlert({ kind: 'network' });
       } else {
@@ -188,24 +188,26 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
         <form className="flex flex-col gap-4" noValidate onSubmit={handleSubmit(submit)}>
           {role === 'teacher' && (
             <fieldset className="fieldset p-0">
-              <label className="fieldset-legend text-sm pb-1" htmlFor="email">
-                {t('login.email')}
+              <label className="fieldset-legend text-sm pb-1" htmlFor="username">
+                {t('login.username')}
               </label>
-              <label className={`input input-lg w-full ${errors.email ? 'input-error' : ''}`}>
-                <Mail className="size-5 opacity-60" strokeWidth={1.75} aria-hidden="true" />
+              <label className={`input input-lg w-full ${errors.username ? 'input-error' : ''}`}>
+                <UserRound className="size-5 opacity-60" strokeWidth={1.75} aria-hidden="true" />
                 <input
-                  id="email"
-                  type="email"
-                  inputMode="email"
+                  id="username"
+                  type="text"
                   enterKeyHint="next"
                   autoComplete="username"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  maxLength={USERNAME_MAX_LENGTH}
                   dir="ltr"
                   className="text-start"
-                  placeholder="name@example.com"
-                  aria-invalid={!!errors.email}
-                  aria-describedby="email-hint"
+                  aria-invalid={!!errors.username}
+                  aria-describedby="username-hint"
                   disabled={busy}
-                  {...register('email')}
+                  {...register('username')}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
                       event.preventDefault();
@@ -214,14 +216,14 @@ export function LoginForm({ expired = false, onSuccess, onForgotPassword }: Logi
                   }}
                 />
               </label>
-              {errors.email ? (
+              {errors.username ? (
                 <p className="label text-xs text-error" role="alert">
                   <TriangleAlert className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
-                  {errors.email.message}
+                  {errors.username.message}
                 </p>
               ) : (
-                <p id="email-hint" className="label text-xs">
-                  {t('login.emailHint')}
+                <p id="username-hint" className="label text-xs">
+                  {t('login.usernameHint')}
                 </p>
               )}
             </fieldset>

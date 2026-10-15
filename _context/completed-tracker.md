@@ -4,6 +4,29 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Users sign in with a username (2026-10-15)
+- Migration `2026_10_15_000000_add_username_to_users_table`: `users.username` varchar(50), unique, NOT NULL (MySQL);
+  existing users backfilled from the part of their email before "@" (lowercased, `a-z 0-9 . _ -` kept, a number
+  appended on a clash, `user{id}` when shorter than 3). Verified on the dev DB (6 users) incl. rollback
+- `User::USERNAME_PATTERN` + `User::usernameRules($ignoreId)` (required, 3–50, pattern, unique); mutator lowercases
+  and trims. Email kept as contact information
+- Admin: Backpack `authentication_column` → `username` (login page and "My account"); users CRUD has a username
+  column + field (`App\Http\Requests\Admin\UserStoreCrudRequest` / `UserUpdateCrudRequest` extend Permission
+  Manager's); `localize.username(_hint)` + `validation.custom.username.regex` in ar/en
+- Portal: `LoginRequest` / `PortalLogin` / `LoginFailedException` use `username` (length-only check at login, so a
+  malformed name fails like a wrong one); `TeacherMeResource` adds `username`
+- `PUT /api/v1/teacher/username` (`TeacherUsernameController`, `throttle:teacher-username` 10/hour): same rules,
+  `current_password` required and checked (wrong ones count toward the limit), `portal.username.*` messages,
+  `portal.username.changed` / `wrong_current` security log; returns the viewer
+- Email optional (decision 2026-10-15): migration `2026_10_15_100000_make_users_email_nullable` (MySQL `MODIFY`;
+  `down()` fills missing emails with `{username}@no-email.invalid`), `User::emailRules()` (nullable, email, unique)
+  in the admin requests; `TeacherViewer.email` is `string | null`; the password log uses `user_id`
+- SPA: login teacher tab asks for the username; `features/change-username` (`ChangeUsernameForm`, writes the answer
+  into the `me` cache) on `/teacher/profile`, which also shows username and email
+- Tests: `TeacherUsernameTest` (7), `Admin\UserUsernameTest` (7, incl. several users without an email on create and update), `TeacherApiTest` login tests updated, 1 Vitest;
+  `TeacherPasswordTest` fixed (needed the SPA `Referer` for a session) and now passing. Backend 156/157 (only the
+  scaffold `ExampleTest` fails: `/` redirects), frontend 81/81, typecheck / ESLint / Steiger clean
+
 ### Teachers edit their messages (2026-10-15)
 - `PATCH /api/v1/teacher/messages/{id}` `{body}` (`MessageController::update`): own messages only (404 otherwise,
   deleted included), body trimmed, 1–500; recipients and read state stay; no new push
@@ -11,6 +34,15 @@ Update this file after every meaningful implementation change.
 - SPA: `features/edit-message` (`EditMessageButton`: sheet with textarea + counter, save disabled while unchanged)
   next to Delete on each sent card; "· معدّلة" on the sent card and the student's inbox card
 - Tests: 5 PHPUnit in `MessagesTest`, 1 Vitest in `messages.test.tsx`
+
+### Teacher password change (2026-10-15)
+- `PUT /api/v1/teacher/password` (`TeacherPasswordController`, `throttle:teacher-password`, 10/hour per teacher):
+  `current_password` checked with `Hash::check`; new password 8–128, `confirmed`, `different:current_password`;
+  Arabic messages in `portal.password.*`; success / wrong-current events go to the `security` log channel
+- Saving rotates the remember token (`SignsOutDevicesOnPasswordChange`), so other devices sign out; the current
+  device is logged in again with a fresh remember cookie
+- SPA `features/change-password` (`ChangePasswordForm`, zod schema mirrors the server) on `/teacher/profile`,
+  replacing the "contact administration" note; `TeacherPasswordTest` (5 tests) + a profile test in `teacher-panel.test.tsx`
 
 ### Receipt printing fix (2026-10-14)
 - "طباعة" on the payment receipt printed blank pages: `.print-area { position: fixed }` sat inside daisyUI's

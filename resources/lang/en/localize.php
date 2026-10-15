@@ -31,4 +31,6 @@
 	'close' => 'Close',
 	'user_photo' => 'Photo',
 	'user_photo_hint' => "The teacher's photo is shown to their students next to their name in the portal. JPG, PNG or WebP, at least 300×300, up to 2 MB.",
+	'username' => 'Username',
+	'username_hint' => 'Used to sign in to the admin panel and the teacher portal. English letters, digits and . _ - only, 3 to 50 characters.',
 ];

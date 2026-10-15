@@ -56,8 +56,11 @@
 
 ## Auth and Access Model
 
-- **Admin users** authenticate via Backpack's login (`/admin/login`); uses the
-  `web` guard and `User` model with Spatie roles
+- **Admin users** authenticate via Backpack's login (`/admin/login`) with their **username**
+  (`backpack.base.authentication_column`); uses the `web` guard and `User` model with Spatie roles.
+  `users.username` is unique, stored lowercase, `a-z 0-9 . _ -`, 3–50 (`User::usernameRules()` is the one rule set
+  for the admin CRUD and the teacher portal); `users.email` is optional contact information (nullable, unique
+  when set; Backpack's password reset only works for users with one)
 - **Students** authenticate via the custom `student` guard at `/login`; uses
   the `Student` model (extends `Authenticatable`); guarded separately — no
   overlap with admin session
@@ -66,6 +69,7 @@
   `auth()->user()->hasRole('Teacher')` is true
 - **SuperAdmin role**: Full access to all CRUD and reports
 - **Portal API (`/api/v1`)**: `auth:sanctum` over the `student` guard (teachers join with `web` in Phase 3).
+  Students sign in with CPR, teachers with their username (same as the admin panel).
   Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors.
   Other v1 routes: 600/min per IP (shared classroom Wi-Fi) + 120/min per signed-in user
 

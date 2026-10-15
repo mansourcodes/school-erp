@@ -62,6 +62,14 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Teacher password change on the portal profile (2026-10-15): current password required; other devices sign out.
+  `TeacherPasswordTest` now passing (2026-10-15)
+
+- Users sign in with a username instead of their email (2026-10-15): admin panel and teacher portal; existing
+  usernames migrated from the email; teachers change theirs on the portal profile (current password required);
+  email is now optional. **Production:** run both migrations
+  and tell users their username (the part of their email before "@")
+
 - Receipt printing fixed (2026-10-14): "طباعة" printed blank pages; now prints the receipt alone on one page
 
 - Teacher photos (2026-10-14): set by the admin (users CRUD) or the teacher (portal profile); students see them next to

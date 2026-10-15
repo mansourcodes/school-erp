@@ -19,6 +19,7 @@ class TeacherMeResource extends JsonResource
             'id' => $this->id,
             'name' => $name,
             'first_name' => $name === '' ? '' : explode(' ', $name)[0],
+            'username' => $this->username,
             'email' => $this->email,
             'photo_url' => TeacherPhotos::url($this->resource),
         ];

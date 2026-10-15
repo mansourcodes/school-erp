@@ -15,7 +15,10 @@ export interface TeacherViewer {
   id: number;
   name: string;
   first_name: string;
-  email: string;
+  /** Sign-in name; the email is contact information only. */
+  username: string;
+  /** Optional contact information. */
+  email: string | null;
   photo_url: string | null;
 }
 

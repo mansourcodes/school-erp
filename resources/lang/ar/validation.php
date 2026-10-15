@@ -133,6 +133,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'username' => [
+            'regex' => 'يمكن أن يحتوي اسم المستخدم على أحرف إنجليزية وأرقام و . _ - فقط.',
+        ],
     ],
 
     /*

@@ -46,7 +46,7 @@
 | Upload / delete student photos (own classrooms) | Classroom → student sheet | `t-classroom.html` |
 | Send a message to selected students | Messages → new message | `t-messages.html`, `t-compose.html` |
 | Delete a sent message | Messages (delete + confirm) | `t-messages.html` |
-| Account, password notice, theme, logout | Profile | `t-profile.html` |
+| Account, password change (current password required), theme, logout | Profile | `t-profile.html` |
 
 Open `index.html` for the screen gallery and live token swatches. Every page has a **“حالات التصميم”** pill (mockup-only) that switches between ready / loading / empty / error states.
 
@@ -655,7 +655,7 @@ Designed in this folder (`t-*.html`, data + components in `assets/teacher.js`). 
 The attendance roster is a **task screen**: a back arrow replaces the logo, the dock is hidden, and a sticky save bar sits at the bottom.
 
 ### Screens
-1. **Login** (`login.html?role=teacher`): the “مدرّس” tab swaps the CPR field for **email** (`inputmode=email`, `autocomplete=username`) and keeps the same password field, bot check, lockout and generic errors (§6). Success goes to the teacher “اليوم” screen.
+1. **Login** (`login.html?role=teacher`): the “مدرّس” tab swaps the CPR field for **username** (`autocomplete=username`, no autocapitalise; the email is contact info only, 2026-10-15) and keeps the same password field, bot check, lockout and generic errors (§6). Success goes to the teacher “اليوم” screen.
 2. **اليوم** (`t-home.html`):
    - Greeting with Gregorian + Hijri date and the current course.
    - A **warning card for past sessions that were never recorded**, each with “رصد الحضور الآن”.
@@ -691,7 +691,7 @@ The attendance roster is a **task screen**: a back arrow replaces the logo, the 
    - ③ **الرسالة**: textarea, 500-character limit with a counter, and a “لا يمكن للطلاب الرد” note.
    - A sticky **“إرسال إلى n / إرسال للجميع”** button, enabled with ≥ 1 student and some text. Leaving with a draft warns first.
    - On success it returns to the sent list with “تم إرسال الرسالة”.
-9. **حسابي** (`t-profile.html`): name, email (login), phone, assigned classrooms, the “visit the administration” password note, theme, and logout.
+9. **حسابي** (`t-profile.html`): name, username (login, editable with the current password: `PUT /api/v1/teacher/username`), email (optional), phone, assigned classrooms, a password change form (current password required; `PUT /api/v1/teacher/password`, other devices sign out), theme, and logout. Students still reset passwords at the administration.
 
 ### Teacher API (v1)
 | Method | Path | Notes |

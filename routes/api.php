@@ -75,6 +75,10 @@ Route::prefix('v1')
                 Route::post('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadOwnPhoto'])
                     ->middleware('throttle:teacher-photo');
                 Route::delete('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deleteOwnPhoto']);
+                Route::put('/password', [App\Http\Controllers\Api\V1\TeacherPasswordController::class, 'update'])
+                    ->middleware('throttle:teacher-password');
+                Route::put('/username', [App\Http\Controllers\Api\V1\TeacherUsernameController::class, 'update'])
+                    ->middleware('throttle:teacher-username');
             });
 
             Route::prefix('student')->middleware('portal.role:student')->group(function () {

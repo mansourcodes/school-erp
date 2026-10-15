@@ -6,7 +6,7 @@ import type { ClassroomDetail, TeacherStats } from '@/entities/classroom';
 import { renderApp } from '../../../test/render-app';
 import { demoViewer, server } from '../../../test/server';
 
-const teacher = { role: 'teacher' as const, id: 5, name: 'الشيخ أحمد الستري', first_name: 'الشيخ', email: 't@example.com', photo_url: null };
+const teacher = { role: 'teacher' as const, id: 5, name: 'الشيخ أحمد الستري', first_name: 'الشيخ', username: 'ahmad', email: 't@example.com', photo_url: null };
 const room = { id: 912, number: '2-ب', name: 'قاعة الإمام الصادق' };
 
 const session = (over: Partial<TeacherSession>): TeacherSession => ({
@@ -50,7 +50,7 @@ function asTeacher() {
 }
 
 describe('teacher panel', () => {
-  it('logs a teacher in with email and opens the teacher today screen', async () => {
+  it('logs a teacher in with their username and opens the teacher today screen', async () => {
     let body: unknown;
     server.use(
       http.post('*/api/v1/auth/login', async ({ request }) => {
@@ -65,12 +65,12 @@ describe('teacher panel', () => {
 
     await user.click(await screen.findByRole('tab', { name: 'مدرّس' }));
     expect(screen.queryByLabelText('الرقم الشخصي (CPR)')).not.toBeVisible();
-    await user.type(screen.getByLabelText('البريد الإلكتروني'), 't@example.com');
+    await user.type(screen.getByLabelText('اسم المستخدم'), ' ahmad ');
     await user.type(screen.getByLabelText('كلمة المرور'), 'secret-pass');
     await user.click(screen.getByRole('button', { name: 'دخول' }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/teacher'));
-    expect(body).toEqual({ role: 'teacher', email: 't@example.com', password: 'secret-pass' });
+    expect(body).toEqual({ role: 'teacher', username: 'ahmad', password: 'secret-pass' });
     expect(await screen.findByText('حصص لم تُرصد')).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /رصد/ }).length).toBeGreaterThan(0);
   });
@@ -260,5 +260,109 @@ describe('teacher panel', () => {
     expect(await screen.findByRole('button', { name: 'تغيير الصورة' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'حذف الصورة' })).toBeInTheDocument();
     expect(screen.getAllByRole('img', { name: teacher.name })[0]).toHaveAttribute('src', '/storage/teachers/photos/5/a.webp');
+  });
+
+  it('changes the password from the profile after confirming the current one', async () => {
+    asTeacher();
+    const bodies: unknown[] = [];
+    server.use(
+      http.put('*/api/v1/teacher/password', async ({ request }) => {
+        const body = (await request.json()) as { current_password: string };
+        bodies.push(body);
+        return body.current_password === 'old-secret'
+          ? new HttpResponse(null, { status: 204 })
+          : HttpResponse.json(
+              { message: 'invalid', errors: { current_password: ['كلمة المرور الحالية غير صحيحة.'] } },
+              { status: 422 },
+            );
+      }),
+    );
+    renderApp('/teacher/profile');
+    const user = userEvent.setup();
+
+    const current = await screen.findByLabelText('كلمة المرور الحالية');
+    const next = screen.getByLabelText('كلمة المرور الجديدة');
+    const confirm = screen.getByLabelText('تأكيد كلمة المرور الجديدة');
+    const submit = screen.getByRole('button', { name: 'حفظ كلمة المرور' });
+
+    // Client checks first: nothing is sent while the confirmation differs.
+    await user.type(current, 'wrong');
+    await user.type(next, 'new-secret-1');
+    await user.type(confirm, 'new-secret-2');
+    await user.click(submit);
+    expect(await screen.findByText('تأكيد كلمة المرور غير مطابق.')).toBeInTheDocument();
+    expect(bodies).toHaveLength(0);
+
+    // The server rejects a wrong current password on its field.
+    await user.clear(confirm);
+    await user.type(confirm, 'new-secret-1');
+    await user.click(submit);
+    expect(await screen.findByText('كلمة المرور الحالية غير صحيحة.')).toBeInTheDocument();
+
+    await user.clear(current);
+    await user.type(current, 'old-secret');
+    await user.click(submit);
+    expect(await screen.findByText('تم تغيير كلمة المرور')).toBeInTheDocument();
+    expect(bodies.at(-1)).toEqual({ current_password: 'old-secret', password: 'new-secret-1', password_confirmation: 'new-secret-1' });
+    expect(screen.getByLabelText('كلمة المرور الحالية')).toHaveValue('');
+  });
+
+  it('changes the username from the profile and shows the new one', async () => {
+    asTeacher();
+    const bodies: unknown[] = [];
+    server.use(
+      http.put('*/api/v1/teacher/username', async ({ request }) => {
+        const body = (await request.json()) as { username: string; current_password: string };
+        bodies.push(body);
+        if (body.current_password !== 'secret-pass') {
+          return HttpResponse.json(
+            { message: 'invalid', errors: { current_password: ['كلمة المرور الحالية غير صحيحة.'] } },
+            { status: 422 },
+          );
+        }
+        return body.username === 'taken'
+          ? HttpResponse.json(
+              { message: 'invalid', errors: { username: ['اسم المستخدم مستخدم من قبل، اختر اسمًا آخر.'] } },
+              { status: 422 },
+            )
+          : HttpResponse.json({ data: { ...teacher, username: body.username.toLowerCase() } });
+      }),
+    );
+    renderApp('/teacher/profile');
+    const user = userEvent.setup();
+
+    const input = await screen.findByLabelText('اسم المستخدم الجديد');
+    const password = screen.getByLabelText('كلمة المرور الحالية للتأكيد');
+    const submit = screen.getByRole('button', { name: 'حفظ اسم المستخدم' });
+    expect(input).toHaveValue('ahmad');
+    expect(submit).toBeDisabled();
+
+    // Client checks first: nothing is sent for a malformed name or without the password.
+    await user.clear(input);
+    await user.type(input, 'أحمد');
+    await user.click(submit);
+    expect(await screen.findByText('يمكن أن يحتوي اسم المستخدم على أحرف إنجليزية وأرقام و . _ - فقط.')).toBeInTheDocument();
+    expect(screen.getByText('أدخل كلمة المرور الحالية.')).toBeInTheDocument();
+    expect(bodies).toHaveLength(0);
+
+    // The server rejects a wrong password, then a taken name, on their fields.
+    await user.clear(input);
+    await user.type(input, 'taken');
+    await user.type(password, 'wrong');
+    await user.click(submit);
+    expect(await screen.findByText('كلمة المرور الحالية غير صحيحة.')).toBeInTheDocument();
+    await user.clear(password);
+    await user.type(password, 'secret-pass');
+    await user.click(submit);
+    expect(await screen.findByText('اسم المستخدم مستخدم من قبل، اختر اسمًا آخر.')).toBeInTheDocument();
+
+    await user.clear(input);
+    await user.type(input, 'Ahmad.Sitri');
+    await user.click(submit);
+    expect(await screen.findByText('تم تغيير اسم المستخدم')).toBeInTheDocument();
+    expect(bodies.at(-1)).toEqual({ username: 'Ahmad.Sitri', current_password: 'secret-pass' });
+    expect(input).toHaveValue('ahmad.sitri');
+    expect(password).toHaveValue('');
+    expect(screen.getAllByText('ahmad.sitri').length).toBeGreaterThan(0);
   });
 });

@@ -134,6 +134,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'username' => [
+            'regex' => 'The username may only contain English letters, digits and . _ -',
+        ],
     ],
 
     /*

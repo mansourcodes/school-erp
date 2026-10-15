@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use Backpack\PermissionManager\app\Http\Requests\UserStoreCrudRequest as StoreRequest;
-use Backpack\PermissionManager\app\Http\Requests\UserUpdateCrudRequest as UpdateRequest;
+use App\Http\Requests\Admin\UserStoreCrudRequest as StoreRequest;
+use App\Http\Requests\Admin\UserUpdateCrudRequest as UpdateRequest;
 use App\Services\Portal\TeacherPhotos;
 use Illuminate\Support\Facades\Hash;
 use RuntimeException;
@@ -40,6 +40,11 @@ class UserCrudController extends CrudController
             [
                 'name'  => 'name',
                 'label' => trans('backpack::permissionmanager.name'),
+                'type'  => 'text',
+            ],
+            [
+                'name'  => 'username',
+                'label' => trans('localize.username'),
                 'type'  => 'text',
             ],
             [
@@ -211,6 +216,13 @@ class UserCrudController extends CrudController
                 'name'  => 'name',
                 'label' => trans('backpack::permissionmanager.name'),
                 'type'  => 'text',
+            ],
+            [
+                'name'       => 'username',
+                'label'      => trans('localize.username'),
+                'type'       => 'text',
+                'hint'       => trans('localize.username_hint'),
+                'attributes' => ['dir' => 'ltr', 'autocomplete' => 'off', 'autocapitalize' => 'none', 'spellcheck' => 'false'],
             ],
             [
                 'name'  => 'email',

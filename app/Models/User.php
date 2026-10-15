@@ -37,9 +37,56 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
     ];
+
+    /**
+     * Sign-in name (admin panel and portal); the email is contact information only.
+     * Stored lowercase, so the login can match it exactly.
+     */
+    const USERNAME_PATTERN = '/^[a-z0-9._-]+$/i';
+
+    /**
+     * Validation for a new or changed username, shared by the admin users CRUD and the
+     * teacher's portal profile. Input is lowercased by the mutator below before saving.
+     *
+     * @param  int|null  $ignoreId  the user being updated
+     * @return array
+     */
+    public static function usernameRules($ignoreId = null)
+    {
+        return [
+            'required',
+            'string',
+            'min:3',
+            'max:50',
+            'regex:' . self::USERNAME_PATTERN,
+            \Illuminate\Validation\Rule::unique('users', 'username')->ignore($ignoreId),
+        ];
+    }
+
+    /**
+     * Contact email: optional, unique when set (sign-in uses the username).
+     *
+     * @param  int|null  $ignoreId  the user being updated
+     * @return array
+     */
+    public static function emailRules($ignoreId = null)
+    {
+        return [
+            'nullable',
+            'email',
+            'max:255',
+            \Illuminate\Validation\Rule::unique('users', 'email')->ignore($ignoreId),
+        ];
+    }
+
+    public function setUsernameAttribute($value)
+    {
+        $this->attributes['username'] = $value === null ? null : strtolower(trim($value));
+    }
 
     /**
      * The attributes that should be hidden for arrays.

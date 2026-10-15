@@ -6,7 +6,7 @@ export interface LoginRequest {
   /** student */
   cpr?: string;
   /** teacher */
-  email?: string;
+  username?: string;
   password: string;
   /** Honeypot; humans never fill it (PLAN.md §6). */
   website?: string;

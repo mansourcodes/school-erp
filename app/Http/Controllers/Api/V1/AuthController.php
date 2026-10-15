@@ -21,7 +21,7 @@ class AuthController extends Controller
         $role = $request->input('role');
         $user = $login->attempt(
             $role,
-            $role === 'teacher' ? $request->input('email') : $request->input('cpr'),
+            $role === 'teacher' ? $request->input('username') : $request->input('cpr'),
             $request->input('password'),
             $request->input('website'),
             $request->input('turnstile_token'),

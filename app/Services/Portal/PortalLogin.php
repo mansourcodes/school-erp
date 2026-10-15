@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 /**
  * Credential check for the portal login, in the order of PLAN.md §6:
  * honeypot → per-account lockout → Turnstile → credentials.
- * Students sign in with their CPR (student guard), teachers with their email (web guard,
+ * Students sign in with their CPR (student guard), teachers with their username (web guard,
  * Spatie role "Teacher" required; other admin users cannot use the portal).
  */
 class PortalLogin
@@ -35,7 +35,7 @@ class PortalLogin
 
     /**
      * @param  string  $role  student | teacher
-     * @param  string  $identifier  CPR (student) or email (teacher)
+     * @param  string  $identifier  CPR (student) or username (teacher)
      * @return Student|User
      *
      * @throws LoginFailedException|LoginLockedException|BotCheckFailedException
@@ -90,7 +90,7 @@ class PortalLogin
             return Student::where('cpr', $identifier)->first();
         }
 
-        $user = User::where('email', $identifier)->first();
+        $user = User::where('username', $identifier)->first();
 
         return $user && $user->hasRole('Teacher') ? $user : null;
     }
