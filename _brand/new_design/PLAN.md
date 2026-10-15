@@ -192,7 +192,7 @@ Course selector, plus the chart set in §2. Definitions are in §7.4.
 - Read-only cards: personal (name, CPR **masked** with reveal, DOB + age, degree), contact (mobiles, email, address), academic (student ID, registration date, Iqraa account).
 - **Not shown to students:** `financial_*`, `health_*`, `hawza_history_details`, `student_notes`, `relationship_state`, `family_*` (admin-internal).
 - **الإشعارات card:** a “فعّل الإشعارات على هذا الجهاز” button (the in-context permission request), then the granted / denied states (denied explains how to unblock in browser settings), then two toggles, **رصد الحضور** and **رسائل المدرّسين** (stored server-side per student), then the iPhone note (push requires the installed PWA, iOS 16.4+).
-- Password card: “visit the administration” notice. Then appearance (system/light/dark) and logout.
+- Password card: change form (current password required; `PUT /api/v1/student/password`, other devices sign out; changed 2026-10-15, was a “visit the administration” notice), then a short note that a **forgotten** password is reset at the administration. Then logout.
 
 ### 3.7 Messages (`messages.html`)
 - A **read-only inbox**: a note at the top says messages can't be replied to (ask the teacher in class or the administration).
@@ -505,13 +505,13 @@ The new student panel ships **side by side** with the current one. Nothing about
   | `portal.mode` | Old portal (`/login`, `/dashboard`) | New panel | API |
   |---|---|---|---|
   | `beta` (default) | Active and the default | Opt-in at `/beta` with the “تجريبي” badge | Open |
-  | `live` | `/`, `/login`, `/dashboard` redirect to the new panel | The default | Open |
+  | `live` | `/` and `/login` are the new panel's pages; `/dashboard` redirects to `/` | At the root (`/`, `/login`, deep links); `/beta/*` redirects there; no “تجريبي” badge or link back | Open |
   | `maintenance` | Shows the maintenance page | Shows the maintenance screen (“البوابة تحت الصيانة”), PWA shell still loads | `503` + `Retry-After` |
   | `closed` | Shows the closed page | Shows the closed screen (“البوابة مغلقة حاليًا”), no login form | `403 portal_closed` |
 
   Signed-in users are not logged out by `maintenance`; their next request sees the screen. Mockups for the maintenance and closed screens are in `states.html`.
 
-**Promotion (after the beta):** an admin sets `portal.mode = live` (Q7). Then `/` and `/login` redirect to the new panel, and later the SPA moves to `/` with `/beta` kept as a redirect for bookmarks. The old Blade portal is retired in a separate, later step.
+**Promotion (after the beta):** an admin sets `portal.mode = live` (Q7). The SPA then runs at `/` (2026-10-15): Laravel serves the shell for `/`, `/login` and unmatched GET paths (not `/admin`, `/api`, `/sanctum`, `/storage`, `/beta`), and `/beta/*` redirects to the same path at the root for bookmarks. The build stays in `public/beta` (assets keep `/beta/` URLs); the worker is served as `/sw.js` (scope `/`), and the app moves itself if a cached shell opens at the other base. Switching back to `beta` reverses it. The old Blade portal is retired in a separate, later step.
 
 ---
 
@@ -562,7 +562,7 @@ Constraints: Laravel 8.12, PHP 7.3/8.0, so no PHP 8.1 syntax. This is an API bou
 | CSRF | `GET /sanctum/csrf-cookie` before login; RTK Query sends `X-XSRF-TOKEN`. |
 | Transport & headers | HTTPS only + HSTS; CSP limited to self (+ Turnstile + fonts); `X-Frame-Options: DENY`; `Referrer-Policy: same-origin`. |
 | Audit | Log failed/locked logins (CPR hash, IP, UA, time) for the admin. Optional Backpack list later. |
-| Password reset | **None online, by policy.** Admin resets in Backpack after an in-person ID check. No reset endpoint exists, so there is no reset attack surface. |
+| Password reset | **None online, by policy.** Admin resets in Backpack after an in-person ID check. No reset endpoint exists, so there is no reset attack surface. A signed-in student or teacher can **change** their password with the current one (`PUT /api/v1/{student,teacher}/password`, 10/hour per user, security log, other devices sign out). |
 | Shared devices | Decided 2026-10-14: stay signed in until logout (was: no “remember me”). On a shared family device the user must log out; an admin password reset signs out every device. |
 
 ---
@@ -589,6 +589,7 @@ Envelope: `{ "data": …, "meta": { … } }`. Errors: `{ "message": "…", "erro
 | GET | `/api/v1/student/attendance?course_id=&from=&to=` | `Session[]` |
 | GET | `/api/v1/student/attendance/stats?course_id=` | `AttendanceStats` |
 | GET | `/api/v1/student/profile` | `Profile` (whitelisted fields, §3.6) |
+| PUT | `/api/v1/student/password` | `{ current_password, password, password_confirmation }` → 204; 422 on a wrong current password; `throttle:student-password` |
 | GET | `/api/v1/student/messages` | Inbox (not deleted), newest first: `{ id, teacher, curriculum, classroom, body, sent_at, read_at }` |
 | POST | `/api/v1/student/messages/{id}/read` | Sets `read_at` (idempotent). 404 if the message was deleted or isn't mine |
 | GET | `/api/v1/student/notification-settings` · PATCH | `{ attendance: bool, messages: bool }` |
@@ -691,7 +692,7 @@ The attendance roster is a **task screen**: a back arrow replaces the logo, the 
    - ③ **الرسالة**: textarea, 500-character limit with a counter, and a “لا يمكن للطلاب الرد” note.
    - A sticky **“إرسال إلى n / إرسال للجميع”** button, enabled with ≥ 1 student and some text. Leaving with a draft warns first.
    - On success it returns to the sent list with “تم إرسال الرسالة”.
-9. **حسابي** (`t-profile.html`): name, username (login, editable with the current password: `PUT /api/v1/teacher/username`), email (optional), phone, assigned classrooms, a password change form (current password required; `PUT /api/v1/teacher/password`, other devices sign out), theme, and logout. Students still reset passwords at the administration.
+9. **حسابي** (`t-profile.html`): name, username (login, editable with the current password: `PUT /api/v1/teacher/username`), email (optional), phone, assigned classrooms, a password change form (current password required; `PUT /api/v1/teacher/password`, other devices sign out), theme, and logout. Students change theirs the same way on their profile (`PUT /api/v1/student/password`); a forgotten password is still reset at the administration.
 
 ### Teacher API (v1)
 | Method | Path | Notes |

@@ -5,7 +5,8 @@ import { loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
-// The SPA is served by Laravel at /beta (PLAN.md §4 "Beta rollout").
+// The SPA is built into public/beta and its assets keep /beta/ URLs. Laravel serves the pages at /beta
+// during the beta and at the root once `portal.mode` is live (PLAN.md §4); the router base is set at runtime.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const apiTarget = env.VITE_DEV_API_TARGET || 'http://localhost';
@@ -25,30 +26,12 @@ export default defineConfig(({ mode }) => {
         injectManifest: {
           // Fonts are cached on first use by the worker, not precached.
           globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+          // Absolute URLs: once live the same worker is served as /sw.js (PortalAppController::serviceWorker),
+          // where relative ones would resolve against / instead of /beta/.
+          modifyURLPrefix: { '': '/beta/' },
         },
-        manifest: {
-          name: 'بوابة الغدير',
-          short_name: 'الغدير',
-          description: 'بوابة الطالب — جمعية الغدير لعلوم القرآن',
-          lang: 'ar',
-          dir: 'rtl',
-          start_url: '/beta/',
-          scope: '/beta/',
-          display: 'standalone',
-          display_override: ['standalone', 'minimal-ui'],
-          theme_color: '#ffffff',
-          background_color: '#f5f3ec',
-          icons: [
-            { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
-            { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-            { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-            { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-          ],
-          shortcuts: [
-            { name: 'الدورة الحالية', url: '/beta/', icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }] },
-            { name: 'سجل الحضور', url: '/beta/attendance', icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }] },
-          ],
-        },
+        // Served by Laravel from Backpack Settings (PortalAppController::manifest); linked in index.html.
+        manifest: false,
         devOptions: { enabled: false },
       }),
     ],
@@ -64,6 +47,8 @@ export default defineConfig(({ mode }) => {
       proxy: {
         '/api': { target: apiTarget },
         '/sanctum': { target: apiTarget },
+        // Built from Backpack Settings by Laravel.
+        '/beta/manifest.webmanifest': { target: apiTarget },
       },
     },
     test: {

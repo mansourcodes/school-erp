@@ -1,18 +1,20 @@
 import { baseApi } from '@/shared/api';
 
+export type PasswordOwner = 'student' | 'teacher';
+
 export interface ChangePasswordBody {
   current_password: string;
   password: string;
   password_confirmation: string;
 }
 
-/** The teacher's own password; the server signs their other devices out. */
+/** The viewer's own password (`PUT /student/password` or `/teacher/password`); the server signs their other devices out. */
 export const changePasswordApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    changeTeacherPassword: build.mutation<void, ChangePasswordBody>({
-      query: (body) => ({ url: '/teacher/password', method: 'PUT', body }),
+    changePassword: build.mutation<void, ChangePasswordBody & { role: PasswordOwner }>({
+      query: ({ role, ...body }) => ({ url: `/${role}/password`, method: 'PUT', body }),
     }),
   }),
 });
 
-export const { useChangeTeacherPasswordMutation } = changePasswordApi;
+export const { useChangePasswordMutation } = changePasswordApi;

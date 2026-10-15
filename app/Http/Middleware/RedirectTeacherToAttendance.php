@@ -20,7 +20,7 @@ class RedirectTeacherToAttendance
         if (backpack_auth()->check() && backpack_user()->hasRole('Teacher')) {
             // Q13: once the new panel is live, teachers use it only (the attendance pages stay for admins).
             if (\App\Support\PortalMode::is(\App\Support\PortalMode::LIVE)) {
-                return redirect('/beta/teacher');
+                return redirect(\App\Support\PortalMode::appPath('/teacher'));
             }
 
             $segment = $request->segment(2);

@@ -32,7 +32,7 @@
 	'user_photo' => 'Photo',
 	'user_photo_hint' => "The teacher's photo is shown to their students next to their name in the portal. JPG, PNG or WebP, at least 300×300, up to 2 MB.",
 	'username' => 'Username',
-	'open_portal_as_teacher' => 'Open portal',
-	'open_portal_as_teacher_hint' => 'Opens the teacher portal as this teacher in a new tab. Everything you do is logged; it ends after an hour.',
+	'open_portal' => 'Open portal',
+	'open_portal_hint' => 'Opens the portal as this user in a new tab. Everything you do is logged; it ends after an hour.',
 	'username_hint' => 'Used to sign in to the admin panel and the teacher portal. English letters, digits and . _ - only, 3 to 50 characters.',
 ];

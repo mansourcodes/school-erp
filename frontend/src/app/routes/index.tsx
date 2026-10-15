@@ -2,7 +2,7 @@ import { createBrowserRouter, type RouteObject } from 'react-router';
 import { HomePage } from '@/pages/student/home';
 import { ErrorPage, NotFoundPage } from '@/pages/system';
 import { AppShell, type ShellRouteHandle } from '@/widgets/app-shell';
-import { BASE_PATH, routes } from '@/shared/config';
+import { APP_BASE, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { GuestOnly, PortalGate, RequireRole } from './guards';
 
@@ -110,5 +110,5 @@ export const appRoutes: RouteObject[] = [
 ];
 
 export function createAppRouter() {
-  return createBrowserRouter(appRoutes, { basename: BASE_PATH.replace(/\/$/, '') });
+  return createBrowserRouter(appRoutes, { basename: APP_BASE });
 }

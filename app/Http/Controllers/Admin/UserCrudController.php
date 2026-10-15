@@ -29,7 +29,7 @@ class UserCrudController extends CrudController
 
     public function setupListOperation()
     {
-        $this->crud->addButtonFromView('line', 'portal_as_teacher', 'portal_as_teacher', 'end');
+        $this->crud->addButtonFromView('line', 'open_portal', 'open_portal', 'end');
 
         $this->crud->addColumns([
             [

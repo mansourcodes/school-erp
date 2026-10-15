@@ -48,8 +48,10 @@ Route::prefix('v1')
             // Web Push: students only; teachers receive no notifications in this phase (PLAN.md §4).
             Route::prefix('push')->middleware('portal.role:student')->group(function () {
                 Route::get('/config', [App\Http\Controllers\Api\V1\PushController::class, 'config']);
-                Route::post('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'subscribe']);
-                Route::delete('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'unsubscribe']);
+                Route::post('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'subscribe'])
+                    ->middleware('portal.impersonation:deny');
+                Route::delete('/subscriptions', [App\Http\Controllers\Api\V1\PushController::class, 'unsubscribe'])
+                    ->middleware('portal.impersonation:deny');
             });
 
             // Teacher panel (PLAN.md §8): own classrooms of the current course only.
@@ -76,7 +78,7 @@ Route::prefix('v1')
                     ->middleware(['portal.impersonation:deny', 'throttle:teacher-photo']);
                 Route::delete('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deleteOwnPhoto'])
                     ->middleware('portal.impersonation:deny');
-                Route::put('/password', [App\Http\Controllers\Api\V1\TeacherPasswordController::class, 'update'])
+                Route::put('/password', [App\Http\Controllers\Api\V1\PortalPasswordController::class, 'update'])
                     ->middleware(['portal.impersonation:deny', 'throttle:teacher-password']);
                 Route::put('/username', [App\Http\Controllers\Api\V1\TeacherUsernameController::class, 'update'])
                     ->middleware(['portal.impersonation:deny', 'throttle:teacher-username']);
@@ -90,12 +92,15 @@ Route::prefix('v1')
                 Route::get('/profile', [App\Http\Controllers\Api\V1\MeController::class, 'profile']);
                 Route::get('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'inbox']);
                 Route::get('/notification-settings', [App\Http\Controllers\Api\V1\PushController::class, 'settings']);
-                Route::patch('/notification-settings', [App\Http\Controllers\Api\V1\PushController::class, 'updateSettings']);
+                Route::patch('/notification-settings', [App\Http\Controllers\Api\V1\PushController::class, 'updateSettings'])
+                    ->middleware('portal.impersonation:deny');
                 Route::post('/messages/{id}/read', [App\Http\Controllers\Api\V1\MessageController::class, 'read'])->where('id', '[0-9]+');
                 Route::get('/attendance', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'index']);
                 Route::get('/attendance/stats', [App\Http\Controllers\Api\V1\StudentAttendanceController::class, 'stats']);
                 Route::get('/courses/{course}/certificate', [App\Http\Controllers\Api\V1\StudentCourseController::class, 'certificate'])
                     ->where('course', '[0-9]+');
+                Route::put('/password', [App\Http\Controllers\Api\V1\PortalPasswordController::class, 'update'])
+                    ->middleware(['portal.impersonation:deny', 'throttle:student-password']);
             });
         });
     });

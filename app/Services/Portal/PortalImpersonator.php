@@ -2,6 +2,7 @@
 
 namespace App\Services\Portal;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,42 +10,44 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
- * A Superadmin opens the teacher portal as one teacher (Backpack → Users → "Open portal").
- * The portal session is the teacher's own (web guard, the teacher's user id), so every teacher endpoint
- * behaves exactly as for that teacher; the session only remembers who is acting behind it.
+ * A Superadmin opens the portal as a student or a teacher (Backpack → Students / Users → "Open portal").
+ * The portal session is the user's own (their guard and id), so every endpoint behaves exactly as for
+ * them; the session only remembers who is acting behind it.
  * No remember cookie: the impersonation ends with the session, the TTL or the admin's Superadmin role.
  */
-class TeacherImpersonation
+class PortalImpersonator
 {
     const IMPERSONATOR = 'portal_impersonator_id';
 
     const STARTED_AT = 'portal_impersonated_at';
 
-    public function start(User $admin, User $teacher, Request $request)
+    /**
+     * @param  Student|User  $user
+     * @param  string  $role  student | teacher
+     */
+    public function start(User $admin, $user, $role, Request $request)
     {
-        // Whoever was signed in to the portal on this device (student or teacher) leaves first. Current
-        // device only: a real teacher's other devices keep their remember cookie.
-        foreach (PortalLogin::GUARDS as $guard) {
-            Auth::guard($guard)->logoutCurrentDevice();
-        }
+        // Whoever was signed in to the portal on this device leaves first. Current device only: the
+        // user's other devices keep their remember cookie.
+        $this->logoutPortal();
 
-        Auth::guard('web')->login($teacher, false);
+        Auth::guard(PortalLogin::GUARDS[$role])->login($user, false);
         $request->session()->put(self::IMPERSONATOR, $admin->id);
         $request->session()->put(self::STARTED_AT, now()->getTimestamp());
 
-        $this->log('portal.impersonate.start', $admin->id, $teacher->id, $request);
+        $this->log('portal.impersonate.start', $admin->id, $role . ':' . $user->id, $request);
     }
 
-    /** Ends the impersonation: the teacher leaves the portal, the admin's Backpack session stays. */
+    /** Ends the impersonation: the user leaves the portal, the admin's Backpack session stays. */
     public function end(Request $request, $reason = 'logout')
     {
         $adminId = $request->session()->get(self::IMPERSONATOR);
-        $teacherId = Auth::guard('web')->id();
+        $actingAs = $this->actingAs($request);
 
-        Auth::guard('web')->logoutCurrentDevice();
+        $this->logoutPortal();
         $this->forget($request);
 
-        $this->log('portal.impersonate.end', $adminId, $teacherId, $request, ['reason' => $reason]);
+        $this->log('portal.impersonate.end', $adminId, $actingAs, $request, ['reason' => $reason]);
     }
 
     public function forget(Request $request)
@@ -75,17 +78,36 @@ class TeacherImpersonation
 
     public function logAction(Request $request)
     {
-        $this->log('portal.impersonate.action', $request->session()->get(self::IMPERSONATOR), Auth::guard('web')->id(), $request, [
+        $this->log('portal.impersonate.action', $request->session()->get(self::IMPERSONATOR), $this->actingAs($request), $request, [
             'method' => $request->method(),
             'path' => $request->path(),
         ]);
     }
 
-    protected function log($event, $adminId, $teacherId, Request $request, array $extra = [])
+    protected function logoutPortal()
+    {
+        foreach (PortalLogin::GUARDS as $guard) {
+            Auth::guard($guard)->logoutCurrentDevice();
+        }
+    }
+
+    /** "student:12" / "teacher:5", for the log. */
+    protected function actingAs(Request $request)
+    {
+        foreach (PortalLogin::GUARDS as $role => $guard) {
+            if (Auth::guard($guard)->check()) {
+                return $role . ':' . Auth::guard($guard)->id();
+            }
+        }
+
+        return null;
+    }
+
+    protected function log($event, $adminId, $actingAs, Request $request, array $extra = [])
     {
         Log::channel('security')->notice($event, [
             'admin_id' => $adminId,
-            'teacher_id' => $teacherId,
+            'acting_as' => $actingAs,
             'ip' => $request->ip(),
             'user_agent' => Str::limit((string) $request->userAgent(), 255),
         ] + $extra);

@@ -99,6 +99,10 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perHour(10)->by('teacher-password|' . $request->user()->getAuthIdentifier());
         });
 
+        RateLimiter::for('student-password', function (Request $request) {
+            return Limit::perHour(10)->by('student-password|' . $request->user()->getAuthIdentifier());
+        });
+
         // Checks the current password and tells whether a username is taken: keep guessing and probing slow.
         RateLimiter::for('teacher-username', function (Request $request) {
             return Limit::perHour(10)->by('teacher-username|' . $request->user()->getAuthIdentifier());

@@ -5,7 +5,7 @@ namespace App\Support;
 /**
  * The portal switch (PLAN.md §4 "Portal mode switch", Q7): Backpack Settings key `portal.mode`.
  * beta (default): old portal is the default, new panel opt-in at /beta.
- * live: old portal URLs redirect to the new panel (only after the P0.2 platform upgrade, §11).
+ * live: the new panel moves to the root (/, /login, deep links); /beta and the old portal URLs redirect there.
  * maintenance / closed: both portals show a notice; /admin is never affected.
  */
 class PortalMode
@@ -27,5 +27,16 @@ class PortalMode
     public static function is($mode)
     {
         return self::current() === $mode;
+    }
+
+    /**
+     * URL of a new-panel page: at the root once live (PLAN.md §4 "Promotion"), under /beta otherwise.
+     * The build stays in public/beta, so asset URLs keep /beta/ in every mode.
+     */
+    public static function appPath($path = '/')
+    {
+        $path = '/' . ltrim($path, '/');
+
+        return self::is(self::LIVE) ? $path : '/beta' . $path;
     }
 }

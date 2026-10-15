@@ -88,6 +88,8 @@ certificates.
 ### In Scope
 - New student + teacher portal (planned, `/beta`, Arabic-only PWA): see `_brand/new_design/PLAN.md`
   - One-way teacher → selected-students messages (teacher can delete; students read only, no replies)
+  - Students and teachers change their own password on the profile (current password required); a forgotten
+    password is reset by the administration only
   - Web Push notifications to students: attendance recorded (first save of a session only) and message received
 - Admin CRUD for all entities via Backpack
 - Student self-service portal (read-only)

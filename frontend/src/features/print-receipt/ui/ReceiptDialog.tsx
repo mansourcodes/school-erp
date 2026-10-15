@@ -1,4 +1,5 @@
 import { Printer } from 'lucide-react';
+import { useBranding } from '@/entities/branding';
 import { type Payment, ReceiptView } from '@/entities/payment';
 import { t } from '@/shared/i18n';
 import { Dialog } from '@/shared/ui';
@@ -13,6 +14,7 @@ interface ReceiptDialogProps {
 
 /** Bottom sheet with the receipt; "طباعة" prints only the receipt (`.print-area`). */
 export function ReceiptDialog({ payment, studentName, studentNumber, courseName, onClose }: ReceiptDialogProps) {
+  const { centre } = useBranding();
   return (
     <Dialog open={payment !== null} onClose={onClose} labelledBy="receipt-title" closeLabel={t('receipt.close')}>
       {payment && (
@@ -22,6 +24,7 @@ export function ReceiptDialog({ payment, studentName, studentNumber, courseName,
             studentName={studentName}
             studentNumber={studentNumber}
             courseName={courseName}
+            centre={centre}
             titleId="receipt-title"
           />
           <div className="flex gap-2 p-5 pt-0 print:hidden">

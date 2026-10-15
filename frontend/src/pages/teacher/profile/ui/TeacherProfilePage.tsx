@@ -85,7 +85,7 @@ export function TeacherProfilePage() {
                 {t('changePassword.title')}
               </h3>
               <p className="text-sm opacity-80 mb-4">{t('changePassword.note')}</p>
-              <ChangePasswordForm />
+              <ChangePasswordForm role="teacher" />
             </div>
             <div className="brand-rule" />
           </>

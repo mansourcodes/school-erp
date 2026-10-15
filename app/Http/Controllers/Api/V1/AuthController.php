@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
 use App\Services\Portal\PortalLogin;
-use App\Services\Portal\TeacherImpersonation;
+use App\Services\Portal\PortalImpersonator;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +33,15 @@ class AuthController extends Controller
         // session itself expires (SESSION_LIFETIME). A password change signs every device out.
         Auth::guard(PortalLogin::GUARDS[$role])->login($user, true);
         // A real sign-in on a device an admin was impersonating on: it is the user's own session now.
-        app(TeacherImpersonation::class)->forget($request);
+        app(PortalImpersonator::class)->forget($request);
         $request->session()->regenerate();
 
         return MeController::resourceFor($user);
     }
 
-    public function logout(Request $request, TeacherImpersonation $impersonation)
+    public function logout(Request $request, PortalImpersonator $impersonation)
     {
-        // An admin ending an impersonation: only the teacher leaves; the admin stays signed in to Backpack.
+        // An admin ending an impersonation: only the student / teacher leaves; the admin stays signed in to Backpack.
         if ($impersonation->active($request)) {
             $impersonation->end($request);
             $request->session()->regenerateToken();

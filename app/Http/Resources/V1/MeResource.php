@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use App\Http\Controllers\Api\V1\MessageController;
+use App\Services\Portal\PortalImpersonator;
 use App\Services\Portal\StudentPhotos;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,6 +26,10 @@ class MeResource extends JsonResource
             'photo_url' => StudentPhotos::url($this->resource),
             // Top-bar envelope badge (PLAN.md §7.2), refetched on focus and after a message push.
             'unread_messages' => MessageController::unreadCount($this->id),
+            // A Superadmin viewing the portal as this student (the SPA shows a banner), else null.
+            'impersonated_by' => optional(app(PortalImpersonator::class)->impersonator($request), function ($admin) {
+                return ['name' => $admin->name];
+            }),
         ];
     }
 }

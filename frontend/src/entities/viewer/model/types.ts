@@ -8,6 +8,8 @@ export interface StudentViewer {
   photo_url: string | null;
   /** Top-bar envelope badge (PLAN.md §7.2). */
   unread_messages: number;
+  /** A Superadmin viewing the portal as this student (Backpack → Students → "Open portal"); else null. */
+  impersonated_by?: { name: string } | null;
 }
 
 export interface TeacherViewer {

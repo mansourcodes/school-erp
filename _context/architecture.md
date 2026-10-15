@@ -7,7 +7,7 @@
 | Framework   | Laravel 8 + PHP 7.3/8.0                       | Core application framework                       |
 | Admin UI    | Backpack CRUD 4.1 + Bootstrap 4 (RTL)         | Admin panel with CRUD scaffolding                |
 | Student UI  | Bootstrap 5 RTL + Blade                       | Student-facing portal (current, stays during beta) |
-| Portal SPA  | React 18 + RTK Query + Tailwind 4 / DaisyUI 5 (Vite) | New student/teacher portal at `/beta`, Feature-Sliced Design |
+| Portal SPA  | React 18 + RTK Query + Tailwind 4 / DaisyUI 5 (Vite) | New student/teacher portal at `/beta`, at the root once `portal.mode` is live; Feature-Sliced Design |
 | Auth        | Laravel built-in (Users) + custom Student guard | Dual guard: `web` for admin, `student` for portal |
 | Portal API auth | Laravel Sanctum 2.x (SPA cookie mode)     | `/api/v1` session auth for the new `/beta` portal; no tokens |
 | Database    | MySQL via Eloquent + migrations               | All relational data                              |
@@ -29,7 +29,8 @@
   (`app/Http/Resources/V1/`, whitelisted fields only)
 - `frontend/` — portal SPA source (FSD layers app → pages → widgets → features → entities → shared,
   imports flow downward only; enforced by ESLint + Steiger). Talks to Laravel only via `/api/v1` + `/sanctum/csrf-cookie`.
-  Build output `public/beta/` is a gitignored artifact
+  Build output `public/beta/` is a gitignored artifact. Page URLs come from `PortalMode::appPath()` (server) and the
+  runtime `APP_BASE` (SPA): `/beta/...` during the beta, the root once `portal.mode` is live; asset URLs always keep `/beta/`
 - `app/Models/` — Eloquent models; `Account/` sub-namespace for Payment
 - `resources/views/` — All Blade templates; `vendor/backpack/` for customised Backpack views
 - `resources/views/reports/` — Print/PDF templates (student, course, exam, payment, statistic, account)
@@ -53,6 +54,13 @@
   (Asia/Bahrain)
 - **Cache**: login throttles and the per-CPR lockout counters (`portal-login:*` keys)
 - **Logs**: `storage/logs/security-*.log` — failed/locked portal logins (CPR as HMAC, IP, UA)
+- **Portal texts** (`App\Support\PortalBranding`): Backpack Settings `portal.name`, `portal.short_name`,
+  `portal.centre`, `portal.description` — never hardcode the centre / portal name. Served with the theme by
+  public `GET /api/v1/theme` (SPA: `entities/branding` → `useBranding()`, last values kept in localStorage
+  `gh-branding` for offline starts), in the PWA manifest (`/beta/manifest.webmanifest`, `PortalAppController`;
+  vite-plugin-pwa `manifest: false`), in the app shell `<title>` / iOS home-screen name (filled by
+  `PortalAppController@index` on deep links, by the SPA otherwise) and as the message push title.
+  Images (logo, icons) stay static files in `frontend/public`
 
 ## Auth and Access Model
 
@@ -68,14 +76,18 @@
   restricts ClassRoom queries to their own assigned classrooms when
   `auth()->user()->hasRole('Teacher')` is true
 - **SuperAdmin role**: Full access to all CRUD and reports
-- **Open portal as teacher** (`App\Services\Portal\TeacherImpersonation`): a Superadmin clicks "Open portal" on a
-  Teacher in Backpack → Users (`POST /admin/user/{id}/portal`). The portal session is the teacher's own (`web`
-  guard, the teacher's user id, **no remember cookie**), so `TeacherScope` applies unchanged; the session stores
+- **Open portal as a student / teacher** (`App\Services\Portal\PortalImpersonator`,
+  `Admin\PortalImpersonationController`): a Superadmin clicks "Open portal" in Backpack → Students
+  (`POST /admin/student/{id}/portal`) or on a Teacher in Backpack → Users (`POST /admin/user/{id}/portal`). The
+  portal session is the user's own (their guard and id, **no remember cookie**; whoever was signed in to the portal
+  on that device leaves first), so every endpoint behaves as for them; the session stores
   `portal_impersonator_id` / `portal_impersonated_at`. `portal.impersonation` (on the `/api/v1` auth group) ends it
   with a 401 after `portal.impersonation.ttl_minutes` (60) or when the admin loses Superadmin, and logs every
-  write to the security log; `portal.impersonation:deny` blocks the teacher's password / username / own photo.
-  Portal logout during an impersonation signs out the `web` guard only (no `session()->invalidate()`), so the
-  admin stays in Backpack. `/me` returns `impersonated_by: {name}` and the SPA shows a banner with "End"
+  write to the security log (`acting_as: student:12`). `portal.impersonation:deny` blocks the user's own account:
+  teacher password / username / own photo; student password, notification settings, push subscribe/unsubscribe.
+  Opening a message while impersonating does not mark it read. Portal logout during an impersonation signs out the
+  portal guards only (no `session()->invalidate()`), so the admin stays in Backpack. `/me` returns
+  `impersonated_by: {name}` and the SPA shows a banner with "End"
 - **Portal API (`/api/v1`)**: `auth:sanctum` over the `student` guard (teachers join with `web` in Phase 3).
   Students sign in with CPR, teachers with their username (same as the admin panel).
   Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors.

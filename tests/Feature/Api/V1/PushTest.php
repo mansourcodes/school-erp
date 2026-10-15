@@ -204,10 +204,16 @@ class PushTest extends TestCase
         $this->assertSame('attendance-7', $attendance['tag']);
         $this->assertSame(['url' => '/beta/attendance?date=2026-09-18'], $attendance['data']);
 
+        // Titled with the centre name from Backpack Settings (`portal.centre`).
+        config(['settings.portal.centre' => 'مركز النور']);
         $message = (new MessageReceivedPush(42, str_repeat('نص ', 60)))->toWebPush($this->student, null)->toArray();
-        $this->assertSame('جمعية الغدير لعلوم القرآن', $message['title']);
+        $this->assertSame('مركز النور', $message['title']);
         $this->assertLessThanOrEqual(83, mb_strlen($message['body']));
         $this->assertSame(['url' => '/beta/messages#42'], $message['data']);
+
+        // Once the panel is live it is at the root, so the tap opens the screen without /beta.
+        config(['settings.portal.mode' => 'live']);
+        $this->assertSame(['url' => '/messages#42'], (new MessageReceivedPush(42, 'نص'))->toWebPush($this->student, null)->toArray()['data']);
         // No CPR in a push payload (PLAN.md §9.3).
         $this->assertStringNotContainsString((string) $this->student->cpr, json_encode($attendance + $message));
     }

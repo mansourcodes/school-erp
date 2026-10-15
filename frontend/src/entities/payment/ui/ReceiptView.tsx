@@ -7,18 +7,20 @@ interface ReceiptViewProps {
   studentName: string;
   studentNumber: string;
   courseName: string;
+  /** Centre name (Backpack setting `portal.centre`). */
+  centre: string;
   /** id of the title, for the dialog's accessible name */
   titleId: string;
 }
 
 /** Same fields as the admin `payment_print_template` receipt. */
-export function ReceiptView({ payment, studentName, studentNumber, courseName, titleId }: ReceiptViewProps) {
+export function ReceiptView({ payment, studentName, studentNumber, courseName, centre, titleId }: ReceiptViewProps) {
   return (
     <>
       <div className="hero-band bg-pattern p-5 flex items-center gap-3">
         <img src={`${import.meta.env.BASE_URL}logo-icon.svg`} className="h-10 brightness-0 invert" alt="" />
         <div>
-          <p className="text-xs opacity-80">{t('app.centre')}</p>
+          <p className="text-xs opacity-80">{centre}</p>
           <h2 id={titleId} className="font-display text-xl">
             {t('receipt.title')}
           </h2>

@@ -1,4 +1,5 @@
 import { Hourglass, Lock, RefreshCw } from 'lucide-react';
+import { useBranding } from '@/entities/branding';
 import type { PortalUnavailable } from '@/shared/api';
 import { BASE_PATH } from '@/shared/config';
 import { t } from '@/shared/i18n';
@@ -12,12 +13,13 @@ interface PortalUnavailablePageProps {
 export function PortalUnavailablePage({ mode, onRetry }: PortalUnavailablePageProps) {
   const maintenance = mode === 'maintenance';
   const Icon = maintenance ? Hourglass : Lock;
+  const { centre } = useBranding();
 
   return (
     <main className="min-h-dvh grid place-items-center p-4">
       <div className="card-soft overflow-hidden w-full max-w-md">
         <div className="hero-band bg-pattern px-6 pt-8 pb-10 text-center">
-          <img src={`${BASE_PATH}logo-full.svg`} alt={t('app.centre')} className="h-12 mx-auto brightness-0 invert" />
+          <img src={`${BASE_PATH}logo-full.svg`} alt={centre} className="h-12 mx-auto brightness-0 invert" />
         </div>
         <div className="p-6 text-center -mt-6">
           <div

@@ -25,6 +25,8 @@ Update this file after every meaningful implementation change.
   - **P3.4 Push notifications done** (2026-10-13)
   - **Admin messages CRUD done** (2026-10-14): Superadmin lists / sends / edits / deletes any message at `/admin/message`
   - **Teachers edit their messages done** (2026-10-15): `PATCH /teacher/messages/{id}`, Edit sheet on the sent list
+  - **Superadmin "Open portal" as a student done** (2026-10-15): Backpack → Students, same rules as teachers
+  - **Portal texts from Backpack Settings done** (2026-10-15): `portal.name|short_name|centre|description`
   - **Superadmin "Open portal" as a teacher done** (2026-10-15): impersonation from Backpack → Users, 60-min TTL,
     account endpoints blocked, banner in the SPA (see completed-tracker)
   - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,
@@ -63,6 +65,15 @@ Update this file after every meaningful implementation change.
     ≥44px targets; IBM Plex Sans Arabic only; stats reduced to hero + KPIs + status breakdown
 
 ## Completed Recently
+
+- Live portal without `/beta` (2026-10-15): when `portal.mode` is live the new panel runs at the root
+  (`/`, `/login`, deep links) and `/beta/*` redirects there; switching back to beta reverses it
+
+- Admin settings list shows each setting's key and a category filter (General, Portal, Payments, Report
+  templates) (2026-10-15); the key is also shown read-only on the edit form
+
+- Student password change on the portal profile (2026-10-15): same rules as teachers (current password required,
+  other devices sign out); a forgotten password is still reset at the administration
 
 - Teacher password change on the portal profile (2026-10-15): current password required; other devices sign out.
   `TeacherPasswordTest` now passing (2026-10-15)

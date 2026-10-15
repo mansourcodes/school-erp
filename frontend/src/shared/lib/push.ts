@@ -2,6 +2,8 @@
  * Browser side of Web Push (PLAN.md §4). Shared so both the notifications feature and logout
  * can reach this device's subscription.
  */
+import { SW_SCOPE } from '@/shared/config';
+
 export type PushSupport = 'supported' | 'unsupported' | 'ios-needs-install';
 
 function isStandalone(): boolean {
@@ -25,7 +27,7 @@ export function pushPermission(): NotificationPermission {
 /** This device's subscription, if any. */
 export async function currentPushSubscription(): Promise<PushSubscription | null> {
   if (!('serviceWorker' in navigator)) return null;
-  const registration = await navigator.serviceWorker.getRegistration('/beta/');
+  const registration = await navigator.serviceWorker.getRegistration(SW_SCOPE);
   return (await registration?.pushManager.getSubscription()) ?? null;
 }
 

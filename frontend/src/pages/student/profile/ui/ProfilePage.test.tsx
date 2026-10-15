@@ -42,8 +42,44 @@ describe('ProfilePage', () => {
 
     expect(screen.getByText('IQ-58214')).toBeInTheDocument();
     expect(screen.getByText('لتحديث الصورة راجع مدرّسك أو إدارة المركز')).toBeInTheDocument();
-    // No editable fields: the profile is display-only.
+    // No editable profile fields: only the password form (password inputs are not textboxes).
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+  });
+
+  it('changes the password after confirming the current one', async () => {
+    const bodies: unknown[] = [];
+    server.use(
+      http.put('*/api/v1/student/password', async ({ request }) => {
+        const body = (await request.json()) as { current_password: string };
+        bodies.push(body);
+        return body.current_password === 'old-secret'
+          ? new HttpResponse(null, { status: 204 })
+          : HttpResponse.json(
+              { message: 'invalid', errors: { current_password: ['كلمة المرور الحالية غير صحيحة.'] } },
+              { status: 422 },
+            );
+      }),
+    );
+    renderApp('/profile');
+    const user = userEvent.setup();
+
+    const current = await screen.findByLabelText('كلمة المرور الحالية');
+    const submit = screen.getByRole('button', { name: 'حفظ كلمة المرور' });
+    await user.type(screen.getByLabelText('كلمة المرور الجديدة'), 'new-secret-1');
+    await user.type(screen.getByLabelText('تأكيد كلمة المرور الجديدة'), 'new-secret-1');
+
+    // The server rejects a wrong current password on its field.
+    await user.type(current, 'wrong');
+    await user.click(submit);
+    expect(await screen.findByText('كلمة المرور الحالية غير صحيحة.')).toBeInTheDocument();
+
+    await user.clear(current);
+    await user.type(current, 'old-secret');
+    await user.click(submit);
+    expect(await screen.findByText('تم تغيير كلمة المرور')).toBeInTheDocument();
+    expect(bodies.at(-1)).toEqual({ current_password: 'old-secret', password: 'new-secret-1', password_confirmation: 'new-secret-1' });
+    // A forgotten password is still reset at the administration.
+    expect(screen.getByText(/نسيت كلمة المرور؟/)).toBeInTheDocument();
   });
 
   it('keeps logout; the theme is set by the centre, not here', async () => {

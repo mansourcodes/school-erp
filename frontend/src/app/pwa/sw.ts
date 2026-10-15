@@ -8,12 +8,25 @@ import { CacheFirst } from 'workbox-strategies';
 
 declare let self: ServiceWorkerGlobalScope;
 
-// App shell: index.html + hashed JS/CSS + icons, versioned per build.
+// The same build runs as /beta/sw.js (scope /beta/) during the beta and as /sw.js (scope /) once
+// `portal.mode` is live (PortalAppController::serviceWorker). Files keep their /beta/ URLs in both.
+const SCOPE = new URL(self.registration.scope).pathname;
+const AT_ROOT = SCOPE === '/';
+/** Server pages a root worker leaves alone (PortalAppController::SERVER_PREFIXES). */
+const SERVER_PAGES = /^\/(admin|api|sanctum|storage|beta|pull|logout)(\/|$)/;
+const isPanelPath = (pathname: string) => (AT_ROOT ? !SERVER_PAGES.test(pathname) : pathname.startsWith(SCOPE));
+
+// App shell: index.html + hashed JS/CSS + icons, versioned per build (absolute /beta/ URLs, vite.config.ts).
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
 
-// Deep links under /beta/ open the shell, also offline (the app then shows its offline state).
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/beta/index.html'), { allowlist: [/^\/beta\//] }));
+// Panel deep links open the shell, also offline (the app then shows its offline state).
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL('/beta/index.html'), {
+    allowlist: [AT_ROOT ? /^\// : /^\/beta\//],
+    denylist: AT_ROOT ? [SERVER_PAGES] : [],
+  }),
+);
 
 // Fonts: cached on first use, not precached (≈600 KB across weights; immutable file names).
 registerRoute(
@@ -97,7 +110,7 @@ self.addEventListener('push', (event) => {
   }
   event.waitUntil(
     (async () => {
-      await self.registration.showNotification(payload.title ?? 'بوابة الغدير', {
+      await self.registration.showNotification(payload.title ?? '', {
         body: payload.body,
         icon: payload.icon ?? '/beta/pwa-192x192.png',
         badge: payload.badge ?? '/beta/pwa-64x64.png',
@@ -117,11 +130,14 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const url = new URL((event.notification.data as { url?: string } | undefined)?.url ?? '/beta/', self.location.origin).href;
+  const url = new URL((event.notification.data as { url?: string } | undefined)?.url ?? SCOPE, self.location.origin).href;
   event.waitUntil(
     (async () => {
       const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      const open = windows.find((client) => client.url.startsWith(`${self.location.origin}/beta`));
+      const open = windows.find((client) => {
+        const page = new URL(client.url);
+        return page.origin === self.location.origin && isPanelPath(page.pathname);
+      });
       if (open) {
         await open.focus();
         await open.navigate(url);

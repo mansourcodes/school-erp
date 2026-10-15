@@ -1,5 +1,18 @@
-/** SPA base path; Vite injects it from `base` ('/beta/'). */
+/** Asset base path; Vite injects it from `base` ('/beta/'). The build stays in public/beta in every mode. */
 export const BASE_PATH = import.meta.env.BASE_URL;
+
+/**
+ * Page base, decided at runtime: '/beta' during the beta, '' once `portal.mode` is live and Laravel serves
+ * the pages at the root (PortalMode::appPath). Taken from the address, so a cached shell agrees with it.
+ */
+export const APP_BASE = /^\/beta(\/|$)/.test(window.location.pathname) ? '/beta' : '';
+
+/** During the beta the old portal is still there to go back to; once live it redirects here. */
+export const IS_BETA = APP_BASE !== '';
+
+/** The service worker's scope: it controls the pages, so it follows APP_BASE ('/sw.js' is served when live). */
+export const SW_SCOPE = `${APP_BASE}/`;
+export const SW_URL = APP_BASE ? `${BASE_PATH}sw.js` : '/sw.js';
 
 /** Absolute URLs, so requests also resolve outside a browser (tests). */
 export const API_BASE_URL = `${window.location.origin}/api/v1`;

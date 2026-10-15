@@ -52,6 +52,6 @@ abstract class PortalPush extends Notification implements ShouldQueue
             ->dir('rtl')
             ->lang('ar')
             ->tag($this->tag())
-            ->data(['url' => '/beta' . $this->path()]);
+            ->data(['url' => \App\Support\PortalMode::appPath($this->path())]);
     }
 }

@@ -1,5 +1,6 @@
 import { Download, Share, SquarePlus, X } from 'lucide-react';
 import { useState } from 'react';
+import { useBranding } from '@/entities/branding';
 import { t } from '@/shared/i18n';
 import { Dialog } from '@/shared/ui';
 import { useInstallPrompt } from '../model/use-install-prompt';
@@ -8,6 +9,7 @@ import { useInstallPrompt } from '../model/use-install-prompt';
 export function InstallBanner() {
   const { mode, install, dismiss } = useInstallPrompt();
   const [iosSheet, setIosSheet] = useState(false);
+  const { name } = useBranding();
 
   if (!mode) return null;
 
@@ -16,7 +18,7 @@ export function InstallBanner() {
       <div className="card-soft p-3.5 mb-4 flex items-center gap-3 border-primary/40 bg-primary/10">
         <img src={`${import.meta.env.BASE_URL}pwa-64x64.png`} alt="" className="size-10 rounded-xl shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm">{t('pwa.installTitle')}</p>
+          <p className="font-semibold text-sm">{t('pwa.installTitle', { name })}</p>
           <p className="text-xs opacity-75">{t('pwa.installBody')}</p>
         </div>
         <button

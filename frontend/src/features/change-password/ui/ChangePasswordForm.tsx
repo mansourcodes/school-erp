@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toApiError } from '@/shared/api';
 import { t } from '@/shared/i18n';
-import { useChangeTeacherPasswordMutation } from '../api/change-password-api';
+import { type PasswordOwner, useChangePasswordMutation } from '../api/change-password-api';
 import { changePasswordSchema, type ChangePasswordValues } from '../model/change-password-schema';
 
 const FIELDS = [
@@ -13,9 +13,9 @@ const FIELDS = [
   { name: 'password_confirmation', label: 'changePassword.confirm', autoComplete: 'new-password' },
 ] as const;
 
-/** Teacher profile: change the password after confirming the current one (server checks it too). */
-export function ChangePasswordForm() {
-  const [change, { isLoading }] = useChangeTeacherPasswordMutation();
+/** Student / teacher profile: change the password after confirming the current one (server checks it too). */
+export function ChangePasswordForm({ role }: { role: PasswordOwner }) {
+  const [change, { isLoading }] = useChangePasswordMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const {
@@ -33,7 +33,7 @@ export function ChangePasswordForm() {
   const onSubmit = handleSubmit(async (values) => {
     setStatus(null);
     try {
-      await change(values).unwrap();
+      await change({ ...values, role }).unwrap();
       reset();
       setShowPassword(false);
       setStatus({ ok: true, text: t('changePassword.saved') });

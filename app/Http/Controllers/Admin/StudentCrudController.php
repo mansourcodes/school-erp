@@ -109,6 +109,7 @@ class StudentCrudController extends CrudController
 
         $this->crud->addButtonFromModelFunction('line', 'get_courses_dropdown', 'getCoursesDropdown', 'end');
         $this->crud->addButtonFromModelFunction('line', 'get_unpaid_payments_dropdown', 'getUnpaidPaymentsDropdown', 'end');
+        $this->crud->addButtonFromView('line', 'open_portal', 'open_portal', 'end');
         $this->filters();
     }
 

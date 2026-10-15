@@ -4,6 +4,73 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Live portal at the root, without /beta (2026-10-15)
+- `PortalMode::appPath($path)`: `/beta$path` in beta / maintenance / closed, `$path` when live. Used by the
+  manifest (`start_url`, `scope`, shortcuts), push `data.url` (`PortalPush`), the teacher redirect, the impersonation
+  redirects and the legacy-route middleware
+- `PortalAppController`: `beta()` (live → redirect to the same path + query at the root), `fallback()` (`Route::fallback`:
+  shell for unmatched GET paths when live, except `SERVER_PREFIXES` admin/api/sanctum/storage/beta/pull/logout),
+  `serviceWorker()` (`GET /sw.js`, live only, serves `public/beta/sw.js`), `shell()`. `portal.mode:legacy` when live:
+  `GET /` and `/login` get the shell, the rest redirects to `appPath()`
+- `GET /api/v1/theme` adds `base` ('/beta/' or '/')
+- SPA: `APP_BASE` / `IS_BETA` / `SW_SCOPE` / `SW_URL` in `shared/config` (from `location.pathname`); router basename =
+  `APP_BASE`; `BASE_PATH` stays the asset base. `UpdatePrompt` registers the worker with `workbox-window` (the
+  `virtual:pwa-register` URL is fixed at build time) only after `useAppBase()` is `ok`; on a base mismatch it unregisters
+  this base's worker and `location.replace`s to the same page at the server's base. "تجريبي" badge and "back to the old
+  portal" links only while `IS_BETA`
+- Worker: precache URLs absolute (`modifyURLPrefix: { '': '/beta/' }`); scope-aware navigation route (root scope skips
+  server paths), notification click default/focus follow the scope
+- Installed PWAs from the beta keep their `/beta/` start URL; it redirects to `/` (reinstall for the root scope)
+- Tests: PortalModeTest (+5, live test rewritten), PushTest (live URL), PortalImpersonationTest (+1); PHP 190 passed
+  (ExampleTest fails before too); Vitest 85 passed, typecheck / ESLint / Steiger / build clean
+
+### Superadmin opens the portal as a student (2026-10-15)
+- Backpack → Students: "فتح البوابة" line button (`btn btn-sm btn-primary`, Superadmin only) →
+  `POST /admin/student/{id}/portal` → signs the `student` guard in as that student (no remember cookie) → `/beta/`
+- Generalised: `TeacherImpersonation` → `PortalImpersonator` (student + teacher, log field `acting_as`),
+  `ImpersonateTeacherController` → `PortalImpersonationController@student|teacher`, button view
+  `portal_as_teacher` → `open_portal` (shared by Users and Students), lang keys `open_portal` / `open_portal_hint`
+- Blocked while impersonating (403): `PUT student/password`, `PATCH student/notification-settings`,
+  `POST|DELETE push/subscriptions`; `POST student/messages/{id}/read` answers without marking read
+- `MeResource.impersonated_by`; SPA banner for students too (`impersonation.banner` takes `{name}`), profile hides
+  the password form and notifications card, no push soft prompt
+- Tests: `PortalImpersonationTest` (15) + Vitest student banner; PHP 185 passed (ExampleTest fails before too),
+  Vitest 85 passed
+
+### Admin settings: key column and category filter (2026-10-15)
+- `routes/backpack/settings.php` overrides the package route → `Admin\SettingCrudController` (extends the
+  backpack/settings controller)
+- List: `key` column (searchable, default order), `category` column, `category` dropdown filter; edit form shows
+  `key` disabled above the name
+- Category comes from the key (no schema change): `portal.*` → portal, `payment_types|payment_sources` →
+  payments, `*.pre|*.pro|*.title` → reports, the rest → general. `categoryOf()` (PHP) and `scopeCategory()` (SQL)
+  must stay in sync; a new setting key outside these patterns lands in "general"
+- Labels in `resources/lang/ar/setting.php`
+- Tests: `Admin/SettingCrudTest` (4)
+
+### Students change their password on the portal (2026-10-15)
+- `PUT /api/v1/student/password` (`throttle:student-password`, 10/hour per student): current password required,
+  new one 8–128, confirmed, different; other devices sign out (remember token rotates), this device stays signed in
+- `TeacherPasswordController` → `PortalPasswordController`, shared by both roles (guard from `PortalLogin::GUARDS`);
+  the security log adds `role`
+- SPA: `ChangePasswordForm` takes `role` (`useChangePasswordMutation`); `/profile` shows it instead of the
+  “visit the administration” note, plus a forgotten-password note (`profile.forgotPasswordNote`; `profile.password` /
+  `passwordNote` removed)
+- Tests: `StudentPasswordTest` (6), 1 Vitest; PHP 175 passed (ExampleTest fails before too), Vitest 84 passed
+
+### Portal texts from Backpack Settings (2026-10-15)
+- Migration `2026_10_15_200000_add_portal_branding_to_settings_table`: `portal.name` (بوابة الغدير),
+  `portal.short_name` (الغدير), `portal.centre` (جمعية الغدير لعلوم القرآن), `portal.description`; text fields
+- `PortalBranding` (empty values fall back to the name / centre); `GET /api/v1/theme` adds the four texts
+- `PortalAppController`: `/beta/manifest.webmanifest` built from the settings (icons unchanged); the app shell
+  route fills `<title>` and `apple-mobile-web-app-title` (escaped)
+- SPA: `entities/branding` (`useBranding`), used by login (title, alt, ©), shell sidebar, maintenance screen,
+  install banner (`pwa.installTitle` takes `{name}`), receipt (`centre` prop); `app.name` / `app.centre` removed
+  from ar.json; `portal.push.centre` removed (message push title = `portal.centre`); SW fallback title empty
+- Images not touched (logo / icons stay files)
+- Tests: PortalThemeTest (+3), PortalModeTest shell test, PushTest title, Vitest branding case; PHP 175 passed
+  (ExampleTest fails before too), Vitest 83 passed
+
 ### Superadmin opens the portal as a teacher (2026-10-15)
 - Backpack → Users: "Open portal" line button (Superadmin only, rows with the Teacher role, not self) posts to
   `POST /admin/user/{id}/portal` (`ImpersonateTeacherController`) → signs the `web` guard in as the teacher
@@ -50,7 +117,7 @@ Update this file after every meaningful implementation change.
 - Tests: 5 PHPUnit in `MessagesTest`, 1 Vitest in `messages.test.tsx`
 
 ### Teacher password change (2026-10-15)
-- `PUT /api/v1/teacher/password` (`TeacherPasswordController`, `throttle:teacher-password`, 10/hour per teacher):
+- `PUT /api/v1/teacher/password` (`TeacherPasswordController`, now `PortalPasswordController`, `throttle:teacher-password`, 10/hour per teacher):
   `current_password` checked with `Hash::check`; new password 8–128, `confirmed`, `different:current_password`;
   Arabic messages in `portal.password.*`; success / wrong-current events go to the `security` log channel
 - Saving rotates the remember token (`SignsOutDevicesOnPasswordChange`), so other devices sign out; the current

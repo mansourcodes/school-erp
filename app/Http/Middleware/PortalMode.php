@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 /**
  * Applies `portal.mode` to the old student portal (`portal.mode:legacy`) and to the
- * new panel's API (`portal.mode:api`). The SPA shell at /beta always loads, so it can
+ * new panel's API (`portal.mode:api`). The SPA shell (/beta, or the root once live) always loads, so it can
  * show the maintenance / closed screen; /admin never passes through here.
  */
 class PortalMode
@@ -32,9 +32,13 @@ class PortalMode
             return $next($request);
         }
 
-        // Old Blade portal.
+        // Old Blade portal. Once live, / and /login are the new panel's own pages; the rest redirects to it.
         if ($mode === Mode::LIVE) {
-            return redirect($request->is('login') ? '/beta/login' : '/beta');
+            if ($request->isMethod('GET') && ($request->is('/') || $request->is('login'))) {
+                return app(\App\Http\Controllers\PortalAppController::class)->shell();
+            }
+
+            return redirect(Mode::appPath($request->is('login') ? '/login' : '/'));
         }
         if ($mode === Mode::MAINTENANCE || $mode === Mode::CLOSED) {
             return response()->view('portal.unavailable', ['mode' => $mode], $mode === Mode::MAINTENANCE ? 503 : 403);

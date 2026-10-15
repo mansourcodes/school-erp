@@ -6,8 +6,9 @@ import { PushSoftPrompt } from '@/features/enable-notifications';
 import { useRosterHandoff } from '@/features/mark-attendance';
 import { refreshOutbox, useOutboxRunner } from '@/features/send-notifications';
 import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
+import { useBranding } from '@/entities/branding';
 import { useMeQuery, type Viewer, ViewerAvatar } from '@/entities/viewer';
-import { BASE_PATH, homeOf, LEGACY_PORTAL_URL, routes } from '@/shared/config';
+import { BASE_PATH, homeOf, IS_BETA, LEGACY_PORTAL_URL, routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { useAppDispatch, useOnlineStatus } from '@/shared/lib';
 import { navFor, type ShellRouteHandle } from '../config/nav';
@@ -59,7 +60,7 @@ export function AppShell() {
           <div className="flex-1 min-w-0">
             <p className="text-xs opacity-60 leading-none mb-1 flex items-center gap-1.5">
               {viewer.role === 'teacher' ? t('teacher.panel') : t('app.studentPortal')}
-              <span className="badge badge-accent badge-xs">{t('app.beta')}</span>
+              {IS_BETA && <span className="badge badge-accent badge-xs">{t('app.beta')}</span>}
             </p>
             <h1 className="font-display text-base sm:text-lg leading-tight truncate">{title}</h1>
           </div>
@@ -80,12 +81,12 @@ export function AppShell() {
             <ViewerAvatar viewer={viewer} className="w-8 h-10" textClassName="text-sm" />
           </NavLink>
         </div>
-        {viewer.role === 'teacher' && viewer.impersonated_by && (
-          // An admin is acting as this teacher: always visible, with a way out.
+        {viewer.impersonated_by && (
+          // An admin is acting as this student / teacher: always visible, with a way out.
           <div role="status" className="bg-error text-error-content text-sm px-4 py-1.5 flex items-center justify-center gap-2">
             <ShieldAlert className="size-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
             <span className="min-w-0 truncate">
-              {t('impersonation.banner', { teacher: viewer.name, admin: viewer.impersonated_by.name })}
+              {t('impersonation.banner', { name: viewer.name, admin: viewer.impersonated_by.name })}
             </span>
             <LogoutButton className="btn-xs text-error-content" label={t('impersonation.end')} />
           </div>
@@ -102,7 +103,7 @@ export function AppShell() {
         {!task && <InstallBanner />}
         <Outlet />
         {/* Students only: teachers receive no notifications in this phase (PLAN.md §4). */}
-        {viewer.role === 'student' && <PushSoftPrompt afterLoginKey={JUST_LOGGED_IN_KEY} />}
+        {viewer.role === 'student' && !viewer.impersonated_by && <PushSoftPrompt afterLoginKey={JUST_LOGGED_IN_KEY} />}
       </main>
 
       {!task && (
@@ -120,10 +121,11 @@ export function AppShell() {
 }
 
 function Sidebar({ viewer }: { viewer: Viewer }) {
+  const { centre } = useBranding();
   return (
     <aside className="hidden lg:flex fixed inset-y-0 start-0 z-40 w-72 bg-base-100 border-e border-base-300 flex-col overflow-y-auto">
       <NavLink to={homeOf(viewer.role)} className="px-6 pt-6 pb-4 block" aria-label={t('app.home')}>
-        <img src={`${BASE_PATH}logo-full.svg`} alt={t('app.centre')} className="h-14 w-auto" />
+        <img src={`${BASE_PATH}logo-full.svg`} alt={centre} className="h-14 w-auto" />
       </NavLink>
 
       <div className="mx-4 mb-5 rounded-box hero-band bg-pattern p-4 flex items-center gap-3">
@@ -152,7 +154,7 @@ function Sidebar({ viewer }: { viewer: Viewer }) {
       </ul>
 
       <div className="mt-auto p-4 space-y-3">
-        {viewer.role === 'student' && (
+        {viewer.role === 'student' && IS_BETA && (
           <a href={LEGACY_PORTAL_URL} className="btn btn-ghost btn-sm btn-block justify-start opacity-80">
             <ArrowUpRight className="size-4" strokeWidth={1.75} aria-hidden="true" />
             {t('app.backToLegacy')}

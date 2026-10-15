@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\MessageRecipient;
 use App\Models\PushDelivery;
+use App\Services\Portal\PortalImpersonator;
 use App\Services\Portal\StudentPhotos;
 use App\Services\Portal\TeacherPhotos;
 use App\Services\Teacher\TeacherScope;
@@ -174,11 +175,12 @@ class MessageController extends Controller
             ->first();
         abort_unless($recipient, 404);
 
-        if (! $recipient->read_at) {
+        // An admin viewing as the student leaves the message unread for the student.
+        if (! $recipient->read_at && ! app(PortalImpersonator::class)->active($request)) {
             $recipient->forceFill(['read_at' => now()])->save();
         }
 
-        return response()->json(['data' => ['read_at' => $recipient->read_at->toIso8601String()]]);
+        return response()->json(['data' => ['read_at' => optional($recipient->read_at)->toIso8601String()]]);
     }
 
     /** Unread count for the top-bar badge (GET /me). */

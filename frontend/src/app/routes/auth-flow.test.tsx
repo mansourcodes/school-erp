@@ -192,4 +192,22 @@ describe('auth flow', () => {
     expect(screen.getByRole('heading', { name: 'استعادة كلمة المرور' })).toBeVisible();
     expect(screen.queryByRole('textbox', { name: /البريد/ })).not.toBeInTheDocument();
   });
+  it('shows the portal and centre names from the admin settings', async () => {
+    server.use(
+      http.get('*/api/v1/theme', () =>
+        HttpResponse.json({ data: { theme: 'ghadeer', name: 'بوابة النور', short_name: 'النور', centre: 'مركز النور', description: '' } }),
+      ),
+    );
+    renderApp('/login');
+
+    expect(await screen.findByText('© مركز النور')).toBeInTheDocument();
+    await waitFor(() => expect(document.title).toBe('تسجيل الدخول · بوابة النور'));
+  });
+  it('shows the admin banner while an admin views the portal as a student', async () => {
+    server.use(http.get('*/api/v1/me', () => HttpResponse.json({ data: { ...demoViewer, impersonated_by: { name: 'المسؤول' } } })));
+    renderApp('/');
+
+    expect(await screen.findByText(`تتصفّح بوابة ${demoViewer.name} بصفتك المسؤول المسؤول`)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'إنهاء' })).toBeInTheDocument();
+  });
 });

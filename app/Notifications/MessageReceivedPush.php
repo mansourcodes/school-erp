@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Support\PortalBranding;
 use Illuminate\Support\Str;
 
 /**
@@ -27,7 +28,7 @@ class MessageReceivedPush extends PortalPush
 
     protected function title()
     {
-        return __('portal.push.centre');
+        return PortalBranding::get('centre');
     }
 
     protected function body()

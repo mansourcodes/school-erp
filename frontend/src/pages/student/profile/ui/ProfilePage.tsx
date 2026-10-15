@@ -13,17 +13,20 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { LogoutButton } from '@/features/auth/logout';
+import { ChangePasswordForm } from '@/features/change-password';
 import { NotificationsCard } from '@/features/enable-notifications';
 import { maskCpr, type Profile, useMeQuery, useProfileQuery, ViewerAvatar } from '@/entities/viewer';
-import { LEGACY_PORTAL_URL } from '@/shared/config';
+import { IS_BETA, LEGACY_PORTAL_URL } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { fmtDate } from '@/shared/lib';
 import { EmptyState } from '@/shared/ui';
 
-/** /profile (PLAN.md §3.6): display only; the photo is set by the teacher or admin (Q4). */
+/** /profile (PLAN.md §3.6): display only except the password; the photo is set by the teacher or admin (Q4). */
 export function ProfilePage() {
   const { data: viewer } = useMeQuery();
   const { data: profile, isLoading, isError, refetch } = useProfileQuery();
+  // An admin viewing as this student: the password and this device's notifications are the student's own.
+  const ownAccount = !viewer?.impersonated_by;
 
   return (
     <div className="space-y-5">
@@ -71,23 +74,31 @@ export function ProfilePage() {
           </div>
 
           <ProfileCards profile={profile} />
-          <NotificationsCard />
+          {ownAccount && <NotificationsCard />}
         </>
       )}
 
       <section className="card-soft p-5 sm:p-6 space-y-5">
-        <div>
-          <h3 className="font-display text-lg mb-2 flex items-center gap-2">
-            <KeyRound className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-            {t('profile.password')}
-          </h3>
-          <p className="text-sm opacity-80 leading-relaxed">{t('profile.passwordNote')}</p>
-        </div>
-        <div className="brand-rule" />
-        <a href={LEGACY_PORTAL_URL} className="btn btn-ghost btn-block justify-start">
-          <ArrowUpRight className="size-5" strokeWidth={1.75} aria-hidden="true" />
-          {t('app.backToLegacy')}
-        </a>
+        {ownAccount && (
+          <>
+            <div>
+              <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+                <KeyRound className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                {t('changePassword.title')}
+              </h3>
+              <p className="text-sm opacity-80 mb-4">{t('changePassword.note')}</p>
+              <ChangePasswordForm role="student" />
+              <p className="text-xs opacity-70 leading-relaxed mt-4">{t('profile.forgotPasswordNote')}</p>
+            </div>
+            <div className="brand-rule" />
+          </>
+        )}
+        {IS_BETA && (
+          <a href={LEGACY_PORTAL_URL} className="btn btn-ghost btn-block justify-start">
+            <ArrowUpRight className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            {t('app.backToLegacy')}
+          </a>
+        )}
         <LogoutButton className="btn-outline btn-error btn-block btn-lg sm:btn-md" />
       </section>
     </div>

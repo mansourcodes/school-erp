@@ -29,11 +29,10 @@ Route::middleware('portal.mode:legacy')->group(function () {
 });
 Route::post('/logout', [\App\Http\Controllers\StudentPanel\StudentAuthController::class, 'logout'])->name('logout');
 
-// New student panel (React SPA, built into public/beta). Hashed assets and sw.js are static files;
-// every other /beta path is a client-side route, so it gets the app shell.
-Route::get('/beta/{path?}', function () {
-    $index = public_path('beta/index.html');
-    abort_unless(is_file($index), 404);
-
-    return response()->file($index, ['Cache-Control' => 'no-cache', 'Content-Type' => 'text/html; charset=UTF-8']);
-})->where('path', '.*')->name('beta');
+// New student panel (React SPA, built into public/beta): the manifest and the app shell carry the
+// Backpack Settings texts (PortalBranding). Pages are at /beta until portal.mode is live, then at the
+// root: /beta redirects there, unmatched GET paths get the shell, and the worker is served at /sw.js.
+Route::get('/beta/manifest.webmanifest', [\App\Http\Controllers\PortalAppController::class, 'manifest'])->name('beta.manifest');
+Route::get('/beta/{path?}', [\App\Http\Controllers\PortalAppController::class, 'beta'])->where('path', '.*')->name('beta');
+Route::get('/sw.js', [\App\Http\Controllers\PortalAppController::class, 'serviceWorker'])->name('portal.sw');
+Route::fallback([\App\Http\Controllers\PortalAppController::class, 'fallback']);
