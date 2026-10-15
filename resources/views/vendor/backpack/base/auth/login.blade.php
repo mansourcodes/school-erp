@@ -3,6 +3,11 @@
 @section('content')
 <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-4">
+        @if ($logoUrl = \App\Support\AdminBranding::logoUrl())
+        <div class="text-center mb-3">
+            <img src="{{ $logoUrl }}" alt="{{ config('backpack.base.project_name') }}" style="max-height: 120px; max-width: 100%;">
+        </div>
+        @endif
         <h3 class="text-center mb-4">{{ trans('backpack::base.login') }}</h3>
         <div class="card">
             <div class="card-body">

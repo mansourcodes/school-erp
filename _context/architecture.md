@@ -54,6 +54,10 @@
   (Asia/Bahrain)
 - **Cache**: login throttles and the per-CPR lockout counters (`portal-login:*` keys)
 - **Logs**: `storage/logs/security-*.log` — failed/locked portal logins (CPR as HMAC, IP, UA)
+- **Admin logo** (`App\Support\AdminBranding`): Backpack Setting `logo`, an `upload` field; `SettingCrudController::update()`
+  stores the file on the public disk (`settings/logo-<uuid>.<ext>`, jpeg/png/webp ≤ 2 MB, no SVG) and keeps only the
+  path. Shown on `/admin/login` and as the navbar brand (`vendor/backpack/base/inc/main_header` override); empty →
+  `backpack.base.project_logo` text
 - **Portal texts** (`App\Support\PortalBranding`): Backpack Settings `portal.name`, `portal.short_name`,
   `portal.centre`, `portal.description` — never hardcode the centre / portal name. Served with the theme by
   public `GET /api/v1/theme` (SPA: `entities/branding` → `useBranding()`, last values kept in localStorage

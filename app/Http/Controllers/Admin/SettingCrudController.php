@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Admin;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\Settings\app\Http\Controllers\SettingCrudController as BaseSettingCrudController;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Extends the backpack/settings CRUD (wired via routes/backpack/settings.php):
- * shows the setting key and lets admins filter by a category derived from the key.
+ * shows the setting key, lets admins filter by a category derived from the key, and stores the file of
+ * settings whose field is an `upload` (e.g. `logo`) on the public disk, keeping only its path as the value.
  */
 class SettingCrudController extends BaseSettingCrudController
 {
@@ -68,6 +72,48 @@ class SettingCrudController extends BaseSettingCrudController
         ]);
 
         parent::setupUpdateOperation();
+    }
+
+    public function update()
+    {
+        $setting = CRUD::getCurrentEntry();
+        $field = json_decode($setting->field, true);
+
+        if (($field['type'] ?? null) === 'upload') {
+            $this->storeUploadedValue($setting, $field['disk'] ?? 'public');
+        }
+
+        return parent::update();
+    }
+
+    /**
+     * Replaces the uploaded `value` file in the request with its stored path. The upload field posts a file
+     * when replaced, an empty `value` when cleared, and nothing when unchanged.
+     */
+    protected function storeUploadedValue($setting, $disk)
+    {
+        $request = CRUD::getRequest();
+        $request->validate([
+            'value' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $file = $request->file('value');
+        if (! $file && ! $request->exists('value')) {
+            return;
+        }
+
+        $path = $file
+            ? $file->storeAs('settings', $setting->key . '-' . Str::uuid() . '.' . $file->extension(), $disk)
+            : '';
+
+        if ($setting->value) {
+            Storage::disk($disk)->delete($setting->value);
+        }
+
+        $request->files->remove('value');
+        $request->request->set('value', $path);
+        // A fresh request: Laravel caches the converted uploads, which would still win over the stored path.
+        CRUD::setRequest(Request::createFrom($request));
     }
 
     public static function categoryOf(string $key): string
