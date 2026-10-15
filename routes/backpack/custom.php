@@ -62,6 +62,9 @@ Route::group([
     Route::crud('payment', 'PaymentCrudController');
     Route::crud('examtool', 'ExamToolCrudController');
     Route::crud('message', 'MessageCrudController');
+
+    // Superadmin opens the teacher portal as a teacher (Backpack → Users).
+    Route::post('user/{id}/portal', 'ImpersonateTeacherController@start')->where('id', '[0-9]+');
 }); // this should be the absolute last line of this file
 
 

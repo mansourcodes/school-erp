@@ -29,6 +29,8 @@ class UserCrudController extends CrudController
 
     public function setupListOperation()
     {
+        $this->crud->addButtonFromView('line', 'portal_as_teacher', 'portal_as_teacher', 'end');
+
         $this->crud->addColumns([
             [
                 'name'   => 'photo_path',

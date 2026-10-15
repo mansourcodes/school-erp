@@ -20,6 +20,8 @@ export interface TeacherViewer {
   /** Optional contact information. */
   email: string | null;
   photo_url: string | null;
+  /** A Superadmin viewing the portal as this teacher (Backpack → Users → "Open portal"); else null. */
+  impersonated_by?: { name: string } | null;
 }
 
 export type Viewer = StudentViewer | TeacherViewer;

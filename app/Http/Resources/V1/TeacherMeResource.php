@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Services\Portal\TeacherImpersonation;
 use App\Services\Portal\TeacherPhotos;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +23,10 @@ class TeacherMeResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'photo_url' => TeacherPhotos::url($this->resource),
+            // A Superadmin viewing the portal as this teacher (the SPA shows a banner), else null.
+            'impersonated_by' => optional(app(TeacherImpersonation::class)->impersonator($request), function ($admin) {
+                return ['name' => $admin->name];
+            }),
         ];
     }
 }

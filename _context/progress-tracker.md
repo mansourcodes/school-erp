@@ -25,6 +25,8 @@ Update this file after every meaningful implementation change.
   - **P3.4 Push notifications done** (2026-10-13)
   - **Admin messages CRUD done** (2026-10-14): Superadmin lists / sends / edits / deletes any message at `/admin/message`
   - **Teachers edit their messages done** (2026-10-15): `PATCH /teacher/messages/{id}`, Edit sheet on the sent list
+  - **Superadmin "Open portal" as a teacher done** (2026-10-15): impersonation from Backpack → Users, 60-min TTL,
+    account endpoints blocked, banner in the SPA (see completed-tracker)
   - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,
     a11y), P2.8 (beta period), P2.9 (promotion gates: pen test, restore test, k6 peak test)
   - **Deferred out of the portal plan (2026-10-13):** Cloudflare (was P0.1), the Laravel/PHP/Backpack upgrade (was

@@ -48,4 +48,12 @@ return [
         'honeypot_delay_ms' => (int) env('PORTAL_HONEYPOT_DELAY_MS', 600),
     ],
 
+    /*
+    | A Superadmin opening the teacher portal as a teacher (Backpack → Users → "Open portal"):
+    | the impersonation signs out after this many minutes.
+    */
+    'impersonation' => [
+        'ttl_minutes' => (int) env('PORTAL_IMPERSONATION_TTL_MINUTES', 60),
+    ],
+
 ];

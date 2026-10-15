@@ -17,6 +17,8 @@ export function TeacherProfilePage() {
   const { data: classrooms } = useTeacherClassroomsQuery();
 
   if (!viewer || viewer.role !== 'teacher') return <LoadingBlocks heights={['h-40', 'h-40']} />;
+  // An admin viewing as this teacher manages the teacher's account in the admin panel, not here.
+  const ownAccount = !viewer.impersonated_by;
 
   return (
     <div className="space-y-5">
@@ -53,33 +55,41 @@ export function TeacherProfilePage() {
         </dl>
       </section>
 
-      <section className="card-soft p-5 sm:p-6">
-        <h3 className="font-display text-lg mb-2 flex items-center gap-2">
-          <Camera className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-          {t('teacher.ownPhoto')}
-        </h3>
-        <TeacherPhotoActions hasPhoto={viewer.photo_url !== null} />
-      </section>
+      {ownAccount && (
+        <>
+          <section className="card-soft p-5 sm:p-6">
+            <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+              <Camera className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+              {t('teacher.ownPhoto')}
+            </h3>
+            <TeacherPhotoActions hasPhoto={viewer.photo_url !== null} />
+          </section>
 
-      <section className="card-soft p-5 sm:p-6">
-        <h3 className="font-display text-lg mb-2 flex items-center gap-2">
-          <AtSign className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-          {t('changeUsername.title')}
-        </h3>
-        <p className="text-sm opacity-80 mb-4">{t('changeUsername.note')}</p>
-        <ChangeUsernameForm username={viewer.username} />
-      </section>
+          <section className="card-soft p-5 sm:p-6">
+            <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+              <AtSign className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+              {t('changeUsername.title')}
+            </h3>
+            <p className="text-sm opacity-80 mb-4">{t('changeUsername.note')}</p>
+            <ChangeUsernameForm username={viewer.username} />
+          </section>
+        </>
+      )}
 
       <section className="card-soft p-5 sm:p-6 space-y-5">
-        <div>
-          <h3 className="font-display text-lg mb-2 flex items-center gap-2">
-            <KeyRound className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
-            {t('changePassword.title')}
-          </h3>
-          <p className="text-sm opacity-80 mb-4">{t('changePassword.note')}</p>
-          <ChangePasswordForm />
-        </div>
-        <div className="brand-rule" />
+        {ownAccount && (
+          <>
+            <div>
+              <h3 className="font-display text-lg mb-2 flex items-center gap-2">
+                <KeyRound className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                {t('changePassword.title')}
+              </h3>
+              <p className="text-sm opacity-80 mb-4">{t('changePassword.note')}</p>
+              <ChangePasswordForm />
+            </div>
+            <div className="brand-rule" />
+          </>
+        )}
         <LogoutButton className="btn-outline btn-error btn-block btn-lg sm:btn-md" />
       </section>
     </div>

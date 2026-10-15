@@ -41,7 +41,7 @@ Route::prefix('v1')
         Route::post('/auth/login', [App\Http\Controllers\Api\V1\AuthController::class, 'login'])
             ->middleware('throttle:student-login');
 
-        Route::middleware(['auth:sanctum', 'throttle:portal'])->group(function () {
+        Route::middleware(['auth:sanctum', 'portal.impersonation', 'throttle:portal'])->group(function () {
             Route::post('/auth/logout', [App\Http\Controllers\Api\V1\AuthController::class, 'logout']);
             Route::get('/me', [App\Http\Controllers\Api\V1\MeController::class, 'show']);
 
@@ -73,12 +73,13 @@ Route::prefix('v1')
                 Route::delete('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deletePhoto'])
                     ->where(['id' => '[0-9]+', 'sid' => '[0-9]+']);
                 Route::post('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadOwnPhoto'])
-                    ->middleware('throttle:teacher-photo');
-                Route::delete('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deleteOwnPhoto']);
+                    ->middleware(['portal.impersonation:deny', 'throttle:teacher-photo']);
+                Route::delete('/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deleteOwnPhoto'])
+                    ->middleware('portal.impersonation:deny');
                 Route::put('/password', [App\Http\Controllers\Api\V1\TeacherPasswordController::class, 'update'])
-                    ->middleware('throttle:teacher-password');
+                    ->middleware(['portal.impersonation:deny', 'throttle:teacher-password']);
                 Route::put('/username', [App\Http\Controllers\Api\V1\TeacherUsernameController::class, 'update'])
-                    ->middleware('throttle:teacher-username');
+                    ->middleware(['portal.impersonation:deny', 'throttle:teacher-username']);
             });
 
             Route::prefix('student')->middleware('portal.role:student')->group(function () {

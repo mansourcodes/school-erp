@@ -83,5 +83,6 @@ class Kernel extends HttpKernel
         'teacher.attendance_only' => \App\Http\Middleware\RedirectTeacherToAttendance::class,
         'portal.mode' => \App\Http\Middleware\PortalMode::class,
         'portal.role' => \App\Http\Middleware\PortalRole::class,
+        'portal.impersonation' => \App\Http\Middleware\PortalImpersonation::class,
     ];
 }

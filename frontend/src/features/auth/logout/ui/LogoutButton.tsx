@@ -14,7 +14,7 @@ async function purgeRuntimeCaches() {
   await Promise.all(names.filter((name) => !name.startsWith('workbox-precache') && name !== 'fonts').map((name) => caches.delete(name)));
 }
 
-export function LogoutButton({ className = '' }: { className?: string }) {
+export function LogoutButton({ className = '', label = t('logout.action') }: { className?: string; label?: string }) {
   const [logout, { isLoading }] = useLogoutMutation();
   const [unsubscribePush] = useUnsubscribePushMutation();
   const { data: viewer } = useMeQuery();
@@ -50,7 +50,7 @@ export function LogoutButton({ className = '' }: { className?: string }) {
       ) : (
         <LogOut className="size-5" strokeWidth={1.75} aria-hidden="true" />
       )}
-      {t('logout.action')}
+      {label}
     </button>
   );
 }

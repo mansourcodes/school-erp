@@ -77,6 +77,10 @@
   "logout": {
     "action": "تسجيل الخروج"
   },
+  "impersonation": {
+    "banner": "تتصفّح بوابة {teacher} بصفتك المسؤول {admin}",
+    "end": "إنهاء"
+  },
   "pages": {
     "comingSoonTitle": "قريبًا",
     "comingSoonBody": "هذه الصفحة قيد الإعداد وستتوفر في تحديث قادم من النسخة التجريبية.",

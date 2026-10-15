@@ -365,4 +365,16 @@ describe('teacher panel', () => {
     expect(password).toHaveValue('');
     expect(screen.getAllByText('ahmad.sitri').length).toBeGreaterThan(0);
   });
+  it('shows the admin banner and hides the account forms while an admin views as the teacher', async () => {
+    server.use(
+      http.get('*/api/v1/me', () => HttpResponse.json({ data: { ...teacher, impersonated_by: { name: 'المسؤول' } } })),
+      http.get('*/api/v1/teacher/classrooms', () => HttpResponse.json({ data: [] })),
+    );
+    renderApp('/teacher/profile');
+
+    expect(await screen.findByText(`تتصفّح بوابة ${teacher.name} بصفتك المسؤول المسؤول`)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'إنهاء' })).toBeInTheDocument();
+    expect(screen.queryByTestId('teacher-photo-input')).not.toBeInTheDocument();
+    expect(screen.queryByText('تغيير كلمة المرور')).not.toBeInTheDocument();
+  });
 });

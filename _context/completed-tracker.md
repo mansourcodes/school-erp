@@ -4,6 +4,20 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Superadmin opens the portal as a teacher (2026-10-15)
+- Backpack → Users: "Open portal" line button (Superadmin only, rows with the Teacher role, not self) posts to
+  `POST /admin/user/{id}/portal` (`ImpersonateTeacherController`) → signs the `web` guard in as the teacher
+  without a remember cookie (any portal user on the device signs out first, current device only) → `/beta/teacher`
+- `TeacherImpersonation` service (session keys, TTL + Superadmin check, security log `portal.impersonate.start|end|action`)
+- `PortalImpersonation` middleware: expiry → 401; writes logged; `:deny` on `PUT teacher/password|username`,
+  `POST|DELETE teacher/photo`
+- Logout ends only the impersonation (Backpack session kept); a real login clears the impersonation keys
+- `TeacherMeResource.impersonated_by`; SPA: red banner with "إنهاء" in the shell, profile hides photo / username /
+  password forms; `LogoutButton` takes a `label`
+- Config `portal.impersonation.ttl_minutes` (`PORTAL_IMPERSONATION_TTL_MINUTES`, default 60)
+- Tests: `TeacherImpersonationTest` (9) + Vitest banner case; PHP suite 166 passed (ExampleTest `/` 302 fails before
+  this change too), Vitest 82 passed
+
 ### Users sign in with a username (2026-10-15)
 - Migration `2026_10_15_000000_add_username_to_users_table`: `users.username` varchar(50), unique, NOT NULL (MySQL);
   existing users backfilled from the part of their email before "@" (lowercased, `a-z 0-9 . _ -` kept, a number

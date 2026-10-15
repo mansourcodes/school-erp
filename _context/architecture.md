@@ -68,6 +68,14 @@
   restricts ClassRoom queries to their own assigned classrooms when
   `auth()->user()->hasRole('Teacher')` is true
 - **SuperAdmin role**: Full access to all CRUD and reports
+- **Open portal as teacher** (`App\Services\Portal\TeacherImpersonation`): a Superadmin clicks "Open portal" on a
+  Teacher in Backpack → Users (`POST /admin/user/{id}/portal`). The portal session is the teacher's own (`web`
+  guard, the teacher's user id, **no remember cookie**), so `TeacherScope` applies unchanged; the session stores
+  `portal_impersonator_id` / `portal_impersonated_at`. `portal.impersonation` (on the `/api/v1` auth group) ends it
+  with a 401 after `portal.impersonation.ttl_minutes` (60) or when the admin loses Superadmin, and logs every
+  write to the security log; `portal.impersonation:deny` blocks the teacher's password / username / own photo.
+  Portal logout during an impersonation signs out the `web` guard only (no `session()->invalidate()`), so the
+  admin stays in Backpack. `/me` returns `impersonated_by: {name}` and the SPA shows a banner with "End"
 - **Portal API (`/api/v1`)**: `auth:sanctum` over the `student` guard (teachers join with `web` in Phase 3).
   Students sign in with CPR, teachers with their username (same as the admin panel).
   Login protection: per-(CPR+IP) and per-IP rate limits, per-CPR lockout, Turnstile, honeypot, generic errors.
