@@ -1,0 +1,275 @@
+/*
+ * Admin panel colour themes (Backpack Settings `admin.theme`, see App\Support\AdminTheme).
+ * The layouts set <html data-admin-theme="...">. `default` has no rules: plain Backstrap.
+ * Each theme only sets the --at-* variables; the shared rules below apply them.
+ */
+
+/* ---------------------------------------------------------------- themes */
+
+html[data-admin-theme="islamic-girly"] {
+    --at-body-bg: #fdf6f8;
+    --at-header-bg: #ffffff;
+    --at-header-text: #5b2a4a;
+    --at-header-border: #c9a24a;
+    --at-sidebar-bg: #5b2a4a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-opacity='.14' stroke-width='1'%3E%3Cpath d='M24 4l5.9 14.1L44 24l-14.1 5.9L24 44l-5.9-14.1L4 24l14.1-5.9z'/%3E%3Crect x='14' y='14' width='20' height='20' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E");
+    --at-sidebar-text: #fbeaf1;
+    --at-sidebar-icon: #e3c27a;
+    --at-sidebar-active: #b5487a;
+    --at-sidebar-hover: #8c3562;
+    --at-sidebar-sub: rgba(0, 0, 0, .18);
+    --at-primary: #b5487a;
+    --at-primary-hover: #973b65;
+    --at-primary-soft: rgba(181, 72, 122, .25);
+    --at-link: #973b65;
+}
+
+html[data-admin-theme="brown"] {
+    --at-body-bg: #f8f4f1;
+    --at-header-bg: #ffffff;
+    --at-header-text: #4e342e;
+    --at-header-border: #d7ccc8;
+    --at-sidebar-bg: #4e342e;
+    --at-sidebar-text: #f3ebe7;
+    --at-sidebar-icon: #bcaaa4;
+    --at-sidebar-active: #795548;
+    --at-sidebar-hover: #6d4c41;
+    --at-sidebar-sub: rgba(0, 0, 0, .2);
+    --at-primary: #795548;
+    --at-primary-hover: #5d4037;
+    --at-primary-soft: rgba(121, 85, 72, .25);
+    --at-link: #6d4c41;
+}
+
+html[data-admin-theme="wood"] {
+    --at-body-bg: #f6efe6;
+    --at-header-bg: #efe2cf;
+    --at-header-text: #4a2e14;
+    --at-header-border: #c9a77c;
+    --at-sidebar-bg:
+        repeating-linear-gradient(92deg, rgba(255, 255, 255, .035) 0 2px, transparent 2px 9px),
+        repeating-linear-gradient(88deg, rgba(0, 0, 0, .08) 0 1px, transparent 1px 23px),
+        linear-gradient(180deg, #6b4423, #50311a);
+    --at-sidebar-text: #f6e8d6;
+    --at-sidebar-icon: #d9b38c;
+    --at-sidebar-active: #a0652d;
+    --at-sidebar-hover: #845224;
+    --at-sidebar-sub: rgba(0, 0, 0, .2);
+    --at-primary: #a0652d;
+    --at-primary-hover: #845224;
+    --at-primary-soft: rgba(160, 101, 45, .25);
+    --at-link: #8a5527;
+}
+
+html[data-admin-theme="gold"] {
+    --at-body-bg: #fbf8ef;
+    --at-header-bg: linear-gradient(90deg, #fff8e1, #ffffff 60%);
+    --at-header-text: #5c4410;
+    --at-header-border: #d4af37;
+    --at-sidebar-bg: linear-gradient(180deg, #2f2716, #1f1a0f);
+    --at-sidebar-text: #f7ecd0;
+    --at-sidebar-icon: #d4af37;
+    --at-sidebar-active: linear-gradient(90deg, #b8860b, #d4af37);
+    --at-sidebar-hover: rgba(212, 175, 55, .3);
+    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-primary: #b8860b;
+    --at-primary-hover: #966d09;
+    --at-primary-soft: rgba(184, 134, 11, .25);
+    --at-link: #8f6a0a;
+}
+
+html[data-admin-theme="silver"] {
+    --at-body-bg: #f4f5f7;
+    --at-header-bg: linear-gradient(180deg, #f9fafb, #e5e7eb);
+    --at-header-text: #374151;
+    --at-header-border: #c0c4cc;
+    --at-sidebar-bg: linear-gradient(180deg, #6b7280, #4b5563);
+    --at-sidebar-text: #f3f4f6;
+    --at-sidebar-icon: #d1d5db;
+    --at-sidebar-active: linear-gradient(90deg, #9ca3af, #c0c4cc);
+    --at-sidebar-hover: rgba(255, 255, 255, .15);
+    --at-sidebar-sub: rgba(0, 0, 0, .15);
+    --at-primary: #64748b;
+    --at-primary-hover: #475569;
+    --at-primary-soft: rgba(100, 116, 139, .25);
+    --at-link: #475569;
+}
+
+html[data-admin-theme="dark-red"] {
+    --at-body-bg: #fbf5f5;
+    --at-header-bg: #6b1218;
+    --at-header-text: #fbe9ea;
+    --at-header-border: #4a0d12;
+    --at-sidebar-bg: #4a0d12;
+    --at-sidebar-text: #f8e1e3;
+    --at-sidebar-icon: #e08a90;
+    --at-sidebar-active: #8b1a1f;
+    --at-sidebar-hover: #6b1218;
+    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-primary: #8b1a1f;
+    --at-primary-hover: #6b1218;
+    --at-primary-soft: rgba(139, 26, 31, .25);
+    --at-link: #8b1a1f;
+}
+
+html[data-admin-theme="dark-blue"] {
+    --at-body-bg: #f3f6fb;
+    --at-header-bg: #102a4c;
+    --at-header-text: #e6eefa;
+    --at-header-border: #0b1f3a;
+    --at-sidebar-bg: #0b1f3a;
+    --at-sidebar-text: #e6eefa;
+    --at-sidebar-icon: #7fa3d6;
+    --at-sidebar-active: #1e4a8a;
+    --at-sidebar-hover: #163763;
+    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-primary: #1e3a6e;
+    --at-primary-hover: #152a52;
+    --at-primary-soft: rgba(30, 58, 110, .25);
+    --at-link: #1e4a8a;
+}
+
+/* ---------------------------------------------------------- shared rules */
+
+html[data-admin-theme]:not([data-admin-theme="default"]) body,
+html[data-admin-theme]:not([data-admin-theme="default"]) .app-footer {
+    background: var(--at-body-bg);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) a {
+    color: var(--at-link);
+}
+
+/* Top bar */
+html[data-admin-theme]:not([data-admin-theme="default"]) .app-header {
+    background: var(--at-header-bg);
+    border-bottom: 3px solid var(--at-header-border);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .app-header .navbar-brand,
+html[data-admin-theme]:not([data-admin-theme="default"]) .app-header .nav-link {
+    color: var(--at-header-text);
+}
+
+html[data-admin-theme="dark-red"] .app-header .navbar-toggler-icon,
+html[data-admin-theme="dark-blue"] .app-header .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* Sidebar */
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar {
+    background: var(--at-sidebar-bg);
+    color: var(--at-sidebar-text);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-title {
+    color: var(--at-sidebar-icon);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link,
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link {
+    color: var(--at-sidebar-text);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link .nav-icon {
+    color: var(--at-sidebar-icon);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link:hover {
+    background: var(--at-sidebar-hover);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link.active,
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link.active {
+    background: var(--at-sidebar-active);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link.active .nav-icon,
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link:hover .nav-icon {
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open,
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items {
+    background: var(--at-sidebar-sub);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .sidebar-minimizer {
+    background-color: var(--at-sidebar-sub);
+}
+
+/* Primary colour: buttons, badges, pagination, form focus, checks */
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary,
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary:disabled {
+    background-color: var(--at-primary);
+    border-color: var(--at-primary);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary:hover,
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary:focus,
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary:not(:disabled):active,
+html[data-admin-theme]:not([data-admin-theme="default"]) .show > .btn-primary.dropdown-toggle {
+    background-color: var(--at-primary-hover);
+    border-color: var(--at-primary-hover);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-primary:focus,
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-outline-primary:focus,
+html[data-admin-theme]:not([data-admin-theme="default"]) .form-control:focus {
+    box-shadow: 0 0 0 .2rem var(--at-primary-soft);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-outline-primary {
+    color: var(--at-primary);
+    border-color: var(--at-primary);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-outline-primary:hover,
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-outline-primary:not(:disabled):active {
+    background-color: var(--at-primary);
+    border-color: var(--at-primary);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .btn-link,
+html[data-admin-theme]:not([data-admin-theme="default"]) .text-primary,
+html[data-admin-theme]:not([data-admin-theme="default"]) .page-link {
+    color: var(--at-primary) !important;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .badge-primary,
+html[data-admin-theme]:not([data-admin-theme="default"]) .bg-primary,
+html[data-admin-theme]:not([data-admin-theme="default"]) .progress-bar,
+html[data-admin-theme]:not([data-admin-theme="default"]) .dropdown-item.active,
+html[data-admin-theme]:not([data-admin-theme="default"]) .dropdown-item:active,
+html[data-admin-theme]:not([data-admin-theme="default"]) .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--at-primary) !important;
+    border-color: var(--at-primary);
+    color: #fff;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .page-item.active .page-link {
+    background-color: var(--at-primary);
+    border-color: var(--at-primary);
+    color: #fff !important;
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .form-control:focus {
+    border-color: var(--at-primary);
+}
+
+html[data-admin-theme]:not([data-admin-theme="default"]) .nav-tabs .nav-link.active {
+    border-top: 2px solid var(--at-primary);
+}
+
+/* Metallic buttons for gold and silver */
+html[data-admin-theme="gold"] .btn-primary {
+    background-image: linear-gradient(180deg, #d4af37, #b8860b);
+}
+
+html[data-admin-theme="silver"] .btn-primary {
+    background-image: linear-gradient(180deg, #94a3b8, #64748b);
+}

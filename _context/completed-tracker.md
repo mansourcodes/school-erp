@@ -4,6 +4,26 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Admin panel themes from Backpack Settings (2026-10-15)
+- Migration `2026_10_15_400000_add_admin_theme_to_settings_table`: setting `admin.theme` (مظهر لوحة الإدارة),
+  `select_from_array` with `default`, `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`
+- `App\Support\AdminTheme::current()` (unknown / missing → `default`); both Backpack layouts (`top_left`, `plain`)
+  set `<html data-admin-theme="...">` and load `public/css/admin-themes.css` (cache-busted by `filemtime`)
+- `admin-themes.css`: each theme sets `--at-*` variables only; one shared rule block recolours the header,
+  sidebar (incl. global.scss's light sub-menu), body/footer, primary buttons, badges, pagination, focus rings and
+  checks. `default` has no rules (plain Backstrap). Islamic theme has an SVG geometric sidebar pattern, wood a grain
+  gradient, gold / silver metallic gradients; dark red / dark blue use dark header + sidebar (content stays light)
+- `tests/Feature/Admin/AdminThemeTest.php` (3 tests)
+
+### Admin logo from Backpack Settings (2026-10-15)
+- Migration `2026_10_15_300000_add_logo_to_settings_table`: setting `logo` (الشعار), field `upload` on the public disk
+- `SettingCrudController::update()`: for `upload` settings, validates (image, jpeg/png/webp, ≤ 2 MB), stores
+  `settings/<key>-<uuid>.<ext>`, deletes the previous file, empty value on clear; the request is rebuilt with
+  `Request::createFrom()` because Laravel caches converted uploads
+- `App\Support\AdminBranding::logoUrl()`; logo above the login heading and as the navbar brand (overridden
+  `resources/views/vendor/backpack/base/inc/main_header.blade.php`), project name text when unset
+- Tests: SettingCrudTest +4 (upload replaces previous, clear deletes, SVG rejected, login + navbar show the logo)
+
 ### Live portal at the root, without /beta (2026-10-15)
 - `PortalMode::appPath($path)`: `/beta$path` in beta / maintenance / closed, `$path` when live. Used by the
   manifest (`start_url`, `scope`, shortcuts), push `data.url` (`PortalPush`), the teacher redirect, the impersonation

@@ -34,7 +34,14 @@ No CSS custom properties are in use yet — colors are hardcoded in the layout
 
 ### Admin Panel
 
-Backpack Backstrap default palette. Custom accent changes are in
+Colour theme chosen in the Backpack setting `admin.theme` (`App\Support\AdminTheme`): `default` (Backstrap
+palette, no overrides), `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`. The layouts set
+`<html data-admin-theme>`; `public/css/admin-themes.css` holds one `--at-*` variable block per theme plus shared
+rules (header, sidebar, body, primary buttons / badges / pagination / focus). New themes: add a key to
+`AdminTheme::ALL` and a variable block — no build step. Settings options come from the migration, so a new theme
+also needs the `admin.theme` row's `field.options` updated.
+
+Default: Backpack Backstrap palette. Custom accent changes are in
 `resources/sass/custom/global.scss` (e.g. absent-switch colour `#161c2d`).
 
 ## Typography
