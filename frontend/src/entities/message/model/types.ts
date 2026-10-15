@@ -12,6 +12,8 @@ export interface InboxMessage {
   classroom: MessageClassroom | null;
   body: string;
   sent_at: string;
+  /** Last text change (teacher or admin), null if never edited. */
+  edited_at: string | null;
   read_at: string | null;
 }
 
@@ -21,6 +23,7 @@ export interface SentMessage {
   classroom: MessageClassroom | null;
   body: string;
   sent_at: string;
+  edited_at: string | null;
   recipients_count: number;
   read_count: number;
   recipients: { id: number; name: string | null; photo_url: string | null; read_at: string | null }[];

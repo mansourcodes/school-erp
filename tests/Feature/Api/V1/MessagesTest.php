@@ -126,6 +126,61 @@ class MessagesTest extends TestCase
         $this->assertNull($message->fresh()->deleted_at);
     }
 
+    public function test_a_teacher_edits_their_own_message_and_read_state_stays()
+    {
+        $message = $this->stored([$this->student->id]);
+        $message->recipients()->update(['read_at' => now()]);
+        $this->travel(5)->minutes();
+
+        $this->actingAs($this->teacher, 'web')->patchJson("/api/v1/teacher/messages/{$message->id}", ['body' => '  نص مصحح  '])
+            ->assertOk()
+            ->assertJsonPath('data.body', 'نص مصحح')
+            ->assertJsonPath('data.edited_at', now()->toIso8601String());
+
+        // Recipients and their read state stay as sent.
+        $this->assertSame('نص مصحح', $message->fresh()->body);
+        $this->assertNotNull($message->recipients()->first()->read_at);
+    }
+
+    /** Separate from the edit request: Sanctum keeps the teacher for the rest of a test (see stored()). */
+    public function test_the_inbox_shows_an_edited_message_as_edited()
+    {
+        $message = $this->stored([$this->student->id]);
+        $this->travel(5)->minutes();
+        $message->update(['body' => 'نص مصحح']);
+
+        $this->actingAs($this->student, 'student')->getJson('/api/v1/student/messages')
+            ->assertJsonPath('data.0.body', 'نص مصحح')
+            ->assertJsonPath('data.0.edited_at', now()->toIso8601String());
+    }
+
+    public function test_an_unedited_message_has_no_edited_time()
+    {
+        $this->stored([$this->student->id]);
+
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/messages')->assertJsonPath('data.0.edited_at', null);
+    }
+
+    public function test_editing_checks_the_owner_and_the_text()
+    {
+        $message = $this->stored([$this->student->id]);
+
+        $this->actingAs($this->teacher, 'web')->patchJson("/api/v1/teacher/messages/{$message->id}", ['body' => '   '])->assertStatus(422);
+        $this->actingAs($this->teacher, 'web')
+            ->patchJson("/api/v1/teacher/messages/{$message->id}", ['body' => str_repeat('ا', 501)])->assertStatus(422);
+        $message->delete();
+        $this->actingAs($this->teacher, 'web')->patchJson("/api/v1/teacher/messages/{$message->id}", ['body' => 'جديد'])->assertStatus(404);
+        $this->assertSame('رسالة', Message::withTrashed()->find($message->id)->body);
+    }
+
+    public function test_a_teacher_cannot_edit_another_teachers_message()
+    {
+        $message = $this->stored([$this->student->id]);
+
+        $this->actingAs($this->makeTeacher(), 'web')->patchJson("/api/v1/teacher/messages/{$message->id}", ['body' => 'جديد'])->assertStatus(404);
+        $this->assertSame('رسالة', $message->fresh()->body);
+    }
+
     public function test_deleting_hides_the_message_from_the_inbox()
     {
         $this->send();

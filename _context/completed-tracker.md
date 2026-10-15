@@ -4,6 +4,14 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Teachers edit their messages (2026-10-15)
+- `PATCH /api/v1/teacher/messages/{id}` `{body}` (`MessageController::update`): own messages only (404 otherwise,
+  deleted included), body trimmed, 1–500; recipients and read state stay; no new push
+- `edited_at` on sent and inbox items (`updated_at` when later than `created_at`, so admin edits count too)
+- SPA: `features/edit-message` (`EditMessageButton`: sheet with textarea + counter, save disabled while unchanged)
+  next to Delete on each sent card; "· معدّلة" on the sent card and the student's inbox card
+- Tests: 5 PHPUnit in `MessagesTest`, 1 Vitest in `messages.test.tsx`
+
 ### Receipt printing fix (2026-10-14)
 - "طباعة" on the payment receipt printed blank pages: `.print-area { position: fixed }` sat inside daisyUI's
   transformed, `overflow-hidden` `.modal-box`, which collapsed to 0 px and clipped it; the hidden page behind still

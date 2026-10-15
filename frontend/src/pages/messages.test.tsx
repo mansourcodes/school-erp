@@ -14,6 +14,7 @@ const inboxMessage = (over: Partial<InboxMessage>): InboxMessage => ({
   classroom: { id: 912, number: '2-ب', name: null },
   body: 'يرجى مراجعة الدرس الثالث قبل الاختبار القصير.',
   sent_at: '2026-10-12T13:20:00+03:00',
+  edited_at: null,
   read_at: null,
   ...over,
 });
@@ -115,6 +116,7 @@ describe('teacher messages', () => {
       classroom: { id: 912, number: '2-ب', name: null },
       body: 'تذكير بموعد الاختبار',
       sent_at: '2026-10-12T13:20:00+03:00',
+      edited_at: null,
       recipients_count: 2,
       read_count: 1,
       recipients: [
@@ -140,5 +142,45 @@ describe('teacher messages', () => {
     await user.click(within(sheet).getByRole('button', { name: 'حذف' }));
 
     expect(await screen.findByText('لم ترسل أي رسالة بعد')).toBeInTheDocument();
+  });
+
+  it('edits the text in a sheet and marks the message edited', async () => {
+    let patched: unknown;
+    let message: SentMessage = {
+      id: 78,
+      classroom: { id: 912, number: '2-ب', name: null },
+      body: 'الاختبار يوم الأحد',
+      sent_at: '2026-10-12T13:20:00+03:00',
+      edited_at: null,
+      recipients_count: 2,
+      read_count: 0,
+      recipients: [],
+    };
+    server.use(
+      http.get('*/api/v1/me', () => HttpResponse.json({ data: teacher })),
+      http.get('*/api/v1/teacher/messages', () => HttpResponse.json(page([message]))),
+      http.patch('*/api/v1/teacher/messages/:id', async ({ request, params }) => {
+        patched = { id: Number(params.id), ...((await request.json()) as object) };
+        message = { ...message, body: 'الاختبار يوم الاثنين', edited_at: '2026-10-12T14:00:00+03:00' };
+        return HttpResponse.json({ data: { id: 78, body: message.body, edited_at: message.edited_at } });
+      }),
+    );
+    renderApp('/teacher/messages');
+    const user = userEvent.setup();
+
+    await user.click(await screen.findByRole('button', { name: 'تعديل' }));
+    const sheet = screen.getByRole('dialog', { name: 'تعديل الرسالة' });
+    const save = within(sheet).getByRole('button', { name: 'حفظ' });
+    expect(save).toBeDisabled(); // unchanged text
+    const box = within(sheet).getByRole('textbox');
+    await user.clear(box);
+    await user.type(box, 'الاختبار يوم الاثنين');
+    await user.click(save);
+
+    await waitFor(() => expect(patched).toEqual({ id: 78, body: 'الاختبار يوم الاثنين' }));
+    // The card's paragraph (the closed sheet's textarea holds the same text).
+    expect(await screen.findByText('الاختبار يوم الاثنين', { selector: 'p' })).toBeInTheDocument();
+    expect(screen.getByText(/· معدّلة/)).toBeInTheDocument();
+    expect(await screen.findByText('تم تعديل الرسالة')).toBeInTheDocument();
   });
 });

@@ -40,6 +40,7 @@ class MessageController extends Controller
                     'classroom' => $this->classroomLabel($message),
                     'body' => $message->body,
                     'sent_at' => $message->created_at->toIso8601String(),
+                    'edited_at' => static::editedAt($message),
                     'recipients_count' => $recipients->count(),
                     'read_count' => $recipients->whereNotNull('read_at')->count(),
                     'recipients' => $recipients->map(function (MessageRecipient $r) {
@@ -104,6 +105,30 @@ class MessageController extends Controller
         ]], 201);
     }
 
+    /**
+     * PATCH /teacher/messages/{id} {body}: my own only (else 404); the text changes in every inbox
+     * at once. Recipients and read state stay; no new push (like attendance edits).
+     */
+    public function update(Request $request, $id)
+    {
+        $message = Message::where('sender_user_id', $request->user()->id)->find($id);
+        abort_unless($message, 404);
+
+        $data = $request->validate(['body' => ['required', 'string', 'max:' . Message::MAX_LENGTH]]);
+        $body = trim($data['body']);
+        if ($body === '') {
+            throw ValidationException::withMessages(['body' => [__('portal.messages.empty')]]);
+        }
+
+        $message->update(['body' => $body]);
+
+        return response()->json(['data' => [
+            'id' => $message->id,
+            'body' => $message->body,
+            'edited_at' => static::editedAt($message),
+        ]]);
+    }
+
     /** DELETE /teacher/messages/{id}: my own only; it leaves every inbox at once. */
     public function destroy(Request $request, $id)
     {
@@ -132,6 +157,7 @@ class MessageController extends Controller
                     'classroom' => $this->classroomLabel($r->message),
                     'body' => $r->message->body,
                     'sent_at' => $r->message->created_at->toIso8601String(),
+                    'edited_at' => static::editedAt($r->message),
                     'read_at' => optional($r->read_at)->toIso8601String(),
                 ];
             }),
@@ -159,6 +185,14 @@ class MessageController extends Controller
     public static function unreadCount($studentId)
     {
         return MessageRecipient::where('student_id', $studentId)->whereNull('read_at')->whereHas('message')->count();
+    }
+
+    /** When the text was last changed (by the teacher or the admin), null if never. */
+    protected static function editedAt(Message $message)
+    {
+        return $message->updated_at && $message->updated_at->gt($message->created_at)
+            ? $message->updated_at->toIso8601String()
+            : null;
     }
 
     protected function classroomLabel(Message $message)

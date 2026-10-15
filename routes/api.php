@@ -63,6 +63,7 @@ Route::prefix('v1')
                 Route::get('/stats', [App\Http\Controllers\Api\V1\TeacherController::class, 'stats']);
                 Route::get('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'sent']);
                 Route::post('/messages', [App\Http\Controllers\Api\V1\MessageController::class, 'send']);
+                Route::patch('/messages/{id}', [App\Http\Controllers\Api\V1\MessageController::class, 'update'])->where('id', '[0-9]+');
                 Route::delete('/messages/{id}', [App\Http\Controllers\Api\V1\MessageController::class, 'destroy'])->where('id', '[0-9]+');
                 // Push outbox: the app sends the pushes of a save / message one by one (PLAN.md §5.12).
                 Route::get('/push-deliveries', [App\Http\Controllers\Api\V1\PushDeliveryController::class, 'index']);

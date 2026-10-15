@@ -39,6 +39,7 @@ export function MessageCard({ message, onOpen }: MessageCardProps) {
           <p className="text-xs opacity-60 num">
             {message.classroom?.number ? t('teacher.room', { room: message.classroom.number }) + ' · ' : ''}
             {sentLabel(message.sent_at)}
+            {message.edited_at && ` · ${t('messages.edited')}`}
           </p>
         </div>
         {unread && <span className="size-2.5 rounded-full bg-primary shrink-0" aria-label={t('messages.unread')} />}

@@ -708,6 +708,7 @@ The attendance roster is a **task screen**: a back arrow replaces the logo, the 
 
 | GET | `/api/v1/teacher/messages` | Sent messages (not deleted): classroom, recipients, `read_count`, per-recipient `read_at` |
 | POST | `/api/v1/teacher/messages` | `{ classroom_id, student_ids[], body }`. `body` 1–500 chars. Every `student_id` must belong to that classroom, and the classroom must be one of **my current** ones (else 422/403). Creates the message + recipients, then queues the push. |
+| PATCH | `/api/v1/teacher/messages/{id}` | `{ body }` 1–500 chars (own messages only, else 404). The text changes in every inbox at once; recipients and read state stay; no new push. Sent and inbox items carry `edited_at` (null unless edited). |
 | DELETE | `/api/v1/teacher/messages/{id}` | Soft delete (own messages only). It disappears from every recipient's inbox immediately. |
 
 `PUT` is idempotent (it is the attendance-sheet save), so a retry after a flaky connection is safe. RTK Query invalidates `Session`, `Today`, `Classroom` and `Stats` tags on save.

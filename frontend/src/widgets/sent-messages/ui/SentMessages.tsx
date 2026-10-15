@@ -2,13 +2,14 @@ import { Check, Info, MailX, PenSquare } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { DeleteMessageButton } from '@/features/delete-message';
+import { EditMessageButton } from '@/features/edit-message';
 import { sentLabel, type SentMessage, useSentMessagesQuery } from '@/entities/message';
 import { StudentPhoto } from '@/entities/student';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
 import { EmptyState, ErrorCard, LoadingBlocks } from '@/shared/ui';
 
-/** Teacher sent list (PLAN.md §8 screen 7): newest first, read progress, delete. */
+/** Teacher sent list (PLAN.md §8 screen 7): newest first, read progress, edit, delete. */
 export function SentMessages() {
   const { data, isLoading, isError, refetch } = useSentMessagesQuery(1, { refetchOnFocus: true });
   const [toast, setToast] = useState<string | null>(null);
@@ -36,8 +37,8 @@ export function SentMessages() {
           <SentCard
             key={message.id}
             message={message}
-            onDeleted={() => {
-              setToast(t('messages.deleted'));
+            onDone={(text) => {
+              setToast(text);
               window.setTimeout(() => setToast(null), 3000);
             }}
           />
@@ -55,7 +56,7 @@ export function SentMessages() {
   );
 }
 
-function SentCard({ message, onDeleted }: { message: SentMessage; onDeleted: () => void }) {
+function SentCard({ message, onDone }: { message: SentMessage; onDone: (toast: string) => void }) {
   const percent = message.recipients_count ? Math.round((message.read_count / message.recipients_count) * 100) : 0;
 
   return (
@@ -65,9 +66,18 @@ function SentCard({ message, onDeleted }: { message: SentMessage; onDeleted: () 
           <p className="font-semibold">{t('teacher.room', { room: message.classroom?.number ?? '' })}</p>
           <p className="text-xs opacity-60 num">
             {t('messages.toN', { n: message.recipients_count })} · {sentLabel(message.sent_at)}
+            {message.edited_at && ` · ${t('messages.edited')}`}
           </p>
         </div>
-        <DeleteMessageButton id={message.id} recipients={message.recipients_count} onDeleted={onDeleted} />
+        <div className="flex shrink-0">
+          <EditMessageButton
+            id={message.id}
+            body={message.body}
+            recipients={message.recipients_count}
+            onEdited={() => onDone(t('messages.editedToast'))}
+          />
+          <DeleteMessageButton id={message.id} recipients={message.recipients_count} onDeleted={() => onDone(t('messages.deleted'))} />
+        </div>
       </header>
       <p className="mt-2 whitespace-pre-line leading-relaxed">{message.body}</p>
 
