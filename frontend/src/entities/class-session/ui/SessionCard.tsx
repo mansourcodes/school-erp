@@ -69,9 +69,9 @@ export function SessionCard({ session, students, withDate = false, now = new Dat
   return (
     <article className={`card-soft p-3.5 ${session.status === 'open' ? 'is-today' : ''}`}>
       <div className="flex items-center gap-3">
-        <div className="rounded-field bg-base-200 w-16 py-2 text-center leading-tight shrink-0">
+        <div className={`rounded-field bg-base-200 ${withDate ? 'w-28' : 'w-20'} px-2 py-2 text-center leading-tight shrink-0`}>
           {withDate && <p className="text-[11px] opacity-70">{dateLabel(session.date, now)}</p>}
-          <p className="font-bold num text-sm">{session.start ? fmtTime(session.start) : '—'}</p>
+          <p className="font-bold num text-sm whitespace-nowrap">{session.start ? fmtTime(session.start) : '—'}</p>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-x-2 gap-y-1 flex-wrap">
