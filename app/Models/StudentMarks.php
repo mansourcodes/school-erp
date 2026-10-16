@@ -6,7 +6,6 @@ use App\Helpers\BriefMarkHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\MarksDetailsCast;
-use Mpdf\Tag\Br;
 
 class StudentMarks extends Model
 {
