@@ -98,6 +98,27 @@ class SettingCrudTest extends TestCase
         Storage::disk('public')->assertMissing('settings/old.png');
     }
 
+    public function test_saving_without_touching_the_logo_keeps_it()
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('settings/old.png', 'old');
+        $setting = Setting::where('key', 'logo')->firstOrFail();
+        $setting->update(['value' => 'settings/old.png']);
+
+        // A browser posts the untouched file input as an empty part (UPLOAD_ERR_NO_FILE).
+        $this->actingAs($this->admin, 'backpack')
+            ->call('PUT', "/admin/setting/{$setting->id}", ['id' => $setting->id], [], ['value' => self::emptyUpload()])
+            ->assertRedirect();
+
+        $this->assertSame('settings/old.png', Setting::get('logo'));
+        Storage::disk('public')->assertExists('settings/old.png');
+    }
+
+    public static function emptyUpload()
+    {
+        return ['name' => '', 'type' => '', 'tmp_name' => '', 'error' => UPLOAD_ERR_NO_FILE, 'size' => 0];
+    }
+
     public function test_a_logo_must_be_a_raster_image()
     {
         Storage::fake('public');

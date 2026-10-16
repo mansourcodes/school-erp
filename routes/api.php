@@ -18,11 +18,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/course', [App\Http\Controllers\Api\CourseController::class, 'index']);
-Route::get('/classroom', [App\Http\Controllers\Api\ClassRoomsController::class, 'index']);
-Route::get('/student', [App\Http\Controllers\Api\StudentController::class, 'index']);
-Route::get('/teacher', [App\Http\Controllers\Api\TeacherController::class, 'index']);
-Route::get('/teacher/{id}', [App\Http\Controllers\Api\TeacherController::class, 'show']);
+// The admin's select2 lookups (students, courses, classrooms, teachers) are in routes/backpack/custom.php,
+// behind the Backpack login: they list CPRs (the student sign-in) and phone numbers.
 
 /*
 | Portal API v1 (/beta SPA, PLAN.md §7). Cookie sessions via Sanctum, same origin.
@@ -41,7 +38,7 @@ Route::prefix('v1')
         Route::post('/auth/login', [App\Http\Controllers\Api\V1\AuthController::class, 'login'])
             ->middleware('throttle:student-login');
 
-        Route::middleware(['auth:sanctum', 'portal.impersonation', 'throttle:portal'])->group(function () {
+        Route::middleware(['auth:sanctum', 'portal.session', 'portal.impersonation', 'throttle:portal'])->group(function () {
             Route::post('/auth/logout', [App\Http\Controllers\Api\V1\AuthController::class, 'logout']);
             Route::get('/me', [App\Http\Controllers\Api\V1\MeController::class, 'show']);
 

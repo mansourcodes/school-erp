@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -100,5 +101,37 @@ class UserUsernameTest extends TestCase
         $this->actingAs($this->admin, 'backpack')->put("/admin/user/{$teacher->id}", ['username' => 'teacher2'] + $form)->assertSessionHasNoErrors();
 
         $this->assertSame('teacher2', $teacher->fresh()->username);
+    }
+
+    public function test_editing_a_user_without_touching_the_photo_keeps_it()
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('teachers/photos/1/old.webp', 'old');
+        $teacher = User::factory()->create(['username' => 'teacher']);
+        $teacher->forceFill(['photo_path' => 'teachers/photos/1/old.webp'])->save();
+        $form = ['id' => $teacher->id, 'name' => 'New Name', 'username' => 'teacher', 'email' => $teacher->email];
+
+        // A browser posts the untouched file input as an empty part (UPLOAD_ERR_NO_FILE).
+        $this->actingAs($this->admin, 'backpack')
+            ->call('PUT', "/admin/user/{$teacher->id}", $form, [], ['photo_path' => SettingCrudTest::emptyUpload()])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('New Name', $teacher->fresh()->name);
+        $this->assertSame('teachers/photos/1/old.webp', $teacher->fresh()->photo_path);
+        Storage::disk('public')->assertExists('teachers/photos/1/old.webp');
+    }
+
+    public function test_clearing_the_photo_deletes_it()
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('teachers/photos/1/old.webp', 'old');
+        $teacher = User::factory()->create(['username' => 'teacher']);
+        $teacher->forceFill(['photo_path' => 'teachers/photos/1/old.webp'])->save();
+        $form = ['id' => $teacher->id, 'name' => $teacher->name, 'username' => 'teacher', 'email' => $teacher->email];
+
+        $this->actingAs($this->admin, 'backpack')->put("/admin/user/{$teacher->id}", ['photo_path' => ''] + $form)->assertSessionHasNoErrors();
+
+        $this->assertNull($teacher->fresh()->photo_path);
+        Storage::disk('public')->assertMissing('teachers/photos/1/old.webp');
     }
 }

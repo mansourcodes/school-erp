@@ -22,6 +22,15 @@ Route::group([
     Route::get('dashboard', 'AdminController@dashboard')->name('backpack.dashboard');
     Route::get('/', 'AdminController@redirect')->name('backpack');
 
+    // select2_from_ajax lookups of the CRUD forms (admin only: teachers are kept on the attendance pages).
+    Route::prefix('api')->group(function () {
+        Route::get('course', [App\Http\Controllers\Api\CourseController::class, 'index']);
+        Route::get('classroom', [App\Http\Controllers\Api\ClassRoomsController::class, 'index']);
+        Route::get('student', [App\Http\Controllers\Api\StudentController::class, 'index']);
+        Route::get('teacher', [App\Http\Controllers\Api\TeacherController::class, 'index']);
+        Route::get('teacher/{id}', [App\Http\Controllers\Api\TeacherController::class, 'show']);
+    });
+
 
 
     Route::get('reports', 'AcademiaReportsController@print');

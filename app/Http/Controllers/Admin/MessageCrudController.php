@@ -113,7 +113,7 @@ class MessageCrudController extends CrudController
             'entity' => 'classroom',
             'model' => ClassRoom::class,
             'attribute' => 'first_long_name',
-            'data_source' => url('api/classroom'),
+            'data_source' => backpack_url('api/classroom'),
             'placeholder' => trans('message.choose_classroom'),
             'minimum_input_length' => 1,
         ]);
@@ -128,7 +128,7 @@ class MessageCrudController extends CrudController
             'name' => 'student_ids',
             'model' => \App\Models\Student::class,
             'attribute' => 'long_name',
-            'data_source' => url('api/student'),
+            'data_source' => backpack_url('api/student'),
             'placeholder' => trans('message.choose_students'),
             'minimum_input_length' => 0,
             // The search endpoint narrows to the chosen classroom's students.

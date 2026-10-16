@@ -4,6 +4,27 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Launch review fixes (2026-10-16) — `_context/feature/04-launch-review-fixes.md`
+- Login throttle: the per-account+IP key uses the teacher `username` (lower-cased, trimmed), not `email`.
+  `TeacherLoginThrottleTest` (3)
+- `portal.session` (`PortalAuthenticateSession`) on the `/api/v1` auth group and the legacy `auth:student` group:
+  stores `portal_password_hash_{guard}` in the session (also at API login); a changed password ends that session
+  with 401 (redirect to `/login` for Blade). Impersonation: ends it, the Backpack session stays.
+  Laravel 8's `AuthenticateSession` only checks the default guard, so it stays off. `PortalSessionTest` (7)
+- API login signs the other portal guard out (`logoutCurrentDevice`, other devices keep their cookie)
+- Admin select2 lookups moved from public `/api/{student,course,classroom,teacher}` to `/admin/api/*` (Backpack
+  login + admin middleware; teachers are redirected); 21 `data_source` URLs → `backpack_url()`. The student lookup
+  returns `id` + `long_name` only. `AdminLookupTest` (10)
+- `AttendanceRecorder::save` locks the classroom row (`lockForUpdate`) before find-or-create
+- Service worker: 419'd roster saves stay queued until the page confirms (`ROSTER_REPLAY_DONE`), offered to every
+  window; the teacher shell asks for waiting saves on open (`ROSTER_FLUSH`); the page clears its badge only on a
+  final answer. `use-roster-handoff.test.tsx` (4)
+- `PushOutbox::pendingFor` is read-only; stuck `SENDING` rows are claimable after 5 min; bookkeeping moved to
+  `push:outbox-tidy` (hourly). PushTest +2
+- Verified false positives, regression tests only: upload fields keep their file on an untouched save (Laravel's
+  `filterFiles()` drops empty uploads; SettingCrudTest +1, UserUsernameTest +2); `currentClassroom()` already orders
+  by start_date then id (StudentCurrentCourseTest +1)
+
 ### Admin panel themes from Backpack Settings (2026-10-15)
 - Migration `2026_10_15_400000_add_admin_theme_to_settings_table`: setting `admin.theme` (مظهر لوحة الإدارة),
   `select_from_array` with `default`, `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`

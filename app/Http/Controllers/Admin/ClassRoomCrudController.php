@@ -127,7 +127,7 @@ class ClassRoomCrudController extends CrudController
                 'label'       => trans('course.course'),
                 'placeholder' => trans('course.course')
             ],
-            url('api/course'), // the ajax route
+            backpack_url('api/course'), // the ajax route
             function ($value) { // if the filter is active
                 $this->crud->addClause('where', 'course_id', $value);
             }
@@ -186,7 +186,7 @@ class ClassRoomCrudController extends CrudController
                 'name'        => 'course_id', // the column that contains the ID of that connected entity
                 'entity'      => 'course', // the method that defines the relationship in your Model
                 'attribute'   => "long_name", // foreign key attribute that is shown to user
-                'data_source' => url("api/course"), // url to controller search function (with /{id} should return model)
+                'data_source' => backpack_url('api/course'), // url to controller search function (with /{id} should return model)
 
                 // OPTIONAL
                 'placeholder'             => "Select a course", // placeholder for the select
@@ -213,7 +213,7 @@ class ClassRoomCrudController extends CrudController
             'name'        => 'students', // a unique identifier (usually the method that defines the relationship in your Model)
             'entity'      => 'students', // the method that defines the relationship in your Model
             'attribute'   => "long_name", // foreign key attribute that is shown to user
-            'data_source' => url("api/student"), // url to controller search function (with /{id} should return model)
+            'data_source' => backpack_url('api/student'), // url to controller search function (with /{id} should return model)
             'pivot'       => true, // on create&update, do you need to add/delete pivot table entries?
 
             // OPTIONAL

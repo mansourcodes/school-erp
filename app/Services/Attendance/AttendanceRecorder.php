@@ -26,6 +26,10 @@ class AttendanceRecorder
     public function save(ClassRoom $classroom, $curriculumId, $date, $start, array $states, Carbon $now, $teacherId = null)
     {
         $result = DB::transaction(function () use ($classroom, $curriculumId, $date, $start, $states, $now) {
+            // One save per classroom at a time: a Background Sync replay and the page's resend can arrive
+            // together, and both would miss the record and create one each. The match is by hour, so no
+            // unique key can catch it.
+            ClassRoom::whereKey($classroom->id)->lockForUpdate()->first();
             $attend = $this->find($classroom, $curriculumId, $date, $start);
             $created = false;
 

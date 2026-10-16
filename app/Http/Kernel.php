@@ -84,5 +84,6 @@ class Kernel extends HttpKernel
         'portal.mode' => \App\Http\Middleware\PortalMode::class,
         'portal.role' => \App\Http\Middleware\PortalRole::class,
         'portal.impersonation' => \App\Http\Middleware\PortalImpersonation::class,
+        'portal.session' => \App\Http\Middleware\PortalAuthenticateSession::class,
     ];
 }

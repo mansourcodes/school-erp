@@ -39,6 +39,9 @@ class StudentController extends Controller
             $results = $query->paginate(10);
         }
 
+        // Only what the select2 fields show: no address, and no per-row `courses` query.
+        $results->getCollection()->each->setVisible(['id', 'long_name']);
+
         return $results;
     }
 

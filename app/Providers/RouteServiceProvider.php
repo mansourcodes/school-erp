@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -112,8 +113,8 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by('portal|' . get_class($request->user()) . '|' . $request->user()->getAuthIdentifier());
         });
 
-        // Portal login (PLAN.md §6): per (account + IP) and per IP; account = CPR or teacher email.
-        // The per-account lockout is in LoginLockout.
+        // Portal login (PLAN.md §6): per (account + IP) and per IP; account = CPR or teacher username,
+        // normalised like PortalLogin. The per-account lockout is in LoginLockout.
         RateLimiter::for('student-login', function (Request $request) {
             $tooMany = function (Request $request, array $headers) {
                 return response()->json([
@@ -122,9 +123,13 @@ class RouteServiceProvider extends ServiceProvider
                 ], 429, $headers);
             };
 
+            $account = $request->input('role') === 'teacher'
+                ? Str::lower(trim((string) $request->input('username')))
+                : (string) $request->input('cpr');
+
             return [
                 Limit::perMinute(config('portal.login.per_cpr_ip_per_minute'))
-                    ->by('account-ip|' . sha1($request->input('role') . '|' . $request->input('cpr') . '|' . strtolower((string) $request->input('email'))) . '|' . $request->ip())
+                    ->by('account-ip|' . sha1($request->input('role') . '|' . $account) . '|' . $request->ip())
                     ->response($tooMany),
                 Limit::perMinute(config('portal.login.per_ip_per_minute'))
                     ->by('ip|' . $request->ip())

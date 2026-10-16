@@ -40,37 +40,61 @@ registerRoute(
 // Teacher roster saves (PUT, idempotent): when the network fails, keep the request and replay it when the
 // connection returns, or when the worker next starts on browsers without Background Sync (PLAN.md §4, Q8).
 // This is the only queued write.
-const rosterQueue = new Queue('roster-saves', {
-  maxRetentionTime: 24 * 60,
-  onSync: async ({ queue }) => {
+type RosterEntry = NonNullable<Awaited<ReturnType<Queue['shiftRequest']>>>;
+
+const rosterCode = (entry: RosterEntry) => decodeURIComponent(new URL(entry.request.url).pathname.split('/').pop() ?? '');
+
+async function replayRosterSaves(queue: Queue) {
+  // 419: the stored CSRF header is stale (the server session ended meanwhile; the remember cookie still
+  // signs the teacher in). The worker cannot read the new token, so the saves stay queued and every open
+  // page is offered them; the teacher's shell resends one and confirms (ROSTER_REPLAY_DONE), and only then is
+  // it removed. The open window may be the login page or a stale tab, which ignore the offer.
+  const stale: RosterEntry[] = [];
+  try {
     let entry;
     while ((entry = await queue.shiftRequest())) {
+      let response: Response;
       try {
-        const response = await fetch(entry.request.clone());
-        const code = decodeURIComponent(new URL(entry.request.url).pathname.split('/').pop() ?? '');
-        const clients = await self.clients.matchAll({ type: 'window' });
-        if (response.status === 419) {
-          // The stored CSRF header is stale (the server session ended meanwhile; the remember cookie
-          // still signs the teacher in). The worker cannot read the new token, so an open page
-          // resends the save; with no page open, keep it for the next start.
-          if (clients.length === 0) {
-            await queue.unshiftRequest(entry);
-            break;
-          }
-          const body = (await entry.request.clone().json()) as { states: Record<string, string> };
-          clients[0].postMessage({ type: 'ROSTER_REPLAY', code, states: body.states });
-          continue;
-        }
-        // Other 4xx (e.g. the roster changed) will not succeed later either: drop it.
-        for (const client of clients) {
-          client.postMessage({ type: response.ok ? 'ROSTER_SYNCED' : 'ROSTER_REJECTED', code });
-        }
+        response = await fetch(entry.request.clone());
       } catch (error) {
         await queue.unshiftRequest(entry);
         throw error;
       }
+      if (response.status === 419) {
+        stale.push(entry);
+        continue;
+      }
+      // Other 4xx (e.g. the roster changed) will not succeed later either: drop it.
+      const code = rosterCode(entry);
+      for (const client of await self.clients.matchAll({ type: 'window' })) {
+        client.postMessage({ type: response.ok ? 'ROSTER_SYNCED' : 'ROSTER_REJECTED', code });
+      }
     }
-  },
+  } finally {
+    // Back at the front, in their order.
+    for (const entry of [...stale].reverse()) await queue.unshiftRequest(entry);
+  }
+
+  const clients = await self.clients.matchAll({ type: 'window' });
+  for (const entry of stale) {
+    const body = (await entry.request.clone().json()) as { states: Record<string, string> };
+    for (const client of clients) client.postMessage({ type: 'ROSTER_REPLAY', code: rosterCode(entry), states: body.states });
+  }
+}
+
+/** A page resent this session's save itself: it no longer waits here. */
+async function forgetRosterSave(code: string) {
+  const keep: RosterEntry[] = [];
+  let entry;
+  while ((entry = await rosterQueue.shiftRequest())) {
+    if (rosterCode(entry) !== code) keep.push(entry);
+  }
+  for (const kept of keep) await rosterQueue.pushRequest(kept);
+}
+
+const rosterQueue = new Queue('roster-saves', {
+  maxRetentionTime: 24 * 60,
+  onSync: ({ queue }) => replayRosterSaves(queue),
 });
 
 registerRoute(
@@ -151,6 +175,12 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('message', (event) => {
   // "يتوفر تحديث جديد · تحديث": the page asks the waiting worker to take over.
   if (event.data?.type === 'SKIP_WAITING') void self.skipWaiting();
+  // The teacher's shell resent a handed-over save (see replayRosterSaves).
+  if (event.data?.type === 'ROSTER_REPLAY_DONE' && typeof event.data.code === 'string') {
+    event.waitUntil(forgetRosterSave(event.data.code));
+  }
+  // The teacher's shell opened (e.g. after signing in again): offer it the saves still waiting.
+  if (event.data?.type === 'ROSTER_FLUSH') event.waitUntil(replayRosterSaves(rosterQueue).catch(() => undefined));
   // Logout on a shared phone: forget queued saves of the previous teacher.
   if (event.data?.type === 'CLEAR_ROSTER_QUEUE') {
     event.waitUntil(

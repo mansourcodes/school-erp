@@ -50,6 +50,16 @@ class StudentCurrentCourseTest extends TestCase
             ->assertJsonPath('data.status', 'active');
     }
 
+    public function test_the_latest_start_date_wins_over_the_newest_classroom()
+    {
+        // Created first, so the lower classroom id, but its course starts later.
+        $later = $this->enroll(['start_date' => '2026-09-06']);
+        $this->enroll(['start_date' => '2026-01-10']);
+
+        $this->assertSame($later->id, $this->student->currentClassroom()->id);
+        $this->current()->assertOk()->assertJsonPath('data.classroom_id', $later->id);
+    }
+
     public function test_returns_the_course_detail_contract()
     {
         $classroom = $this->enroll();

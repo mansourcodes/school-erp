@@ -68,6 +68,10 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Launch review fixes (2026-10-16): teacher login throttle key, password change ends live portal sessions, admin
+  lookups behind the Backpack login, other portal guard signed out at login, attendance save lock, offline saves
+  kept until the page confirms, read-only outbox poll; two review findings verified as false positives
+
 - Live portal without `/beta` (2026-10-15): when `portal.mode` is live the new panel runs at the root
   (`/`, `/login`, deep links) and `/beta/*` redirects there; switching back to beta reverses it
 
@@ -131,6 +135,12 @@ Update this file after every meaningful implementation change.
   - `api/teacher` endpoint added
 
 ## Next Up
+
+- **Before portal launch:** deploy the launch review fixes (`_context/feature/04-launch-review-fixes.md`, all steps done):
+  rebuild the SPA (`cd frontend && npm run build`, new service worker) and make sure the `schedule:run` cron runs
+  (`push:outbox-tidy` hourly). Then the manual checks in that file's launch checklist
+- `AttendsCrudController` has two `select2_from_ajax` fields on `url('api/curriculum')`, a route that never existed
+  (pre-existing, not part of the launch fixes)
 
 - P2.6: `/student/profile` (whitelisted fields, PLAN.md §3.6) + Profile page (keeps theme / legacy link / logout)
 - Run the SPA locally: `cd frontend && npm run dev` → http://localhost:5173/beta/ (proxies `/api`, `/sanctum` to Laravel)

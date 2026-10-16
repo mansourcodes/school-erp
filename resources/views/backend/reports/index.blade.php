@@ -86,7 +86,7 @@ endforeach;
         var options = {
             values: "a, b, c",
             ajax: {
-                url: "http://localhost/api/student",
+                url: "{{ backpack_url('api/student') }}",
                 type: "GET",
                 dataType: "json",
                 // Use "{@{{q}}}" as a placeholder and Ajax Bootstrap Select will

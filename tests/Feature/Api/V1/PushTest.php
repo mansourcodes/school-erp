@@ -157,7 +157,44 @@ class PushTest extends TestCase
 
         Carbon::setTestNow(now()->addHours(25));
         $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertExactJson(['data' => []]);
+        // The poll only reads; the scheduled tidy records it.
+        $this->assertSame(PushDelivery::PENDING, PushDelivery::first()->status);
+
+        $this->artisan('push:outbox-tidy')->assertExitCode(0);
         $this->assertSame(PushDelivery::SKIPPED, PushDelivery::first()->status);
+    }
+
+    public function test_a_send_that_never_finished_is_offered_again_after_five_minutes()
+    {
+        $this->subscribe($this->student);
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
+        $delivery = PushDelivery::first();
+        // The request died mid-send.
+        $delivery->forceFill(['status' => PushDelivery::SENDING, 'attempts' => 1])->save();
+        Notification::fake();
+
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertExactJson(['data' => []]);
+        $this->sendDelivery($delivery->id)->assertOk()->assertJsonPath('data.status', 'sending');
+
+        Carbon::setTestNow(now()->addMinutes(6));
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertJsonCount(1, 'data');
+        $this->assertSame(PushDelivery::SENDING, $delivery->fresh()->status);
+        $this->sendDelivery($delivery->id)->assertOk()->assertJsonPath('data.status', 'sent');
+        Notification::assertSentToTimes($this->student, AttendanceRecordedPush::class, 1);
+    }
+
+    public function test_a_stuck_send_out_of_attempts_is_not_offered_again()
+    {
+        $this->subscribe($this->student);
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
+        $delivery = PushDelivery::first();
+        $delivery->forceFill(['status' => PushDelivery::SENDING, 'attempts' => 3])->save();
+
+        Carbon::setTestNow(now()->addMinutes(6));
+        $this->actingAs($this->teacher, 'web')->getJson('/api/v1/teacher/push-deliveries')->assertExactJson(['data' => []]);
+
+        $this->artisan('push:outbox-tidy');
+        $this->assertSame(PushDelivery::FAILED, $delivery->fresh()->status);
     }
 
     public function test_an_admin_save_sends_at_once()

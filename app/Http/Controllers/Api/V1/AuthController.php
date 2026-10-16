@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\PortalAuthenticateSession;
 use App\Http\Requests\Api\V1\LoginRequest;
 use App\Services\Portal\PortalLogin;
 use App\Services\Portal\PortalImpersonator;
@@ -29,12 +30,21 @@ class AuthController extends Controller
             $request
         );
 
+        // A shared phone: whoever was signed in to the other portal guard leaves first, or Sanctum (student guard
+        // first) would keep answering as them. Current device only: their other devices keep their remember cookie.
+        foreach (PortalLogin::GUARDS as $other => $guard) {
+            if ($other !== $role) {
+                Auth::guard($guard)->logoutCurrentDevice();
+            }
+        }
+
         // Remember-me cookie: the portal stays signed in until the user logs out, even after the
         // session itself expires (SESSION_LIFETIME). A password change signs every device out.
         Auth::guard(PortalLogin::GUARDS[$role])->login($user, true);
         // A real sign-in on a device an admin was impersonating on: it is the user's own session now.
         app(PortalImpersonator::class)->forget($request);
         $request->session()->regenerate();
+        PortalAuthenticateSession::remember($request, PortalLogin::GUARDS[$role]);
 
         return MeController::resourceFor($user);
     }

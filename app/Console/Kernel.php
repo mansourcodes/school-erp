@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // Teacher messages are kept 90 days (PLAN.md §5.11). Needs the `schedule:run` cron on the server.
         $schedule->command('messages:prune')->daily();
+        // Status bookkeeping only: the outbox poll already ignores expired rows and retries stuck ones.
+        $schedule->command('push:outbox-tidy')->hourly();
     }
 
     /**

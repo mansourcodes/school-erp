@@ -70,40 +70,57 @@ class PushOutbox
         return $this->insert($rows, 'messages', $userId);
     }
 
-    /** The teacher's rows still to send (pending, failed with attempts left, or stuck), oldest first. */
+    /**
+     * The teacher's rows still to send (pending, failed with attempts left, or stuck), oldest first.
+     * Read-only: the teacher's app polls it, so the status bookkeeping is in tidy() (scheduled).
+     */
     public function pendingFor(User $user)
     {
-        $cutoff = now()->subHours(self::TTL_HOURS);
-        $mine = PushDelivery::where('user_id', $user->id);
-
-        (clone $mine)->whereIn('status', [PushDelivery::PENDING, PushDelivery::FAILED])
-            ->where('created_at', '<', $cutoff)
-            ->update(['status' => PushDelivery::SKIPPED]);
-        (clone $mine)->where('status', PushDelivery::SENDING)
-            ->where('updated_at', '<', now()->subMinutes(self::STUCK_MINUTES))
-            ->update(['status' => PushDelivery::FAILED]);
-
-        return (clone $mine)->where('created_at', '>=', $cutoff)
+        return PushDelivery::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->subHours(self::TTL_HOURS))
             ->where(function ($q) {
-                $q->where('status', PushDelivery::PENDING)
-                    ->orWhere(function ($q) {
-                        $q->where('status', PushDelivery::FAILED)->where('attempts', '<', self::MAX_ATTEMPTS);
-                    });
+                $this->claimable($q);
             })
             ->with('student:id,name')
             ->orderBy('id')
             ->get();
     }
 
+    /** Marks expired rows skipped and stuck sends failed (`push:outbox-tidy`). @return int rows changed */
+    public function tidy()
+    {
+        $expired = PushDelivery::whereIn('status', [PushDelivery::PENDING, PushDelivery::FAILED, PushDelivery::SENDING])
+            ->where('created_at', '<', now()->subHours(self::TTL_HOURS))
+            ->update(['status' => PushDelivery::SKIPPED]);
+        $stuck = PushDelivery::where('status', PushDelivery::SENDING)
+            ->where('updated_at', '<', now()->subMinutes(self::STUCK_MINUTES))
+            ->update(['status' => PushDelivery::FAILED]);
+
+        return $expired + $stuck;
+    }
+
+    /** Rows a send may claim: pending, failed with attempts left, or a send that never finished. */
+    protected function claimable($query)
+    {
+        $query->where('status', PushDelivery::PENDING)
+            ->orWhere(function ($q) {
+                $q->whereIn('status', [PushDelivery::FAILED, PushDelivery::SENDING])
+                    ->where('attempts', '<', self::MAX_ATTEMPTS)
+                    ->where(function ($q) {
+                        $q->where('status', PushDelivery::FAILED)
+                            ->orWhere('updated_at', '<', now()->subMinutes(self::STUCK_MINUTES));
+                    });
+            });
+    }
+
     /** Sends one row now. @return string the row's status afterwards */
     public function send(PushDelivery $delivery)
     {
+        // Atomic claim: the first tab moves the row to SENDING (and its updated_at to now), so another
+        // tab's claim, also of a stuck row, finds nothing.
         $claimed = PushDelivery::whereKey($delivery->id)
             ->where(function ($q) {
-                $q->where('status', PushDelivery::PENDING)
-                    ->orWhere(function ($q) {
-                        $q->where('status', PushDelivery::FAILED)->where('attempts', '<', self::MAX_ATTEMPTS);
-                    });
+                $this->claimable($q);
             })
             ->update(['status' => PushDelivery::SENDING, 'attempts' => DB::raw('attempts + 1'), 'updated_at' => now()]);
         if (! $claimed) {
