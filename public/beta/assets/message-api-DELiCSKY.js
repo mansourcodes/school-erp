@@ -1,0 +1,1 @@
+import{l as r}from"./index-D8GhiCjw.js";const a=r.injectEndpoints({endpoints:e=>({inbox:e.query({query:s=>({url:"/student/messages",params:s?{page:s}:void 0}),providesTags:["Inbox"]}),sentMessages:e.query({query:s=>({url:"/teacher/messages",params:s?{page:s}:void 0}),providesTags:["Sent"]})})}),{useInboxQuery:o,useSentMessagesQuery:t}=a;export{t as a,o as u};

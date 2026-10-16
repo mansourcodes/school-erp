@@ -24,7 +24,7 @@ CRUD **4.1**, MySQL. Portal guards are `PortalLogin::GUARDS = ['student' => 'stu
 | 6 | Concurrent attendance saves create duplicate records | No (soon) | S | Fixed (lock; race not testable in PHPUnit) |
 | 7 | Service worker drops offline saves on a 419 replay | No (soon) | M | Fixed |
 | 8 | `currentClassroom()` ordering — verified correct, add a test | No | XS | **False positive**, regression test added |
-| 9 | Outbox poll runs two UPDATEs on every GET | No | S | Fixed (`push:outbox-tidy` hourly) |
+| 9 | Outbox poll runs two UPDATEs on every GET | No | S | Fixed (tidy on the first admin dashboard visit of the day; no cron in production) |
 
 Step 2 turned out wrong once tested: Laravel 8's `Request::createFromBase()` runs `filterFiles()`, which drops
 `UPLOAD_ERR_NO_FILE` entries, so an untouched upload field never reaches `exists()`. Only the clear button's hidden

@@ -20,7 +20,8 @@ Update this file after every meaningful implementation change.
   window; the teacher shell asks for waiting saves on open (`ROSTER_FLUSH`); the page clears its badge only on a
   final answer. `use-roster-handoff.test.tsx` (4)
 - `PushOutbox::pendingFor` is read-only; stuck `SENDING` rows are claimable after 5 min; bookkeeping moved to
-  `push:outbox-tidy` (hourly). PushTest +2
+  `PushOutbox::tidy()`: run by the first admin dashboard visit of the day (production has no cron, like message
+  pruning; `AdminController::onceToday`), also `push:outbox-tidy` (scheduled hourly for when a cron exists). PushTest +3
 - Verified false positives, regression tests only: upload fields keep their file on an untouched save (Laravel's
   `filterFiles()` drops empty uploads; SettingCrudTest +1, UserUsernameTest +2); `currentClassroom()` already orders
   by start_date then id (StudentCurrentCourseTest +1)

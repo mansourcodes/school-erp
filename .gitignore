@@ -13,5 +13,3 @@ npm-debug.log
 yarn-error.log
 .DS_Store
 /public/uploads/*
-# Portal SPA build output (built in deploy/CI from frontend/)
-/public/beta

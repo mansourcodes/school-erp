@@ -29,7 +29,8 @@
   (`app/Http/Resources/V1/`, whitelisted fields only)
 - `frontend/` — portal SPA source (FSD layers app → pages → widgets → features → entities → shared,
   imports flow downward only; enforced by ESLint + Steiger). Talks to Laravel only via `/api/v1` + `/sanctum/csrf-cookie`.
-  Build output `public/beta/` is a gitignored artifact. Page URLs come from `PortalMode::appPath()` (server) and the
+  Build output `public/beta/` is committed (the server has no Node): after any `frontend/` change, run
+  `cd frontend && npm run build` and commit `public/beta/` with it, so a `git pull` deploys it. Page URLs come from `PortalMode::appPath()` (server) and the
   runtime `APP_BASE` (SPA): `/beta/...` during the beta, the root once `portal.mode` is live; asset URLs always keep `/beta/`
 - `app/Models/` — Eloquent models; `Account/` sub-namespace for Payment
 - `resources/views/` — All Blade templates; `vendor/backpack/` for customised Backpack views

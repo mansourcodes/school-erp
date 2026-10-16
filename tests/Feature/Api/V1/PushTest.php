@@ -164,6 +164,19 @@ class PushTest extends TestCase
         $this->assertSame(PushDelivery::SKIPPED, PushDelivery::first()->status);
     }
 
+    /** No scheduler cron in production: the first admin dashboard visit of the day tidies the outbox. */
+    public function test_the_admin_dashboard_tidies_the_outbox_once_per_day()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(Role::findOrCreate('Superadmin', 'web'));
+        $this->subscribe($this->student);
+        $this->saveRoster([$this->student->id => 'present', $this->classmate->id => 'absent']);
+
+        $this->travel(25)->hours();
+        $this->actingAs($admin, 'backpack')->get('/admin/dashboard')->assertOk();
+        $this->assertSame(PushDelivery::SKIPPED, PushDelivery::first()->status);
+    }
+
     public function test_a_send_that_never_finished_is_offered_again_after_five_minutes()
     {
         $this->subscribe($this->student);

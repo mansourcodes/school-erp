@@ -137,8 +137,8 @@ Update this file after every meaningful implementation change.
 ## Next Up
 
 - **Before portal launch:** deploy the launch review fixes (`_context/feature/04-launch-review-fixes.md`, all steps done):
-  rebuild the SPA (`cd frontend && npm run build`, new service worker) and make sure the `schedule:run` cron runs
-  (`push:outbox-tidy` hourly). Then the manual checks in that file's launch checklist
+  rebuild the SPA (`cd frontend && npm run build`, new service worker; commit `public/beta`), then the manual
+  checks in that file's launch checklist. No cron needed: the first admin dashboard visit of the day tidies the outbox
 - `AttendsCrudController` has two `select2_from_ajax` fields on `url('api/curriculum')`, a route that never existed
   (pre-existing, not part of the launch fixes)
 
@@ -166,7 +166,7 @@ Update this file after every meaningful implementation change.
 
 - Deploy: the web server must send `manifest.webmanifest` as `application/manifest+json`, and `/beta/sw.js`,
   `/beta/index.html`, `/beta/manifest.webmanifest` with no-cache (Cloudflare cache rules, PLAN.md §10.4).
-  Build step: `cd frontend && npm ci && npm run build` (writes `public/beta`, gitignored).
+  Build step: `cd frontend && npm ci && npm run build` (writes `public/beta`, committed: the server has no Node).
 
 - Certificate: served as the admin HTML print view (no mPDF output exists in the project). A real PDF download
   would be its own task. OK for the beta?
