@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1;
 
 use App\Models\Message;
+use App\Models\Student;
 use App\Models\User;
 use App\Services\Portal\PortalImpersonator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -179,6 +180,23 @@ class PortalImpersonationTest extends TestCase
 
         $this->assertNull(Auth::guard('web')->id());
         $this->assertSame($this->student->id, Auth::guard('student')->id());
+    }
+
+    public function test_opening_a_second_student_keeps_the_portal_and_the_admin_csrf_token()
+    {
+        $this->startStudent();
+        $this->api()->getJson('/api/v1/me')->assertOk();
+        $token = session()->token();
+
+        $other = Student::factory()->create();
+        $this->actingAs($this->admin, 'backpack')->post('/admin/student/' . $other->id . '/portal');
+        // A fresh request in production; in a test the Sanctum guard would keep answering as the first student.
+        Auth::forgetGuards();
+
+        // The first student's password hash must not sign the second one out (and rotate the token the
+        // Backpack page still holds, so the next "Open portal" click answered 419).
+        $this->api()->getJson('/api/v1/me')->assertOk()->assertJsonPath('data.id', $other->id);
+        $this->assertSame($token, session()->token());
     }
 
     public function test_the_students_own_account_endpoints_are_blocked()

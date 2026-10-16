@@ -68,6 +68,9 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- "Open portal" 419 fix (2026-10-16): impersonation start now stores the new user's password hash, so the
+  previous portal user's hash no longer signs them out and rotates the CSRF token the Backpack page holds
+
 - Launch review fixes (2026-10-16): teacher login throttle key, password change ends live portal sessions, admin
   lookups behind the Backpack login, other portal guard signed out at login, attendance save lock, offline saves
   kept until the page confirms, read-only outbox poll; two review findings verified as false positives

@@ -518,3 +518,9 @@ Update this file after every meaningful implementation change.
 - `GET /teacher/classrooms/{id}` merged the detail `course` object with `+`, which kept the summary's
   string `course` — the info tab showed no course name or dates. Now `array_merge`; covered by
   `TeacherApiTest::test_a_classroom_carries_its_course_details`
+
+### "Open portal" 419 fix (2026-10-16)
+- Opening a second student / teacher from the same Backpack page answered 419: the session kept the first
+  user's `portal_password_hash_*`, `PortalAuthenticateSession` saw a mismatch, signed the new user out and
+  regenerated the CSRF token. `PortalImpersonator::start` now calls `PortalAuthenticateSession::remember`;
+  covered by `PortalImpersonationTest::test_opening_a_second_student_keeps_the_portal_and_the_admin_csrf_token`

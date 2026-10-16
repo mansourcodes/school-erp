@@ -2,6 +2,7 @@
 
 namespace App\Services\Portal;
 
+use App\Http\Middleware\PortalAuthenticateSession;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -32,6 +33,9 @@ class PortalImpersonator
         $this->logoutPortal();
 
         Auth::guard(PortalLogin::GUARDS[$role])->login($user, false);
+        // Replaces the previous portal user's password hash; left alone, it signed this user out on the first
+        // request and rotated the CSRF token, so the next "Open portal" click in Backpack answered 419.
+        PortalAuthenticateSession::remember($request, PortalLogin::GUARDS[$role]);
         $request->session()->put(self::IMPERSONATOR, $admin->id);
         $request->session()->put(self::STARTED_AT, now()->getTimestamp());
 
