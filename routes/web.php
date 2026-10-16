@@ -23,7 +23,8 @@ Route::middleware('portal.mode:legacy')->group(function () {
         ->middleware('throttle:legacy-student-login');
 
     Route::middleware(['auth:student', 'portal.session'])->group(function () {
-        Route::get('/', [\App\Http\Controllers\StudentPanel\StudentPanelController::class, 'dashboard'])->name('dashboard');
+        // Unnamed: two routes named `dashboard` break `php artisan route:cache` (the /dashboard one keeps it).
+        Route::get('/', [\App\Http\Controllers\StudentPanel\StudentPanelController::class, 'dashboard']);
         Route::get('/dashboard', [\App\Http\Controllers\StudentPanel\StudentPanelController::class, 'dashboard'])->name('dashboard');
     });
 });
