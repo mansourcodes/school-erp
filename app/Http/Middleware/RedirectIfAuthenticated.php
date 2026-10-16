@@ -7,12 +7,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isNull;
-
 class RedirectIfAuthenticated
 {
     /**
      * Handle an incoming request.
+     *
+     * `guest:backpack` on Backpack's login / password pages: a signed-in admin goes to the dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -21,20 +21,20 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
-
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (isNull($guard)) {
+            if (is_null($guard) || ! Auth::guard($guard)->check()) {
                 continue;
             }
-            if ($guard == "student" && Auth::guard($guard)->check()) {
+            if ($guard == "student") {
                 return redirect('/student');
             }
-
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+            if ($guard === backpack_guard_name()) {
+                return redirect(backpack_url('dashboard'));
             }
+
+            return redirect(RouteServiceProvider::HOME);
         }
 
         return $next($request);
