@@ -20,6 +20,7 @@ Route::group([
 
     // Backpack's dashboard routes (setup_dashboard_routes is off), with the daily message pruning.
     Route::get('dashboard', 'AdminController@dashboard')->name('backpack.dashboard');
+    Route::post('dashboard/refresh', 'AdminController@refreshDashboard')->name('admin.dashboard.refresh');
     Route::get('/', 'AdminController@redirect')->name('backpack');
 
     // select2_from_ajax lookups of the CRUD forms (admin only: teachers are kept on the attendance pages).

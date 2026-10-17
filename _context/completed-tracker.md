@@ -4,6 +4,34 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Admin dashboard redesign (2026-10-17, branch `feature/admin-light-sidebar`)
+- `base/dashboard.blade.php` is plain Blade now (no widget arrays): greeting hero with the date, Quran verse card,
+  Superadmin figures (the fake "11.456" progress widget is gone) and shortcut tiles
+- Quran card: `App\Support\QuranQuotes::ALL` (32 short verses), one at random per visit (`AdminController`), and an
+  "آية أخرى" button that swaps the verse in the page. Font: Amiri Quran (Google Fonts, dashboard only)
+- Figures: `App\Support\AdminDashboard::stats()`: active courses, their classrooms, students enrolled in them
+  (read from `class_room_student`), all students
+- Styles: `.dash*` block at the end of `public/css/admin-layout.css`; accent from `--at-sidebar-active` /
+  `--at-primary`, so every theme recolours it. Keys under `base.dashboard.*` (ar only, as the other shell keys)
+- Two donut cards under the figures, one shared partial `inc/dashboard_donut` (inline SVG, no chart library; key
+  in one row under the ring, counts on hover; colours = dataviz categorical slots 1–5 `--dash-slot-*`, validated):
+  - Attendance (`AdminDashboard::attendance()`): the five status pivot tables for sessions in active-course
+    classrooms; centre = attendance rate (present + late + late with excuse). Colours = the portal status palette
+    (present #0ca30c, late #fab219, absent #d03b3b; excused = same hue with a white 45° hatch, SVG pattern),
+    key chips carry the portal codes ✓ ت تع غع ✗, order as the portal (`states.ts`)
+  - Classrooms (`AdminDashboard::classrooms()`): active classrooms with at least one attendance session vs none;
+    centre = "recorded / total"; "not recorded" is neutral grey (`--dash-slot-muted`)
+- Order: hero + verse, shortcuts, figures, the two donuts, teacher rankings
+- Teacher rankings (`inc/dashboard_teachers`, `AdminDashboard::teachers()`): top 3 and bottom 3 Teacher-role users
+  by attendance sessions in the active classrooms they teach (`class_room_teacher`). `attends` does not store who
+  recorded a session, so a shared classroom counts for each of its teachers. "Least" skips teachers already in
+  "most" (no repeats when there are ≤ 6). One bar scale for both cards (top teacher = full width)
+- Cache: `AdminDashboard::cached()` keeps every figure (plain arrays, no models) under `admin-dashboard:figures`
+  for `CACHE_DAYS` = 4 days with `computed_at`; the bottom of the page (under the teacher lists) shows "آخر تحديث …" and a
+  "تحديث الإحصائيات" button (`POST admin/dashboard/refresh`, `admin.dashboard.refresh`, Superadmin only) that
+  forgets the key and redirects to the dashboard with a flash message. The verse is not cached
+- Teachers still never see it (`RedirectTeacherToAttendance`). `AdminDashboardTest` (8)
+
 ### Launch review fixes (2026-10-16) — `_context/feature/04-launch-review-fixes.md`
 - Login throttle: the per-account+IP key uses the teacher `username` (lower-cased, trimmed), not `email`.
   `TeacherLoginThrottleTest` (3)

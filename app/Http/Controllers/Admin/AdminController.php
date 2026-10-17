@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Jobs\PruneOldMessages;
 use App\Services\Portal\PushOutbox;
+use App\Support\AdminDashboard;
+use App\Support\QuranQuotes;
 use Backpack\CRUD\app\Http\Controllers\AdminController as BackpackAdminController;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
@@ -25,7 +27,24 @@ class AdminController extends BackpackAdminController
             app(PushOutbox::class)->tidy();
         });
 
+        $this->data['quote'] = QuranQuotes::random();
+        $figures = backpack_user()->hasRole('Superadmin') ? AdminDashboard::cached() : [];
+        foreach (['stats', 'attendance', 'classrooms', 'teachers', 'computed_at'] as $key) {
+            $this->data[$key] = $figures[$key] ?? null;
+        }
+
         return parent::dashboard();
+    }
+
+    /** The dashboard's refresh button: drop the cached figures so the next visit computes them again. */
+    public function refreshDashboard()
+    {
+        abort_unless(backpack_user()->hasRole('Superadmin'), 403);
+
+        AdminDashboard::forget();
+        \Alert::success(__('base.dashboard.refreshed'))->flash();
+
+        return redirect()->route('backpack.dashboard');
     }
 
     protected function onceToday($key, callable $task)

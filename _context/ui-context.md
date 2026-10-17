@@ -74,6 +74,10 @@ framework.
 
 ## Layout Patterns
 
+- **Admin dashboard**: greeting hero + Quran verse card (accent fill, riwaq pattern, gold line, Amiri Quran), then
+  stat tiles and shortcut tiles (white cards, 16–20px radius, icon chip in `--at-brand-chip`); `.dash*` in
+  `public/css/admin-layout.css`
+
 - **Admin sidebar**: Fixed Backpack left sidebar with top navbar (RTL flipped
   to right). Groups are open `nav-title` sections, not dropdowns (2026-10-17)
 - **Student portal**: Top navbar (white bg) + centered `.container` main
