@@ -34,10 +34,12 @@ No CSS custom properties are in use yet — colors are hardcoded in the layout
 
 ### Admin Panel
 
-Colour theme chosen in the Backpack setting `admin.theme` (`App\Support\AdminTheme`): `default` (Backstrap
-palette, no overrides), `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`. The layouts set
+Colour theme chosen in the Backpack setting `admin.theme` (`App\Support\AdminTheme`): `default` (core colours, Backstrap
+buttons), `ghadeer` (portal palette: parchment, white sidebar, teal; active since 2026-10-17), `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`. The layouts set
 `<html data-admin-theme>`; `public/css/admin-themes.css` holds one `--at-*` variable block per theme plus shared
-rules (header, sidebar, body, primary buttons / badges / pagination / focus). New themes: add a key to
+rules (links, primary buttons / badges / pagination / focus). The navbar / sidebar / page shape and its default
+colours (light parchment, white sidebar, blue active pill (Backstrap `--primary` #3490dc)) live in `public/css/admin-layout.css`; themes only
+override `--at-*` variables. New themes: add a key to
 `AdminTheme::ALL` and a variable block — no build step. Settings options come from the migration, so a new theme
 also needs the `admin.theme` row's `field.options` updated.
 
@@ -50,6 +52,7 @@ Default: Backpack Backstrap palette. Custom accent changes are in
 | ------- | ------------------- | ------------------------------- |
 | UI text | Nunito              | Google Fonts CDN                |
 | Arabic  | System/browser font | No custom Arabic font loaded    |
+| Admin titles | IBM Plex Sans Arabic | Google Fonts, `config/backpack/base.php` `styles`; h1–h6, card headers, brand, sidebar sections |
 
 `$font-family-sans-serif: 'Nunito', sans-serif` set in `_variables.scss`.
 
@@ -72,7 +75,7 @@ framework.
 ## Layout Patterns
 
 - **Admin sidebar**: Fixed Backpack left sidebar with top navbar (RTL flipped
-  to right)
+  to right). Groups are open `nav-title` sections, not dropdowns (2026-10-17)
 - **Student portal**: Top navbar (white bg) + centered `.container` main
   content, max `col-md-8`
 - **Student course cards**: Card per enrollment, with collapsible `card-header`

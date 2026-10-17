@@ -26,6 +26,47 @@ Update this file after every meaningful implementation change.
   `filterFiles()` drops empty uploads; SettingCrudTest +1, UserUsernameTest +2); `currentClassroom()` already orders
   by start_date then id (StudentCurrentCourseTest +1)
 
+### Admin shell redesign: light navbar + sidebar in the core CSS (2026-10-17)
+- Design reference: `_brand/new_admin_design/header-sidebar-samples.html`, sample ٢ (الرقّ الفاتح); only the
+  sidebar, navbar and page background were taken from it
+- New `public/css/admin-layout.css`, loaded by both layouts (`top_left`, `plain`) before `admin-themes.css`:
+  page background, navbar (blends into the page, 1px line), sidebar (pill links, lined `nav-title` sections).
+  Default colours on `:root` are the portal palette: parchment `#f5f3ec`, white sidebar, active pill in the default primary blue (`var(--primary)`, #3490dc, same as the buttons)
+- `admin-themes.css` now holds only `--at-*` colour blocks plus the link / primary-control rules; the shell rules
+  moved to the core file. New variables: `--at-sidebar-hover-text`, `--at-sidebar-active-text`,
+  `--at-sidebar-border`, `--at-sidebar-line`, `--at-sidebar-title` (all 7 themes have dark sidebars → white text,
+  light lines); `--at-sidebar-sub` removed. Header line is 1px for every theme (was 3px)
+- `sidebar_content.blade.php`: `nav-dropdown` groups replaced by `nav-title` sections (same items, same role
+  checks); hidden News block removed; stray `\"` fixed in the file-manager link
+- Sidebar 275px (Backstrap 200px; `--at-sidebar-width`), sticky under the header on desktop and scrolls on its own
+  (`.app-body` uses `overflow-x: clip` so sticky works; the vendor `overflow-hidden` on `.sidebar-nav` is overridden)
+- Navbar 64px (`--at-header-height`), sticky: brand block over the sidebar column (logo from setting `logo`, else
+  `public/beta/logo-icon.svg`; name from `portal.centre`, subtitle `base.admin_panel`), page breadcrumbs (moved from
+  above the page into the navbar, `inc/breadcrumbs.blade.php` override), user name + role (`base.roles.*`) + avatar
+  dropdown. No search, no notifications bell
+- Active-term chips in the navbar: `App\Support\ActiveCourses::terms()` groups `courses.is_active` by semester +
+  hijri year ("الفصل الأول 1447هـ", `base.active_term`), count when a term has several courses
+  (`base.courses_count`, Arabic plural ranges), course names in the tooltip, links to `/admin/course`. Gold pill
+  (`--at-term-bg` / `--at-term-text`; dark-red / dark-blue use white). `tests/Feature/Admin/AdminHeaderTest.php` (3 tests)
+- Titles font IBM Plex Sans Arabic (`--at-title-font`): h1–h6, card headers, modal titles, brand, sidebar
+  section titles; loaded from Google Fonts in `config/backpack/base.php` `styles`. Body text keeps Nunito
+- Desktop: the brand block collapses and reopens with the sidebar toggle (CSS on `body:not(.sidebar-lg-show)`)
+- Sidebar menu is 80% of the sidebar height (scrolls); under it a card with the source link (`handcrafted_by` +
+  `developer_link`), moved from the page footer — `inc/sidebar.blade.php` override (vendor scripts kept), no
+  `<footer>` in `top_left` any more. Card colours `--at-sidebar-card` / `--at-sidebar-card-link`
+- Sidebar menu fills the free height with flex (`flex: 1 1 auto`, was 80%), scrollbar hidden (still scrolls);
+  sidebar has no background or border in `default` / `ghadeer` (`--at-sidebar-bg: transparent`; phones use
+  `--at-sidebar-overlay` because the sidebar slides over the page); dark themes keep their sidebar colour
+- `nav-title` opens / closes the links under it (script in `inc/sidebar.blade.php`: `role=button`, keyboard,
+  `aria-expanded`, chevron); closed sections remembered in `localStorage` (`sidebar-closed-sections`), the
+  section of the current page always opens
+- Theme link colour (`--at-link`) now applies to page content only (`.main` / `.modal` links, not `.btn` /
+  `.dropdown-item`): before, it overrode the navbar and sidebar link colours of every non-default theme
+- New theme `ghadeer` (الغدير): sample ٢ colours (parchment `#f5f3ec`, white sidebar, teal `#127a70` for the active
+  pill, buttons, links, pagination). Migration `2026_10_17_000000_add_ghadeer_admin_theme_to_settings` adds the
+  option and makes it the active `admin.theme`; `down()` goes back to `default`
+- `AdminThemeTest` also checks `admin-layout.css` is loaded and that the migration activates `ghadeer`
+
 ### Admin panel themes from Backpack Settings (2026-10-15)
 - Migration `2026_10_15_400000_add_admin_theme_to_settings_table`: setting `admin.theme` (مظهر لوحة الإدارة),
   `select_from_array` with `default`, `islamic-girly`, `brown`, `wood`, `gold`, `silver`, `dark-red`, `dark-blue`

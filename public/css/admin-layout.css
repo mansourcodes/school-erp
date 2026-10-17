@@ -1,0 +1,438 @@
+/*
+ * Admin panel shell: page background, top navbar and sidebar (_brand/new_admin_design, sample 2).
+ * Loaded by both Backpack layouts before admin-themes.css. The values below are the default colours
+ * (light parchment, sidebar without background or border; active link and accents in the default primary blue); a theme in
+ * admin-themes.css only overrides the --at-* variables, the shape stays the same.
+ */
+
+:root {
+    --at-body-bg: #f5f3ec;
+    --at-header-bg: #f5f3ec;
+    --at-header-text: #1b2a27;
+    --at-header-border: #e7e2d4;
+    --at-sidebar-bg: transparent;       /* the sidebar sits on the page background */
+    --at-sidebar-overlay: #f5f3ec;      /* phones: the sidebar slides over the page, so it needs a fill */
+    --at-sidebar-border: transparent;
+    --at-sidebar-text: #3c4a47;
+    --at-sidebar-icon: #6b7572;
+    --at-sidebar-title: var(--at-sidebar-icon);
+    --at-sidebar-line: #e7e2d4;
+    --at-sidebar-hover: rgba(0, 0, 0, .045);
+    --at-sidebar-hover-text: #1b2a27;
+    --at-sidebar-active: var(--primary, #3490dc); /* default theme: same blue as the buttons (css/app.css) */
+    --at-sidebar-active-text: #ffffff;
+    --at-brand-chip: rgba(52, 144, 220, .10);
+    --at-sidebar-card: #ffffff;
+    --at-sidebar-card-link: var(--primary, #3490dc);
+    --at-term-bg: rgba(201, 162, 75, .18);
+    --at-term-text: #6b4e10;
+
+    /* sizes (Backstrap: 200px sidebar, 55px header) */
+    --at-sidebar-width: 275px;
+    --at-header-height: 64px;
+
+    /* titles font (loaded in config/backpack/base.php `styles`) */
+    --at-title-font: "IBM Plex Sans Arabic", "Nunito", sans-serif;
+}
+
+/* Titles: page headings, card titles, brand, sidebar sections */
+html h1, html h2, html h3, html h4, html h5, html h6,
+html .h1, html .h2, html .h3, html .h4, html .h5, html .h6,
+html .card-header, html .modal-title,
+html .app-header .brand-text,
+html .sidebar .nav-title {
+    font-family: var(--at-title-font);
+}
+
+/* Page */
+html body,
+html .app-footer {
+    background: var(--at-body-bg);
+}
+
+/* Top navbar: blends into the page, one thin line underneath; stays on top while the page scrolls */
+html .app-header {
+    flex: 0 0 var(--at-header-height);
+    height: var(--at-header-height);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    align-items: center;
+    background: var(--at-header-bg);
+    border-bottom: 1px solid var(--at-header-border);
+}
+
+html .app-header .nav-link,
+html .app-header .navbar-toggler {
+    color: var(--at-header-text);
+}
+
+/* Brand: sits over the sidebar column, same width and colour */
+html .app-header .navbar-brand {
+    width: var(--at-sidebar-width);
+    height: var(--at-header-height);
+    justify-content: flex-start;
+    gap: .65rem;
+    margin: 0;
+    padding: 0 1rem;
+    background: var(--at-sidebar-bg);
+    border-left: 1px solid var(--at-sidebar-border);
+    color: var(--at-sidebar-text);
+}
+
+html .app-header .brand-logo {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: var(--at-brand-chip);
+}
+
+html .app-header .brand-logo img {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+html .app-header .brand-text {
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: start;
+    white-space: nowrap;
+}
+
+html .app-header .brand-text small {
+    display: block;
+    font-size: .72rem;
+    font-weight: 400;
+    opacity: .7;
+}
+
+/* Breadcrumbs (moved here from above the page) */
+html .app-header .header-crumbs {
+    align-items: center;
+    margin: 0 .75rem;
+    min-width: 0;
+}
+
+html .app-header .header-crumbs .breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: .85rem;
+}
+
+html .app-header .header-crumbs .breadcrumb-item,
+html .app-header .header-crumbs .breadcrumb-item a {
+    color: var(--at-header-text);
+    opacity: .7;
+    white-space: nowrap;
+}
+
+html .app-header .header-crumbs .breadcrumb-item a {
+    opacity: 1;
+}
+
+html .app-header .header-crumbs .breadcrumb-item.active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+html .app-header .header-crumbs .breadcrumb-item + .breadcrumb-item {
+    padding: 0;
+}
+
+html .app-header .header-crumbs .breadcrumb-item + .breadcrumb-item::before {
+    content: "\f104"; /* line-awesome angle-left */
+    font-family: "Line Awesome Free";
+    font-weight: 900;
+    float: none;
+    padding: 0 .4rem;
+    color: inherit;
+}
+
+/* Active term chips (App\Support\ActiveCourses): gold pill */
+html .app-header .header-term {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    margin-inline-end: .5rem;
+    padding: .3rem .75rem;
+    border-radius: 999px;
+    background: var(--at-term-bg);
+    color: var(--at-term-text);
+    font-size: .78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+html .app-header .header-term:hover {
+    filter: brightness(.96);
+}
+
+html .app-header .header-term .la {
+    font-size: 1rem;
+}
+
+html .app-header .header-term-count {
+    padding: 0 .4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .55);
+    font-size: .7rem;
+}
+
+/* User: name + role + avatar */
+html .app-header .header-end {
+    flex-direction: row;
+    align-items: center;
+    margin-inline-start: auto;
+    margin-inline-end: 1rem;
+}
+
+html .app-header .header-user {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .25rem .35rem;
+    border-radius: 999px;
+}
+
+html .app-header .header-user:hover {
+    background: rgba(0, 0, 0, .04);
+}
+
+html .app-header .header-user-text {
+    font-size: .85rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: start;
+}
+
+html .app-header .header-user-text small {
+    display: block;
+    font-size: .72rem;
+    font-weight: 400;
+    opacity: .65;
+}
+
+html .app-header .header-user .img-avatar {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Desktop: the brand opens and closes with the sidebar (same .25s as Backstrap's sidebar) */
+@media (min-width: 992px) {
+    html .app-header .navbar-brand {
+        overflow: hidden;
+        transition: width .25s, padding .25s;
+    }
+
+    html body:not(.sidebar-lg-show):not(.sidebar-show) .app-header .navbar-brand {
+        width: 0;
+        padding: 0;
+        border: 0;
+    }
+}
+
+/* Phones / tablets: Backstrap fixes the header and centres the brand */
+@media (max-width: 991.98px) {
+    html .app-body {
+        margin-top: var(--at-header-height);
+    }
+
+    html .app-header .navbar-brand {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        background: transparent;
+        border: 0;
+        color: var(--at-header-text);
+    }
+}
+
+/* Sidebar: wider than Backstrap, scrolls on its own */
+html .app-body {
+    overflow-x: clip; /* not hidden: a hidden overflow would stop the sticky sidebar */
+}
+
+html .sidebar {
+    background: var(--at-sidebar-bg);
+    color: var(--at-sidebar-text);
+    border-left: 1px solid var(--at-sidebar-border);
+}
+
+html .app-body .sidebar {
+    flex: 0 0 var(--at-sidebar-width);
+    width: var(--at-sidebar-width);
+}
+
+html .sidebar .sidebar-nav,
+html .sidebar .nav {
+    width: var(--at-sidebar-width);
+}
+
+html[dir=rtl] .sidebar {
+    margin-right: calc(-1 * var(--at-sidebar-width));
+}
+
+html:not([dir=rtl]) .sidebar {
+    margin-left: calc(-1 * var(--at-sidebar-width));
+}
+
+/* the menu still scrolls, the scrollbar is hidden */
+html .sidebar > .sidebar-nav.overflow-hidden {
+    min-height: 0;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scrollbar-width: none;
+}
+
+html .sidebar > .sidebar-nav::-webkit-scrollbar {
+    display: none;
+}
+
+html .sidebar .nav {
+    padding-bottom: 1rem;
+}
+
+/* Menu takes the free height (flex), the card keeps its own height at the bottom */
+html .sidebar > .sidebar-nav {
+    flex: 1 1 auto;
+}
+
+html .sidebar .sidebar-foot {
+    flex: 0 0 auto;
+    padding: .75rem;
+}
+
+html .sidebar .sidebar-card {
+    width: 100%;
+    padding: .85rem 1rem;
+    border-radius: 14px;
+    background: var(--at-sidebar-card);
+    color: var(--at-sidebar-text);
+    font-size: .8rem;
+    line-height: 1.6;
+    opacity: .85;
+}
+
+html .sidebar .sidebar-card a {
+    color: var(--at-sidebar-card-link);
+    font-weight: 600;
+}
+
+@media (min-width: 992px) {
+    html .app-body .sidebar {
+        position: sticky;
+        top: var(--at-header-height);
+        align-self: flex-start;
+        height: calc(100vh - var(--at-header-height));
+    }
+}
+
+@media (max-width: 991.98px) {
+    html .sidebar {
+        height: calc(100vh - var(--at-header-height));
+        background: var(--at-sidebar-overlay, var(--at-sidebar-bg));
+    }
+}
+
+/* Section titles with a line running to the edge */
+html .sidebar .nav-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 1rem 1.25rem .35rem;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: none;
+    color: var(--at-sidebar-title);
+}
+
+html .sidebar .nav-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--at-sidebar-line);
+}
+
+/* Titles open / close their section (inc/sidebar script): chevron after the line */
+html .sidebar .nav-title[role="button"] {
+    cursor: pointer;
+    user-select: none;
+}
+
+html .sidebar .nav-title[role="button"]:hover,
+html .sidebar .nav-title[role="button"]:focus-visible {
+    color: var(--at-sidebar-hover-text);
+    outline: 0;
+}
+
+html .sidebar .nav-title[role="button"]::before {
+    content: "\f107"; /* line-awesome angle-down */
+    order: 1;
+    font-family: "Line Awesome Free";
+    font-weight: 900;
+    font-size: .85rem;
+    transition: transform .2s;
+}
+
+html .sidebar .nav-title[aria-expanded="false"]::before {
+    transform: rotate(90deg); /* points to the text in RTL */
+}
+
+html:not([dir=rtl]) .sidebar .nav-title[aria-expanded="false"]::before {
+    transform: rotate(-90deg);
+}
+
+html .sidebar .nav-item.nav-section-closed {
+    display: none;
+}
+
+/* Links are pills */
+html .sidebar .nav-link {
+    margin: 1px .6rem;
+    padding: .5rem .85rem;
+    border-radius: 999px;
+    font-size: .9rem;
+    color: var(--at-sidebar-text);
+    background: transparent;
+}
+
+html .sidebar .nav-link .nav-icon {
+    color: var(--at-sidebar-icon);
+}
+
+html .sidebar .nav-link:hover {
+    background: var(--at-sidebar-hover);
+    color: var(--at-sidebar-hover-text);
+}
+
+html .sidebar .nav-link:hover .nav-icon {
+    color: var(--at-sidebar-hover-text);
+}
+
+html .sidebar .nav-link.active {
+    background: var(--at-sidebar-active);
+    color: var(--at-sidebar-active-text);
+}
+
+html .sidebar .nav-link.active .nav-icon {
+    color: var(--at-sidebar-active-text);
+}
+
+html .sidebar .sidebar-minimizer {
+    background-color: var(--at-sidebar-hover);
+}

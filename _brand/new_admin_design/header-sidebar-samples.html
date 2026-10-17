@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نماذج رأس وقائمة الإدارة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+<style>
+/* ==========================================================================
+   Admin header + sidebar redesign samples.
+   Tokens mirror _brand/new_design/assets/theme.css (portal) so the admin and
+   the /beta portal read as one product. Each skin is a token block only —
+   the same shape as the --at-* blocks in public/css/admin-themes.css.
+   ========================================================================== */
+:root, [data-skin="ghadeer"] {
+  --page: #f5f3ec;  --card: #ffffff;  --line: #e7e2d4;  --ink: #1b2a27;  --muted: #6b7572;
+  --primary: #127a70;  --primary-ink: #ffffff;  --primary-soft: rgba(18,122,112,.10);
+  --accent: #c9a24b;  --accent-soft: rgba(201,162,75,.18);
+  --sb: #0f3f3a;  --sb-2: #0b302c;  --sb-text: #e9f5f3;  --sb-muted: rgba(233,245,243,.62);
+  --sb-hover: rgba(255,255,255,.07);  --sb-active: rgba(201,162,75,.16);
+  --hero-from: #0f3f3a;  --hero-to: #16897e;
+}
+[data-skin="girls"] {
+  --page: #fdf6f8;  --card: #ffffff;  --line: #f0dde5;  --ink: #3a1f30;  --muted: #86707c;
+  --primary: #b5487a;  --primary-ink: #ffffff;  --primary-soft: rgba(181,72,122,.10);
+  --accent: #c9a24a;  --accent-soft: rgba(201,162,74,.20);
+  --sb: #5b2a4a;  --sb-2: #4a2140;  --sb-text: #fbeaf1;  --sb-muted: rgba(251,234,241,.62);
+  --sb-hover: rgba(255,255,255,.08);  --sb-active: rgba(227,194,122,.18);
+  --hero-from: #5b2a4a;  --hero-to: #b5487a;
+}
+[data-skin="wood"] {
+  --page: #f8f4f1;  --card: #ffffff;  --line: #e6dcd5;  --ink: #3b2a24;  --muted: #7d6d66;
+  --primary: #795548;  --primary-ink: #ffffff;  --primary-soft: rgba(121,85,72,.10);
+  --accent: #d1a054;  --accent-soft: rgba(209,160,84,.20);
+  --sb: #4e342e;  --sb-2: #3e2925;  --sb-text: #f3ebe7;  --sb-muted: rgba(243,235,231,.62);
+  --sb-hover: rgba(255,255,255,.07);  --sb-active: rgba(209,160,84,.18);
+  --hero-from: #4e342e;  --hero-to: #8d6e63;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  background: #ece9e1; color: var(--ink); line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* ---------- page chrome ---------- */
+.intro { max-width: 1240px; margin: 0 auto; padding: 32px 16px 8px; }
+.intro h1 { font-size: 1.75rem; margin: 0 0 6px; }
+.intro p { margin: 0; color: var(--muted); max-width: 760px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
+.seg { display: inline-flex; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { padding: 6px 14px; border-radius: 999px; font-size: .875rem; display: inline-flex; gap: 6px; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
+.swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px; margin-inline-start: auto; }
+.toc a { font-size: .8rem; padding: 5px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--line); }
+.toc a:hover { border-color: var(--primary); color: var(--primary); }
+
+main { max-width: 1240px; margin: 0 auto; padding: 16px 16px 64px; display: grid; gap: 40px; }
+.sample > header { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+.num {
+  flex: none; width: 40px; height: 48px; display: grid; place-items: center; font-weight: 700; color: #fff;
+  background: var(--primary);
+  clip-path: path("M0 48V16Q0 10 5 7Q12 3 20 0Q28 3 35 7Q40 10 40 16V48Z");
+}
+.sample h2 { margin: 0; font-size: 1.2rem; }
+.sample header p { margin: 2px 0 0; color: var(--muted); font-size: .92rem; max-width: 820px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag { font-size: .75rem; padding: 2px 9px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); }
+.tag.gold { background: var(--accent-soft); color: #7a5a14; }
+
+.scroller { overflow-x: auto; border-radius: 16px; box-shadow: 0 1px 0 var(--line), 0 12px 32px -18px rgba(0,0,0,.35); }
+.frame {
+  min-width: 1040px; height: 600px; background: var(--page); display: flex; position: relative;
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-size: 14px;
+}
+.frame .shell { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.frame .content { flex: 1; overflow: auto; padding: 22px 26px; }
+
+/* ---------- shared bits ---------- */
+.logo-chip { width: 38px; height: 38px; border-radius: 10px; background: #fff; display: grid; place-items: center; flex: none; }
+.logo-chip img { width: 26px; height: 26px; }
+.brand-name { font-weight: 700; line-height: 1.15; }
+.brand-name small { display: block; font-weight: 400; font-size: .72rem; opacity: .7; }
+.iconbtn { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; position: relative; font-size: 1.25rem; }
+.iconbtn:hover { background: var(--primary-soft); color: var(--primary); }
+.dot { position: absolute; top: 6px; inset-inline-end: 7px; width: 8px; height: 8px; border-radius: 50%; background: #c62f2f; box-shadow: 0 0 0 2px var(--card); }
+.search {
+  display: flex; align-items: center; gap: 8px; background: var(--page); border: 1px solid var(--line);
+  border-radius: 10px; padding: 0 10px; height: 36px; width: 280px; color: var(--muted); font-size: .85rem;
+}
+.search kbd { margin-inline-start: auto; font: inherit; font-size: .7rem; border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; background: var(--card); }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #2a1f05; display: grid; place-items: center; font-weight: 700; flex: none; }
+.user { display: flex; align-items: center; gap: 9px; padding: 3px 4px 3px 10px; border-radius: 999px; }
+.user:hover { background: var(--primary-soft); }
+.user .who { line-height: 1.15; font-size: .85rem; }
+.user .who small { display: block; color: var(--muted); font-size: .72rem; }
+.crumbs { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .82rem; }
+.crumbs b { color: var(--ink); font-weight: 600; }
+.chip-term { font-size: .75rem; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: #6b4e10; display: inline-flex; gap: 5px; align-items: center; }
+
+/* mock list page */
+.page-head { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
+.page-head h3 { margin: 0; font-size: 1.35rem; }
+.page-head p { margin: 0; color: var(--muted); font-size: .85rem; }
+.btn { display: inline-flex; gap: 6px; align-items: center; height: 36px; padding: 0 14px; border-radius: 10px; font-weight: 600; font-size: .85rem; }
+.btn-primary { background: var(--primary); color: var(--primary-ink); margin-inline-start: auto; }
+.btn-ghost { border: 1px solid var(--line); background: var(--card); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th { text-align: start; font-weight: 600; color: var(--muted); background: var(--page); padding: 10px 14px; border-bottom: 1px solid var(--line); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+.pill { font-size: .72rem; padding: 2px 8px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); }
+
+/* generic accordion tree (samples 1, 4) */
+.tree { list-style: none; margin: 0; padding: 0; }
+.tree .grp > button, .tree .leaf {
+  width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; text-align: start;
+}
+.tree i.ic { font-size: 1.2rem; width: 22px; text-align: center; flex: none; }
+.tree .chev { margin-inline-start: auto; transition: transform .2s; font-size: .85rem; opacity: .7; }
+.tree .grp.open > button .chev { transform: rotate(-90deg); }
+.tree .sub { list-style: none; margin: 2px 0 6px; padding: 0; display: none; }
+.tree .grp.open .sub { display: block; }
+.tree .sub .leaf { padding: 7px 12px 7px 12px; padding-inline-start: 44px; font-size: .88rem; }
+.label { font-size: .7rem; letter-spacing: .02em; padding: 14px 12px 6px; text-transform: uppercase; }
+
+/* ======================= Sample 1: ink teal + gold ======================= */
+.s1 .side { width: 264px; background: var(--sb); color: var(--sb-text); display: flex; flex-direction: column; transition: width .25s; position: relative; }
+.s1 .side::after { /* riwaq arches at the bottom */
+  content: ""; position: absolute; inset: auto 0 0 0; height: 120px; pointer-events: none; opacity: .08;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='80' viewBox='0 0 44 80'%3E%3Cpath d='M4 80V30Q4 22 10 18Q16 12 22 8Q28 12 34 18Q40 22 40 30V80Z' fill='%23ffffff'/%3E%3C/svg%3E") repeat-x right bottom / 44px 80px;
+}
+.s1 .side-top { height: 64px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.s1 nav { flex: 1; overflow: auto; padding: 10px; position: relative; z-index: 1; }
+.s1 .label { color: var(--sb-muted); }
+.s1 .tree .grp > button:hover, .s1 .tree .leaf:hover { background: var(--sb-hover); }
+.s1 .tree i.ic { color: var(--accent); }
+.s1 .tree .sub { border-inline-start: 1px solid rgba(255,255,255,.12); margin-inline-start: 22px; }
+.s1 .tree .sub .leaf { padding-inline-start: 20px; color: var(--sb-muted); }
+.s1 .tree .leaf.active { background: var(--sb-active); color: #fff; box-shadow: inset -3px 0 0 var(--accent); }
+.s1 .side-foot { padding: 12px 16px; font-size: .75rem; color: var(--sb-muted); border-top: 1px solid rgba(255,255,255,.08); position: relative; z-index: 1; }
+.s1 .hd { height: 64px; background: var(--card); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; padding: 0 18px; box-shadow: inset 0 -2px 0 var(--accent-soft); }
+.s1 .hd .end { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+/* collapsed */
+.s1.mini .side { width: 76px; }
+.s1.mini .brand-name, .s1.mini .label, .s1.mini .txt, .s1.mini .chev, .s1.mini .sub, .s1.mini .side-foot span { display: none !important; }
+.s1.mini .side-top { justify-content: center; padding: 0; }
+.s1.mini .tree .grp > button, .s1.mini .tree > li > .leaf { justify-content: center; }
+
+/* ======================= Sample 2: light parchment, flat sections ======================= */
+.s2 .side { width: 256px; background: var(--card); border-inline-end: 1px solid var(--line); display: flex; flex-direction: column; }
+.s2 .side-top { height: 68px; display: flex; align-items: center; gap: 10px; padding: 0 18px; }
+.s2 .side-top .logo-chip { background: var(--primary-soft); }
+.s2 nav { flex: 1; overflow: auto; padding: 0 12px 12px; }
+.s2 .label { color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.s2 .label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.s2 .leaf { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px; color: #3c4a47; font-size: .9rem; }
+.s2 .leaf i { font-size: 1.15rem; width: 20px; text-align: center; color: var(--muted); }
+.s2 .leaf:hover { background: var(--page); }
+.s2 .leaf.active { background: var(--primary); color: var(--primary-ink); }
+.s2 .leaf.active i { color: var(--primary-ink); }
+.s2 .count { margin-inline-start: auto; font-size: .7rem; background: var(--accent-soft); color: #6b4e10; border-radius: 999px; padding: 0 7px; }
+.s2 .leaf.active .count { background: rgba(255,255,255,.2); color: #fff; }
+.s2 .hd { height: 68px; display: flex; align-items: center; gap: 14px; padding: 0 22px; background: var(--page); }
+.s2 .hd .end { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+.s2 .search { background: var(--card); }
+.s2 .content { padding-top: 4px; }
+.s2 .help { margin: 12px; padding: 14px; border-radius: 14px; background: var(--page); font-size: .8rem; color: var(--muted); }
+.s2 .help b { color: var(--ink); display: block; }
+
+/* ======================= Sample 3: icon rail + panel ======================= */
+.s3 .rail { width: 76px; background: var(--sb-2); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 4px; }
+.s3 .rail .logo-chip { margin-bottom: 10px; }
+.s3 .rail button { width: 52px; height: 52px; border-radius: 14px; color: var(--sb-muted); display: grid; place-items: center; font-size: 1.45rem; position: relative; }
+.s3 .rail button:hover { background: var(--sb-hover); color: var(--sb-text); }
+.s3 .rail button[aria-current="true"] { background: var(--accent); color: #2a1f05; }
+.s3 .rail .tip { position: absolute; inset-inline-start: 60px; white-space: nowrap; background: var(--ink); color: #fff; font-size: .75rem; padding: 4px 9px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 5; }
+.s3 .rail button:hover .tip { opacity: 1; }
+.s3 .rail .spacer { flex: 1; }
+.s3 .panel { width: 228px; background: var(--sb); color: var(--sb-text); padding: 18px 12px; display: flex; flex-direction: column; }
+.s3 .panel h4 { margin: 0 8px 2px; font-size: 1rem; }
+.s3 .panel .hint { margin: 0 8px 14px; font-size: .75rem; color: var(--sb-muted); }
+.s3 .panel .leaf { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; color: var(--sb-muted); }
+.s3 .panel .leaf i { font-size: 1.15rem; }
+.s3 .panel .leaf:hover { background: var(--sb-hover); color: var(--sb-text); }
+.s3 .panel .leaf.active { background: var(--sb-active); color: #fff; }
+.s3 .panel .leaf.active i { color: var(--accent); }
+.s3 .panel .quick { margin-top: auto; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.06); font-size: .78rem; color: var(--sb-muted); }
+.s3 .panel .quick b { display: block; color: var(--sb-text); margin-bottom: 4px; }
+.s3 .hd { height: 60px; background: var(--card); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; padding: 0 20px; }
+.s3 .hd .end { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+
+/* ======================= Sample 4: floating cards + hero header ======================= */
+.s4 { padding: 12px; gap: 12px; }
+.s4 .side { width: 252px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; display: flex; flex-direction: column; overflow: hidden; }
+.s4 .side-top { padding: 16px; display: flex; gap: 10px; align-items: center; background: linear-gradient(135deg, var(--hero-from), var(--hero-to)); color: #fff; }
+.s4 nav { flex: 1; overflow: auto; padding: 8px; }
+.s4 .label { color: var(--muted); }
+.s4 .tree i.ic { color: var(--primary); }
+.s4 .tree .grp > button:hover, .s4 .tree .leaf:hover { background: var(--page); }
+.s4 .tree .grp.open > button { font-weight: 600; }
+.s4 .tree .sub .leaf { color: #4d5a57; }
+.s4 .tree .leaf.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.s4 .tree .sub .leaf.active::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-inline-start: -16px; margin-inline-end: 4px; }
+.s4 .shell { gap: 12px; }
+.s4 .hd {
+  border-radius: 18px; color: #fff; padding: 14px 18px; display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+}
+.s4 .hd::before {
+  content: ""; position: absolute; inset: 0; opacity: .10; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='64' viewBox='0 0 48 64'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.1'%3E%3Cpath d='M14 29V11Q14 8 16 7Q20 5 24 3Q28 5 32 7Q34 8 34 11V29Z'/%3E%3Cpath d='M-10 61V43Q-10 40 -8 39Q-4 37 0 35Q4 37 8 39Q10 40 10 43V61Z'/%3E%3Cpath d='M38 61V43Q38 40 40 39Q44 37 48 35Q52 37 56 39Q58 40 58 43V61Z'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 48px 64px;
+}
+.s4 .hd > * { position: relative; }
+.s4 .hd h3 { margin: 0; font-size: 1.2rem; }
+.s4 .hd .crumbs { color: rgba(255,255,255,.75); }
+.s4 .hd .crumbs b { color: #fff; }
+.s4 .hd .end { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+.s4 .hd .iconbtn:hover { background: rgba(255,255,255,.14); color: #fff; }
+.s4 .hd .dot { box-shadow: 0 0 0 2px var(--hero-to); }
+.s4 .hd .search { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.8); width: 240px; }
+.s4 .hd .search kbd { background: transparent; border-color: rgba(255,255,255,.3); }
+.s4 .hd .user:hover { background: rgba(255,255,255,.12); }
+.s4 .hd .user small { color: rgba(255,255,255,.7); }
+.s4 .content { background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+
+/* ======================= Sample 5: top navigation, no sidebar ======================= */
+.s5 { flex-direction: column; }
+.s5 .bar1 { height: 58px; background: var(--sb); color: var(--sb-text); display: flex; align-items: center; gap: 12px; padding: 0 20px; }
+.s5 .bar1 .end { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+.s5 .bar1 .iconbtn:hover { background: var(--sb-hover); color: #fff; }
+.s5 .bar1 .dot { box-shadow: 0 0 0 2px var(--sb); }
+.s5 .bar1 .search { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.12); color: var(--sb-muted); }
+.s5 .bar1 .search kbd { background: transparent; border-color: rgba(255,255,255,.2); }
+.s5 .bar1 .user:hover { background: var(--sb-hover); }
+.s5 .bar1 .user small { color: var(--sb-muted); }
+.s5 .bar2 { background: var(--card); border-bottom: 1px solid var(--line); display: flex; gap: 2px; padding: 0 14px; position: relative; }
+.s5 .tab { padding: 12px 14px; display: flex; gap: 7px; align-items: center; color: var(--muted); border-bottom: 3px solid transparent; font-weight: 500; }
+.s5 .tab i { font-size: 1.15rem; }
+.s5 .tab:hover { color: var(--ink); }
+.s5 .tab[aria-current="true"] { color: var(--primary); border-color: var(--accent); }
+.s5 .bar3 { background: var(--card); border-bottom: 1px solid var(--line); display: flex; gap: 6px; padding: 8px 20px; }
+.s5 .bar3 a { padding: 5px 12px; border-radius: 999px; font-size: .82rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.s5 .bar3 a:hover { background: var(--page); color: var(--ink); }
+.s5 .bar3 a.active { background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.s5 .content { padding: 22px 32px; }
+
+/* ---------- mobile note ---------- */
+.note { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+.compare { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+.compare h2 { margin: 0 0 10px; font-size: 1.1rem; }
+.compare table { font-size: .85rem; }
+.compare td, .compare th { padding: 8px 10px; }
+@media (max-width: 640px) { .toc { margin-inline-start: 0; } .intro h1 { font-size: 1.4rem; } }
+</style>
+</head>
+<body data-skin="ghadeer">
+
+<div class="intro">
+  <h1>نماذج إعادة تصميم رأس الصفحة والقائمة الجانبية — لوحة الإدارة</h1>
+  <p>خمسة نماذج مبنية على قائمة الإدارة الحالية (<code>sidebar_content.blade.php</code>) وهوية بوابة الغدير الجديدة. كل الألوان متغيرات فقط، فيمكن تحويل أي نموذج إلى ثيم في <code>admin-themes.css</code>. جرّب تغيير الألوان من الأسفل، وافتح وأغلق مجموعات القائمة.</p>
+  <div class="toolbar">
+    <div class="seg" role="group" aria-label="الألوان">
+      <button data-skin-set="ghadeer" aria-pressed="true"><span class="swatch" style="background:#127a70"></span>الغدير</button>
+      <button data-skin-set="girls" aria-pressed="false"><span class="swatch" style="background:#b5487a"></span>البنات</button>
+      <button data-skin-set="wood" aria-pressed="false"><span class="swatch" style="background:#795548"></span>الخشبي</button>
+    </div>
+    <nav class="toc" aria-label="النماذج">
+      <a href="#s1">١ · الحبر والذهب</a><a href="#s2">٢ · الرقّ الفاتح</a><a href="#s3">٣ · الشريط واللوحة</a><a href="#s4">٤ · البطاقات العائمة</a><a href="#s5">٥ · قائمة علوية</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===================== 1 ===================== -->
+  <section class="sample" id="s1">
+    <header>
+      <div class="num">١</div>
+      <div>
+        <h2>الحبر والذهب — تطوير القائمة الحالية</h2>
+        <p>نفس شكل Backpack (قائمة داكنة ثابتة + رأس أبيض) لكن بلون الحبر الأخضر، وأيقونات ذهبية، وخط ذهبي للعنصر الحالي، وأقواس الرواق أسفل القائمة. زر الطي يحوّلها إلى شريط أيقونات.</p>
+        <div class="tags"><span class="tag">أقل تغيير في الكود</span><span class="tag">يحافظ على nav-dropdown</span><span class="tag gold">يدعم الطي</span></div>
+      </div>
+    </header>
+    <div class="scroller"><div class="frame s1" id="f1">
+      <aside class="side">
+        <div class="side-top">
+          <div class="logo-chip"><img src="../new_design/assets/img/logo-icon.svg" alt=""></div>
+          <div class="brand-name">مركز الغدير<small>لوحة الإدارة</small></div>
+        </div>
+        <nav><ul class="tree" data-tree="labels"></ul></nav>
+        <div class="side-foot"><i class="la la-calendar"></i> <span>الفصل الأول · 1448هـ</span></div>
+      </aside>
+      <div class="shell">
+        <div class="hd">
+          <button class="iconbtn" data-toggle-mini="f1" title="طي القائمة"><i class="la la-bars"></i></button>
+          <div class="crumbs"><span>إدارة التسجيل</span><i class="la la-angle-left"></i><b>الطلاب</b></div>
+          <div class="end">
+            <div class="search"><i class="la la-search"></i>ابحث عن طالب، صف، دورة…<kbd>Ctrl K</kbd></div>
+            <button class="iconbtn" title="الرسائل"><i class="la la-envelope"></i></button>
+            <button class="iconbtn" title="الإشعارات"><i class="la la-bell"></i><span class="dot"></span></button>
+            <a class="user" href="#"><span class="who">منصور<small>مدير النظام</small></span><span class="avatar">م</span></a>
+          </div>
+        </div>
+        <div class="content" data-mock></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== 2 ===================== -->
+  <section class="sample" id="s2">
+    <header>
+      <div class="num">٢</div>
+      <div>
+        <h2>الرقّ الفاتح — أقسام مفتوحة بلا قوائم منسدلة</h2>
+        <p>قائمة بيضاء فاتحة، كل المجموعات ظاهرة كعناوين أقسام، فلا يحتاج المستخدم لفتح أي قائمة منسدلة. العنصر الحالي كبسولة ملوّنة، مع عدّاد صغير (مثل الرسائل غير المقروءة). الرأس يندمج مع خلفية الصفحة.</p>
+        <div class="tags"><span class="tag">أسرع وصول بنقرة واحدة</span><span class="tag">مناسب لعدد عناصر قليل (~20)</span><span class="tag gold">قريب من البوابة الجديدة</span></div>
+      </div>
+    </header>
+    <div class="scroller"><div class="frame s2">
+      <aside class="side">
+        <div class="side-top">
+          <div class="logo-chip"><img src="../new_design/assets/img/logo-icon.svg" alt=""></div>
+          <div class="brand-name">مركز الغدير<small>لوحة الإدارة</small></div>
+        </div>
+        <nav data-flat></nav>
+        <div class="help"><b>تحتاج مساعدة؟</b>دليل الاستخدام ونسخ النظام الاحتياطية من الإعدادات.</div>
+      </aside>
+      <div class="shell">
+        <div class="hd">
+          <div>
+            <div class="crumbs"><span>إدارة التسجيل</span><i class="la la-angle-left"></i><b>الطلاب</b></div>
+          </div>
+          <div class="end">
+            <span class="chip-term"><i class="la la-calendar"></i>الفصل الأول 1448هـ</span>
+            <div class="search"><i class="la la-search"></i>بحث سريع…<kbd>Ctrl K</kbd></div>
+            <button class="iconbtn" title="الإشعارات"><i class="la la-bell"></i><span class="dot"></span></button>
+            <a class="user" href="#"><span class="who">منصور<small>مدير النظام</small></span><span class="avatar">م</span></a>
+          </div>
+        </div>
+        <div class="content" data-mock></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== 3 ===================== -->
+  <section class="sample" id="s3">
+    <header>
+      <div class="num">٣</div>
+      <div>
+        <h2>الشريط واللوحة — أيقونات للمجموعات ولوحة للصفحات</h2>
+        <p>شريط أيقونات ضيق للمجموعات الرئيسية، وبجانبه لوحة بصفحات المجموعة المختارة فقط. اضغط على أيقونات الشريط لتغيير اللوحة. يوفّر مساحة واضحة ويُبقي القائمة قصيرة.</p>
+        <div class="tags"><span class="tag">يتسع لمجموعات كثيرة</span><span class="tag">يحتاج تعديل قالب القائمة</span><span class="tag gold">مظهر حديث</span></div>
+      </div>
+    </header>
+    <div class="scroller"><div class="frame s3">
+      <aside class="rail" data-rail>
+        <div class="logo-chip"><img src="../new_design/assets/img/logo-icon.svg" alt=""></div>
+      </aside>
+      <aside class="panel" data-panel></aside>
+      <div class="shell">
+        <div class="hd">
+          <div class="crumbs" data-s3-crumbs><span>إدارة التسجيل</span><i class="la la-angle-left"></i><b>الطلاب</b></div>
+          <div class="end">
+            <div class="search"><i class="la la-search"></i>ابحث في كل الأقسام…<kbd>Ctrl K</kbd></div>
+            <button class="iconbtn" title="الإشعارات"><i class="la la-bell"></i><span class="dot"></span></button>
+            <a class="user" href="#"><span class="who">منصور<small>مدير النظام</small></span><span class="avatar">م</span></a>
+          </div>
+        </div>
+        <div class="content" data-mock></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== 4 ===================== -->
+  <section class="sample" id="s4">
+    <header>
+      <div class="num">٤</div>
+      <div>
+        <h2>البطاقات العائمة — رأس بشريط الهوية</h2>
+        <p>القائمة والرأس والمحتوى بطاقات مستديرة فوق خلفية الرق. الرأس يحمل تدرّج البوابة ونقش المحراب، ويعرض عنوان الصفحة نفسه، فيصبح جزءاً من الهوية بدل شريط أبيض فارغ.</p>
+        <div class="tags"><span class="tag">أقوى حضور للهوية</span><span class="tag">نفس شريط البوابة</span><span class="tag gold">يأخذ مساحة رأسية أكبر</span></div>
+      </div>
+    </header>
+    <div class="scroller"><div class="frame s4">
+      <aside class="side">
+        <div class="side-top">
+          <div class="logo-chip"><img src="../new_design/assets/img/logo-icon.svg" alt=""></div>
+          <div class="brand-name">مركز الغدير<small>لوحة الإدارة</small></div>
+        </div>
+        <nav><ul class="tree" data-tree="labels"></ul></nav>
+      </aside>
+      <div class="shell">
+        <div class="hd">
+          <div>
+            <div class="crumbs"><span>إدارة التسجيل</span><i class="la la-angle-left"></i><b>الطلاب</b></div>
+            <h3>الطلاب</h3>
+          </div>
+          <div class="end">
+            <div class="search"><i class="la la-search"></i>بحث…<kbd>Ctrl K</kbd></div>
+            <button class="iconbtn" title="الإشعارات"><i class="la la-bell"></i><span class="dot"></span></button>
+            <a class="user" href="#"><span class="who">منصور<small>مدير النظام</small></span><span class="avatar">م</span></a>
+          </div>
+        </div>
+        <div class="content" data-mock data-no-title></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== 5 ===================== -->
+  <section class="sample" id="s5">
+    <header>
+      <div class="num">٥</div>
+      <div>
+        <h2>قائمة علوية — بدون قائمة جانبية</h2>
+        <p>المجموعات تبويبات في الرأس، وصفحات المجموعة المختارة صفّ ثانٍ تحتها. المحتوى يأخذ كامل العرض، وهذا مفيد للجداول العريضة (الدرجات، الحضور). اضغط التبويبات لتغيير الصف الثاني.</p>
+        <div class="tags"><span class="tag">عرض كامل للجداول</span><span class="tag">يحتاج layout top_left مخصص</span><span class="tag gold">يناسب الشاشات الواسعة</span></div>
+      </div>
+    </header>
+    <div class="scroller"><div class="frame s5">
+      <div class="bar1">
+        <div class="logo-chip"><img src="../new_design/assets/img/logo-icon.svg" alt=""></div>
+        <div class="brand-name">مركز الغدير<small>لوحة الإدارة</small></div>
+        <div class="end">
+          <div class="search"><i class="la la-search"></i>بحث سريع…<kbd>Ctrl K</kbd></div>
+          <button class="iconbtn" title="الإشعارات"><i class="la la-bell"></i><span class="dot"></span></button>
+          <a class="user" href="#"><span class="who">منصور<small>مدير النظام</small></span><span class="avatar">م</span></a>
+        </div>
+      </div>
+      <nav class="bar2" data-tabs></nav>
+      <nav class="bar3" data-subtabs></nav>
+      <div class="content" data-mock></div>
+    </div></div>
+  </section>
+
+  <section class="compare">
+    <h2>مقارنة سريعة</h2>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>النموذج</th><th>حجم التعديل</th><th>مساحة المحتوى</th><th>حضور الهوية</th><th>ملاحظة</th></tr></thead>
+      <tbody>
+        <tr><td>١ الحبر والذهب</td><td>صغير — CSS + سطور قليلة</td><td>جيدة (تطوى)</td><td>متوسط</td><td>أسهل بداية، يعمل على كل ثيمات <code>--at-*</code></td></tr>
+        <tr><td>٢ الرقّ الفاتح</td><td>متوسط — قالب القائمة</td><td>جيدة</td><td>متوسط</td><td>يلغي القوائم المنسدلة</td></tr>
+        <tr><td>٣ الشريط واللوحة</td><td>متوسط — قالب + JS صغير</td><td>متوسطة</td><td>عالٍ</td><td>الأفضل لو كثرت الأقسام</td></tr>
+        <tr><td>٤ البطاقات العائمة</td><td>متوسط — رأس + CSS</td><td>أقل</td><td>الأعلى</td><td>الأقرب لشكل البوابة</td></tr>
+        <tr><td>٥ قائمة علوية</td><td>كبير — تغيير الـ layout</td><td>الأفضل</td><td>متوسط</td><td>يناسب الجداول العريضة</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+</main>
+
+<script>
+// Menu mirrors resources/views/vendor/backpack/base/inc/sidebar_content.blade.php (Superadmin view).
+var MENU = [
+  { id: "dash", icon: "la-home", label: "لوحة التحكم" },
+  { id: "attend", icon: "la-clipboard-check", label: "الحضور والإنضباط", section: "اليومي", items: [
+    ["la-calendar-check", "تسجيل الحضور بالتاريخ"], ["la-list-alt", "سجلات الحضور"] ] },
+  { id: "acc", icon: "la-cash-register", label: "المحاسبة", items: [
+    ["la-file-invoice-dollar", "المدفوعات"] ] },
+  { id: "reg", icon: "la-user-graduate", label: "إدارة التسجيل", section: "الأكاديمي", items: [
+    ["la-certificate", "درجات الطلاب"], ["la-chalkboard-teacher", "الصفوف الدراسية"], ["la-user-graduate", "الطلاب"], ["la-envelope", "الرسائل", 3] ] },
+  { id: "cur", icon: "la-book-open", label: "إدارة المناهج", items: [
+    ["la-campground", "الدورات الدراسية"], ["la-road", "المسارات الدراسية"], ["la-book", "المناهج الدراسية"], ["la-project-diagram", "فرع مادة المنهاج"], ["la-tools", "الإمتحانات"] ] },
+  { id: "auth", icon: "la-users-cog", label: "إدارة المستخدمين", section: "النظام", items: [
+    ["la-user", "المستخدمين"], ["la-id-badge", "وظائف المستخدمين"], ["la-key", "صلاحيات المستخدمين"] ] },
+  { id: "set", icon: "la-cog", label: "الإعدادات", items: [
+    ["la-folder-open", "مدير الملفات"], ["la-hdd", "نسخة احتياطية"], ["la-sliders-h", "الإعدادات"], ["la-terminal", "السجلات"] ] }
+];
+var ACTIVE = "الطلاب";
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+// --- accordion tree (samples 1 & 4)
+document.querySelectorAll("[data-tree]").forEach(function (ul) {
+  var html = "";
+  MENU.forEach(function (g) {
+    if (g.section) html += '<li class="label">' + esc(g.section) + "</li>";
+    if (!g.items) { html += '<li><a class="leaf" href="#"><i class="la ' + g.icon + ' ic"></i><span class="txt">' + esc(g.label) + "</span></a></li>"; return; }
+    var open = g.items.some(function (it) { return it[1] === ACTIVE; });
+    html += '<li class="grp' + (open ? " open" : "") + '"><button type="button" title="' + esc(g.label) + '"><i class="la ' + g.icon + ' ic"></i><span class="txt">' + esc(g.label) +
+      '</span><i class="la la-angle-left chev"></i></button><ul class="sub">' +
+      g.items.map(function (it) { return '<li><a class="leaf' + (it[1] === ACTIVE ? " active" : "") + '" href="#">' + esc(it[1]) + "</a></li>"; }).join("") + "</ul></li>";
+  });
+  ul.innerHTML = html;
+  ul.addEventListener("click", function (e) {
+    var b = e.target.closest(".grp > button");
+    if (b) { b.parentElement.classList.toggle("open"); return; }
+    var a = e.target.closest(".leaf");
+    if (a) { e.preventDefault(); ul.querySelectorAll(".leaf.active").forEach(function (x) { x.classList.remove("active"); }); a.classList.add("active"); }
+  });
+});
+
+// --- collapse toggle (sample 1)
+document.querySelectorAll("[data-toggle-mini]").forEach(function (b) {
+  b.addEventListener("click", function () { document.getElementById(b.dataset.toggleMini).classList.toggle("mini"); });
+});
+
+// --- flat sections (sample 2)
+(function () {
+  var nav = document.querySelector("[data-flat]"), html = "";
+  MENU.forEach(function (g) {
+    if (!g.items) { html += '<a class="leaf" href="#"><i class="la ' + g.icon + '"></i>' + esc(g.label) + "</a>"; return; }
+    html += '<div class="label">' + esc(g.label) + "</div>";
+    g.items.forEach(function (it) {
+      html += '<a class="leaf' + (it[1] === ACTIVE ? " active" : "") + '" href="#"><i class="la ' + it[0] + '"></i>' + esc(it[1]) + (it[2] ? '<span class="count">' + it[2] + "</span>" : "") + "</a>";
+    });
+  });
+  nav.innerHTML = html;
+  nav.addEventListener("click", function (e) {
+    var a = e.target.closest(".leaf"); if (!a) return; e.preventDefault();
+    nav.querySelectorAll(".active").forEach(function (x) { x.classList.remove("active"); }); a.classList.add("active");
+  });
+})();
+
+// --- rail + panel (sample 3)
+(function () {
+  var rail = document.querySelector("[data-rail]"), panel = document.querySelector("[data-panel]"), crumbs = document.querySelector("[data-s3-crumbs]");
+  var groups = MENU.filter(function (g) { return g.items; });
+  var main = groups.slice(0, -2), foot = groups.slice(-2);
+  function btn(g) { return '<button type="button" data-g="' + g.id + '"><i class="la ' + g.icon + '"></i><span class="tip">' + esc(g.label) + "</span></button>"; }
+  rail.insertAdjacentHTML("beforeend", '<button type="button" data-g="dash"><i class="la la-home"></i><span class="tip">لوحة التحكم</span></button>' +
+    main.map(btn).join("") + '<div class="spacer"></div>' + foot.map(btn).join(""));
+  function show(id) {
+    rail.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-current", b.dataset.g === id ? "true" : "false"); });
+    var g = MENU.filter(function (x) { return x.id === id; })[0];
+    if (!g.items) { panel.innerHTML = '<h4>لوحة التحكم</h4><p class="hint">ملخص اليوم</p><a class="leaf active" href="#"><i class="la la-chart-bar"></i>نظرة عامة</a><a class="leaf" href="#"><i class="la la-calendar-check"></i>حضور اليوم</a><div class="quick"><b>اختصار</b>اضغط Ctrl K للبحث في كل الأقسام.</div>'; return; }
+    panel.innerHTML = "<h4>" + esc(g.label) + '</h4><p class="hint">' + g.items.length + " صفحات</p>" +
+      g.items.map(function (it) { return '<a class="leaf' + (it[1] === ACTIVE ? " active" : "") + '" href="#"><i class="la ' + it[0] + '"></i>' + esc(it[1]) + "</a>"; }).join("") +
+      '<div class="quick"><b>اختصار</b>اضغط Ctrl K للبحث في كل الأقسام.</div>';
+    crumbs.innerHTML = "<span>" + esc(g.label) + '</span><i class="la la-angle-left"></i><b>' + esc((g.items.filter(function (i) { return i[1] === ACTIVE; })[0] || g.items[0])[1]) + "</b>";
+  }
+  rail.addEventListener("click", function (e) { var b = e.target.closest("button[data-g]"); if (b) show(b.dataset.g); });
+  show("reg");
+})();
+
+// --- top tabs (sample 5)
+(function () {
+  var tabs = document.querySelector("[data-tabs]"), sub = document.querySelector("[data-subtabs]");
+  tabs.innerHTML = MENU.map(function (g) { return '<a class="tab" href="#" data-g="' + g.id + '"><i class="la ' + g.icon + '"></i>' + esc(g.label) + "</a>"; }).join("");
+  function show(id) {
+    tabs.querySelectorAll(".tab").forEach(function (t) { t.setAttribute("aria-current", t.dataset.g === id ? "true" : "false"); });
+    var g = MENU.filter(function (x) { return x.id === id; })[0];
+    var items = g.items || [["la-chart-bar", "نظرة عامة"], ["la-calendar-check", "حضور اليوم"]];
+    sub.innerHTML = items.map(function (it, i) { var on = g.items ? it[1] === ACTIVE : i === 0; return '<a href="#" class="' + (on ? "active" : "") + '"><i class="la ' + it[0] + '"></i>' + esc(it[1]) + "</a>"; }).join("");
+  }
+  tabs.addEventListener("click", function (e) { var t = e.target.closest(".tab"); if (t) { e.preventDefault(); show(t.dataset.g); } });
+  sub.addEventListener("click", function (e) { var a = e.target.closest("a"); if (!a) return; e.preventDefault(); sub.querySelectorAll(".active").forEach(function (x) { x.classList.remove("active"); }); a.classList.add("active"); });
+  show("reg");
+})();
+
+// --- mock list page so the chrome is judged in context
+(function () {
+  var rows = [["حسين علي الموسوي", "2-ب", "المستوى الثاني", "نشط"], ["زينب محمد الحسن", "1-أ", "المستوى الأول", "نشط"], ["علي جعفر الناصر", "3-أ", "المستوى الثالث", "نشط"],
+              ["فاطمة حسن العلي", "2-أ", "المستوى الثاني", "منقطع"], ["محمد باقر السيد", "1-ب", "المستوى الأول", "نشط"], ["مريم عبدالله الصالح", "3-ب", "المستوى الثالث", "نشط"]];
+  var table = '<div class="card"><table><thead><tr><th>#</th><th>اسم الطالب</th><th>الصف</th><th>المسار</th><th>الحالة</th><th></th></tr></thead><tbody>' +
+    rows.map(function (r, i) { return "<tr><td>" + (i + 1) + "</td><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + '</td><td><span class="pill">' + r[3] + '</span></td><td><i class="la la-ellipsis-h"></i></td></tr>'; }).join("") + "</tbody></table></div>";
+  document.querySelectorAll("[data-mock]").forEach(function (c) {
+    var head = '<div class="page-head">' + (c.hasAttribute("data-no-title") ? "<p>248 طالباً مسجلاً في الفصل الحالي</p>" : "<div><h3>الطلاب</h3><p>248 طالباً مسجلاً في الفصل الحالي</p></div>") +
+      '<a class="btn btn-ghost" href="#" style="' + (c.hasAttribute("data-no-title") ? "margin-inline-start:auto" : "") + '"><i class="la la-print"></i>طباعة</a>' +
+      '<a class="btn btn-primary" href="#" style="' + (c.hasAttribute("data-no-title") ? "margin-inline-start:0" : "") + '"><i class="la la-plus"></i>إضافة طالب</a></div>';
+    c.innerHTML = head + table;
+  });
+})();
+
+// --- skin switcher
+document.querySelectorAll("[data-skin-set]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.body.dataset.skin = b.dataset.skinSet;
+    document.querySelectorAll("[data-skin-set]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+  });
+});
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@
 
 <head>
   @include(backpack_view('inc.head'))
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/admin-layout.css').'?v='.filemtime(public_path('css/admin-layout.css')) }}">
   <link rel="stylesheet" type="text/css" href="{{ asset('css/admin-themes.css').'?v='.filemtime(public_path('css/admin-themes.css')) }}">
 
 </head>
@@ -20,7 +21,7 @@
 
        @yield('before_breadcrumbs_widgets')
 
-       @includeWhen(isset($breadcrumbs), backpack_view('inc.breadcrumbs'))
+       {{-- breadcrumbs are in the top navbar (inc.main_header) --}}
 
        @yield('after_breadcrumbs_widgets')
 
@@ -40,9 +41,7 @@
 
   </div><!-- ./app-body -->
 
-  <footer class="{{ config('backpack.base.footer_class') }}">
-    @include(backpack_view('inc.footer'))
-  </footer>
+  {{-- no page footer: its source link is under the sidebar menu (inc.sidebar) --}}
 
   @yield('before_scripts')
   @stack('before_scripts')

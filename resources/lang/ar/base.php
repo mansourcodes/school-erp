@@ -56,5 +56,14 @@ return [
     'am' => 'صباحا',
     'pm' => 'مساءا',
 
+    'admin_panel' => 'لوحة الإدارة',
+    'active_term' => 'الفصل :semester :yearهـ',
+    'active_courses' => 'الدورات النشطة',
+    'courses_count' => '{1} دورة|{2} دورتان|[3,10] :count دورات|[11,*] :count دورة',
+    'roles' => [
+        'Superadmin' => 'مدير النظام',
+        'Teacher' => 'معلم',
+    ],
+
 
 ];

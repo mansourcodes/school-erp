@@ -29,6 +29,10 @@ Update this file after every meaningful implementation change.
   - **Admin logo from Backpack Settings done** (2026-10-15): setting `logo` (upload) on `/admin/login` + navbar brand
   - **Portal texts from Backpack Settings done** (2026-10-15): `portal.name|short_name|centre|description`
   - **Admin panel themes done** (2026-10-15): Backpack setting `admin.theme`, 8 themes in `public/css/admin-themes.css`
+  - **Admin shell redesign done** (2026-10-17, branch `feature/admin-light-sidebar`): sample ٢ of
+    `_brand/new_admin_design/` is the core navbar / sidebar / background in `public/css/admin-layout.css`;
+    themes only change colours; sidebar groups are open section titles instead of dropdowns; new active theme
+    `ghadeer` (الغدير) with the portal colours
   - **Superadmin "Open portal" as a teacher done** (2026-10-15): impersonation from Backpack → Users, 60-min TTL,
     account endpoints blocked, banner in the SPA (see completed-tracker)
   - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,

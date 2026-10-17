@@ -12,6 +12,7 @@ class AdminTheme
 
     const ALL = [
         self::DEFAULT => 'الافتراضي',
+        'ghadeer' => 'الغدير',
         'islamic-girly' => 'إسلامي للبنات',
         'brown' => 'بني',
         'wood' => 'خشبي',

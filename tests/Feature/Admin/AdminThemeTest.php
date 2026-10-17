@@ -3,17 +3,22 @@
 namespace Tests\Feature\Admin;
 
 use App\Support\AdminTheme;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /** Backpack setting `admin.theme`: colour theme of the admin panel. */
 class AdminThemeTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_the_admin_pages_carry_the_chosen_theme()
     {
         config(['settings.admin.theme' => 'dark-blue']);
 
         $this->get(backpack_url('login'))->assertOk()
             ->assertSee('data-admin-theme="dark-blue"', false)
+            ->assertSee('css/admin-layout.css', false)
             ->assertSee('css/admin-themes.css', false);
     }
 
@@ -35,5 +40,13 @@ class AdminThemeTest extends TestCase
                 $this->assertStringContainsString('html[data-admin-theme="'.$theme.'"] {', $css);
             }
         }
+    }
+
+    public function test_the_migration_offers_and_activates_the_ghadeer_theme()
+    {
+        $row = DB::table('settings')->where('key', 'admin.theme')->first();
+
+        $this->assertSame('ghadeer', $row->value);
+        $this->assertArrayHasKey('ghadeer', json_decode($row->field, true)['options']);
     }
 }

@@ -1,10 +1,38 @@
 /*
  * Admin panel colour themes (Backpack Settings `admin.theme`, see App\Support\AdminTheme).
- * The layouts set <html data-admin-theme="...">. `default` has no rules: plain Backstrap.
- * Each theme only sets the --at-* variables; the shared rules below apply them.
+ * The layouts set <html data-admin-theme="...">. The navbar / sidebar / page shape and its default
+ * colours live in admin-layout.css; a theme only overrides --at-* variables. `default` keeps those
+ * defaults and Backstrap's own buttons. The shared rules below recolour links and primary controls.
  */
 
 /* ---------------------------------------------------------------- themes */
+
+/* Light parchment + white sidebar + teal, the /beta portal palette (_brand/new_admin_design, sample 2) */
+html[data-admin-theme="ghadeer"] {
+    --at-body-bg: #f5f3ec;
+    --at-header-bg: #f5f3ec;
+    --at-header-text: #1b2a27;
+    --at-header-border: #e7e2d4;
+    --at-sidebar-bg: transparent;
+    --at-sidebar-overlay: #f5f3ec;
+    --at-sidebar-text: #3c4a47;
+    --at-sidebar-icon: #6b7572;
+    --at-sidebar-active: #127a70;
+    --at-sidebar-hover: rgba(18, 122, 112, .08);
+    --at-sidebar-hover-text: #1b2a27;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: #e7e2d4;
+    --at-brand-chip: rgba(18, 122, 112, .10);
+    --at-sidebar-card: #ffffff;
+    --at-sidebar-card-link: #127a70;
+    --at-term-bg: rgba(201, 162, 75, .18);
+    --at-term-text: #6b4e10;
+    --at-primary: #127a70;
+    --at-primary-hover: #0f655d;
+    --at-primary-soft: rgba(18, 122, 112, .25);
+    --at-link: #127a70;
+}
 
 html[data-admin-theme="islamic-girly"] {
     --at-body-bg: #fdf6f8;
@@ -16,7 +44,13 @@ html[data-admin-theme="islamic-girly"] {
     --at-sidebar-icon: #e3c27a;
     --at-sidebar-active: #b5487a;
     --at-sidebar-hover: #8c3562;
-    --at-sidebar-sub: rgba(0, 0, 0, .18);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #b5487a;
     --at-primary-hover: #973b65;
     --at-primary-soft: rgba(181, 72, 122, .25);
@@ -33,7 +67,13 @@ html[data-admin-theme="brown"] {
     --at-sidebar-icon: #bcaaa4;
     --at-sidebar-active: #795548;
     --at-sidebar-hover: #6d4c41;
-    --at-sidebar-sub: rgba(0, 0, 0, .2);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #795548;
     --at-primary-hover: #5d4037;
     --at-primary-soft: rgba(121, 85, 72, .25);
@@ -53,7 +93,13 @@ html[data-admin-theme="wood"] {
     --at-sidebar-icon: #d9b38c;
     --at-sidebar-active: #a0652d;
     --at-sidebar-hover: #845224;
-    --at-sidebar-sub: rgba(0, 0, 0, .2);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #a0652d;
     --at-primary-hover: #845224;
     --at-primary-soft: rgba(160, 101, 45, .25);
@@ -70,7 +116,13 @@ html[data-admin-theme="gold"] {
     --at-sidebar-icon: #d4af37;
     --at-sidebar-active: linear-gradient(90deg, #b8860b, #d4af37);
     --at-sidebar-hover: rgba(212, 175, 55, .3);
-    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #b8860b;
     --at-primary-hover: #966d09;
     --at-primary-soft: rgba(184, 134, 11, .25);
@@ -87,7 +139,13 @@ html[data-admin-theme="silver"] {
     --at-sidebar-icon: #d1d5db;
     --at-sidebar-active: linear-gradient(90deg, #9ca3af, #c0c4cc);
     --at-sidebar-hover: rgba(255, 255, 255, .15);
-    --at-sidebar-sub: rgba(0, 0, 0, .15);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #64748b;
     --at-primary-hover: #475569;
     --at-primary-soft: rgba(100, 116, 139, .25);
@@ -99,12 +157,20 @@ html[data-admin-theme="dark-red"] {
     --at-header-bg: #6b1218;
     --at-header-text: #fbe9ea;
     --at-header-border: #4a0d12;
+    --at-term-bg: rgba(255, 255, 255, .14);
+    --at-term-text: #ffffff;
     --at-sidebar-bg: #4a0d12;
     --at-sidebar-text: #f8e1e3;
     --at-sidebar-icon: #e08a90;
     --at-sidebar-active: #8b1a1f;
     --at-sidebar-hover: #6b1218;
-    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #8b1a1f;
     --at-primary-hover: #6b1218;
     --at-primary-soft: rgba(139, 26, 31, .25);
@@ -116,12 +182,20 @@ html[data-admin-theme="dark-blue"] {
     --at-header-bg: #102a4c;
     --at-header-text: #e6eefa;
     --at-header-border: #0b1f3a;
+    --at-term-bg: rgba(255, 255, 255, .14);
+    --at-term-text: #ffffff;
     --at-sidebar-bg: #0b1f3a;
     --at-sidebar-text: #e6eefa;
     --at-sidebar-icon: #7fa3d6;
     --at-sidebar-active: #1e4a8a;
     --at-sidebar-hover: #163763;
-    --at-sidebar-sub: rgba(0, 0, 0, .25);
+    --at-sidebar-hover-text: #ffffff;
+    --at-sidebar-active-text: #ffffff;
+    --at-sidebar-border: transparent;
+    --at-sidebar-line: rgba(255, 255, 255, .14);
+    --at-brand-chip: #ffffff;
+    --at-sidebar-card: rgba(255, 255, 255, .08);
+    --at-sidebar-card-link: var(--at-sidebar-icon);
     --at-primary: #1e3a6e;
     --at-primary-hover: #152a52;
     --at-primary-soft: rgba(30, 58, 110, .25);
@@ -130,73 +204,15 @@ html[data-admin-theme="dark-blue"] {
 
 /* ---------------------------------------------------------- shared rules */
 
-html[data-admin-theme]:not([data-admin-theme="default"]) body,
-html[data-admin-theme]:not([data-admin-theme="default"]) .app-footer {
-    background: var(--at-body-bg);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) a {
+/* Links in the page content only: the navbar and sidebar take their colours from --at-header-* / --at-sidebar-* */
+html[data-admin-theme]:not([data-admin-theme="default"]) .app-body .main a:not(.btn):not(.dropdown-item),
+html[data-admin-theme]:not([data-admin-theme="default"]) .modal a:not(.btn):not(.dropdown-item) {
     color: var(--at-link);
-}
-
-/* Top bar */
-html[data-admin-theme]:not([data-admin-theme="default"]) .app-header {
-    background: var(--at-header-bg);
-    border-bottom: 3px solid var(--at-header-border);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .app-header .navbar-brand,
-html[data-admin-theme]:not([data-admin-theme="default"]) .app-header .nav-link {
-    color: var(--at-header-text);
 }
 
 html[data-admin-theme="dark-red"] .app-header .navbar-toggler-icon,
 html[data-admin-theme="dark-blue"] .app-header .navbar-toggler-icon {
     filter: invert(1);
-}
-
-/* Sidebar */
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar {
-    background: var(--at-sidebar-bg);
-    color: var(--at-sidebar-text);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-title {
-    color: var(--at-sidebar-icon);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link,
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link {
-    color: var(--at-sidebar-text);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link .nav-icon {
-    color: var(--at-sidebar-icon);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link:hover {
-    background: var(--at-sidebar-hover);
-    color: #fff;
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link.active,
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items .nav-link.active {
-    background: var(--at-sidebar-active);
-    color: #fff;
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link.active .nav-icon,
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-link:hover .nav-icon {
-    color: #fff;
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open,
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .nav-dropdown.open > .nav-dropdown-items {
-    background: var(--at-sidebar-sub);
-}
-
-html[data-admin-theme]:not([data-admin-theme="default"]) .sidebar .sidebar-minimizer {
-    background-color: var(--at-sidebar-sub);
 }
 
 /* Primary colour: buttons, badges, pagination, form focus, checks */
