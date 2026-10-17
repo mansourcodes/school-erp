@@ -13,7 +13,16 @@ RUN apt-get update && apt-get install -y \
     git curl zip unzip libpng-dev libjpeg62-turbo-dev libwebp-dev libfreetype6-dev libonig-dev \
     libxml2-dev libzip-dev && \
     docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype && \
-    docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
+    docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd opcache
+
+# OPcache keeps compiled PHP in memory, so files on the slow Windows mount aren't re-read every request.
+# Changed files are still picked up within 2 seconds.
+RUN { echo 'opcache.enable=1'; \
+      echo 'opcache.memory_consumption=256'; \
+      echo 'opcache.max_accelerated_files=20000'; \
+      echo 'opcache.validate_timestamps=1'; \
+      echo 'opcache.revalidate_freq=2'; \
+    } > /usr/local/etc/php/conf.d/opcache-dev.ini
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite

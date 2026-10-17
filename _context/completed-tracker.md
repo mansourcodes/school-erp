@@ -36,6 +36,14 @@ Update this file after every meaningful implementation change.
   forgets the key and redirects to the dashboard with a flash message. The verse is not cached
 - Teachers still never see it (`RedirectTeacherToAttendance`). `AdminDashboardTest` (8)
 
+### Local Docker speed-up (2026-10-17)
+- Pages took ~7s: the Windows `C:` bind mount (9p/drvfs) is slow, and PHP had no OPcache (0.3s CPU, the rest file I/O)
+- `vendor/` is a named volume (`sailvendor`), filled from the image on first start; after a `composer.json` change
+  run `composer install` inside the container. The host `vendor/` is no longer what the container uses
+- Dockerfile: `opcache` extension + `opcache-dev.ini` (`revalidate_freq=2`, so edits show within 2s)
+- `.dockerignore`: `public/storage` (the container-made symlink broke `docker build` on Windows)
+- `/admin/login`: ~6.5s → ~0.37s. Production is unaffected (no Docker)
+
 ### Launch review fixes (2026-10-16) — `_context/feature/04-launch-review-fixes.md`
 - Login throttle: the per-account+IP key uses the teacher `username` (lower-cased, trimmed), not `email`.
   `TeacherLoginThrottleTest` (3)

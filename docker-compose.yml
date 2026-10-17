@@ -11,6 +11,9 @@ services:
       LARAVEL_SAIL: 1
     volumes:
       - ".:/var/www/html"
+      # vendor/ lives in a Docker volume, not on the slow Windows mount.
+      # Filled from the image on first start; after composer.json changes run composer install in the container.
+      - "sailvendor:/var/www/html/vendor"
     networks:
       - sail
     depends_on:
@@ -92,4 +95,6 @@ volumes:
   #    sailpostgresql:
   #        driver: local
   sailredis:
+    driver: local
+  sailvendor:
     driver: local
