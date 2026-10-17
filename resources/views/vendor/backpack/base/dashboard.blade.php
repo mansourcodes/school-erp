@@ -21,7 +21,7 @@
 @endphp
 
 @push('after_styles')
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&display=swap">
 @endpush
 
 @section('content')
@@ -32,23 +32,27 @@
                 <p class="dash-hero-date">{{ now()->locale('ar')->translatedFormat('l، j F Y') }}</p>
                 <h1 class="dash-hero-title">{{ __('base.dashboard.greeting', ['name' => backpack_user()->name]) }}</h1>
                 <p class="dash-hero-sub">{{ __('base.dashboard.subtitle') }}</p>
+                <img class="dash-hero-logo" src="{{ \App\Support\AdminBranding::logoUrl() ?: asset('beta/logo-icon.svg') }}" alt="" aria-hidden="true">
             </section>
         </div>
 
         <div class="col-lg-5 mb-4">
-            <section class="dash-quran h-100" data-quotes='@json(\App\Support\QuranQuotes::ALL)'>
-                <header class="dash-quran-head">
-                    <span><i class="la la-book-open"></i> {{ __('base.dashboard.quran_title') }}</span>
-                    <button type="button" class="dash-quran-next" title="{{ __('base.dashboard.quran_next') }}" aria-label="{{ __('base.dashboard.quran_next') }}">
-                        <i class="la la-sync"></i>
-                    </button>
-                </header>
-                <blockquote class="dash-quran-body">
-                    <p class="dash-quran-text">﴿&nbsp;<span data-quran-text>{{ $quote['text'] }}</span>&nbsp;﴾</p>
-                    <footer class="dash-quran-ref" data-quran-ref data-template="{{ __('base.dashboard.quran_ref', ['surah' => ':surah', 'ayah' => ':ayah']) }}">
-                        {{ __('base.dashboard.quran_ref', ['surah' => $quote['surah'], 'ayah' => $quote['ayah']]) }}
-                    </footer>
-                </blockquote>
+            {{-- Mushaf page (design 2 of _brand/new_admin_design/quran-card-samples.html) --}}
+            <section class="dash-quran h-100" aria-label="{{ __('base.dashboard.quran_title') }}" data-quotes='@json(\App\Support\QuranQuotes::all())'>
+                <button type="button" class="dash-quran-next" title="{{ __('base.dashboard.quran_next') }}" aria-label="{{ __('base.dashboard.quran_next') }}">
+                    <i class="la la-sync"></i>
+                </button>
+                <div class="dash-quran-frame">
+                    <blockquote class="dash-quran-body dash-quran-{{ $quote['size'] }}" data-quran-body
+                                title="{{ __('base.dashboard.quran_ref', ['surah' => $quote['surah'], 'ayah' => $quote['ayah']]) }}"
+                                data-template="{{ __('base.dashboard.quran_ref', ['surah' => ':surah', 'ayah' => ':ayah']) }}">
+                        <p class="dash-quran-text">
+                            <span data-quran-text>{{ $quote['text'] }}</span>
+                            <span class="dash-quran-number" data-quran-number>{{ $quote['number'] }}</span>
+                        </p>
+                        <span class="dash-quran-surah" data-quran-surah>{{ __('base.dashboard.quran_surah', ['surah' => $quote['surah']]) }}</span>
+                    </blockquote>
+                </div>
             </section>
         </div>
     </div>
@@ -133,13 +137,19 @@
         var card = document.querySelector('.dash-quran');
         if (!card) return;
         var quotes = JSON.parse(card.getAttribute('data-quotes'));
+        var body = card.querySelector('[data-quran-body]');
         var text = card.querySelector('[data-quran-text]');
-        var ref = card.querySelector('[data-quran-ref]');
+        var surah = card.querySelector('[data-quran-surah]');
+        var number = card.querySelector('[data-quran-number]');
+        var surahTemplate = @json(__('base.dashboard.quran_surah', ['surah' => ':surah']));
         card.querySelector('.dash-quran-next').addEventListener('click', function () {
             var current = text.textContent, quote;
             do { quote = quotes[Math.floor(Math.random() * quotes.length)]; } while (quotes.length > 1 && quote.text === current);
             text.textContent = quote.text;
-            ref.textContent = ref.getAttribute('data-template').replace(':surah', quote.surah).replace(':ayah', quote.ayah);
+            number.textContent = quote.number;
+            surah.textContent = surahTemplate.replace(':surah', quote.surah);
+            body.title = body.getAttribute('data-template').replace(':surah', quote.surah).replace(':ayah', quote.ayah);
+            body.className = body.className.replace(/dash-quran-(lg|md|sm)/, 'dash-quran-' + quote.size);
         });
     })();
 </script>

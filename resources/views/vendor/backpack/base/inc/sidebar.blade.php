@@ -10,6 +10,7 @@
       @if (config('backpack.base.developer_link') && config('backpack.base.developer_name'))
         <div class="sidebar-foot">
           <div class="sidebar-card">
+            <i class="lab la-github sidebar-card-icon" aria-hidden="true"></i>
             {{ trans('backpack::base.handcrafted_by') }}
             <a target="_blank" rel="noopener" href="{{ config('backpack.base.developer_link') }}">{{ config('backpack.base.developer_name') }}</a>.
           </div>

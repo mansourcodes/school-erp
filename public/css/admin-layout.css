@@ -328,6 +328,15 @@ html .sidebar .sidebar-card {
     opacity: .85;
 }
 
+/* GitHub mark beside the open-source line (Line Awesome Brands) */
+html .sidebar .sidebar-card-icon {
+    float: inline-start;
+    margin-inline-end: .55rem;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--at-sidebar-text);
+}
+
 html .sidebar .sidebar-card a {
     color: var(--at-sidebar-card-link);
     font-weight: 600;
@@ -447,7 +456,6 @@ html .dash {
     --dash-border: var(--at-sidebar-line, #e7e2d4);
     --dash-accent: var(--at-primary, var(--primary, #3490dc));
     --dash-gold: #c9a24a;
-    --dash-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1'%3E%3Cpath d='M24 4l5.9 14.1L44 24l-14.1 5.9L24 44l-5.9-14.1L4 24l14.1-5.9z'/%3E%3Crect x='14' y='14' width='20' height='20' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E");
     padding-top: 1.5rem;
     color: var(--dash-text);
 }
@@ -480,6 +488,8 @@ html .dash-refresh small {
 
 /* Greeting */
 html .dash-hero {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -488,6 +498,23 @@ html .dash-hero {
     border: 1px solid var(--dash-border);
     border-radius: 20px;
     background: var(--dash-card);
+}
+
+html .dash-hero > :not(.dash-hero-logo) {
+    position: relative; /* text stays above the watermark */
+}
+
+/* Centre logo (same as the navbar brand) as a faint watermark, bottom-left in RTL, partly off the card */
+html .dash-hero-logo {
+    position: absolute;
+    bottom: -24px;
+    inset-inline-end: -12px;
+    width: 170px;
+    height: 170px;
+    object-fit: contain;
+    opacity: .08;
+    pointer-events: none;
+    user-select: none;
 }
 
 html .dash-hero-date {
@@ -508,73 +535,113 @@ html .dash-hero-sub {
     color: var(--dash-muted);
 }
 
-/* Quran verse: accent fill with the riwaq pattern and a gold line */
+/* Quran verse (design 2 of _brand/new_admin_design/quran-card-samples.html): a mushaf page. Cream paper, double
+   gold frame, the verse number in a gold circle at its end, the surah name in a label under the verse. The text steps down for
+   long verses (QuranQuotes::size: lg / md / sm), each step capped by the card width (cqi), lines balanced. */
 html .dash-quran {
+    --dash-paper: #fbf7ec;
+    container-type: inline-size;
     position: relative;
     display: flex;
-    flex-direction: column;
     min-height: 210px;
-    padding: 1.25rem 1.5rem 1.5rem;
-    overflow: hidden;
+    padding: 12px;
+    border: 1px solid var(--dash-border);
     border-radius: 20px;
-    background: var(--dash-pattern), var(--at-sidebar-active, var(--dash-accent));
-    color: #ffffff;
+    background: var(--dash-paper);
 }
 
-html .dash-quran::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 4px;
-    background: var(--dash-gold);
-}
-
-html .dash-quran-head {
+html .dash-quran-frame {
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: .8rem;
-    font-weight: 600;
-    opacity: .9;
+    padding: 4px;
+    border: 2px solid var(--dash-gold);
+    border-radius: 12px;
 }
 
+html .dash-quran-body {
+    --verse-size: 1.6rem;
+    --verse-size: min(1.6rem, 7.2cqi);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(201, 162, 74, .55);
+    border-radius: 9px;
+}
+
+html .dash-quran-md { --verse-size: 1.3rem; --verse-size: min(1.3rem, 5.9cqi); }
+html .dash-quran-sm { --verse-size: 1.08rem; --verse-size: min(1.08rem, 5cqi); }
+
+/* Surah label: small theme colour pill at the end of the line (left in RTL), paper gap and thin gold ring */
+html .dash-quran-surah {
+    align-self: flex-end;
+    padding: .05rem .8rem;
+    border-radius: 999px;
+    background: var(--dash-accent);
+    color: #f3e2b5;
+    font-family: "Amiri", "Amiri Quran", serif;
+    font-size: .72rem;
+    font-weight: 700;
+    line-height: 1.6;
+    box-shadow: 0 0 0 2px var(--dash-paper), 0 0 0 3px var(--dash-gold);
+}
+
+html .dash-quran-text {
+    margin: 0 0 .25rem;
+    font-family: "Amiri Quran", "Amiri", serif;
+    font-size: var(--verse-size);
+    line-height: 2;
+    color: var(--dash-text);
+    text-align: center;
+    text-wrap: balance;
+}
+
+/* Verse number, as the end-of-verse circle (a pill when it is a range) */
+html .dash-quran-number {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.9em;
+    height: 1.9em;
+    margin-inline-start: .25em;
+    padding: 0 .35em;
+    border: 1.5px solid var(--dash-gold);
+    border-radius: 999px;
+    font-family: "Amiri", serif;
+    font-size: .55em;
+    line-height: 1;
+    color: #a8822f;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Refresh: small gold ring over the frame corner, on paper so the frame line stops behind it */
 html .dash-quran-next {
-    width: 34px;
-    height: 34px;
-    border: 0;
+    position: absolute;
+    top: 24px;
+    inset-inline-end: 24px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(201, 162, 74, .6);
     border-radius: 50%;
-    background: rgba(255, 255, 255, .15);
-    color: inherit;
+    background: var(--dash-paper);
+    color: var(--dash-gold);
     cursor: pointer;
-    transition: background .2s, transform .3s;
+    transition: color .2s, border-color .2s, transform .3s;
 }
 
 html .dash-quran-next:hover,
 html .dash-quran-next:focus-visible {
-    background: rgba(255, 255, 255, .28);
+    border-color: var(--dash-gold);
+    color: var(--dash-accent);
     outline: 0;
     transform: rotate(-90deg);
-}
-
-html .dash-quran-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    margin: 0;
-    text-align: center;
-}
-
-html .dash-quran-text {
-    margin: .75rem 0;
-    font-family: "Amiri Quran", "Amiri", serif;
-    font-size: 1.6rem;
-    line-height: 2.1;
-}
-
-html .dash-quran-ref {
-    font-size: .8rem;
-    color: #f3e2b5;
 }
 
 /* Statistics */
@@ -904,6 +971,5 @@ html .dash-rank-meta {
 @media (max-width: 575.98px) {
     html .dash-hero { padding: 1.5rem; min-height: 0; }
     html .dash-hero-title { font-size: 1.4rem; }
-    html .dash-quran-text { font-size: 1.35rem; }
     html .dash-tile { flex-direction: column; align-items: flex-start; gap: .65rem; }
 }

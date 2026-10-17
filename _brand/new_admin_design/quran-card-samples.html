@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نماذج بطاقة الآية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+<style>
+/* ==========================================================================
+   Admin dashboard Quran card: five samples to choose from (ghadeer palette).
+   Same verse and the same card size as the dashboard (col-lg-5, min 210px).
+   ========================================================================== */
+:root {
+  --page: #f5f3ec; --card: #ffffff; --line: #e7e2d4; --ink: #1b2a27; --muted: #6b7572;
+  --teal: #127a70; --teal-deep: #0f3f3a; --teal-2: #16897e;
+  --gold: #c9a24a; --gold-soft: #f3e2b5; --cream: #fbf7ec;
+  --night: #0d1f2d; --night-2: #12344a;
+  --riwaq: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1'%3E%3Cpath d='M24 4l5.9 14.1L44 24l-14.1 5.9L24 44l-5.9-14.1L4 24l14.1-5.9z'/%3E%3Crect x='14' y='14' width='20' height='20' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E");
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 28px; background: var(--page); color: var(--ink); font-family: "IBM Plex Sans Arabic", sans-serif; }
+h1 { margin: 0 0 4px; font-size: 1.35rem; }
+.lead { margin: 0 0 24px; color: var(--muted); font-size: .9rem; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; }
+.sample > .tag { display: flex; align-items: center; gap: .5rem; margin-bottom: 10px; font-weight: 600; font-size: .92rem; }
+.sample > .tag b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--teal); color: #fff; font-size: .85rem; }
+.sample > .tag small { color: var(--muted); font-weight: 400; }
+
+.verse { font-family: "Amiri Quran", "Amiri", serif; line-height: 2.1; }
+.next { width: 32px; height: 32px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; font-size: 1rem; }
+.card { position: relative; min-height: 230px; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+
+/* 1. Current: teal fill, riwaq pattern, gold base line */
+.s1 { background: var(--riwaq), var(--teal); color: #fff; padding: 1.2rem 1.4rem 1.5rem; }
+.s1::after { content: ""; position: absolute; inset: auto 0 0 0; height: 4px; background: var(--gold); }
+.s1 .head { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; font-weight: 600; opacity: .9; }
+.s1 .next { background: rgba(255,255,255,.15); color: #fff; }
+.s1 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.s1 .verse { font-size: 1.6rem; margin: .5rem 0; }
+.s1 .ref { font-size: .8rem; color: var(--gold-soft); }
+
+/* 2. Mushaf page: cream paper, double gold frame, surah cartouche */
+.s2 { background: var(--cream); padding: 12px; border: 1px solid var(--line); }
+.s2 .frame { flex: 1; display: flex; flex-direction: column; border: 2px solid var(--gold); border-radius: 12px; padding: 4px; }
+.s2 .frame-in { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; border: 1px solid rgba(201,162,74,.55); border-radius: 9px; padding: .9rem 1rem 1rem; }
+.s2 .cartouche { padding: .2rem 1.4rem; border-radius: 999px; background: var(--teal); color: var(--gold-soft); font-family: "Amiri", serif; font-size: .95rem; font-weight: 700; box-shadow: 0 0 0 3px var(--cream), 0 0 0 4px var(--gold); }
+.s2 .verse { font-size: 1.55rem; color: var(--teal-deep); text-align: center; margin: .25rem 0 0; }
+.s2 .ayah-no { display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem; margin-inline-start: .3rem; border: 1.5px solid var(--gold); border-radius: 50%; font-family: "Amiri", serif; font-size: .8rem; color: var(--gold); vertical-align: middle; }
+.s2 .next { position: absolute; top: 24px; inset-inline-end: 24px; width: 28px; height: 28px; background: var(--cream); color: var(--gold); border: 1px solid rgba(201,162,74,.6); }
+
+/* 3. Minimal white: big gold brackets, quiet type */
+.s3 { background: var(--card); border: 1px solid var(--line); padding: 1.2rem 1.5rem; }
+.s3 .head { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .78rem; }
+.s3 .head i { color: var(--gold); }
+.s3 .next { background: #f1efe7; color: var(--muted); }
+.s3 .body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.s3 .row { display: flex; align-items: center; gap: .9rem; }
+.s3 .br { font-family: "Amiri Quran", serif; font-size: 2.8rem; line-height: 1; color: var(--gold); }
+.s3 .verse { font-size: 1.65rem; color: var(--teal); }
+.s3 .rule { width: 56px; height: 2px; margin: .6rem 0 .5rem; border-radius: 2px; background: var(--gold); }
+.s3 .ref { font-size: .8rem; color: var(--muted); }
+
+/* 4. Arch (mihrab): teal gradient with a parchment arch window */
+.s4 { background: linear-gradient(160deg, var(--teal-deep), var(--teal-2)); padding: 1rem 1.3rem 0; color: #fff; }
+.s4 .head { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; opacity: .9; margin-bottom: .7rem; }
+.s4 .next { background: rgba(255,255,255,.14); color: #fff; width: 30px; height: 30px; }
+.s4 .arch { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 6%; padding: 1.6rem 1rem 1rem; border-radius: 999px 999px 0 0; background: var(--cream); border: 2px solid var(--gold); border-bottom: 0; color: var(--teal-deep); text-align: center; }
+.s4 .star { color: var(--gold); font-size: .9rem; margin-bottom: .1rem; }
+.s4 .verse { font-size: 1.45rem; }
+.s4 .ref { font-size: .75rem; color: var(--muted); }
+
+/* 5. Night: deep blue, gold stars, gold verse */
+.s5 { background: radial-gradient(120% 90% at 85% 0%, var(--night-2), var(--night) 60%); color: var(--gold-soft); padding: 1.2rem 1.4rem 1.4rem; }
+.s5::before { content: ""; position: absolute; inset: 0; background-image:
+    radial-gradient(1.2px 1.2px at 12% 22%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(1.4px 1.4px at 58% 18%, rgba(243,226,181,.9), transparent 60%),
+    radial-gradient(1px 1px at 78% 62%, rgba(255,255,255,.55), transparent 60%),
+    radial-gradient(1.2px 1.2px at 90% 35%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(1px 1px at 45% 88%, rgba(243,226,181,.7), transparent 60%); }
+.s5 > * { position: relative; }
+.s5 .head { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: rgba(243,226,181,.75); }
+.s5 .moon { position: absolute; top: 14px; inset-inline-start: 50%; transform: translateX(50%); font-size: 1.6rem; color: var(--gold); opacity: .9; }
+.s5 .next { background: rgba(243,226,181,.12); color: var(--gold-soft); }
+.s5 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.s5 .verse { font-size: 1.65rem; color: #f6e7bf; text-shadow: 0 0 18px rgba(201,162,74,.35); margin: .6rem 0 .3rem; }
+.s5 .ref { font-size: .78rem; color: var(--gold); letter-spacing: .02em; }
+
+/* context strip: how the chosen card sits next to the greeting */
+.context { grid-column: span 1; display: flex; flex-direction: column; justify-content: center; gap: .4rem; min-height: 230px; padding: 1.5rem; border: 1px dashed var(--line); border-radius: 20px; color: var(--muted); font-size: .85rem; line-height: 1.8; }
+.context b { color: var(--ink); }
+</style>
+</head>
+<body>
+<h1>بطاقة الآية في لوحة الإدارة — خمسة نماذج</h1>
+<p class="lead">الآية نفسها في كل نموذج، وبالمقاس الفعلي للبطاقة بجانب التحية. جميعها بألوان سمة «الغدير».</p>
+
+<div class="grid">
+
+  <div class="sample">
+    <div class="tag"><b>١</b> الحالي <small>— تعبئة بلون السمة ونقش الرواق وخط ذهبي</small></div>
+    <div class="card s1">
+      <div class="head"><span><i class="la la-book-open"></i> من آيات القرآن الكريم</span><button class="next"><i class="la la-sync"></i></button></div>
+      <div class="body">
+        <p class="verse">﴿&nbsp;وَقُل رَّبِّ زِدْنِي عِلْمًا&nbsp;﴾</p>
+        <div class="ref">سورة طه — الآية 114</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sample">
+    <div class="tag"><b>٢</b> صفحة المصحف <small>— ورق كريمي وإطار ذهبي مزدوج وترويسة السورة</small></div>
+    <div class="card s2">
+      <button class="next"><i class="la la-sync"></i></button>
+      <div class="frame"><div class="frame-in">
+        <span class="cartouche">سُورَةُ طه</span>
+        <p class="verse">وَقُل رَّبِّ زِدْنِي عِلْمًا<span class="ayah-no">١١٤</span></p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sample">
+    <div class="tag"><b>٣</b> أبيض هادئ <small>— أقواس ذهبية كبيرة وخط فاصل</small></div>
+    <div class="card s3">
+      <div class="head"><span><i class="la la-book-open"></i> من آيات القرآن الكريم</span><button class="next"><i class="la la-sync"></i></button></div>
+      <div class="body">
+        <div class="row"><span class="br">﴿</span><span class="verse">وَقُل رَّبِّ زِدْنِي عِلْمًا</span><span class="br">﴾</span></div>
+        <div class="rule"></div>
+        <div class="ref">سورة طه · الآية 114</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sample">
+    <div class="tag"><b>٤</b> المحراب <small>— نافذة على شكل قوس، كقوس البوابة الجديدة</small></div>
+    <div class="card s4">
+      <div class="head"><span><i class="la la-book-open"></i> من آيات القرآن الكريم</span><button class="next"><i class="la la-sync"></i></button></div>
+      <div class="arch">
+        <span class="star">✦</span>
+        <p class="verse" style="margin:0">وَقُل رَّبِّ زِدْنِي عِلْمًا</p>
+        <span class="ref">سورة طه — الآية 114</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sample">
+    <div class="tag"><b>٥</b> ليلي <small>— أزرق داكن ونجوم وهلال وآية بالذهبي</small></div>
+    <div class="card s5">
+      <span class="moon"><i class="la la-moon"></i></span>
+      <div class="head"><span>من آيات القرآن الكريم</span><button class="next"><i class="la la-sync"></i></button></div>
+      <div class="body">
+        <p class="verse">﴿&nbsp;وَقُل رَّبِّ زِدْنِي عِلْمًا&nbsp;﴾</p>
+        <div class="ref">سورة طه — الآية ١١٤</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="context">
+    <b>ملاحظات</b>
+    <span>• ١ و٤ و٥ تأخذ لونها من السمة المختارة (الغدير، البنات…)؛ ٢ و٣ فاتحة وتناسب كل السمات.</span>
+    <span>• ٢ يعرض رقم الآية داخل دائرة كما في المصحف.</span>
+    <span>• زر «آية أخرى» موجود في كل النماذج.</span>
+  </div>
+
+</div>
+</body>
+</html>

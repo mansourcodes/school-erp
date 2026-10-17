@@ -142,7 +142,7 @@ class AdminDashboardTest extends TestCase
             ->assertSee(backpack_url('payment'), false);
 
         $quote = $response->viewData('quote');
-        $this->assertContains($quote, QuranQuotes::ALL);
+        $this->assertContains($quote, QuranQuotes::all());
         $response->assertSee($quote['text']);
     }
 
@@ -173,6 +173,17 @@ class AdminDashboardTest extends TestCase
             ->get(backpack_url('dashboard'))->assertOk()
             ->assertSee(route('admin.dashboard.refresh'), false)
             ->assertSee(__('base.dashboard.refresh'));
+    }
+
+    public function test_long_verses_get_a_smaller_text_size()
+    {
+        $this->assertSame('lg', QuranQuotes::size('لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ'));
+        $this->assertSame('md', QuranQuotes::size('فَلَا تَعْلَمُ نَفْسٌ مَّا أُخْفِيَ لَهُم مِّن قُرَّةِ أَعْيُنٍ جَزَاءً بِمَا كَانُوا يَعْمَلُونَ'));
+        $this->assertSame('sm', QuranQuotes::size(collect(QuranQuotes::ALL)->firstWhere('ayah', '261')['text']));
+
+        foreach (QuranQuotes::all() as $quote) {
+            $this->assertContains($quote['size'], ['lg', 'md', 'sm']);
+        }
     }
 
     public function test_a_teacher_still_goes_to_the_attendance_page()

@@ -5,10 +5,14 @@ Update this file after every meaningful implementation change.
 ## Completed
 
 ### Admin dashboard redesign (2026-10-17, branch `feature/admin-light-sidebar`)
-- `base/dashboard.blade.php` is plain Blade now (no widget arrays): greeting hero with the date, Quran verse card,
+- `base/dashboard.blade.php` is plain Blade now (no widget arrays): greeting hero with the date (centre logo as an
+  8% watermark, bottom-left, from `AdminBranding::logoUrl()` like the navbar), Quran verse card,
   Superadmin figures (the fake "11.456" progress widget is gone) and shortcut tiles
-- Quran card: `App\Support\QuranQuotes::ALL` (32 short verses), one at random per visit (`AdminController`), and an
-  "آية أخرى" button that swaps the verse in the page. Font: Amiri Quran (Google Fonts, dashboard only)
+- Quran card: design ٢ "صفحة المصحف" of `_brand/new_admin_design/quran-card-samples.html` (cream paper, double
+  gold frame, verse number in a gold circle in Arabic-Indic digits, small surah name label under the verse, on the left). `App\Support\QuranQuotes::ALL`: 35 verses of glad tidings
+  (reward, bliss and Paradise, gratitude, giving), one at random per visit, "آية أخرى" swaps it in the page.
+  Long verses: `QuranQuotes::size()` counts letters without harakat (≤32 lg, ≤50 md, else sm), each step capped
+  by the card width (`cqi`), lines balanced; every verse fits the 210px card. Fonts: Amiri Quran + Amiri (dashboard only)
 - Figures: `App\Support\AdminDashboard::stats()`: active courses, their classrooms, students enrolled in them
   (read from `class_room_student`), all students
 - Styles: `.dash*` block at the end of `public/css/admin-layout.css`; accent from `--at-sidebar-active` /

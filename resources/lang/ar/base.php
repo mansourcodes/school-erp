@@ -66,6 +66,7 @@ return [
         'quran_title' => 'من آيات القرآن الكريم',
         'quran_ref' => 'سورة :surah — الآية :ayah',
         'quran_next' => 'آية أخرى',
+        'quran_surah' => 'سُورَةُ :surah',
         'stats' => 'إحصائيات',
         'computed_at' => 'آخر تحديث :time',
         'refresh' => 'تحديث الإحصائيات',

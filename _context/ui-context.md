@@ -74,7 +74,7 @@ framework.
 
 ## Layout Patterns
 
-- **Admin dashboard**: greeting hero + Quran verse card (accent fill, riwaq pattern, gold line, Amiri Quran), then
+- **Admin dashboard**: greeting hero + Quran verse card (mushaf page: cream paper, double gold frame, surah label, verse-number circle, Amiri Quran, size steps for long verses), then
   stat tiles and shortcut tiles (white cards, 16–20px radius, icon chip in `--at-brand-chip`); `.dash*` in
   `public/css/admin-layout.css`
 
