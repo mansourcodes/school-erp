@@ -110,6 +110,8 @@ CurriculumCategory ──< Curriculum (stored in ClassRoom.teachers JSON
                                 │
                          Payment (per student per course)
                                 │
+                         PaymentExemption (exemption ticket, per student per course)
+                                │
                          Attends (per session date/time/classroom/curriculum)
 ExamTool >── Course, Curriculum
 ```
@@ -124,6 +126,8 @@ ExamTool >── Course, Curriculum
    uniqueness is enforced via this code, not a simple integer PK
 4. The `student` auth guard is completely separate from the `web` (admin)
    guard — middleware must specify the correct guard explicitly
+5b. A course's paid / exempt / unpaid split is resolved only by `App\Services\Account\CoursePaymentStatus`
+   (every enrolled student in exactly one group; paid wins over a ticket); account reports must not re-implement it
 5a. Attendance states are resolved only by `App\Services\Attendance\ClassroomAttendance` (admin
    `student_attend_list` report and portal API alike); do not re-implement the cell rule elsewhere
 5. PDF generation runs synchronously in request handlers (no background jobs

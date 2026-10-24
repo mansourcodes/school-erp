@@ -167,6 +167,11 @@ class Student extends Authenticatable
         return $this->hasMany(\App\Models\Account\Payment::class);
     }
 
+    public function paymentExemptions()
+    {
+        return $this->hasMany(\App\Models\Account\PaymentExemption::class);
+    }
+
     public function getLongNameAttribute()
     {
         $mobile2 = ($this->mobile2) ? '-' . $this->mobile2 : '';
@@ -271,7 +276,14 @@ class Student extends Authenticatable
         )->where('student_id', $this->id)->get();
 
 
-        $unpaid_courses = array_diff($this->courses->pluck('id')->toArray(), $payments->pluck('course_id')->toArray());
+        // Exempt courses need no payment.
+        $exempt_courses = $this->paymentExemptions()->pluck('course_id')->toArray();
+
+        $unpaid_courses = array_diff(
+            $this->courses->pluck('id')->toArray(),
+            $payments->pluck('course_id')->toArray(),
+            $exempt_courses
+        );
 
 
         $course_list = $this->courses->mapWithKeys(function ($item, $key) {

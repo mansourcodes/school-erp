@@ -70,6 +70,7 @@ Route::group([
     Route::crud('studentmarks', 'StudentMarksCrudController');
     Route::crud('attends', 'AttendsCrudController');
     Route::crud('payment', 'PaymentCrudController');
+    Route::crud('paymentexemption', 'PaymentExemptionCrudController');
     Route::crud('examtool', 'ExamToolCrudController');
     Route::crud('message', 'MessageCrudController');
 

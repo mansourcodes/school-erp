@@ -25,6 +25,9 @@
     <li class='nav-item'><a class='nav-link' href='{{ backpack_url('payment') }}'><i
                 class='nav-icon la la-file-invoice-dollar'></i> {{ __('account.payments') }}</a></li>
 
+    <li class='nav-item'><a class='nav-link' href='{{ backpack_url('paymentexemption') }}'><i
+                class='nav-icon la la-hand-holding-heart'></i> {{ __('account.exemptions') }}</a></li>
+
 
     <!-- Registration -->
     <li class="nav-title">{{ __('base.academicRegistration') }}</li>

@@ -53,10 +53,25 @@ return [
 
 
     'balance_statement_report' => 'كشف الارصدة',
-    'detecting_helpers_report' => 'كشف طلبة المساعدة',
-    'list_of_assistance_students_who_participated_in_the_payment_report' => 'كشف طلبة المساعدة الذين قاموا بالدفع',
-    'list_of_unconfirmed_students_report' => 'قائمة الطلبة غير المؤكدين',
-    'list_of_non_paying_students_report' => 'قائمة الطلبة غير الدافعين',
+    'paid_students_report' => 'قائمة الطلبة الدافعين',
+    'exempt_students_report' => 'كشف الطلبة المعفيين من الدفع',
+    'list_of_non_paying_students_report' => 'قائمة الطلبة غير الدافعين وغير المعفيين',
+    'paid_and_exempt_students_report' => 'كشف الطلبة المعفيين الذين قاموا بالدفع',
+
+    'payment_status' => [
+        'summary' => 'طلبة الدورة :students = الدافعون :paid + المعفيون من الدفع :exempt + غير الدافعين وغير المعفيين :unpaid',
+        'paid_and_exempt_note' => 'من الدافعين :count طالبًا لديهم إعفاء من الدفع أيضًا',
+        'student_number' => 'رقم الطالب',
+        'name' => 'الإسم',
+        'cpr' => 'الرقم الشخصي',
+        'mobile' => 'النقال',
+        'class_room' => 'الصف',
+        'payments' => 'الأرصدة',
+        'total_amount' => 'المجموع',
+        'exemption_ticket' => 'تذكرة الإعفاء',
+        'exemption_reason' => 'سبب الإعفاء',
+        'notes' => 'ملاحظات',
+    ],
 
 
 

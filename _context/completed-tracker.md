@@ -605,3 +605,22 @@ Update this file after every meaningful implementation change.
   user's `portal_password_hash_*`, `PortalAuthenticateSession` saw a mismatch, signed the new user out and
   regenerated the CSRF token. `PortalImpersonator::start` now calls `PortalAuthenticateSession::remember`;
   covered by `PortalImpersonationTest::test_opening_a_second_student_keeps_the_portal_and_the_admin_csrf_token`
+
+### Payment exemption tickets + account reports by payment status (2026-10-24)
+- `payment_exemptions` (course, student, reason FINANCIAL_ISSUE / PARENTS_ISSUE / TEACHER_SONS / OTHER, notes,
+  created_by, soft deletes); `App\Models\Account\PaymentExemption`; one live ticket per student per course
+  (`PaymentExemptionRequest`, deleted tickets ignored)
+- `PaymentExemptionCrudController` at `/admin/paymentexemption` (sidebar: Accounting): list with "also paid" flag,
+  course and reason filters, create / edit / delete; records the creating admin
+- `App\Services\Account\CoursePaymentStatus`: enrolled students (deduplicated across classrooms) split into paid
+  (any payment: FULL / PART / OFFER) / exempt (ticket, no payment) / unpaid; `paidAndExempt()` flags the overlap.
+  students = paid + exempt + unpaid, shown at the top of every report
+- Account reports: كشف الارصدة (unchanged), قائمة الطلبة الدافعين (new), كشف الطلبة المعفيين من الدفع (was كشف طلبة
+  المساعدة, read FREE payments), قائمة الطلبة غير الدافعين وغير المعفيين (was غير الدافعين, read
+  financial_support_status), كشف الطلبة المعفيين الذين قاموا بالدفع (was طلبة المساعدة الذين قاموا بالدفع). قائمة
+  الطلبة غير المؤكدين removed (CONFIRM payments no longer exist)
+- Migrations: `2026_10_24_000001` renames the report title / pre / pro settings keys, drops the unconfirmed ones,
+  adds `paid_students_report.*`; `2026_10_24_000002` opens tickets in inactive courses from
+  `financial_support_status` (NONE / UNKNOWN = no support; re-runnable; down() removes only migrated tickets)
+- Student list "store payment" dropdown skips courses where the student is exempt
+- `tests/Feature/Account/PaymentExemptionTest` (11 tests)

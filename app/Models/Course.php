@@ -84,6 +84,11 @@ class Course extends Model
         return $this->hasMany(\App\Models\Account\Payment::class);
     }
 
+    public function paymentExemptions()
+    {
+        return $this->hasMany(\App\Models\Account\PaymentExemption::class);
+    }
+
 
     public function courseRootId()
     {

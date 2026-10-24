@@ -62,6 +62,11 @@ certificates.
 ### Payments & Accounts
 - Payment per student per course; tracks amount, source, type
 - Payment print report via mPDF
+- Exemption tickets (`PaymentExemption`, Accounting → الإعفاء من الدفع): a student does not pay for one
+  course; one live ticket per student per course, with a reason and notes
+- Account reports split each course's students into paid (any payment) / exempt (ticket, no payment) /
+  not paid and not exempt, plus a "paid and exempt" flag list. `students.financial_support_status` is no longer
+  used by the reports (it stays on the student form)
 
 ### Exam Tools
 - Upload exam files; background job packages them into a ZIP

@@ -74,6 +74,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Payment exemption tickets + account reports by payment status (2026-10-24): new `payment_exemptions` table and
+  CRUD (`/admin/paymentexemption`); reports paid / exempt / not paid and not exempt / paid and exempt; the
+  unconfirmed students report removed. **Production:** run the three `2026_10_24_*` migrations (the last one opens
+  tickets in inactive courses for students whose `financial_support_status` is FINANCIAL_ISSUE / PARENTS_ISSUE /
+  TEACHER_SONS)
+
 - "Open portal" 419 fix (2026-10-16): impersonation start now stores the new user's password hash, so the
   previous portal user's hash no longer signs them out and rotates the CSRF token the Backpack page holds
 
@@ -157,6 +163,12 @@ Update this file after every meaningful implementation change.
   limits see Cloudflare's IPs (`_context/feature/03-platform-upgrade.md`, Part B)
 
 ## Open Questions
+
+- Exemption tickets: the migration only covered inactive courses. Students with a support status in the active
+  course(s) need a ticket opened by hand (or a second run scoped to active courses). Should the student form's
+  `financial_support_status` field be retired now that tickets replace it in the reports?
+- `resources/lang/en/` has no `reports.php` / `account.php`, so the new report and exemption labels are Arabic only
+  (as all existing account labels are). Create the English files?
 
 - `wireframe` theme (DaisyUI preset): primary is light grey, so `text-primary` items (active tab, active nav) are
   low-contrast on white. Keep the preset as-is, or darken its primary for the portal?

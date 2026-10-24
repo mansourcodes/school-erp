@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
-use App\Models\Account\Payment;
 use App\Models\Course;
-use App\Models\Student;
+use App\Services\Account\CoursePaymentStatus;
 use Backpack\Settings\app\Models\Setting;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
@@ -80,140 +77,47 @@ class AccountController extends Controller
     }
 
 
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function detectingHelpersReport_(Request $request)
+    /** Students with at least one payment in the course (paid and exempt ones included, flagged). */
+    public function paidStudentsReport_(Request $request)
     {
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $payment_filtered = $course->payments->filter(function ($p, $key) {
-            return $p->type == 'FREE';
-        });
-
-        // dd(
-        //     $payment_filtered->first()->classRoom->implode('class_room_name', ', ')
-        // );
-
-        $return['payments'] = $payment_filtered;
-        $return['course'] = $course;
-
-        return $return;
+        return $this->studentsByPaymentStatus($request, 'paid');
     }
 
 
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function listOfAssistanceStudentsWhoParticipatedInThePaymentReport_(Request $request)
+    /** Students with an exemption ticket and no payment. */
+    public function exemptStudentsReport_(Request $request)
     {
-
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $return['course'] = $course;
-        $course_students = $course->classRooms->pluck('students');
-        $in_classroom_students = Arr::flatten($course_students->pluck('*'));
-        $students = new Collection($in_classroom_students);
-
-        $students = $students->filter(function ($value, int $key) {
-            return $value->financial_support_status != 'NONE';
-        });
-
-        // $return['students'] = $students;
-
-
-        //-------
-        $support_students_ids = Arr::flatten($students->pluck('id')->toArray());
-        $payments = Payment::where('course_id', $course->id)->whereIn('student_id', $support_students_ids)->get();
-
-        $return['payments_paid'] = $payments;
-
-
-        return $return;
+        return $this->studentsByPaymentStatus($request, 'exempt');
     }
 
 
-    /**
-     * Title: 
-     *
-     * @return view
-     */
-    public function listOfUnconfirmedStudentsReport_(Request $request)
-    {
-
-
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $course_students = $course->classRooms->pluck('students');
-        $in_classroom_students_id = Arr::flatten($course_students->pluck('*.id')->toArray());
-
-
-        $confirmed_students_id = $course->payments->where('type', 'CONFIRM')->pluck('student_id')->toArray();
-        $paid_students_id = $course->payments->where('type', '!=', 'CONFIRM')->pluck('student_id')->toArray();
-
-        $unconfirmed_students_id = [];
-        foreach ($in_classroom_students_id as $id) {
-            if (in_array($id, $confirmed_students_id) || in_array($id, $paid_students_id)) {
-                // comfirmed student
-            } else {
-                // unconfirmed 
-                $unconfirmed_students_id[] = $id;
-            }
-        }
-
-
-
-        $return['students'] = Student::whereIn('id', $unconfirmed_students_id)->get();
-        $return['course'] = $course;
-
-        return $return;
-    }
-
-
-    /**
-     * Title: 
-     *
-     * @return view
-     */
+    /** Students with no payment and no exemption ticket. */
     public function listOfNonPayingStudentsReport_(Request $request)
     {
+        return $this->studentsByPaymentStatus($request, 'unpaid');
+    }
 
 
-        $return['_'] = '';
-        $course = Course::find($request->course);
-        $course_students = $course->classRooms->pluck('students');
-        $in_classroom_students_id = Arr::flatten($course_students->pluck('*.id')->toArray());
-
-        // supported students 
-        $course_students_one_array = Arr::flatten($course_students->pluck('*'));
-        $course_students_collection = new Collection($course_students_one_array);
-        $support_students = $course_students_collection->filter(function ($value, int $key) {
-            return $value->financial_support_status != 'NONE';
-        });
-        $support_students_ids = Arr::flatten($support_students->pluck('id')->toArray());
-
-        $paid_students_id = $course->payments->where('type', '!=', 'CONFIRM')->pluck('student_id')->toArray();
-
-        $unpaid_students_id = [];
-        foreach ($in_classroom_students_id as $id) {
-            if (in_array($id, $paid_students_id)) {
-                // paid student
-            } elseif (in_array($id, $support_students_ids)) {
-                // spported student
-            } else {
-                // unpaid 
-                $unpaid_students_id[] = $id;
-            }
-        }
+    /** Students who paid although they hold an exemption ticket. */
+    public function paidAndExemptStudentsReport_(Request $request)
+    {
+        return $this->studentsByPaymentStatus($request, 'paidAndExempt');
+    }
 
 
-        $return['students'] = Student::whereIn('id', $unpaid_students_id)->get();
-        $return['course'] = $course;
+    /** @param  string  $group  CoursePaymentStatus method: paid, exempt, unpaid or paidAndExempt */
+    protected function studentsByPaymentStatus(Request $request, $group)
+    {
+        $request->validate(['course' => 'required|integer']);
 
-        return $return;
+        $course = Course::findOrFail($request->input('course'));
+        $status = new CoursePaymentStatus($course);
+
+        return [
+            'course' => $course,
+            'status' => $status,
+            'totals' => $status->totals(),
+            'students' => $status->{$group}(),
+        ];
     }
 }
