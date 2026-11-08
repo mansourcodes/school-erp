@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Course start date counts as a session (2026-11-08)
+- `HtmlHelper::getDaysInRange` steps back one day before `modify('next <day>')`, so a course that starts on a
+  teaching day keeps that first session. One helper feeds the admin attend list, teacher sessions (pending /
+  record), classroom stats and the student attendance list + stats, so all stay identical
+- Tests updated for the extra session: `ClassroomAttendanceTest`, `StudentAttendanceTest`, `TeacherApiTest`
+
 ### Admin dashboard redesign (2026-10-17, branch `feature/admin-light-sidebar`)
 - `base/dashboard.blade.php` is plain Blade now (no widget arrays): greeting hero with the date (centre logo as an
   8% watermark, bottom-left, from `AdminBranding::logoUrl()` like the navbar), Quran verse card,

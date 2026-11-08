@@ -128,8 +128,8 @@ class TeacherApiTest extends TestCase
             ->assertJsonPath('data.0.subjects', [['id' => $this->curriculum->id, 'name' => 'تجويد القرآن الكريم']])
             ->assertJsonPath('data.0.slots', [['curriculum_id' => $this->curriculum->id, 'day' => 5, 'start' => '16:00', 'end' => '17:00']])
             ->assertJsonPath('data.0.students_count', 2)
-            // 11 and 18 Sep never recorded; 25 Sep (today, started) is open, not pending.
-            ->assertJsonPath('data.0.pending_count', 2);
+            // 4 (start date), 11 and 18 Sep never recorded; 25 Sep (today, started) is open, not pending.
+            ->assertJsonPath('data.0.pending_count', 3);
     }
 
     public function test_a_classroom_carries_its_course_details()
@@ -150,10 +150,10 @@ class TeacherApiTest extends TestCase
             ->assertJsonCount(1, 'data.today')
             ->assertJsonPath('data.today.0.status', 'open')
             ->assertJsonPath('data.today.0.classroom.number', '2-ب')
-            ->assertJsonCount(2, 'data.pending')
+            ->assertJsonCount(3, 'data.pending')
             ->assertJsonPath('data.upcoming.0.date', '2026-10-02')
             ->assertJsonPath('data.upcoming.0.editable', false)
-            ->assertJsonPath('data.tiles', ['classrooms' => 1, 'students' => 2, 'rate' => null, 'pending' => 2]);
+            ->assertJsonPath('data.tiles', ['classrooms' => 1, 'students' => 2, 'rate' => null, 'pending' => 3]);
     }
 
     public function test_saving_a_roster_is_idempotent_and_shared_with_the_reports()

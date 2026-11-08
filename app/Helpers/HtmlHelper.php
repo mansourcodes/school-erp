@@ -26,6 +26,9 @@ class HtmlHelper
       return $dates;
     }
 
+    // Step back one day first: 'next <day>' never returns the current date, so a course
+    // starting on a teaching day would otherwise lose its first session.
+    $dateFrom->modify('-1 day');
     $dateFrom->modify('next ' . $week_days[$day_number]);
 
     while ($dateFrom <= $dateTo) {

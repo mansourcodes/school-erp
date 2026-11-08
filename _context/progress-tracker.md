@@ -193,9 +193,6 @@ Update this file after every meaningful implementation change.
   would be its own task. OK for the beta?
 - Payment labels (new Arabic copy, please confirm): FULL = رسوم كاملة, PART = دفعة جزئية, OFFER = عرض خاص,
   CASH = نقدًا, BENEFIT_PAY = بنفت باي (`resources/lang/ar/portal.php`)
-- **Admin attend list skips a session on the course start date**: `HtmlHelper::getDaysInRange` uses
-  `modify('next <day>')`, so a course that starts on a teaching day loses that first session in the report, and
-  (to stay identical) in the portal. Fix both together? (One-line change in `getDaysInRange`; pinned by a test.)
 - `config/app.php` timezone is UTC; the portal uses `portal.timezone` (Asia/Bahrain). Should the whole app move to
   Asia/Bahrain? (Affects stored timestamps; separate decision.)
 

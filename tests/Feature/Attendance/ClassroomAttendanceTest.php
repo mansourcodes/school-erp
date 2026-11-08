@@ -114,12 +114,12 @@ class ClassroomAttendanceTest extends TestCase
         $this->assertSame('attend', $this->attendance([$removed->id])->stateFor($this->curriculum->id, '2026-09-11', '16', $removed->id)[0]);
     }
 
-    public function test_slot_dates_follow_the_admin_report_including_the_start_date_quirk()
+    public function test_slot_dates_include_a_session_on_the_course_start_date()
     {
         $slot = $this->attendance()->slots()[0];
 
-        // getDaysInRange uses modify('next Friday'), so a course starting on a Friday skips that first Friday.
-        $this->assertSame(['2026-09-11', '2026-09-18', '2026-09-25', '2026-10-02'], $slot['dates']);
+        // The course starts on a Friday, so that first Friday is a session the teacher can record.
+        $this->assertSame(['2026-09-04', '2026-09-11', '2026-09-18', '2026-09-25', '2026-10-02'], $slot['dates']);
         $this->assertSame('16', $slot['start']->format('H'));
     }
 }

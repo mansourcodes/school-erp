@@ -21,7 +21,7 @@ class StudentAttendanceTest extends TestCase
     {
         parent::setUp();
         $this->setUpEnrollments();
-        // Fridays 16:00–17:00: 11 Sep, 18 Sep, 25 Sep, 2 Oct … (the course starts Fri 4 Sep, which the report skips).
+        // Fridays 16:00–17:00: 4 Sep (the course start date), 11 Sep, 18 Sep, 25 Sep, 2 Oct …
         $this->classroom = $this->enroll(['start_date' => '2026-09-04', 'end_date' => '2026-12-25'], [
             'attend_table' => [['curriculum_id' => (string) $this->curriculum->id, 'day' => '5', 'start_time' => '16:00', 'end_time' => '17:00']],
         ]);
@@ -70,8 +70,11 @@ class StudentAttendanceTest extends TestCase
 
         $this->fetch('/api/v1/student/attendance')
             ->assertOk()
-            ->assertJsonCount(3, 'data')
-            ->assertJsonPath('data.0', [
+            ->assertJsonCount(4, 'data')
+            // The course starts on a Friday: that first session is listed too.
+            ->assertJsonPath('data.0.date', '2026-09-04')
+            ->assertJsonPath('data.0.state', 'unrecorded')
+            ->assertJsonPath('data.1', [
                 'date' => '2026-09-11',
                 'start' => '16:00',
                 'end' => '17:00',
@@ -81,20 +84,20 @@ class StudentAttendanceTest extends TestCase
                 'state' => 'present',
                 'other_classroom' => false,
             ])
-            ->assertJsonPath('data.1.state', 'late_excused')
+            ->assertJsonPath('data.2.state', 'late_excused')
             // Today's session has started but was not recorded yet.
-            ->assertJsonPath('data.2.date', '2026-09-25')
-            ->assertJsonPath('data.2.state', 'unrecorded');
+            ->assertJsonPath('data.3.date', '2026-09-25')
+            ->assertJsonPath('data.3.state', 'unrecorded');
     }
 
     public function test_todays_session_is_not_listed_before_it_starts_unless_recorded()
     {
         $this->travelToLocal('2026-09-25 15:30');
-        $this->fetch('/api/v1/student/attendance')->assertJsonCount(2, 'data');
+        $this->fetch('/api/v1/student/attendance')->assertJsonCount(3, 'data');
 
         // Teachers may record a same-day session early (Q9).
         $this->record($this->classroom, '2026-09-25', '16:00', 'attend');
-        $this->fetch('/api/v1/student/attendance')->assertJsonCount(3, 'data')->assertJsonPath('data.2.state', 'present');
+        $this->fetch('/api/v1/student/attendance')->assertJsonCount(4, 'data')->assertJsonPath('data.3.state', 'present');
     }
 
     public function test_today_follows_bahrain_time_not_utc()
@@ -102,7 +105,7 @@ class StudentAttendanceTest extends TestCase
         // 18:30 in Bahrain is 15:30 UTC: the 16:00 session has started locally, though not in UTC.
         $this->travelToLocal('2026-09-25 18:30');
 
-        $this->fetch('/api/v1/student/attendance')->assertJsonCount(3, 'data')->assertJsonPath('data.2.date', '2026-09-25');
+        $this->fetch('/api/v1/student/attendance')->assertJsonCount(4, 'data')->assertJsonPath('data.3.date', '2026-09-25');
     }
 
     public function test_filters_by_date_range()
@@ -120,7 +123,7 @@ class StudentAttendanceTest extends TestCase
         $this->travelToLocal('2026-09-25 17:30');
 
         $this->fetch('/api/v1/student/attendance/stats')->assertExactJson(['data' => [
-            'counts' => ['present' => 1, 'late' => 0, 'late_excused' => 1, 'absent' => 0, 'absent_excused' => 0, 'unrecorded' => 1],
+            'counts' => ['present' => 1, 'late' => 0, 'late_excused' => 1, 'absent' => 0, 'absent_excused' => 0, 'unrecorded' => 2],
             // Unrecorded sessions are excluded from every rate (Q2).
             'recorded' => 2,
             'attended' => 2,
@@ -138,9 +141,10 @@ class StudentAttendanceTest extends TestCase
         $this->record($old, '2025-09-12', '16:00', 'absent');
 
         $this->fetch("/api/v1/student/attendance?course_id={$old->course_id}")
-            ->assertJsonCount(3, 'data')
-            ->assertJsonPath('data.0.state', 'absent')
-            ->assertJsonPath('data.1.state', 'unrecorded');
+            // Fridays 5 (start date), 12, 19 and 26 Sep 2025.
+            ->assertJsonCount(4, 'data')
+            ->assertJsonPath('data.0.state', 'unrecorded')
+            ->assertJsonPath('data.1.state', 'absent');
         $this->fetch("/api/v1/student/attendance/stats?course_id={$old->course_id}")
             ->assertJsonPath('data.rate', 0)
             ->assertJsonPath('data.recorded', 1);
@@ -157,7 +161,7 @@ class StudentAttendanceTest extends TestCase
         // A classmate's records never leak into this student's sessions.
         $this->classroom->students()->attach($other->id);
         $this->record($this->classroom, '2026-09-25', '16:00', 'absent', $other->id);
-        $this->fetch('/api/v1/student/attendance')->assertJsonPath('data.2.state', 'unrecorded');
+        $this->fetch('/api/v1/student/attendance')->assertJsonPath('data.3.state', 'unrecorded');
     }
 
     public function test_without_a_current_course()
