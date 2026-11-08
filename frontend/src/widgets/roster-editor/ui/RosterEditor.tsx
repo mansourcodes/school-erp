@@ -14,7 +14,7 @@ import {
 } from '@/features/mark-attendance';
 import { ATTENDANCE_STATES, StatusChip } from '@/entities/attendance';
 import type { Roster, RosterState } from '@/entities/class-session';
-import { StudentPhoto } from '@/entities/student';
+import { IqraaBadge, StudentPhoto } from '@/entities/student';
 import { toApiError } from '@/shared/api';
 import { routes } from '@/shared/config';
 import { t } from '@/shared/i18n';
@@ -160,7 +160,10 @@ export function RosterEditor({ roster }: { roster: Roster }) {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="font-semibold leading-snug">{student.name}</p>
-                      <p className="text-xs opacity-60 num">{student.student_id}</p>
+                      <p className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="opacity-60 num">{student.student_id}</span>
+                        <IqraaBadge account={student.iqraa_id_account} />
+                      </p>
                     </div>
                     {state && !editable && <StatusChip state={state} />}
                   </div>

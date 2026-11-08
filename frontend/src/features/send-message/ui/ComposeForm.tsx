@@ -2,7 +2,7 @@ import { Info, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTeacherClassroomQuery, useTeacherClassroomsQuery } from '@/entities/classroom';
 import { MESSAGE_MAX } from '@/entities/message';
-import { StudentPhoto } from '@/entities/student';
+import { IqraaBadge, StudentPhoto } from '@/entities/student';
 import { t } from '@/shared/i18n';
 import { LeaveGuard, LoadingBlocks } from '@/shared/ui';
 import { type SendMessageResult, useSendMessageMutation } from '../api/send-message-api';
@@ -96,7 +96,10 @@ export function ComposeForm({ initialClassroomId, onSent }: ComposeFormProps) {
                   <StudentPhoto name={s.name} photoUrl={s.photo_url} className="w-8 h-10" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate">{s.name}</span>
-                    <span className="block text-xs opacity-60 num">{s.student_id}</span>
+                    <span className="flex items-center gap-2 text-xs">
+                      <span className="opacity-60 num">{s.student_id}</span>
+                      <IqraaBadge account={s.iqraa_id_account} />
+                    </span>
                   </span>
                 </label>
               </li>

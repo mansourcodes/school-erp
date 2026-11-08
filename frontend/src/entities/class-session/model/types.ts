@@ -41,6 +41,7 @@ export interface RosterStudent {
   id: number;
   name: string;
   student_id: string;
+  iqraa_id_account: string | null;
   photo_url: string | null;
   state: RosterState | null;
 }

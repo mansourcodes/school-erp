@@ -2,7 +2,7 @@ import { Camera, ChevronLeft, Search } from 'lucide-react';
 import { useState } from 'react';
 import { PhotoActions } from '@/features/manage-student-photo';
 import { type ClassroomStudent, LOW_RATE } from '@/entities/classroom';
-import { StudentPhoto } from '@/entities/student';
+import { IqraaBadge, StudentPhoto } from '@/entities/student';
 import { t } from '@/shared/i18n';
 import { pct } from '@/shared/lib';
 import { Dialog } from '@/shared/ui';
@@ -33,10 +33,11 @@ export function ClassroomStudents({ classroomId, students }: { classroomId: numb
               <StudentPhoto name={student.name} photoUrl={student.photo_url} />
               <div className="min-w-0 flex-1">
                 <p className="font-medium leading-snug truncate">{student.name}</p>
-                <p className="text-xs opacity-60 num flex gap-2">
-                  <span>{student.student_id}</span>
+                <p className="text-xs num flex flex-wrap items-center gap-2">
+                  <span className="opacity-60">{student.student_id}</span>
+                  <IqraaBadge account={student.iqraa_id_account} />
                   {!student.photo_url && (
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1 opacity-60">
                       <Camera className="size-3" strokeWidth={1.75} aria-hidden="true" />
                       {t('teacher.noPhoto')}
                     </span>
@@ -64,7 +65,10 @@ export function ClassroomStudents({ classroomId, students }: { classroomId: numb
               <h2 id="student-sheet-title" className="font-display text-lg">
                 {open.name}
               </h2>
-              <p className="text-xs opacity-60 num">{open.student_id}</p>
+              <p className="flex items-center gap-2 text-xs">
+                <span className="opacity-60 num">{open.student_id}</span>
+                <IqraaBadge account={open.iqraa_id_account} />
+              </p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center num">
               <div className="rounded-box bg-base-200 p-2">

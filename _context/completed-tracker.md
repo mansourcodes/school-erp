@@ -4,6 +4,13 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Iqraa account next to the student number in the teacher portal (2026-11-08)
+- Teacher API student rows (`TeacherController::studentRow` and the session roster) add `iqraa_id_account`
+  (empty → null)
+- Shown after the student number as a soft primary badge `iqraa-<account>` (`entities/student` `IqraaBadge`, LTR) in the roster editor, the classroom students list + student
+  sheet and the compose-message student picker; hidden when empty. The student profile already showed it in the
+  academic card, so it is not repeated in the header
+
 ### Install card on the login page (2026-11-08)
 - `LoginPage` renders `<InstallBanner dismissible={false} className="mt-4" />` under the form
 - `InstallBanner` takes `dismissible` (default true) and `className` (default `mb-4`); non-dismissible = no ✕ and

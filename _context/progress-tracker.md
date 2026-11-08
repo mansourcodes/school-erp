@@ -74,6 +74,7 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Teacher portal shows the student's Iqraa account next to the student number (API `iqraa_id_account`) (2026-11-08)
 - Install card on the login page (2026-11-08): `<InstallBanner dismissible={false} />` under the login form; no
   close button and no visit/dismissal gating (`useInstallPrompt({ always: true })`), still hidden in the installed app
 - Payment exemption tickets + account reports by payment status (2026-10-24): new `payment_exemptions` table and

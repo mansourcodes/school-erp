@@ -155,6 +155,7 @@ class TeacherController extends Controller
                     'id' => $student->id,
                     'name' => $student->name,
                     'student_id' => $student->student_id,
+                    'iqraa_id_account' => $student->iqraa_id_account ?: null,
                     'photo_url' => StudentPhotos::url($student),
                     'state' => $states[$student->id] ?? null,
                 ];
@@ -374,6 +375,7 @@ class TeacherController extends Controller
             'id' => $row['student']->id,
             'name' => $row['student']->name,
             'student_id' => $row['student']->student_id,
+            'iqraa_id_account' => $row['student']->iqraa_id_account ?: null,
             'photo_url' => StudentPhotos::url($row['student']),
             'rate' => $row['stats']['rate'],
             'recorded' => $row['stats']['recorded'],

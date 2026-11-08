@@ -38,8 +38,8 @@ const today: TeacherToday = {
 const roster = (over: Partial<Roster['session']> = {}): Roster => ({
   session: { ...session({}), classroom: room, ...over },
   students: [
-    { id: 1, name: 'حسين علي', student_id: '20240001', photo_url: null, state: null },
-    { id: 2, name: 'محمد جعفر', student_id: '20240002', photo_url: null, state: null },
+    { id: 1, name: 'حسين علي', student_id: '20240001', iqraa_id_account: null, photo_url: null, state: null },
+    { id: 2, name: 'محمد جعفر', student_id: '20240002', iqraa_id_account: null, photo_url: null, state: null },
   ],
   previous_code: '2026-09-18#16:00#912#11',
   next_code: null,
@@ -191,7 +191,7 @@ describe('teacher panel', () => {
       subjects: [{ id: 11, name: 'تجويد القرآن الكريم' }],
       slots: [{ curriculum_id: 11, day: 5, start: '16:00', end: '17:00' }],
       rate: 75,
-      students: [{ id: 1, name: 'حسين علي', student_id: '20240001', photo_url: null, rate: 66.7, recorded: 3, absences: 1, late: 0 }],
+      students: [{ id: 1, name: 'حسين علي', student_id: '20240001', iqraa_id_account: null, photo_url: null, rate: 66.7, recorded: 3, absences: 1, late: 0 }],
       readonly: false,
     };
     server.use(
@@ -220,7 +220,7 @@ describe('teacher panel', () => {
       punctual: 50,
       students: [],
       follow_up: [
-        { id: 2, name: 'محمد جعفر', student_id: '20240002', photo_url: null, rate: 0, recorded: 3, absences: 3, late: 0, classroom_id: 912, classroom: room },
+        { id: 2, name: 'محمد جعفر', student_id: '20240002', iqraa_id_account: null, photo_url: null, rate: 0, recorded: 3, absences: 3, late: 0, classroom_id: 912, classroom: room },
       ],
       classrooms: [{ id: 912, label: room, rate: 50 }],
     };
