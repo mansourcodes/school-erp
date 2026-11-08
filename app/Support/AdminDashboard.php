@@ -157,32 +157,49 @@ class AdminDashboard
     }
 
     /**
-     * Teachers ranked by the attendance sessions of the active classrooms they teach (`class_room_teacher`).
-     * A session does not store who recorded it, so a classroom's sessions count for each of its teachers.
+     * Teachers ranked by the attendance sessions of their subjects in active classrooms.
+     * Assignments come from the classroom's `teachers` JSON ({user_id, curriculum_id}), the same source the
+     * teacher portal uses (TeacherScope); a session counts for the teacher of its classroom + curriculum.
      *
      * @return array{most: array, least: array} each a list of {id, name, avatar, sessions, classrooms}
      */
-    public static function teachers($limit = 3)
+    public static function teachers($limit = 9)
     {
-        $counts = DB::table('class_room_teacher')
-            ->join('class_rooms', 'class_rooms.id', '=', 'class_room_teacher.class_room_id')
-            ->join('courses', 'courses.id', '=', 'class_rooms.course_id')
-            ->leftJoin('attends', 'attends.class_room_id', '=', 'class_rooms.id')
-            ->where('courses.is_active', true)
-            ->whereNull('courses.deleted_at')
-            ->whereNull('class_rooms.deleted_at')
-            ->groupBy('class_room_teacher.user_id')
-            ->selectRaw('class_room_teacher.user_id, count(attends.id) as sessions, count(distinct class_rooms.id) as classrooms')
-            ->get()->keyBy('user_id');
+        $classrooms = self::activeClassrooms()->get(['id', 'teachers']);
 
-        $ranked = User::role('Teacher')->whereIn('id', $counts->keys())->get()
+        // "classroom:curriculum" => number of sessions recorded for it.
+        $sessions = DB::table('attends')->whereIn('class_room_id', $classrooms->pluck('id'))
+            ->groupBy('class_room_id', 'curriculum_id')
+            ->selectRaw('class_room_id, curriculum_id, count(*) as total')
+            ->get()->mapWithKeys(function ($row) {
+                return [$row->class_room_id.':'.$row->curriculum_id => (int) $row->total];
+            });
+
+        // user_id => [sessions, classroom ids]; user_id is stored as "5" by Backpack, sometimes as 5.
+        $counts = [];
+        foreach ($classrooms as $classroom) {
+            $pairs = [];
+            foreach ($classroom->teachers ?: [] as $entry) {
+                if (! empty($entry['user_id']) && isset($entry['curriculum_id'])) {
+                    $pairs[(int) $entry['user_id'].':'.(int) $entry['curriculum_id']] = true;
+                }
+            }
+            foreach (array_keys($pairs) as $pair) {
+                [$userId, $curriculumId] = explode(':', $pair);
+                $counts[$userId]['sessions'] = ($counts[$userId]['sessions'] ?? 0)
+                    + $sessions->get($classroom->id.':'.$curriculumId, 0);
+                $counts[$userId]['classrooms'][$classroom->id] = true;
+            }
+        }
+
+        $ranked = User::role('Teacher')->whereIn('id', array_keys($counts))->get()
             ->map(function ($user) use ($counts) {
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'avatar' => backpack_avatar_url($user),
-                    'sessions' => (int) $counts[$user->id]->sessions,
-                    'classrooms' => (int) $counts[$user->id]->classrooms,
+                    'sessions' => $counts[$user->id]['sessions'],
+                    'classrooms' => count($counts[$user->id]['classrooms']),
                 ];
             });
 

@@ -17,11 +17,9 @@
                 <li>
                     <span class="dash-rank-pos">{{ $index + 1 }}</span>
                     <img class="dash-rank-avatar" src="{{ $row['avatar'] }}" alt="">
+                    <span class="dash-rank-count">{{ trans_choice('base.dashboard.teachers_sessions', $row['sessions']) }}</span>
                     <div class="dash-rank-body">
-                        <div class="dash-rank-line">
-                            <span class="dash-rank-name">{{ $row['name'] }}</span>
-                            <span class="dash-rank-count">{{ trans_choice('base.dashboard.teachers_sessions', $row['sessions']) }}</span>
-                        </div>
+                        <span class="dash-rank-name" title="{{ $row['name'] }}">{{ $row['name'] }}</span>
                         <div class="dash-rank-bar" title="{{ trans_choice('base.dashboard.teachers_classrooms', $row['classrooms']) }}">
                             <span style="width: {{ round($row['sessions'] * 100 / $max, 1) }}%"></span>
                         </div>

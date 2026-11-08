@@ -76,10 +76,11 @@ Update this file after every meaningful implementation change.
     date + start hour, any hour for a period without a time. Centre = "recorded / total", font shrinks past
     7 characters; "not recorded" is neutral grey (`--dash-slot-muted`)
 - Order: hero + verse, shortcuts, figures, the two donuts, teacher rankings
-- Teacher rankings (`inc/dashboard_teachers`, `AdminDashboard::teachers()`): top 3 and bottom 3 Teacher-role users
-  by attendance sessions in the active classrooms they teach (`class_room_teacher`). `attends` does not store who
-  recorded a session, so a shared classroom counts for each of its teachers. "Least" skips teachers already in
-  "most" (no repeats when there are ≤ 6). One bar scale for both cards (top teacher = full width)
+- Teacher rankings (`inc/dashboard_teachers`, `AdminDashboard::teachers()`): top 9 and bottom 9 Teacher-role users
+  by attendance sessions of their subjects in active classrooms. Assignments come from `class_rooms.teachers` JSON
+  ({user_id, curriculum_id}, same source as `TeacherScope`), not the near-empty `class_room_teacher` pivot; a session
+  counts for the teacher of its classroom + `curriculum_id` (fixed 2026-11-08: both cards were empty). "Least" skips teachers already in
+  "most" (no repeats when there are ≤ 18). One bar scale for both cards (top teacher = full width)
 - Cache: `AdminDashboard::cached()` keeps every figure (plain arrays, no models) under `admin-dashboard:figures`
   for `CACHE_DAYS` = 4 days with `computed_at`; the bottom of the page (under the teacher lists) shows "آخر تحديث …" and a
   "تحديث الإحصائيات" button (`POST admin/dashboard/refresh`, `admin.dashboard.refresh`, Superadmin only) that

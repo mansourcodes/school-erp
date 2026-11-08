@@ -107,10 +107,10 @@
         </div>
         @php $maxSessions = max(1, $teachers['most'] ? $teachers['most'][0]['sessions'] : 0); @endphp
         <div class="row">
-            <div class="col-md-6 mb-4">
+            <div class="col-xl-6 mb-4">
                 @include(backpack_view('inc.dashboard_teachers'), ['rows' => $teachers['most'], 'max' => $maxSessions, 'tone' => 'most', 'title' => __('base.dashboard.teachers_most')])
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-xl-6 mb-4">
                 @include(backpack_view('inc.dashboard_teachers'), ['rows' => $teachers['least'], 'max' => $maxSessions, 'tone' => 'least', 'othersShown' => (bool) $teachers['most'], 'title' => __('base.dashboard.teachers_least')])
             </div>
         </div>

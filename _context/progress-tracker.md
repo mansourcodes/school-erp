@@ -74,6 +74,7 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Admin dashboard teacher rankings read assignments from `class_rooms.teachers` JSON (matched by classroom + curriculum) instead of the near-empty `class_room_teacher` pivot, so both cards now list teachers (2026-11-08)
 - Teacher photo uploads accept any size and open a crop / rotate / zoom preview before upload; in the student sheet a pen on the photo reveals the photo options (2026-11-08)
 - Teacher student sheet shows the student's attendance calendar (teacher's subjects) and contact / personal
   details with call, WhatsApp, Teams and copy actions (new `GET /teacher/classrooms/{id}/students/{sid}`) (2026-11-08)

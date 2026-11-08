@@ -884,7 +884,12 @@ html .dash-rank-least .dash-chart-head h3 .la {
     color: var(--dash-slot-2);
 }
 
+/* Three tiles per row (rank, avatar, count on top; name, bar and classrooms below) */
 html .dash-rank-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+    align-self: stretch;
     margin: 1rem 0 0;
     padding: 0;
     list-style: none;
@@ -892,18 +897,17 @@ html .dash-rank-list {
 
 html .dash-rank-list li {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: .75rem;
-    padding: .65rem 0;
-}
-
-html .dash-rank-list li + li {
-    border-top: 1px solid var(--dash-border);
+    gap: .5rem;
+    padding: .75rem;
+    border: 1px solid var(--dash-border);
+    border-radius: 12px;
 }
 
 html .dash-rank-pos {
     flex: none;
-    width: 1.5rem;
+    width: 1.25rem;
     font-family: var(--at-title-font);
     font-weight: 700;
     color: var(--dash-muted);
@@ -919,18 +923,12 @@ html .dash-rank-avatar {
 }
 
 html .dash-rank-body {
-    flex: 1;
+    flex: 1 0 100%;
     min-width: 0;
 }
 
-html .dash-rank-line {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: .5rem;
-}
-
 html .dash-rank-name {
+    display: block;
     overflow: hidden;
     font-weight: 600;
     white-space: nowrap;
@@ -939,6 +937,7 @@ html .dash-rank-name {
 
 html .dash-rank-count {
     flex: none;
+    margin-inline-start: auto;
     font-size: .8rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -972,4 +971,5 @@ html .dash-rank-meta {
     html .dash-hero { padding: 1.5rem; min-height: 0; }
     html .dash-hero-title { font-size: 1.4rem; }
     html .dash-tile { flex-direction: column; align-items: flex-start; gap: .65rem; }
+    html .dash-rank-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

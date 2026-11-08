@@ -142,10 +142,12 @@ class AdminDashboardTest extends TestCase
         $course = Course::factory()->create(['is_active' => true]);
         $old = Course::factory()->create(['is_active' => false]);
         $curriculum = Curriculum::factory()->create()->id;
-        $session = function (ClassRoom $classroom, $count) use ($curriculum) {
+        $other = Curriculum::factory()->create()->id;
+        $session = function (ClassRoom $classroom, $count, $curriculumId = null) use ($curriculum) {
             for ($day = 1; $day <= $count; $day++) {
                 Attends::create(['date' => '2026-10-'.str_pad($day, 2, '0', STR_PAD_LEFT), 'start_time' => '16:00',
-                    'class_room_id' => $classroom->id, 'course_id' => $classroom->course_id, 'curriculum_id' => $curriculum]);
+                    'class_room_id' => $classroom->id, 'course_id' => $classroom->course_id,
+                    'curriculum_id' => $curriculumId ?: $curriculum]);
             }
         };
 
@@ -155,19 +157,25 @@ class AdminDashboardTest extends TestCase
 
             return $user;
         });
-        $rooms = ClassRoom::factory()->count(4)->create(['course_id' => $course->id]);
-        $archived = ClassRoom::factory()->create(['course_id' => $old->id]);
-        foreach ($teachers as $i => $teacher) {
-            $teacher->classRooms()->attach($rooms[$i]);
-        }
-        $teachers[3]->classRooms()->attach($archived); // an old course does not count
+        // Assignments live in the classroom's `teachers` JSON, user_id as a string like Backpack saves it.
+        $room = function ($course, array $assignments) {
+            return ClassRoom::factory()->create(['course_id' => $course->id, 'teachers' => array_map(function ($a) {
+                return ['user_id' => (string) $a[0]->id, 'curriculum_id' => (string) $a[1], 'teacher_name' => $a[0]->name];
+            }, $assignments)]);
+        };
+        $rooms = [
+            $room($course, [[$teachers[0], $curriculum]]),
+            $room($course, [[$teachers[1], $curriculum], [$teachers[3], $other]]),
+            $room($course, [[$teachers[2], $curriculum]]),
+        ];
+        $archived = $room($old, [[$teachers[3], $curriculum]]); // an old course does not count
 
         $session($rooms[0], 5);
-        $session($rooms[1], 3);
+        $session($rooms[1], 3); // ب's subject only, not د's
         $session($rooms[2], 1);
         $session($archived, 9);
 
-        $ranking = AdminDashboard::teachers();
+        $ranking = AdminDashboard::teachers(3);
         $names = function ($rows) {
             return collect($rows)->map(function ($row) { return $row['name'].':'.$row['sessions']; })->all();
         };
