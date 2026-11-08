@@ -14,6 +14,8 @@ Update this file after every meaningful implementation change.
   framed part as a 400×512 JPEG (`shared/lib/crop-image`: `clampCrop`, `cropScale`, `renderCrop`; falls back
   to `resizeImage` without canvas). Used by `PhotoActions` (student) and `TeacherPhotoActions` (own photo);
   copy under `photoCrop.*` in ar.json. Tests: `crop-image.test.ts`, teacher profile photo test
+- Student sheet: the photo actions are hidden behind a pen button on the photo's corner (`PhotoActions` takes
+  the photo as a `photo` prop, `aria-expanded` toggle, collapses after save / delete; label `teacher.editPhoto`)
 
 ### Attendance calendar + contact details in the teacher's student sheet (2026-11-08)
 - `GET /api/v1/teacher/classrooms/{id}/students/{sid}` (`TeacherController::student`): whitelisted contact /

@@ -401,6 +401,7 @@
     "absences": "غياب {n}",
     "late": "تأخير {n}",
     "photoTitle": "صورة الطالب",
+    "editPhoto": "تعديل صورة الطالب",
     "takePhoto": "التقاط صورة",
     "fromGallery": "من المعرض",
     "deletePhoto": "حذف الصورة",

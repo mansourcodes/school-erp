@@ -229,6 +229,12 @@ describe('teacher panel', () => {
     expect(within(details).getByRole('link', { name: 'محادثة Teams' })).toHaveAttribute('href', expect.stringContaining('hasan%40moe.bh'));
     expect(within(details).getByText('100302475')).toBeInTheDocument();
     const sheet = screen.getByRole('dialog', { name: 'حسين علي' });
+    // Photo options stay hidden until the pen on the photo is tapped.
+    expect(within(sheet).queryByRole('button', { name: 'التقاط صورة' })).not.toBeInTheDocument();
+    const pen = within(sheet).getByRole('button', { name: 'تعديل صورة الطالب' });
+    expect(pen).toHaveAttribute('aria-expanded', 'false');
+    await user.click(pen);
+    expect(pen).toHaveAttribute('aria-expanded', 'true');
     expect(within(sheet).getByRole('button', { name: 'التقاط صورة' })).toBeInTheDocument();
     expect(within(sheet).getByRole('button', { name: 'من المعرض' })).toBeInTheDocument();
     // No photo yet: nothing to delete.

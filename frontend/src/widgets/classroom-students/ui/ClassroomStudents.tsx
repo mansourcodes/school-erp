@@ -10,11 +10,11 @@ import { Dialog } from '@/shared/ui';
 interface ClassroomStudentsProps {
   classroomId: number;
   students: ClassroomStudent[];
-  /** Extra content under the photo actions (the page adds the calendar and contact details). */
+  /** Extra content under the attendance numbers (the page adds the calendar and contact details). */
   details?: (student: ClassroomStudent, toast: (message: string) => void) => ReactNode;
 }
 
-/** "الطلاب" tab of a classroom (PLAN.md §8 screen 5): search, rows, and the student sheet with photo actions. */
+/** "الطلاب" tab of a classroom (PLAN.md §8 screen 5): search, rows, and the student sheet (pen on the photo → photo actions). */
 export function ClassroomStudents({ classroomId, students, details }: ClassroomStudentsProps) {
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<number | null>(null);
@@ -73,7 +73,13 @@ export function ClassroomStudents({ classroomId, students, details }: ClassroomS
           <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto">
             <div className="sheet-grip" />
             <div className="flex flex-col items-center text-center gap-2">
-              <StudentPhoto name={open.name} photoUrl={open.photo_url} className="w-32 h-40" textClassName="text-5xl" />
+              <PhotoActions
+                classroomId={classroomId}
+                studentId={open.id}
+                hasPhoto={!!open.photo_url}
+                photo={<StudentPhoto name={open.name} photoUrl={open.photo_url} className="w-32 h-40" textClassName="text-5xl" />}
+                onDone={showToast}
+              />
               <h2 id="student-sheet-title" className="font-display text-lg">
                 {open.name}
               </h2>
@@ -96,12 +102,6 @@ export function ClassroomStudents({ classroomId, students, details }: ClassroomS
                 <p className="text-xs opacity-70">{t('stats.absent')}</p>
               </div>
             </div>
-            <PhotoActions
-              classroomId={classroomId}
-              studentId={open.id}
-              hasPhoto={!!open.photo_url}
-              onDone={showToast}
-            />
             {details?.(open, showToast)}
           </div>
         )}
