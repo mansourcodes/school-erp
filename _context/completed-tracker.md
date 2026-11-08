@@ -66,9 +66,15 @@ Update this file after every meaningful implementation change.
   - Attendance (`AdminDashboard::attendance()`): the five status pivot tables for sessions in active-course
     classrooms; centre = attendance rate (present + late + late with excuse). Colours = the portal status palette
     (present #0ca30c, late #fab219, absent #d03b3b; excused = same hue with a white 45° hatch, SVG pattern),
-    key chips carry the portal codes ✓ ت تع غع ✗, order as the portal (`states.ts`)
-  - Classrooms (`AdminDashboard::classrooms()`): active classrooms with at least one attendance session vs none;
-    centre = "recorded / total"; "not recorded" is neutral grey (`--dash-slot-muted`)
+    key chips carry the portal codes ✓ ت تع غع ✗, order as the portal (`states.ts`).
+    Since 2026-11-08 a sixth grey slice "لم يُرصد" (code —): each expected session up to today × its classroom's
+    current students, minus the students its matched record holds (`expectedSessions()` + `recordIndex()`,
+    shared with the classrooms chart). The rate stays over recorded student-sessions only (portal rule)
+  - Classrooms (`AdminDashboard::classrooms()`): expected sessions (every active classroom's `attend_table`
+    periods × their dates via `ClassroomAttendance::slots()`, dates ≤ today) with an Attends record vs without
+    (2026-11-08; was "classrooms with any session"). Match as `TeacherSessions::match`: classroom + subject +
+    date + start hour, any hour for a period without a time. Centre = "recorded / total", font shrinks past
+    7 characters; "not recorded" is neutral grey (`--dash-slot-muted`)
 - Order: hero + verse, shortcuts, figures, the two donuts, teacher rankings
 - Teacher rankings (`inc/dashboard_teachers`, `AdminDashboard::teachers()`): top 3 and bottom 3 Teacher-role users
   by attendance sessions in the active classrooms they teach (`class_room_teacher`). `attends` does not store who

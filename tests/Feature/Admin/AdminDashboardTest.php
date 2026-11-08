@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Models\User;
 use App\Support\AdminDashboard;
 use App\Support\QuranQuotes;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -67,27 +68,73 @@ class AdminDashboardTest extends TestCase
         $this->assertSame(4, $attendance['total']);
         $this->assertSame('75%', $attendance['centre']); // present + late
         $this->assertSame(['student_attended' => 2, 'student_late' => 1, 'student_late_w_excuse' => 0,
-            'student_absent_w_excuse' => 0, 'student_absent' => 1], $counts);
-        $this->assertSame(['present', 'late', 'late-excused', 'absent-excused', 'absent'],
+            'student_absent_w_excuse' => 0, 'student_absent' => 1, 'unrecorded' => 0], $counts); // no timetable here
+        $this->assertSame(['present', 'late', 'late-excused', 'absent-excused', 'absent', 'muted'],
             collect($attendance['slices'])->pluck('slot')->all());
     }
 
-    public function test_the_classroom_chart_splits_recorded_from_not_recorded()
+    public function test_the_classroom_chart_counts_timetable_sessions_up_to_today()
     {
-        $course = Course::factory()->create(['is_active' => true]);
-        [$recorded, $quiet] = ClassRoom::factory()->count(2)->create(['course_id' => $course->id]);
-        $archived = ClassRoom::factory()->create(['course_id' => Course::factory()->create(['is_active' => false])->id]);
+        Carbon::setTestNow('2026-10-20 12:00:00'); // Thursdays so far: 10-01, 10-08, 10-15
+        $dates = ['start_date' => '2026-10-01', 'end_date' => '2026-10-31'];
+        $course = Course::factory()->create(['is_active' => true] + $dates);
         $curriculum = Curriculum::factory()->create()->id;
+        $room = function ($course, $startTime) use ($curriculum) {
+            return ClassRoom::factory()->create(['course_id' => $course->id,
+                'attend_table' => [['day' => '4', 'start_time' => $startTime, 'curriculum_id' => (string) $curriculum]]]);
+        };
+        $record = function (ClassRoom $classroom, $date, $time) use ($curriculum) {
+            Attends::create(['date' => $date, 'start_time' => $time, 'class_room_id' => $classroom->id,
+                'course_id' => $classroom->course_id, 'curriculum_id' => $curriculum]);
+        };
 
-        foreach (['2026-10-01', '2026-10-08'] as $date) {
-            Attends::create(['date' => $date, 'start_time' => '16:00', 'class_room_id' => $recorded->id, 'course_id' => $course->id, 'curriculum_id' => $curriculum]);
-        }
-        Attends::create(['date' => '2025-10-01', 'start_time' => '16:00', 'class_room_id' => $archived->id, 'course_id' => $archived->course_id, 'curriculum_id' => $curriculum]);
+        $timed = $room($course, '16:00');
+        $untimed = $room($course, null);
+        $archived = $room(Course::factory()->create(['is_active' => false] + $dates), '16:00');
+
+        $record($timed, '2026-10-01', '16:00');
+        $record($timed, '2026-10-08', '16:30');  // same hour counts
+        $record($timed, '2026-10-15', '18:00');  // another hour: not this period
+        $record($timed, '2026-10-29', '16:00');  // after today: outside the total
+        $record($untimed, '2026-10-08', '09:12'); // a period without a time matches any record that day
+        $record($archived, '2026-10-01', '16:00');
 
         $chart = AdminDashboard::classrooms();
 
-        $this->assertSame('1 / 2', $chart['centre']);
-        $this->assertSame(['recorded' => 1, 'not_recorded' => 1], collect($chart['slices'])->pluck('count', 'key')->all());
+        $this->assertSame('3 / 6', $chart['centre']);
+        $this->assertSame(['recorded' => 3, 'not_recorded' => 3], collect($chart['slices'])->pluck('count', 'key')->all());
+        Carbon::setTestNow();
+    }
+
+    public function test_the_attendance_chart_adds_unrecorded_student_sessions_outside_the_rate()
+    {
+        Carbon::setTestNow('2026-10-20 12:00:00'); // Thursdays so far: 10-01, 10-08, 10-15
+        $course = Course::factory()->create(['is_active' => true, 'start_date' => '2026-10-01', 'end_date' => '2026-10-31']);
+        $curriculum = Curriculum::factory()->create()->id;
+        $classroom = ClassRoom::factory()->create(['course_id' => $course->id,
+            'attend_table' => [['day' => '4', 'start_time' => '16:00', 'curriculum_id' => (string) $curriculum]]]);
+        $students = Student::factory()->count(3)->create()->pluck('id');
+        $classroom->students()->attach($students);
+        $record = function ($date) use ($classroom, $curriculum) {
+            return Attends::create(['date' => $date, 'start_time' => '16:00', 'class_room_id' => $classroom->id,
+                'course_id' => $classroom->course_id, 'curriculum_id' => $curriculum]);
+        };
+
+        $full = $record('2026-10-01');
+        $full->attendStudents()->attach($students->take(2));
+        $full->absentStudents()->attach($students[2]);
+        $record('2026-10-08')->lateStudents()->attach($students[0]); // two students left out
+        // 10-15: never recorded, all three students are unrecorded
+
+        $chart = AdminDashboard::attendance();
+        $counts = collect($chart['slices'])->pluck('count', 'key')->all();
+
+        $this->assertSame(9, $chart['total']); // 3 sessions × 3 students
+        $this->assertSame(['student_attended' => 2, 'student_late' => 1, 'student_late_w_excuse' => 0,
+            'student_absent_w_excuse' => 0, 'student_absent' => 1, 'unrecorded' => 5], $counts);
+        $this->assertSame('75%', $chart['centre']); // 3 attended of 4 recorded; unrecorded stays out
+        $this->assertSame(['muted', '—'], [end($chart['slices'])['slot'], end($chart['slices'])['code']]);
+        Carbon::setTestNow();
     }
 
     public function test_teachers_are_ranked_by_their_active_classrooms_sessions()

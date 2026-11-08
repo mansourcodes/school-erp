@@ -43,7 +43,10 @@
                     @php $offset += $length; @endphp
                 @endforeach
             </g>
-            <text class="dash-donut-value" x="100" y="100">{{ $chart['centre'] }}</text>
+            @php $centreLength = mb_strlen((string) $chart['centre']); @endphp
+            {{-- 32px fits ~7 characters inside the ring; longer values ("145 / 702") shrink to keep the same width --}}
+            <text class="dash-donut-value" x="100" y="100"
+                  @if ($centreLength > 7) style="font-size: {{ round(32 * 7 / $centreLength) }}px" @endif>{{ $chart['centre'] }}</text>
             <text class="dash-donut-label" x="100" y="128">{{ $centreLabel }}</text>
         </svg>
 

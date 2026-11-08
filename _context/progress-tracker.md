@@ -34,7 +34,7 @@ Update this file after every meaningful implementation change.
     themes only change colours; sidebar groups are open section titles instead of dropdowns; new active theme
     `ghadeer` (الغدير) with the portal colours
   - **Admin dashboard redesign done** (2026-10-17, same branch): greeting hero, random Quran verse card, real
-    Superadmin figures, attendance donut (present / late / absent), classrooms recorded vs not donut, shortcut tiles (second from top), top / bottom 3 teachers by attendance sessions; figures cached 4 days with a refresh button (see completed-tracker)
+    Superadmin figures, attendance donut (present / late / absent + unrecorded student-sessions, rate over recorded only), recorded vs not-recorded sessions donut (timetable periods × dates up to today, since 2026-11-08), shortcut tiles (second from top), top / bottom 3 teachers by attendance sessions; figures cached 4 days with a refresh button (see completed-tracker)
   - **Superadmin "Open portal" as a teacher done** (2026-10-15): impersonation from Backpack → Users, 60-min TTL,
     account endpoints blocked, banner in the SPA (see completed-tracker)
   - All build milestones (P2.1–P3.4) are done. Remaining: P1 design sign-off, device checks (PWA install, push,

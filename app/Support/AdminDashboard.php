@@ -7,6 +7,8 @@ use App\Models\ClassRoom;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\User;
+use App\Services\Attendance\ClassroomAttendance;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -74,34 +76,76 @@ class AdminDashboard
         ];
     }
 
-    /** Student-sessions per status in the active courses' classrooms; the centre is the attendance rate. */
+    /**
+     * Student-sessions of the active courses: recorded ones per status, plus "unrecorded" = each expected
+     * session up to today (see classrooms()) × its classroom's current students, minus the students that
+     * session's record already holds. The centre is the attendance rate over recorded student-sessions only
+     * (unrecorded never counts in a rate, as in the teacher portal: StudentSessions).
+     */
     public static function attendance()
     {
-        $activeAttends = Attends::whereIn('class_room_id', self::activeClassrooms()->select('id'))->select('id');
+        $classrooms = self::activeClassrooms()->with('course')->get();
+        $activeAttends = Attends::whereIn('class_room_id', $classrooms->pluck('id'))->select('id');
 
         $counts = [];
+        $covered = []; // attends_id => [student_id => true], any status
         foreach (self::ATTENDANCE as $key => [$table]) {
-            $counts[$key] = DB::table($table)->whereIn('attends_id', clone $activeAttends)->count();
+            $rows = DB::table($table)->whereIn('attends_id', clone $activeAttends)->get(['attends_id', 'student_id']);
+            $counts[$key] = $rows->count();
+            foreach ($rows as $row) {
+                $covered[$row->attends_id][$row->student_id] = true;
+            }
         }
+        $recordedTotal = array_sum($counts);
+
+        $students = DB::table('class_room_student')->whereIn('class_room_id', $classrooms->pluck('id'))
+            ->get(['class_room_id', 'student_id'])->groupBy('class_room_id')
+            ->map(function ($rows) {
+                return array_fill_keys($rows->pluck('student_id')->all(), true);
+            });
+        $records = self::recordIndex($classrooms);
+
+        $unrecorded = 0;
+        foreach (self::expectedSessions($classrooms) as [$classroom, $key]) {
+            $enrolled = $students->get($classroom->id, []);
+            $held = [];
+            foreach ($records[$key] ?? [] as $attendId) {
+                $held += array_intersect_key($covered[$attendId] ?? [], $enrolled);
+            }
+            $unrecorded += count($enrolled) - count($held);
+        }
+        $counts['unrecorded'] = $unrecorded;
 
         $chart = self::chart($counts, function ($key) {
-            return __('attend.'.$key);
+            return $key === 'unrecorded' ? __('base.dashboard.attendance_unrecorded') : __('attend.'.$key);
         });
         foreach ($chart['slices'] as $i => $slice) {
-            [, $chart['slices'][$i]['slot'], $chart['slices'][$i]['code']] = self::ATTENDANCE[$slice['key']];
+            [, $chart['slices'][$i]['slot'], $chart['slices'][$i]['code']] = self::ATTENDANCE[$slice['key']] ?? [null, 'muted', '—'];
         }
         $attended = array_sum(array_intersect_key($counts, array_flip(self::ATTENDED)));
-        $chart['centre'] = $chart['total'] ? round($attended * 100 / $chart['total']).'%' : null;
+        $chart['centre'] = $chart['total'] ? ($recordedTotal ? round($attended * 100 / $recordedTotal).'%' : '—') : null;
 
         return $chart;
     }
 
-    /** Active classrooms with at least one attendance session against those with none; the centre is "n / total". */
+    /**
+     * Expected sessions (each active classroom's timetable periods × their dates, up to today) with an
+     * attendance record against those without; the centre is "recorded / total".
+     * Dates and matching follow the teacher portal (ClassroomAttendance::slots, TeacherSessions::match):
+     * same classroom, subject and date, and the same start hour unless the period has no time.
+     */
     public static function classrooms()
     {
-        $total = self::activeClassrooms()->count();
-        $recorded = Attends::whereIn('class_room_id', self::activeClassrooms()->select('id'))
-            ->distinct()->count('class_room_id');
+        $classrooms = self::activeClassrooms()->with('course')->get();
+        $records = self::recordIndex($classrooms);
+
+        $total = $recorded = 0;
+        foreach (self::expectedSessions($classrooms) as [, $key]) {
+            $total++;
+            if (isset($records[$key])) {
+                $recorded++;
+            }
+        }
 
         $chart = self::chart(['recorded' => $recorded, 'not_recorded' => $total - $recorded], function ($key) {
             return __('base.dashboard.classrooms_'.$key);
@@ -164,6 +208,48 @@ class AdminDashboard
         return ClassRoom::whereHas('course', function ($query) {
             $query->where('is_active', true);
         });
+    }
+
+    /**
+     * Each classroom's expected sessions up to today: timetable periods × their dates (ClassroomAttendance::slots).
+     * The key matches recordIndex(): "classroom|curriculum|date", plus "|HH" when the period has a start time.
+     *
+     * @return \Generator<array{0: ClassRoom, 1: string}>
+     */
+    protected static function expectedSessions($classrooms)
+    {
+        $today = now()->toDateString();
+        foreach ($classrooms as $classroom) {
+            foreach ((new ClassroomAttendance($classroom, []))->slots() as $slot) {
+                $hour = $slot['start'] ? '|'.$slot['start']->format('H') : '';
+                foreach ($slot['dates'] as $date) {
+                    if ($date <= $today) {
+                        yield [$classroom, $classroom->id.'|'.$slot['curriculum_id'].'|'.$date.$hour];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * The classrooms' Attends ids by session key, under both the day key and the day + start-hour key,
+     * so a timed period matches its hour and a period without a time matches any record that day
+     * (the TeacherSessions::match rule).
+     *
+     * @return array<string, int[]>
+     */
+    protected static function recordIndex($classrooms)
+    {
+        $index = [];
+        Attends::whereIn('class_room_id', $classrooms->pluck('id'))
+            ->get(['id', 'class_room_id', 'curriculum_id', 'date', 'start_time'])
+            ->each(function (Attends $attend) use (&$index) {
+                $day = $attend->class_room_id.'|'.(int) $attend->curriculum_id.'|'.$attend->date->format('Y-m-d');
+                $index[$day][] = $attend->id;
+                $index[$day.'|'.Carbon::parse($attend->start_time)->format('H')][] = $attend->id;
+            });
+
+        return $index;
     }
 
     /**
