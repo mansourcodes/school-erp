@@ -38,8 +38,9 @@ function isStandalone(): boolean {
  * PLAN.md §4 "Install prompt": Android/Chrome uses `beforeinstallprompt`; iOS Safari has no API,
  * so it gets a how-to sheet. Shown from the second visit or right after a login, hidden for
  * 30 days once dismissed, never inside the installed app.
+ * `always` skips the visit and dismissal gating (e.g. the login page, where it can't be dismissed).
  */
-export function useInstallPrompt() {
+export function useInstallPrompt({ always = false }: { always?: boolean } = {}) {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [hidden, setHidden] = useState(() => Number(read(localStorage, DISMISSED_KEY) ?? 0) > Date.now());
 
@@ -64,7 +65,7 @@ export function useInstallPrompt() {
   }, []);
 
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const eligible = !hidden && !isStandalone() && (visits >= 2 || justLoggedIn);
+  const eligible = !isStandalone() && (always || (!hidden && (visits >= 2 || justLoggedIn)));
 
   return {
     /** 'android' = native prompt available; 'ios' = show the steps sheet. */

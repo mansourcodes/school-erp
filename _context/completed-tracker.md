@@ -4,6 +4,12 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Install card on the login page (2026-11-08)
+- `LoginPage` renders `<InstallBanner dismissible={false} className="mt-4" />` under the form
+- `InstallBanner` takes `dismissible` (default true) and `className` (default `mb-4`); non-dismissible = no ✕ and
+  `useInstallPrompt({ always: true })`, which skips the second-visit and 30-day-dismissal rules but still hides in
+  standalone mode and needs `beforeinstallprompt` (Android/Chrome) or iOS. Test added in `use-install-prompt.test.ts`
+
 ### Course start date counts as a session (2026-11-08)
 - `HtmlHelper::getDaysInRange` steps back one day before `modify('next <day>')`, so a course that starts on a
   teaching day keeps that first session. One helper feeds the admin attend list, teacher sessions (pending /

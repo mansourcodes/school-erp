@@ -5,9 +5,15 @@ import { t } from '@/shared/i18n';
 import { Dialog } from '@/shared/ui';
 import { useInstallPrompt } from '../model/use-install-prompt';
 
-/** Small dismissible banner: Android installs natively, iOS opens a how-to sheet. */
-export function InstallBanner() {
-  const { mode, install, dismiss } = useInstallPrompt();
+interface InstallBannerProps {
+  /** false = no close button, and shown regardless of visit count / past dismissals (login page). */
+  dismissible?: boolean;
+  className?: string;
+}
+
+/** Small banner: Android installs natively, iOS opens a how-to sheet. */
+export function InstallBanner({ dismissible = true, className = 'mb-4' }: InstallBannerProps) {
+  const { mode, install, dismiss } = useInstallPrompt({ always: !dismissible });
   const [iosSheet, setIosSheet] = useState(false);
   const { name } = useBranding();
 
@@ -15,7 +21,7 @@ export function InstallBanner() {
 
   return (
     <>
-      <div className="card-soft p-3.5 mb-4 flex items-center gap-3 border-primary/40 bg-primary/10">
+      <div className={`card-soft p-3.5 ${className} flex items-center gap-3 border-primary/40 bg-primary/10`}>
         <img src={`${import.meta.env.BASE_URL}pwa-64x64.png`} alt="" className="size-10 rounded-xl shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-sm">{t('pwa.installTitle', { name })}</p>
@@ -29,9 +35,11 @@ export function InstallBanner() {
           <Download className="size-4" strokeWidth={1.75} aria-hidden="true" />
           {t('pwa.install')}
         </button>
-        <button type="button" className="btn btn-ghost btn-sm btn-circle" aria-label={t('pwa.dismiss')} onClick={dismiss}>
-          <X className="size-4" strokeWidth={1.75} aria-hidden="true" />
-        </button>
+        {dismissible && (
+          <button type="button" className="btn btn-ghost btn-sm btn-circle" aria-label={t('pwa.dismiss')} onClick={dismiss}>
+            <X className="size-4" strokeWidth={1.75} aria-hidden="true" />
+          </button>
+        )}
       </div>
 
       <Dialog open={iosSheet} onClose={() => setIosSheet(false)} labelledBy="ios-install-title" closeLabel={t('pwa.close')}>

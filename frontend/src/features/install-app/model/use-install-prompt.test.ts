@@ -44,6 +44,15 @@ describe('useInstallPrompt', () => {
     expect(until - Date.now()).toBeGreaterThan(29 * 24 * 3600 * 1000);
   });
 
+  it('with `always`, shows on a first visit even after a dismissal', () => {
+    localStorage.removeItem('gh-visits');
+    localStorage.setItem('gh-install-dismissed-until', String(Date.now() + 1e9));
+    const { result } = renderHook(() => useInstallPrompt({ always: true }));
+    fireInstallPrompt();
+    expect(result.current.mode).toBe('android');
+    localStorage.removeItem('gh-install-dismissed-until');
+  });
+
   it('uses the how-to sheet on iOS, where there is no install API', () => {
     localStorage.setItem('gh-visits', '3');
     const ua = vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)');

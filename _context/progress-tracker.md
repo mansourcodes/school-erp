@@ -74,6 +74,8 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Install card on the login page (2026-11-08): `<InstallBanner dismissible={false} />` under the login form; no
+  close button and no visit/dismissal gating (`useInstallPrompt({ always: true })`), still hidden in the installed app
 - Payment exemption tickets + account reports by payment status (2026-10-24): new `payment_exemptions` table and
   CRUD (`/admin/paymentexemption`); reports paid / exempt / not paid and not exempt / paid and exempt; the
   unconfirmed students report removed. **Production:** run the three `2026_10_24_*` migrations (the last one opens

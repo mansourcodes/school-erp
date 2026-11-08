@@ -2,7 +2,7 @@ import { Archive, BookOpen, CalendarCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { LoginForm } from '@/features/auth/login';
-import { JUST_LOGGED_IN_KEY } from '@/features/install-app';
+import { InstallBanner, JUST_LOGGED_IN_KEY } from '@/features/install-app';
 import { PasswordHelpDialog } from '@/features/password-help';
 import { useBranding } from '@/entities/branding';
 import { BASE_PATH, homeOf, routes } from '@/shared/config';
@@ -67,6 +67,7 @@ export function LoginPage() {
             }}
             onForgotPassword={() => setHelpOpen(true)}
           />
+          <InstallBanner dismissible={false} className="mt-4" />
         </div>
       </section>
 
