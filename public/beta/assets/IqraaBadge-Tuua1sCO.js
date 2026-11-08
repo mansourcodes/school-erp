@@ -1,0 +1,1 @@
+import{j as r}from"./index-B1uMQul5.js";function s({account:a}){return a?r.jsxs("span",{className:"badge badge-soft badge-primary badge-xs ltr num font-normal",children:["iqraa-",a]}):null}export{s as I};
