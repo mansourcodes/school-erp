@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import type { Roster, TeacherSession, TeacherToday } from '@/entities/class-session';
@@ -280,8 +280,22 @@ describe('teacher panel', () => {
 
     await user.upload(screen.getByTestId('teacher-photo-input'), new File(['x'], 'me.jpg', { type: 'image/jpeg' }));
 
+    // The cropper previews the photo before anything is uploaded (jsdom does not decode images).
+    expect(await screen.findByRole('heading', { name: 'ضبط الصورة' })).toBeInTheDocument();
+    const save = screen.getByRole('button', { name: 'اعتماد الصورة' });
+    expect(save).toBeDisabled();
+    const preview = screen.getByTestId('photo-crop-frame').querySelector('img')!;
+    Object.defineProperty(preview, 'naturalWidth', { value: 265 });
+    Object.defineProperty(preview, 'naturalHeight', { value: 391 });
+    fireEvent.load(preview);
+    // No canvas in jsdom: the cropper falls back to sending the (resized) original.
+    const getContext = vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+    expect(uploads).toBe(0);
+    await user.click(save);
+
     expect(await screen.findByText('تم تحديث الصورة')).toBeInTheDocument();
     expect(uploads).toBe(1);
+    getContext.mockRestore();
     // /me is refetched: the avatar shows the photo and the photo can now be changed or deleted.
     expect(await screen.findByRole('button', { name: 'تغيير الصورة' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'حذف الصورة' })).toBeInTheDocument();

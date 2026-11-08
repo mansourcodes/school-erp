@@ -2,8 +2,7 @@ import { ImageUp, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toApiError } from '@/shared/api';
 import { t } from '@/shared/i18n';
-import { resizeImage } from '@/shared/lib';
-import { Dialog } from '@/shared/ui';
+import { Dialog, PhotoCropper } from '@/shared/ui';
 import { useDeleteTeacherPhotoMutation, useUploadTeacherPhotoMutation } from '../api/teacher-photo-api';
 
 interface TeacherPhotoActionsProps {
@@ -12,7 +11,8 @@ interface TeacherPhotoActionsProps {
 
 /**
  * Change / remove the teacher's own photo (profile). No `capture`, so phones offer both the
- * camera and the gallery. Deleting asks in an in-page sheet, never `confirm()`.
+ * camera and the gallery. A picked photo of any size opens the cropper first. Deleting asks in an
+ * in-page sheet, never `confirm()`.
  */
 export function TeacherPhotoActions({ hasPhoto }: TeacherPhotoActionsProps) {
   const input = useRef<HTMLInputElement>(null);
@@ -20,17 +20,23 @@ export function TeacherPhotoActions({ hasPhoto }: TeacherPhotoActionsProps) {
   const [remove, { isLoading: removing }] = useDeleteTeacherPhotoMutation();
   const [confirming, setConfirming] = useState(false);
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
+  const [picked, setPicked] = useState<File | null>(null);
   const busy = uploading || removing;
 
-  const onFile = async (file: File | undefined) => {
+  const onFile = (file: File | undefined) => {
     if (!file) return;
     setStatus(null);
+    setPicked(file);
+  };
+
+  const onCropped = async (photo: Blob) => {
     try {
-      await upload(await resizeImage(file)).unwrap();
+      await upload(photo).unwrap();
       setStatus({ ok: true, text: t('teacher.photoSaved') });
     } catch (e) {
       setStatus({ ok: false, text: toApiError(e).errors?.photo?.[0] ?? t('teacher.photoFailed') });
     }
+    setPicked(null);
   };
 
   return (
@@ -65,10 +71,12 @@ export function TeacherPhotoActions({ hasPhoto }: TeacherPhotoActionsProps) {
         hidden
         data-testid="teacher-photo-input"
         onChange={(e) => {
-          void onFile(e.target.files?.[0]);
+          onFile(e.target.files?.[0]);
           e.target.value = '';
         }}
       />
+
+      <PhotoCropper file={picked} busy={uploading} onCancel={() => setPicked(null)} onConfirm={(photo) => void onCropped(photo)} />
 
       <Dialog open={confirming} onClose={() => setConfirming(false)} labelledBy="delete-own-photo-title" closeLabel={t('teacher.cancel')}>
         <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">

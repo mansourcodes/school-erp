@@ -295,7 +295,7 @@ class TeacherController extends Controller
     {
         $student = $this->classroomStudent($request, $id, $sid);
         $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048', 'dimensions:min_width=300,min_height=300'],
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:10240'],
         ]);
 
         try {
@@ -321,7 +321,7 @@ class TeacherController extends Controller
     public function uploadOwnPhoto(Request $request, TeacherPhotos $photos)
     {
         $request->validate([
-            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048', 'dimensions:min_width=300,min_height=300'],
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:10240'],
         ]);
 
         try {

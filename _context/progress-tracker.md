@@ -74,6 +74,7 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Teacher photo uploads accept any size and open a crop / rotate / zoom preview before upload (2026-11-08)
 - Teacher student sheet shows the student's attendance calendar (teacher's subjects) and contact / personal
   details with call, WhatsApp, Teams and copy actions (new `GET /teacher/classrooms/{id}/students/{sid}`) (2026-11-08)
 - Teacher portal shows the student's Iqraa account next to the student number (API `iqraa_id_account`) (2026-11-08)

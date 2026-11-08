@@ -4,6 +4,17 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Photo cropper + any-size photos in the teacher portal (2026-11-08)
+- `TeacherController::uploadPhoto` / `uploadOwnPhoto`: dropped `dimensions:min_width=300,min_height=300` (a
+  265×391 photo was refused) and raised `max` to 10240 KB; `ProfilePhotos` still re-encodes and never upscales.
+  Tests: `test_small_photos_are_accepted_without_upscaling`, `test_non_image_or_oversized_files_are_refused` in
+  `StudentPhotoTest` / `TeacherPhotoTest`. The admin `UserCrudController` rule is unchanged
+- `shared/ui/PhotoCropper`: a sheet that previews the picked photo in the 100:128 arch frame; drag, pinch,
+  wheel / slider zoom (1–4×), rotate by quarter turns, reset, arrow keys; "اعتماد الصورة" uploads only the
+  framed part as a 400×512 JPEG (`shared/lib/crop-image`: `clampCrop`, `cropScale`, `renderCrop`; falls back
+  to `resizeImage` without canvas). Used by `PhotoActions` (student) and `TeacherPhotoActions` (own photo);
+  copy under `photoCrop.*` in ar.json. Tests: `crop-image.test.ts`, teacher profile photo test
+
 ### Attendance calendar + contact details in the teacher's student sheet (2026-11-08)
 - `GET /api/v1/teacher/classrooms/{id}/students/{sid}` (`TeacherController::student`): whitelisted contact /
   personal fields (name, student_id, cpr padded to 9, mobile, mobile2, email, address, iqraa_id_account; never

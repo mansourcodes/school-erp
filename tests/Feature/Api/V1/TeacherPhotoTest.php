@@ -83,13 +83,24 @@ class TeacherPhotoTest extends TestCase
         $this->assertNull($this->teacher->fresh()->photo_path);
     }
 
-    public function test_small_or_non_image_files_are_refused()
+    public function test_small_photos_are_accepted_without_upscaling()
     {
-        $this->actingAs($this->teacher, 'web')->post('/api/v1/teacher/photo', ['photo' => $this->jpeg(200, 200)], ['Accept' => 'application/json'])
-            ->assertStatus(422)->assertJsonValidationErrors('photo');
+        // A 265x391 phone crop used to fail a 300 px minimum; any size is fine now (the app crops it).
+        $this->actingAs($this->teacher, 'web')->post('/api/v1/teacher/photo', ['photo' => $this->jpeg(265, 391)], ['Accept' => 'application/json'])
+            ->assertOk();
+
+        $bytes = Storage::disk('public')->get($this->teacher->fresh()->photo_path);
+        $this->assertSame([265, 391], array_slice(getimagesizefromstring($bytes), 0, 2));
+    }
+
+    public function test_non_image_or_oversized_files_are_refused()
+    {
         $this->actingAs($this->teacher, 'web')
             ->post('/api/v1/teacher/photo', ['photo' => UploadedFile::fake()->createWithContent('photo.jpg', 'not an image')], ['Accept' => 'application/json'])
-            ->assertStatus(422);
+            ->assertStatus(422)->assertJsonValidationErrors('photo');
+        $this->actingAs($this->teacher, 'web')
+            ->post('/api/v1/teacher/photo', ['photo' => UploadedFile::fake()->image('photo.jpg', 400, 400)->size(10241)], ['Accept' => 'application/json'])
+            ->assertStatus(422)->assertJsonValidationErrors('photo');
         $this->assertNull($this->teacher->fresh()->photo_path);
     }
 
