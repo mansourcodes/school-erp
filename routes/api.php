@@ -67,6 +67,8 @@ Route::prefix('v1')
                 // Push outbox: the app sends the pushes of a save / message one by one (PLAN.md §5.12).
                 Route::get('/push-deliveries', [App\Http\Controllers\Api\V1\PushDeliveryController::class, 'index']);
                 Route::post('/push-deliveries/{id}/send', [App\Http\Controllers\Api\V1\PushDeliveryController::class, 'send'])->where('id', '[0-9]+');
+                Route::get('/classrooms/{id}/students/{sid}', [App\Http\Controllers\Api\V1\TeacherController::class, 'student'])
+                    ->where(['id' => '[0-9]+', 'sid' => '[0-9]+']);
                 Route::post('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'uploadPhoto'])
                     ->where(['id' => '[0-9]+', 'sid' => '[0-9]+'])->middleware('throttle:student-photo');
                 Route::delete('/classrooms/{id}/students/{sid}/photo', [App\Http\Controllers\Api\V1\TeacherController::class, 'deletePhoto'])

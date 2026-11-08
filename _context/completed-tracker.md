@@ -4,6 +4,18 @@ Update this file after every meaningful implementation change.
 
 ## Completed
 
+### Attendance calendar + contact details in the teacher's student sheet (2026-11-08)
+- `GET /api/v1/teacher/classrooms/{id}/students/{sid}` (`TeacherController::student`): whitelisted contact /
+  personal fields (name, student_id, cpr padded to 9, mobile, mobile2, email, address, iqraa_id_account; never
+  financial / health / notes / family) + `StudentSessions::forStudent` filtered to the teacher's subjects; 404
+  outside scope. Test in `TeacherApiTest`
+- Student sheet (classroom → الطلاب): `AttendanceCalendar` (new `compact` prop: phone layout, day opens its own
+  sheet) under the photo actions, then "معلومات الاتصال" (email + Teams chat link, guardian phone = mobile2 and
+  phone = mobile with tel: and wa.me/973… links) and "المعلومات الشخصية" (CPR, block = address, Iqraa); copy
+  buttons with a toast. The sheet now scrolls (`max-h` + `overflow-y-auto`)
+- FSD: `ClassroomStudents` takes a `details` render slot; the page composes `StudentDetails` / `StudentContact`
+  (pages/teacher/classroom/ui) so widgets do not import each other; `entities/attendance/@x/classroom` exports `Session`
+
 ### Iqraa account next to the student number in the teacher portal (2026-11-08)
 - Teacher API student rows (`TeacherController::studentRow` and the session roster) add `iqraa_id_account`
   (empty → null)

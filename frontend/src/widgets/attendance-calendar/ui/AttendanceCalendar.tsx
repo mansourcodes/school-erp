@@ -13,6 +13,8 @@ interface AttendanceCalendarProps {
   /** Open on this day (e.g. from an attendance notification: ?date=). */
   focusDate?: string | null;
   today?: Date;
+  /** Inside a sheet: always the phone layout (no side panel; the day opens its own sheet). */
+  compact?: boolean;
 }
 
 const monthOf = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1);
@@ -21,8 +23,8 @@ const monthOf = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1)
  * Month grid (Sun → Sat), one coded pip per session. Selecting a day shows its sessions:
  * a side panel from `lg`, a bottom sheet on phones (PLAN.md §3.4).
  */
-export function AttendanceCalendar({ sessions, startDate, endDate, focusDate, today = new Date() }: AttendanceCalendarProps) {
-  const wide = useMediaQuery('(min-width: 1024px)');
+export function AttendanceCalendar({ sessions, startDate, endDate, focusDate, today = new Date(), compact = false }: AttendanceCalendarProps) {
+  const wide = useMediaQuery('(min-width: 1024px)') && !compact;
   const byDate = useMemo(() => {
     const map = new Map<string, Session[]>();
     for (const s of sessions) map.set(s.date, [...(map.get(s.date) ?? []), s]);
@@ -58,8 +60,8 @@ export function AttendanceCalendar({ sessions, startDate, endDate, focusDate, to
   const shortDays = tList('days.short');
 
   return (
-    <section className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-      <div className="card-soft p-2.5 sm:p-5">
+    <section className={compact ? '' : 'grid gap-4 lg:grid-cols-[1fr_20rem]'}>
+      <div className={compact ? 'card-soft p-2.5' : 'card-soft p-2.5 sm:p-5'}>
         <header className="flex items-center justify-between mb-2">
           <button
             type="button"
@@ -126,12 +128,14 @@ export function AttendanceCalendar({ sessions, startDate, endDate, focusDate, to
             );
           })}
         </div>
-        <p className="text-xs opacity-60 text-center mt-3 lg:hidden">{t('attendance.tapDay')}</p>
+        <p className={`text-xs opacity-60 text-center mt-3 ${compact ? '' : 'lg:hidden'}`}>{t('attendance.tapDay')}</p>
       </div>
 
-      <aside className="card-soft p-5 hidden lg:block" aria-live="polite">
-        <DayDetails date={shownDay} sessions={shownDay ? (byDate.get(shownDay) ?? []) : []} />
-      </aside>
+      {!compact && (
+        <aside className="card-soft p-5 hidden lg:block" aria-live="polite">
+          <DayDetails date={shownDay} sessions={shownDay ? (byDate.get(shownDay) ?? []) : []} />
+        </aside>
+      )}
 
       {!wide && (
         <Dialog

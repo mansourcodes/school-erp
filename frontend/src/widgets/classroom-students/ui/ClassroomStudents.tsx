@@ -1,5 +1,5 @@
 import { Camera, ChevronLeft, Search } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { PhotoActions } from '@/features/manage-student-photo';
 import { type ClassroomStudent, LOW_RATE } from '@/entities/classroom';
 import { IqraaBadge, StudentPhoto } from '@/entities/student';
@@ -7,11 +7,22 @@ import { t } from '@/shared/i18n';
 import { pct } from '@/shared/lib';
 import { Dialog } from '@/shared/ui';
 
+interface ClassroomStudentsProps {
+  classroomId: number;
+  students: ClassroomStudent[];
+  /** Extra content under the photo actions (the page adds the calendar and contact details). */
+  details?: (student: ClassroomStudent, toast: (message: string) => void) => ReactNode;
+}
+
 /** "الطلاب" tab of a classroom (PLAN.md §8 screen 5): search, rows, and the student sheet with photo actions. */
-export function ClassroomStudents({ classroomId, students }: { classroomId: number; students: ClassroomStudent[] }) {
+export function ClassroomStudents({ classroomId, students, details }: ClassroomStudentsProps) {
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const showToast = (message: string) => {
+    setToast(message);
+    window.setTimeout(() => setToast(null), 3000);
+  };
   const open = students.find((s) => s.id === openId) ?? null;
   const shown = students.filter((s) => !query.trim() || s.name.includes(query.trim()) || s.student_id.includes(query.trim()));
 
@@ -58,7 +69,8 @@ export function ClassroomStudents({ classroomId, students }: { classroomId: numb
 
       <Dialog open={open !== null} onClose={() => setOpenId(null)} labelledBy="student-sheet-title" closeLabel={t('pwa.close')}>
         {open && (
-          <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4">
+          // The modal box clips (overflow-hidden), so the sheet scrolls itself.
+          <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto">
             <div className="sheet-grip" />
             <div className="flex flex-col items-center text-center gap-2">
               <StudentPhoto name={open.name} photoUrl={open.photo_url} className="w-32 h-40" textClassName="text-5xl" />
@@ -88,11 +100,9 @@ export function ClassroomStudents({ classroomId, students }: { classroomId: numb
               classroomId={classroomId}
               studentId={open.id}
               hasPhoto={!!open.photo_url}
-              onDone={(message) => {
-                setToast(message);
-                window.setTimeout(() => setToast(null), 3000);
-              }}
+              onDone={showToast}
             />
+            {details?.(open, showToast)}
           </div>
         )}
       </Dialog>

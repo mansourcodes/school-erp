@@ -226,6 +226,32 @@ class TeacherApiTest extends TestCase
         $this->asTeacher()->getJson("/api/v1/teacher/classrooms/{$foreign->id}")->assertStatus(404);
     }
 
+    public function test_a_student_sheet_has_contact_details_and_my_subject_sessions_only()
+    {
+        $this->classmate->update(['mobile' => 36000001, 'mobile2' => 39000002, 'email' => 'ali@moe.bh', 'address' => '1027', 'student_notes' => 'private']);
+        $this->asTeacher()->putJson('/api/v1/teacher/sessions/' . $this->code('2026-09-18'), ['states' => [
+            $this->student->id => 'present',
+            $this->classmate->id => 'absent',
+        ]])->assertOk();
+
+        $response = $this->asTeacher()->getJson("/api/v1/teacher/classrooms/{$this->classroom->id}/students/{$this->classmate->id}")->assertOk();
+        $response->assertJsonPath('data.name', 'علي')
+            ->assertJsonPath('data.mobile', '36000001')
+            ->assertJsonPath('data.mobile2', '39000002')
+            ->assertJsonPath('data.email', 'ali@moe.bh')
+            ->assertJsonPath('data.address', '1027');
+        $this->assertArrayNotHasKey('student_notes', $response->json('data'));
+
+        $sessions = collect($response->json('data.sessions'));
+        // Fridays 09-04 … 09-25, my tajweed only (the fiqh sessions belong to another teacher).
+        $this->assertSame([$this->curriculum->id], $sessions->pluck('curriculum_id')->unique()->values()->all());
+        $this->assertSame('absent', $sessions->firstWhere('date', '2026-09-18')['state']);
+
+        // Not in this classroom / not my classroom: 404.
+        $outsider = Student::factory()->create();
+        $this->asTeacher()->getJson("/api/v1/teacher/classrooms/{$this->classroom->id}/students/{$outsider->id}")->assertStatus(404);
+    }
+
     public function test_stats_flag_students_who_need_follow_up()
     {
         foreach (['2026-09-11', '2026-09-18', '2026-09-25'] as $date) {

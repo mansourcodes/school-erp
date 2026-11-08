@@ -74,6 +74,8 @@ Update this file after every meaningful implementation change.
 
 ## Completed Recently
 
+- Teacher student sheet shows the student's attendance calendar (teacher's subjects) and contact / personal
+  details with call, WhatsApp, Teams and copy actions (new `GET /teacher/classrooms/{id}/students/{sid}`) (2026-11-08)
 - Teacher portal shows the student's Iqraa account next to the student number (API `iqraa_id_account`) (2026-11-08)
 - Install card on the login page (2026-11-08): `<InstallBanner dismissible={false} />` under the login form; no
   close button and no visit/dismissal gating (`useInstallPrompt({ always: true })`), still hidden in the installed app

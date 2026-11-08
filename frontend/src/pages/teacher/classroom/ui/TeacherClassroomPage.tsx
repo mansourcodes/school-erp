@@ -8,6 +8,7 @@ import { routes } from '@/shared/config';
 import { t, tList } from '@/shared/i18n';
 import { fmtDate, fmtTime, pct } from '@/shared/lib';
 import { ErrorCard, LoadingBlocks } from '@/shared/ui';
+import { StudentDetails } from './StudentDetails';
 
 type Tab = 'students' | 'sessions' | 'info';
 
@@ -68,7 +69,13 @@ export function TeacherClassroomPage() {
           ))}
         </div>
         <div className="p-4 sm:p-6" role="tabpanel">
-          {tab === 'students' && <ClassroomStudents classroomId={classroom.id} students={classroom.students} />}
+          {tab === 'students' && (
+            <ClassroomStudents
+              classroomId={classroom.id}
+              students={classroom.students}
+              details={(student, toast) => <StudentDetails classroom={classroom} studentId={student.id} onToast={toast} />}
+            />
+          )}
           {tab === 'sessions' &&
             (sessions.isLoading ? (
               <LoadingBlocks heights={['h-20', 'h-20']} />

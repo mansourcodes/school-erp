@@ -130,6 +130,39 @@ class TeacherController extends Controller
         return response()->json(['data' => TeacherSessions::forClassroom($classroom, $scope->curriculumIds($classroom), $this->now())]);
     }
 
+    /**
+     * GET /teacher/classrooms/{id}/students/{sid}: one student's contact + personal details and their
+     * sessions of my subjects in this classroom (the student sheet calendar). Whitelist: never
+     * financial_*, health_*, hawza_history_details, student_notes, relationship_state or family_*.
+     */
+    public function student(Request $request, $id, $sid)
+    {
+        $student = $this->classroomStudent($request, $id, $sid);
+        $classroom = $this->scope($request)->find($id);
+        $mine = $this->scope($request)->curriculumIds($classroom);
+
+        $sessions = array_values(array_filter(
+            StudentSessions::forStudent($classroom, $student->id, $this->now()),
+            function ($s) use ($mine) {
+                return in_array((int) $s['curriculum_id'], $mine, true);
+            }
+        ));
+
+        return response()->json(['data' => [
+            'id' => $student->id,
+            'name' => $student->name,
+            'student_id' => $student->student_id,
+            // Stored as an integer, so a leading zero is lost; CPRs have 9 digits.
+            'cpr' => $student->cpr === null ? null : str_pad((string) $student->cpr, 9, '0', STR_PAD_LEFT),
+            'mobile' => $student->mobile ? (string) $student->mobile : null,
+            'mobile2' => $student->mobile2 ? (string) $student->mobile2 : null,
+            'email' => $student->email ?: null,
+            'address' => $student->address ?: null,
+            'iqraa_id_account' => $student->iqraa_id_account ?: null,
+            'sessions' => $sessions,
+        ]]);
+    }
+
     /** GET /teacher/sessions/{code}: roster with this classroom's recorded states. */
     public function session(Request $request, $code)
     {

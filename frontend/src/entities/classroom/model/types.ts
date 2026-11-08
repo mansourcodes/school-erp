@@ -1,3 +1,5 @@
+import type { Session } from '@/entities/attendance/@x/classroom';
+
 export interface ClassroomSlot {
   curriculum_id: number;
   /** 0 = Sunday … 6 = Saturday */
@@ -30,6 +32,20 @@ export interface ClassroomStudent {
   recorded: number;
   absences: number;
   late: number;
+}
+
+/** GET /teacher/classrooms/{id}/students/{sid}: contact details + sessions of my subjects. */
+export interface ClassroomStudentDetail {
+  id: number;
+  name: string;
+  student_id: string;
+  cpr: string | null;
+  mobile: string | null;
+  mobile2: string | null;
+  email: string | null;
+  address: string | null;
+  iqraa_id_account: string | null;
+  sessions: Session[];
 }
 
 /** GET /teacher/classrooms/{id} */

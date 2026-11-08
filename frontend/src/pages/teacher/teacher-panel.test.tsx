@@ -197,11 +197,37 @@ describe('teacher panel', () => {
     server.use(
       http.get('*/api/v1/teacher/classrooms/:id', () => HttpResponse.json({ data: detail })),
       http.get('*/api/v1/teacher/classrooms/:id/sessions', () => HttpResponse.json({ data: [] })),
+      http.get('*/api/v1/teacher/classrooms/:id/students/:sid', () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            name: 'حسين علي',
+            student_id: '20240001',
+            cpr: '100302475',
+            mobile: '66338599',
+            mobile2: '39375511',
+            email: 'hasan@moe.bh',
+            address: '1027',
+            iqraa_id_account: null,
+            sessions: [
+              { date: '2026-09-04', start: '16:00', end: '17:00', curriculum_id: 11, curriculum: 'تجويد القرآن الكريم', teacher: null, state: 'absent', other_classroom: false },
+            ],
+          },
+        }),
+      ),
     );
     renderApp('/teacher/classes/912');
     const user = userEvent.setup();
 
     await user.click(await screen.findByRole('button', { name: /حسين علي/ }));
+    const details = screen.getByRole('dialog', { name: 'حسين علي' });
+    // Calendar (my subjects) then contact details with call / WhatsApp / Teams links.
+    expect(await within(details).findByText('معلومات الاتصال')).toBeInTheDocument();
+    expect(within(details).getByText('اضغط على أي يوم لعرض حصصه')).toBeInTheDocument();
+    expect(within(details).getByRole('link', { name: 'واتساب هاتف ولي الأمر' })).toHaveAttribute('href', 'https://wa.me/97339375511');
+    expect(within(details).getByRole('link', { name: 'اتصال بـ الهاتف' })).toHaveAttribute('href', 'tel:66338599');
+    expect(within(details).getByRole('link', { name: 'محادثة Teams' })).toHaveAttribute('href', expect.stringContaining('hasan%40moe.bh'));
+    expect(within(details).getByText('100302475')).toBeInTheDocument();
     const sheet = screen.getByRole('dialog', { name: 'حسين علي' });
     expect(within(sheet).getByRole('button', { name: 'التقاط صورة' })).toBeInTheDocument();
     expect(within(sheet).getByRole('button', { name: 'من المعرض' })).toBeInTheDocument();
